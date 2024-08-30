@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# url
+## home
+- 첫 화면, 메인 화면
+- '/'
+  - beforelogin, afterlogin 처리 필요
 
-## Getting Started
+## category
+- 카테고리 검색 (혹은 선택)시 리스트를 보여주는 공간
+- '/category + [카테고리 명]'
+  - '/category' 뒤에 선택한 category 값
+  - 최근 올라온 물품도 활용 가능
 
-First, run the development server:
+## post
+- 빌리는 물건 게시물을 확인 할 수 있는 공간
+- '/post + [게시글 번호]'
+  - 물건 사진, 게시글 제목, 내용, 계약서 내용 확인 버튼 존재
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## post edit
+- 게시글을 수정하는 공간
+  - '/post/edit/ + [게시글 번호]'
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 전자계약서 작성
+- 전자계약서 작성 공간
+  - '/contract'
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 전자계약서 수정
+- 전자계약서 수정 공간
+  - '/contract/edit'
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## 전자계약서 확인
+- 전자계약서 확인
+  - '/contract/check + [전자계약서 고유 id]'
 
-## Learn More
+## 계약
+- 대여하기 위해 계약을 맺는 공간
+  - '/contract/try + [계약서 고유 id]'
 
-To learn more about Next.js, take a look at the following resources:
+## chat
+- 채팅하는 공간
+  - '/message/chat + [채팅방 고유 아이디]'
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 대화 목록
+- '/message/list'
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## like
+- 찜목록
+  - '/like'
 
-## Deploy on Vercel
+## mypage
+- '/mypage'
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+# 폴더구조
