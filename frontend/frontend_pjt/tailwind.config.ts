@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import plugin from "tailwindcss/plugin"
 
 const config: Config = {
   content: [
@@ -26,6 +27,23 @@ const config: Config = {
       }
     },
   },
-  plugins: [],
+  plugins: [
+      require("@tailwindcss/line-clamp"),
+    plugin(function({ addUtilities }) {
+      const newUtilities = {
+        '.scrollbar-hide': {
+          /* IE and Edge */
+          '-ms-overflow-style': 'none',
+          /* Firefox */
+          'scrollbar-width': 'none',
+          /* Safari and Chrome */
+          '&::-webkit-scrollbar': {
+            display: 'none'
+          }
+        },
+      }
+      addUtilities(newUtilities);
+    })
+  ],
 };
 export default config;

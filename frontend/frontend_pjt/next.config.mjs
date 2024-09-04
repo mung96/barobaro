@@ -9,6 +9,9 @@ const nextConfig = {
 
         return config;
     },
+    images: {
+        domains: ['loremflickr.com', 'loremflickr.com'],
+    }
 };
 
 export default nextConfig;
