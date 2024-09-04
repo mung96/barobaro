@@ -1,6 +1,6 @@
 "use client"
 
-import SmartPhone from '../(SVG_component)/smartphone'
+import SmartPhone from '../(SVG_component)/SmartPhone'
 import colors from '@/app/_component/colors'
 
 import {useState} from "react";
