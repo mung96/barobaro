@@ -10,7 +10,8 @@ export default function LikeButton() {
     const [isClicked, setClicked] = useState(isInLikeList);
     const heartFillColor = isClicked ? colors.blue[200] : "none"
     const heartBorderColor = isClicked ? colors.blue[200] : "white"
-    const handleClick = () => {
+    const handleClick = (event:React.MouseEvent<HTMLElement, MouseEvent>) => {
+        event.stopPropagation()
         setClicked(!isClicked)
     }
 
