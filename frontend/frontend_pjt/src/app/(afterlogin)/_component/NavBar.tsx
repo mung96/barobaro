@@ -14,7 +14,7 @@ export default function NavBar() {
     console.log(segment)
     return (
         <>
-            <nav className= "fixed bottom-0 left-0 right-0 bg-nav-bg h-12">
+            <nav className= "fixed bottom-0 left-0 right-0 bg-gray-400 h-12">
                 <div className = "flex">
                     <Link className = "flex flex-1 flex-col items-center justify-center" href="/home">
                             <HomeButton fill ={segment=== 'home' ? "#1A1E27" : "#B6BDC8"}/>
