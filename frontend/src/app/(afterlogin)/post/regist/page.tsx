@@ -1,12 +1,19 @@
+import { useFunnel } from '@use-funnel/browser';
+import FirstStepInput from '@/components/post/FirstStepInput';
+import SecondStepInput from '@/components/post/SecondStepInput';
+import LastStepInput from '@/components/post/LastStepInput';
 import {
   FirstStep,
   SecondStep,
   LastStep,
 } from '@/app/(afterlogin)/post/regist/context';
-import { useFunnel } from '@use-funnel/browser';
 
 function PostRegistFunnelPage() {
-  const funnel = useFunnel<{
+  const {
+    step: rigsterStep,
+    history,
+    context,
+  } = useFunnel<{
     FirstStep: FirstStep;
     SecondStep: SecondStep;
     LastStep: LastStep;
@@ -17,7 +24,13 @@ function PostRegistFunnelPage() {
       context: {},
     },
   });
-  return <>게시글 등록</>;
+  return (
+    <section>
+      {rigsterStep === 'FirstStep' && <FirstStepInput />}
+      {rigsterStep === 'SecondStep' && <SecondStepInput />}
+      {rigsterStep === 'FirstStep' && <LastStepInput />}
+    </section>
+  );
 }
 
 export default PostRegistFunnelPage;
