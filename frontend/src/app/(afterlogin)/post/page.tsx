@@ -1,7 +1,3 @@
 export default function Post() {
-    return (
-        <>
-            Post
-        </>
-    )
+  return <>Post</>;
 }
