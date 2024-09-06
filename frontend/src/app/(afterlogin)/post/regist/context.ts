@@ -1,26 +1,17 @@
 export type FirstStep = {
-  title?: string;
-  rentalStart?: string;
-  rentalEnd?: string;
-  body?: string;
-  pictures?: File[];
-  other?: unknown;
+  firstData?: string;
+  secondData?: string;
+  lastData?: unknown;
 };
 
 export type SecondStep = {
-  title: string;
-  rentalStart: string;
-  rentalEnd: string;
-  body: string;
-  pictures: File[];
-  other: unknown;
+  firstData: string;
+  secondData?: string;
+  lastData?: unknown;
 };
 
 export type LastStep = {
-  title: string;
-  rentalStart: string;
-  rentalEnd: string;
-  body: string;
-  pictures: File[];
-  other: unknown;
+  firstData: string;
+  secondData: string;
+  lastData?: unknown;
 };
