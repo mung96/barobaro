@@ -1,9 +1,10 @@
-"use client";
-import Image from "next/image";
-import Link from "next/link";
-import GoBack from "./(SVG_component)/GoBack";
-import Search from "./(SVG_component)/Search";
-import Notification from "./(SVG_component)/Notification";
+'use client';
+
+import Image from 'next/image';
+import Link from 'next/link';
+import GoBack from './(SVG_component)/GoBack';
+import Search from './(SVG_component)/Search';
+import Notification from './(SVG_component)/Notification';
 
 type HeaderProps = {
   pageName: string;
