@@ -9,7 +9,6 @@ import {
   SecondStep,
   LastStep,
 } from '@/app/(afterlogin)/post/regist/context';
-import { useEffect } from 'react';
 
 function PostRegistFunnelPage() {
   const {
