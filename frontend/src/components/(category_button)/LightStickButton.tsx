@@ -1,12 +1,12 @@
 'use client';
 
-import colors from '@/_component/colors';
+import colors from '@/components/colors';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import TeleScope from '../(SVG_component)/TeleScope';
+import LightStick from '../(SVG_component)/LightStick';
 
-export default function TeleScopeButton() {
+export default function LightStickButton() {
   const [isClicked, setIsClicked] = useState(false);
   const buttonColor = isClicked ? colors.white[100] : colors.black[100];
   const buttonFillColor = isClicked ? colors.blue[100] : colors.gray[100];
@@ -15,7 +15,7 @@ export default function TeleScopeButton() {
   const handleClick = (delay:number) => {
     setIsClicked(!isClicked);
     setTimeout(() => {
-      router.push('/search/category/telescope');
+      router.push('/search/category/lightstick');
     }, delay);
   };
   console.log(backgroundColor);
@@ -32,7 +32,7 @@ export default function TeleScopeButton() {
         alignItems: 'center',
       }}
     >
-      <TeleScope fill={buttonColor} />
+      <LightStick fill={buttonColor} />
     </button>
   );
 }

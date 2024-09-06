@@ -1,6 +1,6 @@
-import Category from '@/_component/Category';
-import SearchBar from '@/_component/SearchBar';
-import Cards from '@/_component/(recent_list_component)/Cards';
+import Category from '@/components/Category';
+import SearchBar from '@/components/SearchBar';
+import Cards from '@/components/(recent_list_component)/Cards';
 
 export default function Home() {
   return (

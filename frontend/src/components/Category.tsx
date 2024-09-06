@@ -1,8 +1,8 @@
-import SmartPhoneButton from '@/_component/(category_button)/SmartPhoneButtton';
-import TeleScopeButton from '@/_component/(category_button)/TeleScopeButton';
-import CameraBodyButton from '@/_component/(category_button)/CameraBodyButton';
-import CameraLensButton from '@/_component/(category_button)/CameraLensButton';
-import EtcButton from '@/_component/(category_button)/EtcButton';
+import SmartPhoneButton from '@/components/(category_button)/SmartPhoneButtton';
+import TeleScopeButton from '@/components/(category_button)/TeleScopeButton';
+import CameraBodyButton from '@/components/(category_button)/CameraBodyButton';
+import CameraLensButton from '@/components/(category_button)/CameraLensButton';
+import EtcButton from '@/components/(category_button)/EtcButton';
 import LightStickButton from './(category_button)/LightStickButton';
 
 export default function Category() {

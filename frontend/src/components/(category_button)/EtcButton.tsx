@@ -1,24 +1,25 @@
 'use client';
 
-import colors from '@/_component/colors';
+import colors from '@/components/colors';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import CameraBody from '../(SVG_component)/CameraBody';
+import Etc from '../(SVG_component)/Etc';
 
-export default function CameraBodyButton() {
+export default function EtcButton() {
   const [isClicked, setIsClicked] = useState(false);
   const buttonColor = isClicked ? colors.white[100] : colors.black[100];
   const buttonFillColor = isClicked ? colors.blue[100] : colors.gray[100];
+  const backgroundColor = colors.gray[100];
   const router = useRouter();
 
   const handleClick = (delay: number) => {
     setIsClicked(!isClicked);
     setTimeout(() => {
-      router.push('/search/category/camerabody');
+      router.push('/search/category/etc');
     }, delay);
   };
-
+  console.log(backgroundColor);
   return (
     <button
       onClick={() => handleClick(500)}
@@ -32,7 +33,7 @@ export default function CameraBodyButton() {
         alignItems: 'center',
       }}
     >
-      <CameraBody fill={buttonColor} />
+      <Etc fill={buttonColor} />
     </button>
   );
 }

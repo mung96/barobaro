@@ -1,12 +1,12 @@
 'use client';
 
-import colors from '@/_component/colors';
+import colors from '@/components/colors';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import LightStick from '../(SVG_component)/LightStick';
+import SmartPhone from '../(SVG_component)/SmartPhone';
 
-export default function LightStickButton() {
+export default function SmartPhoneButton() {
   const [isClicked, setIsClicked] = useState(false);
   const buttonColor = isClicked ? colors.white[100] : colors.black[100];
   const buttonFillColor = isClicked ? colors.blue[100] : colors.gray[100];
@@ -15,7 +15,7 @@ export default function LightStickButton() {
   const handleClick = (delay:number) => {
     setIsClicked(!isClicked);
     setTimeout(() => {
-      router.push('/search/category/lightstick');
+      router.push('/search/category/smartphone');
     }, delay);
   };
   console.log(backgroundColor);
@@ -32,7 +32,7 @@ export default function LightStickButton() {
         alignItems: 'center',
       }}
     >
-      <LightStick fill={buttonColor} />
+      <SmartPhone fill={buttonColor} />
     </button>
   );
 }

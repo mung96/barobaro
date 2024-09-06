@@ -1,24 +1,24 @@
 'use client';
 
-import colors from '@/_component/colors';
+import colors from '@/components/colors';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import SmartPhone from '../(SVG_component)/SmartPhone';
+import CameraBody from '../(SVG_component)/CameraBody';
 
-export default function SmartPhoneButton() {
+export default function CameraBodyButton() {
   const [isClicked, setIsClicked] = useState(false);
   const buttonColor = isClicked ? colors.white[100] : colors.black[100];
   const buttonFillColor = isClicked ? colors.blue[100] : colors.gray[100];
-  const backgroundColor = colors.gray[100];
   const router = useRouter();
-  const handleClick = (delay:number) => {
+
+  const handleClick = (delay: number) => {
     setIsClicked(!isClicked);
     setTimeout(() => {
-      router.push('/search/category/smartphone');
+      router.push('/search/category/camerabody');
     }, delay);
   };
-  console.log(backgroundColor);
+
   return (
     <button
       onClick={() => handleClick(500)}
@@ -32,7 +32,7 @@ export default function SmartPhoneButton() {
         alignItems: 'center',
       }}
     >
-      <SmartPhone fill={buttonColor} />
+      <CameraBody fill={buttonColor} />
     </button>
   );
 }
