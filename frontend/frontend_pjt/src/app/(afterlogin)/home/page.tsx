@@ -18,9 +18,7 @@ export default function Home() {
             <Cards/>
             <h1 className="text-xs font-bold ml-4">최근 본 목록</h1>
             <Cards/>
-                <div className="h-12">
-
-                </div>
+            <div className="h-12"></div>
         </section>
     )
 }
