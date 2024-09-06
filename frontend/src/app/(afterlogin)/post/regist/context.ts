@@ -1,4 +1,4 @@
-export type PostInput = {
+export type FirstStep = {
   title?: string;
   rentalStart?: string;
   rentalEnd?: string;
@@ -7,7 +7,7 @@ export type PostInput = {
   other?: unknown;
 };
 
-export type ContractInput = {
+export type SecondStep = {
   title: string;
   rentalStart: string;
   rentalEnd: string;
@@ -16,7 +16,7 @@ export type ContractInput = {
   other: unknown;
 };
 
-export type Complete = {
+export type LastStep = {
   title: string;
   rentalStart: string;
   rentalEnd: string;
