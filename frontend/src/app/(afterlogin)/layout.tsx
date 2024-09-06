@@ -1,6 +1,6 @@
 // 로그인 한 이후 화면 구성을 담습니다.
 // 하단 bar 구성해야함.
-import NavBar from '../../_component/NavBar';
+import NavBar from '@/components/NavBar';
 
 type Props = {
   children: React.ReactNode

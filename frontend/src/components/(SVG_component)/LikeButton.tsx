@@ -1,6 +1,6 @@
 'use client';
 
-import colors from '@/_component/colors';
+import colors from '@/components/colors';
 import { useState } from 'react';
 import HeartIcon from './HeartIcon';
 

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { faker } from '@faker-js/faker';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import LikeButton from '@/_component/(SVG_component)/LikeButton';
+import LikeButton from '@/components/(SVG_component)/LikeButton';
 
 interface CardData {
   url: string;
