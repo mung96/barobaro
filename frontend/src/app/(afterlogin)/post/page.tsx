@@ -1,7 +1,5 @@
-export default function Post() {
-    return (
-        <>
-            Post
-        </>
-    )
+function Post() {
+  return <>Post</>;
 }
+
+export default Post;
