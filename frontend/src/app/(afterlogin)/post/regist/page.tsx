@@ -10,7 +10,7 @@ import PageTransition, {
 } from '@/components/post/PageTransition';
 import { useState } from 'react';
 
-function PostRegistFunnelPage() {
+function PostRegistPage() {
   const [direction, setDirection] = useState<DirectionType>('forward');
   const {
     step: registStep,
@@ -65,4 +65,4 @@ function PostRegistFunnelPage() {
   );
 }
 
-export default PostRegistFunnelPage;
+export default PostRegistPage;
