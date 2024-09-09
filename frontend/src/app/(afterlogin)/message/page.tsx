@@ -1,6 +1,6 @@
 // import components
-import Header from '../_component/Header';
-import Contents from './Contents';
+import Header from '@/components/Header';
+import Contents from '@/components/message/Contents';
 
 export default function Message() {
   return (
