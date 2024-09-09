@@ -16,10 +16,10 @@ function PageTransition({ children, step, direction }: PageTransitionProps) {
         key={step}
         initial={{
           opacity: 0,
-          x: direction === 'forward' ? '100vw' : '-100vw',
+          x: direction === 'forward' ? '50vw' : '-50vw',
         }}
         animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: direction === 'forward' ? '-100vw' : '100vw' }}
+        exit={{ opacity: 0, x: direction === 'forward' ? '-50vw' : '50vw' }}
         transition={{ duration: 0.3 }}
       >
         {children}
