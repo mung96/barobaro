@@ -20,6 +20,8 @@
   },
   //React import를 강제하는 옵션끄기.
   "rules": {
-    "react/react-in-jsx-scope": "off"
+    "react/react-in-jsx-scope": "off",
+    "react/require-default-props": "off",
+    "import/no-extraneous-dependencies": "off"
   }
 }
