@@ -1,5 +1,4 @@
 import Profile from '@/components/Profile';
-import Header from '@/components/Header';
 import MyPageContent from '@/components/MyPageContent';
 
 export default function MyPage() {
