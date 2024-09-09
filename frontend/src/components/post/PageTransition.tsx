@@ -1,34 +1,26 @@
 'use client';
 
-import { usePathname, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useEffect, useState } from 'react';
 
+export type DirectionType = 'forward' | 'backward';
 type PageTransitionProps = {
   children: React.ReactNode;
   step: string;
+  direction: DirectionType;
 };
 
-function PageTransition({ children, step }: PageTransitionProps) {
-  const pathname = usePathname();
-  const searchParams = useSearchParams().toString();
-  const [currentUrl, setCurrentUrl] = useState('');
-
-  useEffect(() => {
-    setCurrentUrl(`${pathname}?${searchParams}/${step}`);
-  }, [pathname, searchParams, step]);
-
-  useEffect(() => {
-    console.log(currentUrl);
-  }, [currentUrl]);
+function PageTransition({ children, step, direction }: PageTransitionProps) {
   return (
     <AnimatePresence mode="wait">
       <motion.div
-        key={currentUrl}
-        initial={{ opacity: 0, x: '100vw' }}
+        key={step}
+        initial={{
+          opacity: 0,
+          x: direction === 'forward' ? '100vw' : '-100vw',
+        }}
         animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: '-100vw' }}
-        transition={{ duration: 0.5 }}
+        exit={{ opacity: 0, x: direction === 'forward' ? '-100vw' : '100vw' }}
+        transition={{ duration: 0.3 }}
       >
         {children}
       </motion.div>
