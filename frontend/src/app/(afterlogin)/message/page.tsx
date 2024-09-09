@@ -1,5 +1,6 @@
 // import components
 import Header from '../_component/Header';
+import Contents from './Contents';
 
 export default function Message() {
   return (
@@ -10,7 +11,7 @@ export default function Message() {
             <ChatRoom participant = chatRoom(each.src, each.nick, each.msg, each.thumb)/>
         ))
       */}
-      <div className="w-full h-full bg-mistyrose" />
+      <Contents />
     </>
   );
 }
