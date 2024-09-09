@@ -25,6 +25,10 @@ const config: Config = {
         'gray-600': '#919191',
         'black-100': '#33373F',
       },
+      fontSize: {
+        '2xs': '10px',
+        '3xs': '8px',
+      },
     },
   },
   plugins: [
