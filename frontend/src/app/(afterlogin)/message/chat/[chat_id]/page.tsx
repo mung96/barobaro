@@ -2,7 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 // eslint-disable-next-line import/extensions
-import Header from '@/app/(afterlogin)/_component/Header';
+import Header from '@/components/Header';
 
 export default function Chat() {
   const pathname = decodeURI(usePathname().substring('/message/chat/'.length));
@@ -12,7 +12,6 @@ export default function Chat() {
   return (
     <Header pageName={roomName} hasPrevBtn hasSearchBtn hasAlertBtn />
 
-  // 메시지 타입이나 DB 구조에 따라 다르지만 ..
-
+    // 메시지 타입이나 DB 구조에 따라 다르지만 ..
   );
 }
