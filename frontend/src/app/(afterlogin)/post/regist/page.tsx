@@ -10,6 +10,7 @@ import PageTransition, {
 } from '@/components/post/PageTransition';
 import { useState } from 'react';
 import StepBar from '@/components/post/StepBar';
+import { convertRegistStepToStepNumber } from '@/services/post/regist';
 
 function PostRegistPage() {
   const [direction, setDirection] = useState<DirectionType>('forward');
@@ -31,7 +32,10 @@ function PostRegistPage() {
 
   return (
     <section>
-      <StepBar totalStep={3} currentStep={2} />
+      <StepBar
+        totalStep={3}
+        currentStep={convertRegistStepToStepNumber(registStep)}
+      />
       <PageTransition step={registStep} direction={direction}>
         {registStep === 'FirstStep' && (
           <FirstStepInput
