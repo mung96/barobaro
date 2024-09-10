@@ -23,6 +23,6 @@
     "react/react-in-jsx-scope": "off",
     "react/require-default-props": "off",
     "import/no-extraneous-dependencies": "off",
-    "eslintobject-curly-newlineL": "off"
+    "eslintobject-curly-newline": "off"
   }
 }
