@@ -17,6 +17,7 @@ const config: Config = {
       colors: {
         'blue-100': '#3897F0',
         'blue-200': '#95CCFF',
+        'blue-300': '#00376B',
         'gray-100': '#F4F6F8',
         'gray-200': '#B6BDC8',
         'gray-300': '#747483',
