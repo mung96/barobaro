@@ -6,9 +6,9 @@ type Props = {
 
 export default function MypageLayout({ children }:Props) {
   return (
-      <>
-    <Header pageName="마이페이지" />
-    {children}
-      </>
+    <>
+      <Header pageName="마이페이지" />
+      {children}
+    </>
   );
 }
