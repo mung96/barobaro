@@ -68,7 +68,7 @@ export default function MyPageContent() {
               <p className="text-xs text-black-100">비밀번호 설정</p>
             </button>
           </Link>
-          <Link href="/mypage/user/alarm">
+          <Link href="/mypage/alarm">
             <button type="button" className="flex flex-row justify-center items-center mt-3">
               <AlarmSVG />
               <p className="text-xs text-black-100">알림 설정</p>
