@@ -202,7 +202,7 @@ export default function ItemList({ data } : { data : string }) {
             <div className="flex flex-col justify-center items-start ms-3.5">
               <h1 className="text-[15px]">{item.title}</h1>
               <div className="flex flex-row">
-                <CalendarSVG/>
+                <CalendarSVG />
                 <p className="text-xs">
                   {' '}
                   {item.start}

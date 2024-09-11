@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import KeyPadDelete from '@/components/(SVG_component)/(mypage)/KeyPadDelete';
 import DisplayPassword from '@/components/(user)/DisplayPassword';
 
@@ -18,23 +18,18 @@ export default function PasswordChange() {
   const [step, setStep] = useState<PasswordChangeStep>(PasswordChangeStep.CURRENT);
   const [passwordMessage, setPasswordMessage] = useState('현재 비밀번호를 입력해주세요');
 
-  useEffect(() => {
-    if (inputPassword.length === 6) {
-      handlePasswordSubmit();
-    }
-  }, [inputPassword]);
-
   const passwordHandler = (press: string) => {
     if (inputPassword.length !== 6) {
       setInputPassword((prev) => prev + press);
     }
   };
+
   const deleteHandler = () => {
     setInputPassword((prev) => prev.slice(0, -1));
-    // console.log(inputPassword);
   };
 
-  const handlePasswordSubmit = () => {
+  const handlePasswordSubmit = useCallback(() => {
+    // eslint-disable-next-line default-case
     switch (step) {
       case PasswordChangeStep.CURRENT:
         if (inputPassword === realPassword) {
@@ -60,7 +55,13 @@ export default function PasswordChange() {
         break;
     }
     setInputPassword('');
-  };
+  }, [inputPassword, newPassword, realPassword, step]);
+
+  useEffect(() => {
+    if (inputPassword.length === 6) {
+      handlePasswordSubmit();
+    }
+  }, [inputPassword, handlePasswordSubmit]);
 
   return (
     <div className="flex flex-col h-[93dvh]">
@@ -73,76 +74,30 @@ export default function PasswordChange() {
       </main>
       <section className="w-full max-w-[500px] mx-auto text-gray-600">
         <div className="grid grid-cols-3 gap-1">
-          <button
-            className="w-full text-2xl h-[10dvh] flex items-center justify-center"
-            onClick={() => passwordHandler('1')}
-          >
-            1
-          </button>
-          <button
-            className="w-full text-2xl h-[10dvh] flex items-center justify-center"
-            onClick={() => passwordHandler('2')}
-          >
-            2
-          </button>
-          <button
-            className="w-full text-2xl h-[10dvh] flex items-center justify-center"
-            onClick={() => passwordHandler('3')}
-          >
-            3
-          </button>
-        </div>
-        <div className="grid grid-cols-3 gap-1 mt-1">
-          <button
-            className="w-full text-2xl h-[10dvh] flex items-center justify-center"
-            onClick={() => passwordHandler('4')}
-          >
-            4
-          </button>
-          <button
-            className="w-full text-2xl h-[10dvh] flex items-center justify-center"
-            onClick={() => passwordHandler('5')}
-          >
-            5
-          </button>
-          <button
-            className="w-full text-2xl h-[10dvh] flex items-center justify-center"
-            onClick={() => passwordHandler('6')}
-          >
-            6
-          </button>
-        </div>
-        <div className="grid grid-cols-3 gap-1 mt-1">
-          <button
-            className="w-full text-2xl flex items-center justify-center"
-            onClick={() => passwordHandler('7')}
-          >
-            7
-          </button>
-          <button
-            className="w-full text-2xl h-[10dvh] flex items-center justify-center"
-            onClick={() => passwordHandler('8')}
-          >
-            8
-          </button>
-          <button
-            className="w-full text-2xl h-[10dvh] flex items-center justify-center"
-            onClick={() => passwordHandler('9')}
-          >
-            9
-          </button>
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
+            <button
+              key={num}
+              type="button"
+              className="w-full text-2xl h-[10dvh] flex items-center justify-center"
+              onClick={() => passwordHandler(num.toString())}
+            >
+              {num}
+            </button>
+          ))}
         </div>
         <div className="grid grid-cols-3 gap-1 mt-1">
           <div className="w-full bg-transparent" />
           <button
+            type="button"
             className="w-full text-2xl h-[10dvh] flex items-center justify-center"
             onClick={() => passwordHandler('0')}
           >
             0
           </button>
           <button
+            type="button"
             className="w-full text-2xl h-[10dvh] flex items-center justify-center"
-            onClick={() => deleteHandler()}
+            onClick={deleteHandler}
           >
             <KeyPadDelete />
           </button>

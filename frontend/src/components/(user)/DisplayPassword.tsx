@@ -5,6 +5,7 @@ interface DisplayPasswordProps {
   maxLength?: number;
 }
 
+// eslint-disable-next-line react/function-component-definition
 const DisplayPassword: React.FC<DisplayPasswordProps> = ({ length, maxLength = 6 }) => {
   const passwordDisplay = () => Array.from({ length: maxLength }, (_, index) => (
     index < length ? (

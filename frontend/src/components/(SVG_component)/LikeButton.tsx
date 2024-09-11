@@ -15,7 +15,7 @@ export default function LikeButton() {
   };
 
   return (
-    <button onClick={handleClick}>
+    <button onClick={handleClick} type="button">
       <HeartIcon fill={heartFillColor} />
     </button>
   );
