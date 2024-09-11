@@ -1,7 +1,7 @@
 export default function Message() {
-    return (
-        <>
-            Message
-        </>
-    )
+  return (
+    <>
+      Message
+    </>
+  );
 }

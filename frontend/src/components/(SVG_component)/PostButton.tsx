@@ -1,6 +1,10 @@
 import React from 'react';
 
-function PostButton({ fill = 'currentColor' }) {
+type Props = {
+  fill : string
+};
+
+function PostButton({ fill } : Props) {
   return (
     <svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
       <g clipPath="url(#clip0_176_1231)">

@@ -33,7 +33,7 @@ const config: Config = {
   },
   plugins: [
     require('@tailwindcss/line-clamp'),
-    plugin(function ({ addUtilities }) {
+    plugin(({ addUtilities }) => {
       const newUtilities = {
         '.scrollbar-hide': {
           /* IE and Edge */

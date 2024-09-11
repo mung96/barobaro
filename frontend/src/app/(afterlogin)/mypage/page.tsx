@@ -5,11 +5,13 @@ import NavBarLayout from '@/layout/NavBarLayout';
 export default function MyPage() {
   return (
     <NavBarLayout current="mypage">
-      <div className="flex justify-center">
-        <Profile />
-      </div>
-      <div className="mt-4">
-        <MyPageContent />
+      <div>
+        <div className="flex justify-center">
+          <Profile />
+        </div>
+        <div className="mt-4">
+          <MyPageContent />
+        </div>
       </div>
     </NavBarLayout>
   );
