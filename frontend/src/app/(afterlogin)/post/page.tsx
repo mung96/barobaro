@@ -1,5 +1,7 @@
+import NavBarLayout from '@/layout/NavBarLayout';
+
 function Post() {
-  return <>Post</>;
+  return <NavBarLayout current="post">Post</NavBarLayout>;
 }
 
 export default Post;
