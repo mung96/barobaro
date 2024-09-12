@@ -5,7 +5,6 @@ import LightStick from '@/components/(SVG_component)/LightStick';
 import SmartPhone from '@/components/(SVG_component)/SmartPhone';
 import TeleScope from '@/components/(SVG_component)/TeleScope';
 import colors from '@/components/colors';
-import CategoryTag from '@/components/post/CategoryTag';
 import Radio from '@/components/shared/Radio';
 import { ChangeEvent } from 'react';
 
@@ -51,9 +50,10 @@ export const productCategory = [
 type CategoryTagListProps = {
   value: string;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  disabled?: boolean;
 };
 
-function CategoryTagList({ onChange, value }: CategoryTagListProps) {
+function CategoryTagList({ onChange, value, disabled }: CategoryTagListProps) {
   return (
     <Radio.Group
       className="gap-1 flex flex-wrap"
@@ -62,10 +62,16 @@ function CategoryTagList({ onChange, value }: CategoryTagListProps) {
       onChange={onChange}
     >
       {productCategory.map((category) => (
-        <CategoryTag value={category.value}>
-          <div className="w-3 h-3">{category.icon}</div>
-          <p className="text-xs text-gray-200">{category.label}</p>
-        </CategoryTag>
+        <Radio.Item
+          value={category.value}
+          disabled={disabled}
+          className="flex items-center gap-1 rounded-2xl bg-gray-100 text-gray-100 py-1 px-4 has-[:checked]:outline has-[:checked]:outline-[2px] has-[:checked]:outline-blue-100 "
+        >
+          {/* <div className="w-3 h-3">{category.icon}</div> */}
+          <p className="text-xs text-gray-200 peer-checked:text-blue-100 ">
+            {category.label}
+          </p>
+        </Radio.Item>
       ))}
     </Radio.Group>
   );
