@@ -1,4 +1,8 @@
-export default function TeleScope({ fill = 'currentColor' }) {
+type Props = {
+  fill : string
+};
+
+export default function TeleScope({ fill } : Props) {
   return (
     <svg width="32" height="28" viewBox="0 0 32 28" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path

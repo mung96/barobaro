@@ -83,12 +83,8 @@ export default function MessageRoomList({ selectValue }: MessageRoomListParam) {
     }
   };
 
-  const readMessages = chatList.filter((each) =>
-    messageFilter(false, each.unread, each.own),
-  );
-  const unReadMessages = chatList.filter((each) =>
-    messageFilter(true, each.unread, each.own),
-  );
+  const readMessages = chatList.filter((each) => messageFilter(false, each.unread, each.own));
+  const unReadMessages = chatList.filter((each) => messageFilter(true, each.unread, each.own));
 
   return (
     <div className="mt-[2vh] flex-1 overflow-auto">

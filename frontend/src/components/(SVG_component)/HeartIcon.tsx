@@ -1,4 +1,8 @@
-export default function HeartIcon({ fill = 'currentColor', border = 'currentColor' }) {
+type Props = {
+  fill : string,
+};
+
+export default function HeartIcon({ fill } : Props) {
   return (
     <svg width="16" height="15" viewBox="0 0 16 15" fill={fill} xmlns="http://www.w3.org/2000/svg">
       <path

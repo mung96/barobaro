@@ -1,7 +1,7 @@
 export default function Registration() {
-    return (
-        <>
-            Registration
-        </>
-    )
+  return (
+    <>
+      Registration
+    </>
+  );
 }

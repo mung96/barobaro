@@ -9,8 +9,6 @@ export default function Chat() {
   const { chat_id: chatId } = useParams();
   const roomName: string = `${typeof chatId === 'string' && decodeURI(chatId)}님과의 채팅`;
   return (
-    <>
-      <Header pageName={roomName} hasPrevBtn hasSearchBtn hasAlertBtn />
-    </>
+    <Header pageName={roomName} hasPrevBtn hasSearchBtn hasAlertBtn />
   );
 }
