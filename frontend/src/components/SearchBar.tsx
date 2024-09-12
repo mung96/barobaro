@@ -19,7 +19,7 @@ export default function SearchBar() {
         <div className="ml-3">
           <input name="search_input" type="search" id="search_input" placeholder="검색어를 입력해주세요." required />
         </div>
-        <button className="mr-3">
+        <button type="button" className="mr-3">
           <SearchEnterSVG />
         </button>
       </form>

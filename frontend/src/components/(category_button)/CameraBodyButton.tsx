@@ -21,6 +21,7 @@ export default function CameraBodyButton() {
 
   return (
     <button
+      type="button"
       onClick={() => handleClick(500)}
       style={{
         backgroundColor: buttonFillColor,

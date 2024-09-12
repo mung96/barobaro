@@ -10,7 +10,7 @@ import PageTransition, {
 } from '@/components/post/PageTransition';
 import { useState } from 'react';
 import StepBar from '@/components/post/StepBar';
-import { convertRegistStepToStepNumber } from '@/services/post/regist';
+import convertRegistStepToStepNumber from '@/services/post/regist';
 
 function PostRegistPage() {
   const [direction, setDirection] = useState<DirectionType>('forward');

@@ -1,16 +1,18 @@
 import Profile from '@/components/Profile';
-import Header from '@/components/Header';
 import MyPageContent from '@/components/MyPageContent';
+import NavBarLayout from '@/layout/NavBarLayout';
 
 export default function MyPage() {
   return (
-    <>
-      <div className="flex justify-center">
-        <Profile />
+    <NavBarLayout current="mypage">
+      <div>
+        <div className="flex justify-center">
+          <Profile />
+        </div>
+        <div className="mt-4">
+          <MyPageContent />
+        </div>
       </div>
-      <div className="mt-4">
-        <MyPageContent />
-      </div>
-    </>
+    </NavBarLayout>
   );
 }
