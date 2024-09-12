@@ -14,7 +14,7 @@ type RadioGroupProps = {
   className?: string;
   value: string;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
-  name: string;
+  fieldSetName: string;
 };
 
 function RadioGroup({
@@ -23,10 +23,10 @@ function RadioGroup({
   className,
   value,
   onChange,
-  name,
+  fieldSetName,
 }: RadioGroupProps) {
   return (
-    <fieldset name={name} className={className}>
+    <fieldset name={fieldSetName} className={className}>
       <legend className="my-5">{label}</legend>
       <RadioProvider value={{ value, onChange }}>{children}</RadioProvider>
     </fieldset>
