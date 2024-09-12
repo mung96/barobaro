@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import KeyPadDelete from '@/components/(SVG_component)/(mypage)/KeyPadDelete';
 import DisplayPassword from '@/components/(user)/DisplayPassword';
+import Header from '@/components/Header';
 
 enum PasswordChangeStep {
   CURRENT,
@@ -65,7 +66,10 @@ export default function PasswordChange() {
 
   return (
     <div className="flex flex-col h-[93dvh]">
-      <header className="flex flex-col text-center font-bold">비밀번호 변경</header>
+      <header className="flex flex-col text-center font-bold">
+        <Header pageName="" hasPrevBtn hasSearchBtn={false} hasAlertBtn/>
+        비밀번호 변경
+      </header>
       <main className="flex flex-col justify-center items-center flex-1">
         <p className="text-[14px] text-black-100">{passwordMessage}</p>
         <div className="mt-9">
