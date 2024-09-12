@@ -4,8 +4,8 @@ type Props = {
 
 export default function MypageLayout({ children }:Props) {
   return (
-    <div>
+    <main>
       {children}
-    </div>
+    </main>
   );
 }
