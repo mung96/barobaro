@@ -4,11 +4,13 @@ import NavBarLayout from '@/layout/NavBarLayout';
 import CameraBody from '@/components/(SVG_component)/CameraBody';
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 export default function Profile() {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
 
   const handleProfileImage = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
@@ -25,6 +27,8 @@ export default function Profile() {
 
   const confirmProfileImage = () => {
     console.log('confirm');
+    // 변경한 프로필 사진을 backend로 전송
+    router.replace('/mypage');
   };
 
   useEffect(() => {
