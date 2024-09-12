@@ -11,7 +11,7 @@ export default function Profile() {
         <p className="text-[14px] font-bold">바로핑</p>
         <p className="text-[12px]">barobaroping@gmail.com</p>
       </div>
-      <button className="w-[74px] h-[25px] bg-gray-400 flex justify-center items-center rounded-[5px]">
+      <button type="button" className="w-[74px] h-[25px] bg-gray-400 flex justify-center items-center rounded-[5px]">
         <p className="text-[10px]">프로필 수정</p>
       </button>
     </section>

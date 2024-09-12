@@ -1,4 +1,4 @@
-export function convertRegistStepToStepNumber(registStep: string) {
+export default function convertRegistStepToStepNumber(registStep: string) {
   if (registStep === 'FirstStep') return 1;
   if (registStep === 'SecondStep') return 2;
   if (registStep === 'LastStep') return 3;
