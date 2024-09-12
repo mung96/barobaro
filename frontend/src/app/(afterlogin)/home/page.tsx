@@ -1,10 +1,18 @@
 import Category from '@/components/Category';
 import SearchBar from '@/components/SearchBar';
 import Cards from '@/components/(recent_list_component)/Cards';
+import Header from '@/components/Header';
 
 export default function Home() {
   return (
     <>
+      <Header
+        pageName=""
+        hasLocInfo
+        hasPrevBtn={false}
+        hasSearchBtn={false}
+        hasAlertBtn
+      />
       <br />
       <br />
       <h1>이곳에 로고가 들어갑니다.</h1>
