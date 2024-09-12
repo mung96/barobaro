@@ -3,16 +3,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ChatRoomType } from './ChatRoomType';
 
-// // custom types
-// type ChatRoom = {
-//   profileImageSrc: string; // 상대방 프로필사진
-//   otherUserNickname: string; // 상대방 닉네임
-//   lastMessage: string; // 마지막으로 전송받은 메시지
-//   stuffThumbImageSrc: string; // 거래 진행 중인 게시글 썸네일
-//   unread: boolean;
-//   own: boolean;
-// };
-
 export default function ChatRoomEach({
   profileImageSrc,
   otherUserNickname,
@@ -21,7 +11,6 @@ export default function ChatRoomEach({
   unread,
 }: ChatRoomType) {
   const isClicked = (e: React.MouseEvent<HTMLElement>) => {
-    console.log('clicked');
     e.currentTarget.classList.add('bg-gray-200');
   };
 
@@ -45,7 +34,15 @@ export default function ChatRoomEach({
 
       {/* 가운데 텍스트 영역 */}
       <div className="w-8/12 flex flex-col justify-start p-2">
-        <p className="font-bold">{otherUserNickname}</p>
+        <div className="flex items-center">
+          <span className="font-bold inline-block">{otherUserNickname}</span>
+          {unread && (
+            <span className="text-xs inline-block ml-1 bg-blue-100 text-white p-[0.3vh] rounded-full">
+              &nbsp;새 메시지&nbsp;
+              {/* 안 읽은 메시지의 수(파라메터 추가해야 함) or 새 메시지 중 선택 */}
+            </span>
+          )}
+        </div>
         <p className="text-xs overflow-hidden text-ellipsis whitespace-nowrap">
           {lastMessage}
         </p>
