@@ -26,7 +26,7 @@ export default function Card() {
       price: faker.commerce.price({ min: 1000, max: 10000, dec: 0 }),
       price2: faker.commerce.price({ min: 10000, max: 100000, dec: 0 }),
       content: faker.commerce.product(),
-      fakeId: faker.number.int(999)
+      fakeId: faker.number.int(999),
     });
   }, []);
 
@@ -65,7 +65,10 @@ export default function Card() {
       </div>
       <div>
         <p className="text-xs font-bold">
-          {cardData.price}원/{cardData.price2}원
+          {cardData.price}
+          원/
+          {cardData.price2}
+          원
         </p>
       </div>
       <div>
