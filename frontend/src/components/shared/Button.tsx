@@ -9,6 +9,7 @@ type ButtonProps = {
 function Button({ children, width, height, onClick, disabled }: ButtonProps) {
   return (
     <button
+      type="button"
       onClick={onClick}
       disabled={disabled}
       style={{ width: `${width}`, height: `${height}` }}
