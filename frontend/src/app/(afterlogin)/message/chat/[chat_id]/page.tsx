@@ -1,7 +1,6 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-// eslint-disable-next-line import/extensions
 import Header from '@/components/Header';
 import OriginBoard from '@/components/message/chat/OriginBoard';
 import Dialogs from '@/components/message/chat/Dialogs';
@@ -11,16 +10,22 @@ export default function Chat() {
   // 채팅 참여 상대방 닉네임 떼어서 저장
   const { chat_id: chatId } = useParams();
   const roomName: string = `${typeof chatId === 'string' && decodeURI(chatId)}님과의 채팅`;
+
   return (
-    <div className="flex flex-col">
-      <Header pageName={roomName} hasPrevBtn hasSearchBtn hasAlertBtn />
-      <OriginBoard />
-      <Dialogs />
-      <div className="">
-        {/* 여기부터 작업 시작하기. chatwindow가 화면 맨 아래로 고정되게 
-          flex align-self-end
-          flex 적용하면 width 이상해지는 버그 있음
-        */}
+    <div className="flex flex-col h-screen">
+      {/* 상단 고정 헤더와 OriginBoard */}
+      <div className="fixed top-0 w-full bg-white z-10">
+        <Header pageName={roomName} hasPrevBtn hasSearchBtn hasAlertBtn />
+        <OriginBoard />
+      </div>
+
+      {/* 스크롤 가능한 Dialogs 영역 */}
+      <div className="flex-1 mt-[25vh] mb-[8vh] overflow-y-scroll">
+        <Dialogs />
+      </div>
+
+      {/* 하단 고정 ChatWindow */}
+      <div className="fixed bottom-0 w-full bg-white z-10">
         <ChatWindow />
       </div>
     </div>

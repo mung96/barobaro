@@ -31,28 +31,29 @@ export default function ChatWindow() {
   }, []);
 
   useEffect(() => {
-    if (chatWindowRef.current) {
-      chatWindowRef.current.style.transform = keyboardVisible
-        ? 'translateY(-100px)' // Adjust this value based on your needs
-        : 'translateY(0)';
-    }
+    // if (chatWindowRef.current) {
+    //   chatWindowRef.current.style.transform = keyboardVisible
+    //     ? 'translateY(-1px)' // Adjust this value based on your needs
+    //     : 'translateY(0)';
+    // }
   }, [keyboardVisible]);
 
   return (
-    <div ref={chatWindowRef} className="fixed bottom-0 w-full bg-gray-400 p-2">
-      <div className="w-full h-[6vh] flex justify-center">
-        <div className="w-[95%] h-full flex items-center justify-around rounded-2xl border border-gray-500 bg-gray-400">
-          <AttatchImage className="w-2/12" />
-          <input
-            type="text"
-            className="w-8/12 bg-gray-400"
-            onChange={handleChatValue}
-            value={chatValue}
-          />
-          <SendButton active={active} className="w-2/12" />
+    <div>
+      <div ref={chatWindowRef} className="w-[100vw] bg-white p-2">
+        <div className="w-full h-[6vh] flex justify-center">
+          <div className="w-[95%] h-full flex items-center justify-around rounded-2xl border border-gray-500 bg-gray-400">
+            <AttatchImage className="w-2/12" />
+            <input
+              type="text"
+              className="w-8/12 bg-gray-400"
+              onChange={handleChatValue}
+              value={chatValue}
+            />
+            <SendButton active={active} className="w-2/12" />
+          </div>
         </div>
       </div>
-      {keyboardVisible || <div className="w-full h-[7vh]">&emsp;</div>}
     </div>
   );
 }

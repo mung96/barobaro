@@ -7,8 +7,6 @@ import Header from '@/components/Header';
 export default function Home() {
   return (
     <NavBarLayout current="home">
-      {/* 
-        홈에서 헤더 적용 시 이렇게 사용 / 주석 해제하면 바로 작동
       <Header
         pageName=""
         hasLocInfo
@@ -16,7 +14,7 @@ export default function Home() {
         hasSearchBtn={false}
         hasAlertBtn
       />
-      */}
+
       <br />
       <br />
       <h1>이곳에 로고가 들어갑니다.</h1>
