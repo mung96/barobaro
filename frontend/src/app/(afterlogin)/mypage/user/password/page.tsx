@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import KeyPadDelete from '@/components/(SVG_component)/(mypage)/KeyPadDelete';
 import DisplayPassword from '@/components/(user)/DisplayPassword';
 import Header from '@/components/Header';
+import { useRouter } from 'next/navigation';
 
 enum PasswordChangeStep {
   CURRENT,
@@ -12,12 +13,14 @@ enum PasswordChangeStep {
 }
 
 export default function PasswordChange() {
+  const router = useRouter();
   const realPassword = '112233';
   // 추후 진짜 비밀번호는 다른곳에서 가져올 예정.
   const [inputPassword, setInputPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [step, setStep] = useState<PasswordChangeStep>(PasswordChangeStep.CURRENT);
-  const [passwordMessage, setPasswordMessage] = useState('현재 비밀번호를 입력해주세요');
+  const [passwordMessage, setPasswordMessage] = useState<string>('현재 비밀번호를 입력해주세요');
+  const [isFinished, setIsFinished] = useState<boolean>(false);
 
   const passwordHandler = (press: string) => {
     if (inputPassword.length !== 6) {
@@ -47,8 +50,11 @@ export default function PasswordChange() {
         break;
       case PasswordChangeStep.CONFIRMNEW:
         if (inputPassword === newPassword) {
-          setPasswordMessage('비밀번호가 성공적으로 변경되었습니다');
+          setIsFinished(true);
+          setPasswordMessage('비밀번호가 성공적으로 변경되었습니다.');
           // 여기에 비밀번호 변경 API 호출 로직을 추가할 수 있습니다.
+          setTimeout(() => router.replace('/mypage'), 1000);
+          // 변경이 완료된 이후 메인페이지로 replace.
         } else {
           setStep(PasswordChangeStep.NEW);
           setPasswordMessage('일치하지 않습니다. 새로운 비밀번호를 다시 입력해주세요');
@@ -56,7 +62,7 @@ export default function PasswordChange() {
         break;
     }
     setInputPassword('');
-  }, [inputPassword, newPassword, realPassword, step]);
+  }, [inputPassword, newPassword, realPassword, step, isFinished]);
 
   useEffect(() => {
     if (inputPassword.length === 6) {
@@ -67,13 +73,14 @@ export default function PasswordChange() {
   return (
     <div className="flex flex-col h-[93dvh]">
       <header className="flex flex-col text-center font-bold">
-        <Header pageName="" hasPrevBtn hasSearchBtn={false} hasAlertBtn/>
+        <Header pageName="" hasPrevBtn hasSearchBtn={false} hasAlertBtn />
         비밀번호 변경
       </header>
       <main className="flex flex-col justify-center items-center flex-1">
         <p className="text-[14px] text-black-100">{passwordMessage}</p>
         <div className="mt-9">
-          <DisplayPassword length={inputPassword.length} />
+          {!isFinished ? <DisplayPassword length={inputPassword.length} /> : null}
+          {/* 비밀번호를 설정하고 완료되었다면 ---이걸 표시하지 않음. */}
         </div>
       </main>
       <section className="w-full max-w-[500px] mx-auto text-gray-600">
