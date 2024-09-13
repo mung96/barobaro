@@ -7,7 +7,7 @@ import MyPageButton from './(SVG_component)/MyPageButton';
 
 export default function NavBar({ current } : { current : string }) {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-gray-400 h-12 w-full max-w-[500px] z-10 flex flex-col justify-center">
+    <nav className="fixed bottom-0 bg-gray-400 h-12 w-full max-w-[500px] z-10 flex flex-col justify-center">
       <div className="flex">
         <Link className="flex flex-1 flex-col items-center justify-center" href="/home">
           <HomeButton fill={current === 'home' ? '#1A1E27' : '#B6BDC8'} />
