@@ -17,7 +17,7 @@ export default function AlarmSetting() {
         알람 수신 설정
       </header>
       <main className="flex flex-col items-center">
-        <section className="text-black-100 mt-[45px] w-[92dvw]">
+        <section className="text-black-100 mt-[45px] w-[94%]">
           <h1 className="text-[10px] font-light">서비스별</h1>
           <section className="mx-5 my-5">
             <h2 className="text-[14px]">물품대여</h2>
