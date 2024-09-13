@@ -2,7 +2,9 @@
 
 import NavBarLayout from '@/layout/NavBarLayout';
 import CameraBody from '@/components/(SVG_component)/CameraBody';
-import { useState, useEffect, useRef } from 'react';
+import {
+  useState, useEffect, useRef, ChangeEvent,
+} from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/Header';
@@ -13,13 +15,10 @@ export default function Profile() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
-  const handleProfileImage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length > 0) {
-      const file = event.target.files[0];
-      setImageFile(file);
-    } else {
-      setImageFile(null);
-    }
+  const handleProfileImage = (event : ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files ? event.target.files[0] : null;
+    // const file = event.target.files && event.target.files[0];
+    setImageFile(file);
   };
 
   const handleButtonClick = () => {
