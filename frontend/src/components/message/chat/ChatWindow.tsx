@@ -2,41 +2,17 @@
 
 import AttatchImage from '@/components/(SVG_component)/(message)/(chat)/AttatchImage';
 import SendButton from '@/components/(SVG_component)/(message)/(chat)/SendButton';
-import { ChangeEvent, useState, useEffect, useRef } from 'react';
+import { ChangeEvent, useState, useRef } from 'react';
 
 export default function ChatWindow() {
   const [chatValue, setChatValue] = useState<string>('');
   const [active, setActive] = useState<boolean>(false);
-  const [keyboardVisible, setKeyboardVisible] = useState<boolean>(false);
   const chatWindowRef = useRef<HTMLDivElement>(null);
 
   const handleChatValue = (e: ChangeEvent<HTMLInputElement>) => {
     setChatValue(e.target.value);
     setActive(e.target.value !== '');
   };
-
-  useEffect(() => {
-    const handleResize = () => {
-      const isKeyboardVisible =
-        window.innerHeight < document.documentElement.clientHeight;
-      setKeyboardVisible(isKeyboardVisible);
-    };
-
-    window.addEventListener('resize', handleResize);
-    handleResize(); // Initial check
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-
-  useEffect(() => {
-    // if (chatWindowRef.current) {
-    //   chatWindowRef.current.style.transform = keyboardVisible
-    //     ? 'translateY(-1px)' // Adjust this value based on your needs
-    //     : 'translateY(0)';
-    // }
-  }, [keyboardVisible]);
 
   return (
     <div>
