@@ -10,7 +10,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
 export default function AccountCarousel() {
-  const [width, setWidth] = window.innerWidth > 500 ? useState(500) : useState(window.innerWidth);
+  const [width, setWidth] = useState(window.innerWidth > 500 ? 500 : window.innerWidth);
   const handleWidthChange = () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     window.innerWidth < 500 ? setWidth(window.innerWidth) : null;
