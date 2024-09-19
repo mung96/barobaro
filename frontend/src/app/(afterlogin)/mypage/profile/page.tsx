@@ -74,12 +74,12 @@ export default function Profile() {
             onChange={handleProfileImage}
           />
         </section>
-        <section className="w-[84dvw]">
+        <section className="w-[84%]">
           <div className="mb-4 text-[13px]">
             닉네임
           </div>
-          <div className="w-[85dvw] h-[26px] rounded-[7px] flex flex-col justify-center items-center border-gray-500 border-[1px]">
-            <input className="w-[82dvw]" />
+          <div className="w-full h-[26px] rounded-[7px] flex flex-col justify-center items-center border-gray-500 border-[1px]">
+            <input className="w-[82%]" />
           </div>
         </section>
 
