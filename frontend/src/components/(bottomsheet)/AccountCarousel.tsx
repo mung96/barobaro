@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import AccountCard from '@/components/(bottomsheet)/AccountCard';
 import { Pagination } from 'swiper/modules';
@@ -11,7 +13,7 @@ export default function AccountCarousel() {
   const [width, setWidth] = window.innerWidth > 500 ? useState(500) : useState(window.innerWidth);
   const handleWidthChange = () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    window.innerWidth < 500 ? setWidth(window.innerWidth) : setWidth(500);
+    window.innerWidth < 500 ? setWidth(window.innerWidth) : null;
   };
   useEffect(() => {
     window.addEventListener('resize', handleWidthChange);
@@ -77,7 +79,7 @@ export default function AccountCarousel() {
         </SwiperSlide>
       ))}
       <SwiperSlide key={accountList.length}>
-        <div className="bg-gray-300 m-4 flex flex-col rounded-[10px] justify-center items-center" style={{ width: `${width * 0.6}px`, height: `${width * 0.35}px`}}>
+        <div className="bg-gray-300 m-4 flex flex-col rounded-[10px] justify-center items-center" style={{ width: `${width * 0.6}px`, height: `${width * 0.35}px` }}>
           <button type="button">추가하기</button>
         </div>
       </SwiperSlide>
