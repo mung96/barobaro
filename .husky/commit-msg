@@ -11,8 +11,8 @@ if [[ "$branch_name" =~ S11P21A401-[0-9]+ ]]; then
   
   # 커밋 메시지에 JIRA 이슈 번호가 있는지 확인
   if [[ ! "$commit_message" =~ $jira_issue ]]; then
-    # JIRA 이슈 번호가 없다면 커밋 메시지에 추가
-    echo "$jira_issue $commit_message" > $1
+    # JIRA 이슈 번호가 없다면 커밋 메시지 뒤에 추가
+    echo "$commit_message $jira_issue" > $1
   fi
 else
   # 브랜치명에 JIRA 이슈 번호가 없는 경우 에러 메시지 출력
