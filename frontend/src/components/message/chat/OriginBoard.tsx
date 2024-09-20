@@ -4,13 +4,13 @@ import Image from 'next/image';
 import React from 'react';
 
 // import SVG files
-import Clipboard from '@/components/(SVG_component)/(message)/clipboard';
-import AddMessage from '@/components/(SVG_component)/(message)/addMessage';
+import Clipboard from '@/components/(SVG_component)/(message)/Clipboard';
+import AddMessage from '@/components/(SVG_component)/(message)/AddMessage';
 
 // 채팅창 상단에 뜨는 원본 글 미리보기 영역
 export default function OriginBoard() {
   return (
-    <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }} className="">
+    <div className="bg-white">
       <div className="flex flex-col p-[2vh]">
         <div className="h-3/4 flex flex-row">
           {/* 이미지, p 태그 들어감 */}
