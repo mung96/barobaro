@@ -8,6 +8,7 @@ import {
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/Header';
+// import { file } from '@babel/types';
 
 export default function Profile() {
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -46,7 +47,6 @@ export default function Profile() {
   return (
     <NavBarLayout current="mypage">
       <header className="font-bold text-[15px] flex flex-col items-center mt-3 mb-10">
-        <Header pageName="마이페이지" hasPrevBtn hasSearchBtn={false} hasAlertBtn />
         프로필 수정
       </header>
       <main className="flex flex-col items-center h-[80dvh]">
