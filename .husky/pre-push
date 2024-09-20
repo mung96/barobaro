@@ -6,5 +6,5 @@ fi
 
 # backend 빌드
 if [ -d "backend" ]; then
-  cd backend && ./gradlew clean build || exit 1
+  cd backend/baro/baro && ./gradlew clean build || exit 1
 fi
