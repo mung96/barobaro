@@ -1,2 +1,10 @@
 #!/bin/sh
-cd frontend && npm run build
+if [ -d "front" ]; then
+  cd front && npm run build || exit 1
+  cd ..
+fi
+
+# backend 빌드
+if [ -d "backend" ]; then
+  cd backend && ./gradlew clean build || exit 1
+fi
