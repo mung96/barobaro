@@ -47,7 +47,6 @@ export default function Profile() {
   return (
     <NavBarLayout current="mypage">
       <header className="font-bold text-[15px] flex flex-col items-center mt-3 mb-10">
-        <Header pageName="마이페이지" hasPrevBtn hasSearchBtn={false} hasAlertBtn />
         프로필 수정
       </header>
       <main className="flex flex-col items-center h-[80dvh]">
@@ -74,12 +73,12 @@ export default function Profile() {
             onChange={handleProfileImage}
           />
         </section>
-        <section className="w-[84%]">
+        <section className="w-[84dvw]">
           <div className="mb-4 text-[13px]">
             닉네임
           </div>
-          <div className="w-full h-[26px] rounded-[7px] flex flex-col justify-center items-center border-gray-500 border-[1px]">
-            <input className="w-[82%]" />
+          <div className="w-[85dvw] h-[26px] rounded-[7px] flex flex-col justify-center items-center border-gray-500 border-[1px]">
+            <input className="w-[82dvw]" />
           </div>
         </section>
 
