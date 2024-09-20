@@ -64,6 +64,8 @@ dependencies {
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 	testImplementation 'com.epages:restdocs-api-spec-mockmvc:' + restdocsApiSpecVersion
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	swaggerUI 'org.webjars:swagger-ui:4.11.1'
+	compileOnly 'org.projectlombok:lombok'
 }
 
 tasks.withType(GenerateSwaggerUI) {
