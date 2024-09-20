@@ -5,13 +5,13 @@ import Baroping from '@/../public/assets/png/baroping.png';
 import { useRouter } from 'next/navigation';
 
 export default function Profile() {
-  const router  = useRouter();
+  const router = useRouter();
   const goProfileSetting = () => {
     router.push('/mypage/profile');
   };
 
   return (
-    <section className="flex flex-row items-center justify-center w-[90dvw]">
+    <section className="flex flex-row items-center justify-center w-[90dvw] my-3">
       <div className="border border-gray-200 rounded-full w-12 h-12 items-center relative overflow-hidden">
         <Image src={Baroping} alt="barorping" width={47} height={47} />
       </div>

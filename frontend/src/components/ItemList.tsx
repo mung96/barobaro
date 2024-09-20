@@ -189,15 +189,15 @@ export default function ItemList({ data } : { data : string }) {
   }
 
   return (
-    <>
-      <section className="my-3">
+    <section>
+      <header className="my-3">
         <h1 className="text-[15px] font-bold text-center">{title}</h1>
-      </section>
+      </header>
       {result && result.map((item : any) => (
         <div key={item.id}>
           <div className="flex flex-row ml-3.5">
             <div className="w-[98px] h-[98px] rounded-[10px] overflow-hidden relative">
-              <Image src={item.image} alt="product_image" fill />
+              <Image src={item.image as string} alt="product_image" fill />
             </div>
             <div className="flex flex-col justify-center items-start ms-3.5">
               <h1 className="text-[15px]">{item.title}</h1>
@@ -228,6 +228,6 @@ export default function ItemList({ data } : { data : string }) {
         </div>
       ))}
       <div className="h-4" />
-    </>
+    </section>
   );
 }
