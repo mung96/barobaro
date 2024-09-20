@@ -1,6 +1,6 @@
 'use client';
 
-import {useRouter, useSelectedLayoutSegments} from "next/navigation";
+import { useRouter } from "next/navigation";
 import LightStick from "@/components/(SVG_component)/LightStick";
 import SmartPhone from "@/components/(SVG_component)/SmartPhone";
 import TeleScope from "@/components/(SVG_component)/TeleScope";
@@ -34,7 +34,7 @@ export default function CategoryCard({type, selected} : Props) {
     const title = categoryList[type as keyof typeof categoryList];
     const router  = useRouter();
     const handleClick = (target : string) => {
-        console.log(typeof target)
+        // console.log(typeof target)
         router.replace(`/search/category/${target}`);
     }
 

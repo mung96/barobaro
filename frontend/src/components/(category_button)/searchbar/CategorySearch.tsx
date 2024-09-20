@@ -8,7 +8,7 @@ export default function CategorySearch({now} : Props) {
     const categories = ["lightstick", "smartphone", "telescope", "camerabody", "cameralens", "etc"]
     return (
         <>
-            <section className = "flex flex-row">
+            <section className = "flex flex-row bg-fixed">
                 <div className = "mx-4" key={0}>
                     <CategoryCard type={now} selected={true} />
                 </div>
