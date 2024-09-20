@@ -1,0 +1,21 @@
+#!/bin/sh
+# branch 명을 가져옵니다.
+branch_name=$(git rev-parse --abbrev-ref HEAD)
+
+# commit 메시지를 가져옵니다.
+commit_message=$(cat $1)
+
+# JIRA 이슈 번호가 branch_name에 있는지 확인 (ex: S11P21A401- 숫자 형식)
+if [[ "$branch_name" =~ S11P21A401-[0-9]+ ]]; then
+  jira_issue=$(echo "$branch_name" | grep -oE "S11P21A401-[0-9]+")
+  
+  # 커밋 메시지에 JIRA 이슈 번호가 있는지 확인
+  if [[ ! "$commit_message" =~ $jira_issue ]]; then
+    # JIRA 이슈 번호가 없다면 커밋 메시지 뒤에 추가
+    echo "$commit_message $jira_issue" > $1
+  fi
+else
+  # 브랜치명에 JIRA 이슈 번호가 없는 경우 에러 메시지 출력
+  echo "Error: 브랜치명에 JIRA 이슈 번호가 포함되지 않았습니다."
+  exit 1
+fi
