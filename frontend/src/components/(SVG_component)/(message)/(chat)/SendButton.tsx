@@ -2,10 +2,12 @@ import React from 'react';
 
 interface SendButtonState {
   active: boolean;
+  className: string;
 }
-export default function SendButton({ active }: SendButtonState) {
+export default function SendButton({ active, className }: SendButtonState) {
   return (
     <svg
+      className={className}
       width="24"
       height="24"
       viewBox="0 0 24 24"

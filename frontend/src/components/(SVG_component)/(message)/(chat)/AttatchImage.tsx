@@ -1,8 +1,12 @@
 import React from 'react';
 
-export default function AttatchImage() {
+interface AttatchImageParam {
+  className: string;
+}
+export default function AttatchImage({ className }: AttatchImageParam) {
   return (
     <svg
+      className={className}
       width="20"
       height="20"
       viewBox="0 0 20 20"
