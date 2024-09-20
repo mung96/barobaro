@@ -29,6 +29,7 @@ export default function LightStickButton() {
         height: '44px',
         display: 'flex',
         justifyContent: 'center',
+          alignItems: 'center',
       }}
     >
       <LightStick fill={buttonColor} />
