@@ -6,7 +6,13 @@
     "node": true
   },
   "plugins": ["@typescript-eslint", "prettier"], //eslint는 js를 prettier는 기타 파일을 검사하는 용도로 쓰기 위함.
-  "extends": ["next", "airbnb", "airbnb-typescript"], //eslint는 js를 prettier는 기타 파일을 검사하는 용도로 쓰기 위함.
+  "extends": [
+    "next",
+    "airbnb",
+    "airbnb-typescript",
+    "eslint:recommended",
+    "plugin:prettier/recommended"
+  ], //eslint는 js를 prettier는 기타 파일을 검사하는 용도로 쓰기 위함.
 
   //typescript, jsx를 lint검사하기 위한 설정
   "parser": "@typescript-eslint/parser",
@@ -20,10 +26,11 @@
   },
 
   "rules": {
-    "react/react-in-jsx-scope": "off",
-    "react/require-default-props": "off",
-    "import/no-extraneous-dependencies": "off",
-    "eslintobject-curly-newline": "off",
-    "object-curly-newline": "off"
+    "prettier/prettier": "error"
+    // "react/react-in-jsx-scope": "off",
+    // "react/require-default-props": "off",
+    // "import/no-extraneous-dependencies": "off",
+    // "eslintobject-curly-newline": "off",
+    // "object-curly-newline": "off"
   }
 }
