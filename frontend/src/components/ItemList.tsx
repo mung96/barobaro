@@ -227,13 +227,13 @@ export default function ItemList({ data } : { data : string }) {
                 <ContractIcon />
                 <p className="text-[10px] text-gray-600">계약서보기</p>
               </button>
-              {data === 'lent' ? <div className="absolute flex justify-center items-center right-[8dvw] top-[4px] bg-gray-500 w-[20px] h-[18px] rounded-[3px]">
+              {data === 'lent' ? <div className="absolute flex justify-center items-center right-[20px] top-[6px] bg-gray-500 w-[20px] h-[18px] rounded-[3px]">
                 <ThreeDot/>
               </div> : null}
             </div>
           </div>
           <div className="flex justify-center my-5">
-            <div className="bg-gray-500 h-[1px] w-[92dvw]" />
+            <div className="bg-gray-500 h-[1px] max-w-[450px] w-[92dvw]" />
           </div>
         </div>
       ))}
