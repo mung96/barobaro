@@ -9,13 +9,13 @@ export default function CategorySearch({now} : Props) {
     return (
         <>
             <section className = "flex flex-row">
-                <div className = "mx-4">
+                <div className = "mx-4" key={0}>
                     <CategoryCard type={now} selected={true} />
                 </div>
                 <div className="w-full overflow-x-auto scrollbar-hide">
                     <div className="flex flex-row">
-                        {categories.map((category) => (
-                            category !== now ? <div className="mx-4"><CategoryCard type={category} selected={false}/></div> : null
+                        {categories.map((category, index) => (
+                            category !== now ? <div className="mx-4" key={index+1}><CategoryCard type={category} selected={false}/></div> : null
                             ))}
                     </div>
                     </div>
