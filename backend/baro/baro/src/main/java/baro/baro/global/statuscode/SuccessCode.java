@@ -7,6 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum SuccessCode {
     ;
+
     private final int httpStatusCode;
 
     private final String message;
