@@ -1,5 +1,5 @@
 - 제목 : feat(jira 이슈번호) : 기능명
-<!--   ex) feat(S11P21A401-197-testtest) : 기능명 -->
+<!--   ex) feat(add-mr-template-S11P21A401-362) : 기능명 -->
 
 ### Part
 - [ ] FE
