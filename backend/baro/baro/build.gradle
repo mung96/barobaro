@@ -1,0 +1,96 @@
+import org.hidetake.gradle.swagger.generator.GenerateSwaggerUI
+import org.springframework.boot.gradle.tasks.bundling.BootJar
+
+buildscript {
+	ext {
+		restdocsApiSpecVersion = '0.19.2'
+	}
+}
+
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.3.4'
+	id 'io.spring.dependency-management' version '1.1.6'
+	id 'com.epages.restdocs-api-spec' version "${restdocsApiSpecVersion}"
+	id 'org.hidetake.swagger.generator' version '2.18.2'
+}
+
+ext {
+	serverUrl = project.findProperty('serverUrl')
+}
+
+group = 'baro'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+swaggerSources {
+	sample {
+		setInputFile(file("${project.buildDir}/api-spec/openapi3.yaml"))
+	}
+}
+
+openapi3 {
+	servers = [
+			{
+				url = "$serverUrl"
+			}
+	]
+	title = "바로바로 API 문서"
+	description = "RestDocsWithSwagger Docs"
+	version = "0.0.1"
+	format = "yaml"
+}
+
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.postgresql:postgresql'
+	implementation 'org.hibernate:hibernate-core:6.4.0.Final'
+	implementation 'org.hibernate:hibernate-spatial:6.4.0.Final'
+	runtimeOnly 'org.postgresql:postgresql'
+	runtimeOnly 'com.h2database:h2'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+	testImplementation 'com.epages:restdocs-api-spec-mockmvc:' + restdocsApiSpecVersion
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	swaggerUI 'org.webjars:swagger-ui:4.11.1'
+	compileOnly 'org.projectlombok:lombok'
+}
+
+tasks.withType(GenerateSwaggerUI) {
+	dependsOn 'openapi3'
+}
+
+tasks.register('copySwaggerUI', Copy) {
+	dependsOn 'generateSwaggerUISample'
+	def generateSwaggerUISampleTask = tasks.named('generateSwaggerUISample', GenerateSwaggerUI).get()
+	from("${generateSwaggerUISampleTask.outputDir}")
+	into("${project.buildDir}/resources/main/static/docs")
+}
+
+tasks.withType(BootJar) {
+	dependsOn 'copySwaggerUI'
+}
+
+tasks.named('jar') {
+	dependsOn 'copySwaggerUI'
+}
+
+tasks.named('resolveMainClassName') {
+	dependsOn 'copySwaggerUI'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
