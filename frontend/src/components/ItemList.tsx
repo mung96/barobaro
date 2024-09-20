@@ -3,6 +3,8 @@
 import { faker } from '@faker-js/faker';
 import Image from 'next/image';
 import CalendarSVG from '@/components/(SVG_component)/Calendar';
+import ContractIcon from '@/components/(SVG_component)/(mypage)/Contract';
+import ThreeDot from "@/components/(SVG_component)/(mypage)/ThreeDot";
 
 export default function ItemList({ data } : { data : string }) {
   const borrowList : {
@@ -197,14 +199,18 @@ export default function ItemList({ data } : { data : string }) {
         <div key={item.id}>
           <div className="flex flex-row ml-3.5">
             <div className="w-[98px] h-[98px] rounded-[10px] overflow-hidden relative">
-              <Image src={item.image as string} alt="product_image" fill />
+              <Image src={item.image as string} alt="product_image" fill/>
+              <div
+                  className={`bg-amber-200 w-[48px] h-[20px] flex justify-center items-center rounded-[3px] absolute left-[4px] top-[4px] ${item.boolean === true ? 'bg-gray-500' : 'bg-gray-300'}`}>
+                <p className="text-[10px]">{item.boolean === true ? '거래완료' : '거래중'}</p>
+              </div>
             </div>
-            <div className="flex flex-col justify-center items-start ms-3.5">
+            <div className="flex flex-col justify-center items-start ms-3.5 relative w-[100%]">
               <h1 className="text-[15px]">{item.title}</h1>
               <div className="flex flex-row">
-                <CalendarSVG />
+                <CalendarSVG/>
                 <p className="text-xs">
-                  {' '}
+                {' '}
                   {item.start}
                   {' '}
                   ~
@@ -217,9 +223,13 @@ export default function ItemList({ data } : { data : string }) {
                 {item.price}
                 원/일
               </p>
-              <div className={`bg-amber-200 w-[48px] h-[20px] flex justify-center items-center rounded-[3px] ${item.boolean === true ? 'bg-gray-500' : 'bg-gray-300'}`}>
-                <p className="text-[10px]">{item.boolean === true ? '거래완료' : '거래중'}</p>
-              </div>
+              <button type="button" className="w-[68px] h-[22px] bg-gray-400 rounded-[3px] flex flex-row justify-center items-center">
+                <ContractIcon />
+                <p className="text-[10px] text-gray-600">계약서보기</p>
+              </button>
+              {data === 'lent' ? <div className="absolute flex justify-center items-center right-[8dvw] top-[4px] bg-gray-500 w-[20px] h-[18px] rounded-[3px]">
+                <ThreeDot/>
+              </div> : null}
             </div>
           </div>
           <div className="flex justify-center my-5">
