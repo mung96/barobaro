@@ -5,6 +5,7 @@ import Image from 'next/image';
 import CalendarSVG from '@/components/(SVG_component)/Calendar';
 import ContractIcon from '@/components/(SVG_component)/(mypage)/Contract';
 import ThreeDot from "@/components/(SVG_component)/(mypage)/ThreeDot";
+import MeatBallsButton from "@/components/(SVG_component)/(mypage)/MeatBallsButton";
 
 export default function ItemList({ data } : { data : string }) {
   const borrowList : {
@@ -227,9 +228,7 @@ export default function ItemList({ data } : { data : string }) {
                 <ContractIcon />
                 <p className="text-[10px] text-gray-600">계약서보기</p>
               </button>
-              {data === 'lent' ? <div className="absolute flex justify-center items-center right-[20px] top-[6px] bg-gray-500 w-[20px] h-[18px] rounded-[3px]">
-                <ThreeDot/>
-              </div> : null}
+              <MeatBallsButton data={item.id} />
             </div>
           </div>
           <div className="flex justify-center my-5">
