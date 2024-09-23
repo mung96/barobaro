@@ -1,13 +1,21 @@
 "use client";
 import { Map, MapMarker } from "react-kakao-maps-sdk";
 
-export default function KakaoMap() {
+type Props = {
+    width: string,
+    height: string,
+    lat: number,
+    lng: number,
+
+}
+
+export default function KakaoMap({width, height, lat, lng}: Props) {
     return (
         <Map
-            center={{ lat: 33.5563, lng: 126.79581 }}
-            style={{ width: "90%", height: "30dvh" }}
+            center={{ lat: lat, lng: lng }}
+            style={{ width: width, height: height }}
         >
-            <MapMarker position={{ lat: 33.55635, lng: 126.795841 }} />
+            <MapMarker position={{ lat: lat, lng: lng }} />
         </Map>
     );
 }
