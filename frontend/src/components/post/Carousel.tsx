@@ -2,7 +2,7 @@
 
 import { Pagination, Navigation } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { CSSProperties, useRef } from 'react';
+import { CSSProperties, useEffect, useRef, useState } from 'react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
@@ -10,15 +10,20 @@ import { faker } from '@faker-js/faker';
 import Image from 'next/image';
 import type { Swiper as SwiperType } from 'swiper';
 import CarouselButtonSVG from '@/components/post/CarouselButtonSVG';
-import css from 'styled-jsx/css';
 
 export default function PictureCarousel() {
-  const pictureList = [
-    faker.image.urlLoremFlickr({ width: 300, height: 300 }),
-    faker.image.urlLoremFlickr({ width: 300, height: 300 }),
-    faker.image.urlLoremFlickr({ width: 300, height: 300 }),
-    faker.image.urlLoremFlickr({ width: 300, height: 300 }),
-  ];
+  const [imageSize, setImageSize] = useState(0);
+  const [pictureList, setPictureList] = useState<string[]>([]);
+
+  useEffect(() => {
+    setImageSize(window.innerWidth * 0.7);
+    setPictureList([
+      faker.image.urlLoremFlickr(),
+      faker.image.urlLoremFlickr(),
+      faker.image.urlLoremFlickr(),
+      faker.image.urlLoremFlickr(),
+    ]);
+  }, []);
 
   const containerStyle: CSSProperties = {
     position: 'relative',
@@ -53,7 +58,12 @@ export default function PictureCarousel() {
       >
         {pictureList.map((item, index) => (
           <SwiperSlide key={index} style={slideStyle}>
-            <Image src={item} alt={`image-${index}`} width={300} height={300} />
+            <Image
+              src={item}
+              alt={`image-${index}`}
+              width={imageSize}
+              height={imageSize}
+            />
           </SwiperSlide>
         ))}
       </Swiper>
