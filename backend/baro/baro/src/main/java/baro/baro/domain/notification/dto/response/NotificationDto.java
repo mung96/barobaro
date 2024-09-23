@@ -8,17 +8,17 @@ import lombok.Data;
 @Data
 @Builder
 public class NotificationDto {
-	private String message;
+    private String message;
 
-	private String fromMemberId;
+    private String fromMemberId;
 
-	private NotificationType notificationType;
+    private NotificationType notificationType;
 
-	public static NotificationDto toDto(Notification notification) {
-		return NotificationDto.builder()
-			.message(notification.getMessage())
-			.fromMemberId(notification.getFromMember().getUuid())
-			.notificationType(notification.getNotificationType())
-			.build();
-	}
+    public static NotificationDto toDto(Notification notification) {
+        return NotificationDto.builder()
+                .message(notification.getMessage())
+                .fromMemberId(notification.getFromMember().getUuid())
+                .notificationType(notification.getNotificationType())
+                .build();
+    }
 }
