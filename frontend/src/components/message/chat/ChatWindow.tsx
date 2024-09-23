@@ -26,10 +26,10 @@ export default function ChatWindow() {
   };
 
   return (
-    <div>
-      <div className="w-[100vw] bg-white p-2">
+    <div className="box-border ">
+      <div className=" bg-white p-2">
         <div className="w-full h-[6vh] flex justify-center">
-          <div className="w-[95%] h-full flex items-center justify-around rounded-2xl border border-gray-500 bg-gray-400">
+          <div className="w-[95%] h-full flex items-center justify-around rounded-2xl border border-gray-500 bg-gray-400 box-border">
             <AttatchImage className="w-2/12" />
             <input
               type="text"
