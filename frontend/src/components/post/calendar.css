@@ -1,0 +1,52 @@
+:root {
+  --day-width: 36px;
+}
+
+.rdp-root {
+  width: 100%;
+  position: relative;
+
+  --rdp-accent-color: black;
+  --rdp-day-width: var(--day-width);
+  --rdp-day-height: var(--day-width);
+  --rdp-day-font: 700 14px;
+
+  --rdp-nav_button-height: 24px;
+  --rdp-nav_button-disabled-opacity: 0;
+  --rdp-nav_button-opacity: 0;
+}
+
+.rdp-root::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera*/
+}
+
+.rdp-day_button:disabled {
+  font-weight: 300;
+  text-decoration: line-through;
+}
+
+/* 날짜 1개 */
+.rdp-day_button {
+  font-size: 14px;
+  font-weight: 500;
+  width: var(--day-width);
+  height: var(--day-width);
+}
+
+.rdp-caption_label {
+  font-size: 16px;
+  font-weight: 700;
+}
+.rdp-nav {
+  display: none;
+}
+/* 요일표시(월,화,수,목,금,토,일)을 첫달만 남기고 삭제 & 첫번째 요일 표시는 위치 조정 */
+.rdp-month thead {
+  display: none;
+}
+
+.rdp-months {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
