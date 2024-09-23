@@ -192,9 +192,12 @@ export default function Message({ type, user, body, timestamp }: MessageForm) {
                       닉네임1님께서 <b>고양이 쓰다듬고 가세요</b>에 대하여
                       계약을 요청하셨습니다.
                     </div>
-                    <div className="bg-blue-100 text-white text-center rounded-md pt-[1vh] pb-[1vh] mt-[1vh]">
+                    <button
+                      type="button"
+                      className="bg-blue-100 text-white text-center rounded-md pt-[1vh] pb-[1vh] mt-[1vh] active:bg-blue-500"
+                    >
                       상세보기
-                    </div>
+                    </button>
                   </div>
                 </>
               ) : body === 'signature' ? ( // 서명 요청 메시지
@@ -219,9 +222,12 @@ export default function Message({ type, user, body, timestamp }: MessageForm) {
                     <div>닉네임1(010-1234-****)</div>
                     <div>닉네임2(010-5678-****)</div>
 
-                    <div className="bg-blue-100 text-white text-center rounded-md pt-[1vh] pb-[1vh] mt-[1vh]">
+                    <button
+                      type="button"
+                      className="bg-blue-100 text-white text-center rounded-md pt-[1vh] pb-[1vh] mt-[1vh] active:bg-blue-500"
+                    >
                       서명하기
-                    </div>
+                    </button>
                   </div>
                 </>
               ) : body === 'finished' ? (
