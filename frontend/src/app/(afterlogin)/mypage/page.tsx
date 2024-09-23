@@ -1,4 +1,4 @@
-import Profile from '@/components/Profile';
+import Profile from '@/components/user/Profile';
 import MyPageContent from '@/components/MyPageContent';
 import NavBarLayout from '@/layout/NavBarLayout';
 import Header from '@/components/Header';
@@ -9,7 +9,7 @@ export default function MyPage() {
       <Header pageName="" hasPrevBtn={false} hasSearchBtn={false} hasAlertBtn />
       <div>
         <div className="flex justify-center">
-          <Profile />
+          <Profile hasEmail={true} hasEditBtn={true} />
         </div>
         <div className="mt-4">
           <MyPageContent />
