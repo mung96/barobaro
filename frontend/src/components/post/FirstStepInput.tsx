@@ -6,6 +6,7 @@ import Button from '@/components/shared/Button';
 import Input from '@/components/shared/Input';
 
 import { useState } from 'react';
+import { DateRange } from 'react-day-picker';
 
 type FirstStepInputProps = {
   onNext: (firstData: string) => void;
@@ -16,11 +17,12 @@ function FirstStepInput({ onNext }: FirstStepInputProps) {
   const [value, setValue] = useState('');
   const [address, setAddress] = useState('');
   const [ways, setWays] = useState<string[]>([]);
+  const [range, setRange] = useState<DateRange | undefined>(undefined);
 
   return (
     <div className="flex flex-col">
       <h2> 게시글 등록 첫 스탭</h2>
-      <RentalDurationInput />
+      <RentalDurationInput selected={range} onSelect={setRange} />
       <CategoryTagList
         value={value}
         onChange={(e) => setValue(e.target.value)}
