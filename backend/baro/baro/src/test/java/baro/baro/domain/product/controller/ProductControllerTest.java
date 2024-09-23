@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static baro.baro.global.ResponseFieldUtils.getCommonResponseFields;
+import static baro.baro.global.statuscode.SuccessCode.OWNER_PRODUCT_LIST_OK;
 import static baro.baro.global.statuscode.SuccessCode.RENTAL_PRODUCT_LIST_OK;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
@@ -91,6 +92,61 @@ class ProductControllerTest {
                                         )
                                 )
                                 .responseSchema(Schema.schema("빌린 내역 리스트 조회 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 빌려준_내역_리스트_조회_성공() throws Exception {
+        // given
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                get("/members/me/owner")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(OWNER_PRODUCT_LIST_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(OWNER_PRODUCT_LIST_OK.getMessage()))
+                .andDo(document(
+                        "빌려준 내역 리스트 조회",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Product API")
+                                .summary("빌려준 내역 리스트 조회 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body.*[].product_id").type(JsonFieldType.NUMBER)
+                                                        .description("대여 물품 아이디"),
+                                                fieldWithPath("body.*[].product_main_image").type(JsonFieldType.STRING)
+                                                        .description("대여 물품 대표 이미지"),
+                                                fieldWithPath("body.*[].title").type(JsonFieldType.STRING)
+                                                        .description("대여 물품 제목"),
+                                                fieldWithPath("body.*[].title").type(JsonFieldType.STRING)
+                                                        .description("대여 물품 제목"),
+                                                fieldWithPath("body.*[].startDate").type(JsonFieldType.STRING)
+                                                        .description("대여 시작일"),
+                                                fieldWithPath("body.*[].endDate").type(JsonFieldType.STRING)
+                                                        .description("대여 마감일"),
+                                                fieldWithPath("body.*[].rentalFee").type(JsonFieldType.NUMBER)
+                                                        .description("대여비"),
+                                                fieldWithPath("body.*[].productStatus").type(JsonFieldType.STRING)
+                                                        .description("대여 상태")
+
+                                        )
+                                )
+                                .responseSchema(Schema.schema("빌려준 내역 리스트 조회 Response"))
                                 .build()
                         ))
                 );
