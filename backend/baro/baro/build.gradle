@@ -67,6 +67,7 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	swaggerUI 'org.webjars:swagger-ui:4.11.1'
 	compileOnly 'org.projectlombok:lombok'
+	implementation 'com.google.code.gson:gson:2.8.9'
 }
 
 tasks.withType(GenerateSwaggerUI) {
