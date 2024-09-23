@@ -39,6 +39,8 @@ public class Product {
 
     private Category category;
 
+    private ProductStatus productStatus;
+
     private String place;
 
     private Double latitude;
