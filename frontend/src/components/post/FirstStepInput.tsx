@@ -1,4 +1,6 @@
 import CategoryTagList from '@/components/post/CategoryTagList';
+
+import RentalDurationInput from '@/components/post/RentalDurationInput';
 import ReturnTypeList from '@/components/post/ReturnTypeList';
 import Button from '@/components/shared/Button';
 import Input from '@/components/shared/Input';
@@ -18,10 +20,12 @@ function FirstStepInput({ onNext }: FirstStepInputProps) {
   return (
     <div className="flex flex-col">
       <h2> 게시글 등록 첫 스탭</h2>
+      <RentalDurationInput />
       <CategoryTagList
         value={value}
         onChange={(e) => setValue(e.target.value)}
       />
+
       <div className="flex flex-col gap-2">
         <ReturnTypeList values={ways} onChange={setWays} />
         {ways.includes('택배') && (
