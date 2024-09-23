@@ -22,7 +22,7 @@ export default function Chat() {
   return (
     <div className="flex flex-col h-screen">
       {/* 상단 고정 헤더와 OriginBoard */}
-      <div className="fixed top-0 w-full bg-white z-10">
+      <div className="fixed top-0 w-full bg-white z-10 max-w-[500px]">
         <Header pageName={roomName} hasPrevBtn hasSearchBtn hasAlertBtn />
         <OriginBoard />
       </div>
@@ -36,7 +36,7 @@ export default function Chat() {
       </div>
 
       {/* 하단 고정 ChatWindow */}
-      <div className="fixed bottom-0 w-full bg-white z-10">
+      <div className="fixed bottom-0 box-border w-full bg-white z-10 max-w-[500px]">
         <ChatWindow />
       </div>
     </div>
