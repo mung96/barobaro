@@ -10,7 +10,6 @@ interface CardData {
   url: string;
   date: string;
   price: string;
-  price2: string;
   content: string;
   fakeId: number;
 }
@@ -24,7 +23,6 @@ export default function Card() {
       url: faker.image.urlLoremFlickr(),
       date: faker.date.recent().toLocaleDateString('ko-KR'),
       price: faker.commerce.price({ min: 1000, max: 10000, dec: 0 }),
-      price2: faker.commerce.price({ min: 10000, max: 100000, dec: 0 }),
       content: faker.commerce.product(),
       fakeId: faker.number.int(999),
     });
@@ -66,9 +64,7 @@ export default function Card() {
       <div>
         <p className="text-xs font-bold">
           {cardData.price}
-          원/
-          {cardData.price2}
-          원
+          원/일
         </p>
       </div>
       <div>

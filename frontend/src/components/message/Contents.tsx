@@ -8,7 +8,6 @@ export default function Contents() {
   const [selected, setSelected] = useState<string>('entire');
 
   const changeSelected = (value: string) => {
-    console.log(value);
     setSelected(value);
   };
 

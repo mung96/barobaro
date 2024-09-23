@@ -7,7 +7,8 @@ import {
 } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { file } from '@babel/types';
+import Header from '@/components/Header';
+// import { file } from '@babel/types';
 
 export default function Profile() {
   const [imageFile, setImageFile] = useState<File | null>(null);
