@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -47,11 +48,18 @@ public class Product {
 
     private Double longitude;
 
-    private ReturnType returnType;
+    @ElementCollection
+    @CollectionTable(name = "product_return_types", joinColumns = @JoinColumn(name = "product_id"))
+    @Column(name = "return_type")
+    private List<ReturnType> returnTypes;
 
     private String returnAddress;
 
     private LocalDateTime createdAt;
 
     private LocalDateTime lastModifiedAt;
+
+    private Long regionId;
+
+    private String regionNm;
 }
