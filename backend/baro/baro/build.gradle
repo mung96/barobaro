@@ -68,6 +68,7 @@ dependencies {
 	swaggerUI 'org.webjars:swagger-ui:4.11.1'
 	compileOnly 'org.projectlombok:lombok'
 	implementation 'com.google.code.gson:gson:2.8.9'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 }
 
 tasks.withType(GenerateSwaggerUI) {
