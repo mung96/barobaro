@@ -133,7 +133,9 @@ class MemberControllerTest {
                                                 fieldWithPath("body.phoneNumber").type(JsonFieldType.STRING)
                                                         .description("핸드폰 번호"),
                                                 fieldWithPath("body.email").type(JsonFieldType.STRING)
-                                                        .description("이메일")
+                                                        .description("이메일"),
+                                                fieldWithPath("body.name").type(JsonFieldType.STRING)
+                                                        .description("이름")
                                         )
                                 )
                                 .responseSchema(Schema.schema("프로필 조회 Response"))
@@ -188,7 +190,9 @@ class MemberControllerTest {
                                                 fieldWithPath("body.phoneNumber").type(JsonFieldType.STRING)
                                                         .description("핸드폰 번호"),
                                                 fieldWithPath("body.email").type(JsonFieldType.STRING)
-                                                        .description("이메일")
+                                                        .description("이메일"),
+                                                fieldWithPath("body.name").type(JsonFieldType.STRING)
+                                                        .description("이름")
                                         )
                                 )
                                 .requestSchema(Schema.schema("프로필 수정 Request"))
