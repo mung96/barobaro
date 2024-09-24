@@ -100,7 +100,7 @@ class ProductControllerTest {
                         preprocessResponse(prettyPrint()),
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Product API")
-                                .summary("대여 물픔 등록 API")
+                                .summary("대여 물품 등록 API")
                                 .requestHeaders(
                                         headerWithName("Authorization")
                                                 .description("JWT 토큰")
@@ -160,8 +160,8 @@ class ProductControllerTest {
 
                                         )
                                 )
-                                .requestSchema(Schema.schema("대여 물픔 등록 Request"))
-                                .responseSchema(Schema.schema("대여 물픔 등록 Response"))
+                                .requestSchema(Schema.schema("대여 물품 등록 Request"))
+                                .responseSchema(Schema.schema("대여 물품 등록 Response"))
                                 .build()
                         ))
                 );
@@ -251,8 +251,8 @@ class ProductControllerTest {
 
                                         )
                                 )
-                                .requestSchema(Schema.schema("대여 물픔 상세 조회 Request"))
-                                .responseSchema(Schema.schema("대여 물픔 상세 조회 Response"))
+                                .requestSchema(Schema.schema("대여 물품 상세 조회 Request"))
+                                .responseSchema(Schema.schema("대여 물품 상세 조회 Response"))
                                 .build()
                         ))
                 );
