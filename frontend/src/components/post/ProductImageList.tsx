@@ -1,6 +1,5 @@
 'use client';
 
-import { ChangeEvent } from 'react';
 import { FaCamera } from 'react-icons/fa6';
 
 import {
@@ -18,29 +17,31 @@ type ProductImageListProps = {
   dropEnd: (result: DropResult) => void;
 };
 
-const ProductImageList = ({
+function ProductImageList({
   width,
   height,
   onChange,
   dropEnd,
   images,
-}: ProductImageListProps) => {
+}: ProductImageListProps) {
   return (
     <div className="flex gap-2">
-      <label
-        style={{ width, height }}
-        className="flex flex-col items-center justify-center border-gray-500 border rounded "
-      >
-        <FaCamera className="text-gray-300 w-4 h-4" />
-        <p className="text-3xs">{images.length}/5</p>
-        <input
-          onChange={(event) => onChange(Array.from(event.target.files!))}
-          type="file"
-          accept="image/*"
-          className="hidden"
-          multiple
-        />
-      </label>
+      {images.length < 5 && (
+        <label
+          style={{ width, height }}
+          className="flex flex-col items-center justify-center border-gray-500 border rounded "
+        >
+          <FaCamera className="text-gray-300 w-4 h-4" />
+          <p className="text-3xs">{images.length}/5</p>
+          <input
+            onChange={(event) => onChange(Array.from(event.target.files!))}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            multiple
+          />
+        </label>
+      )}
       <DragDropContext onDragEnd={dropEnd}>
         <Droppable droppableId="imagelist" direction="horizontal">
           {(provided) => (
@@ -61,23 +62,23 @@ const ProductImageList = ({
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
                         ref={provided.innerRef}
+                        className="relative"
                       >
                         <div
                           className="border rounded border-gray-500 relative"
                           style={{ width, height }}
                         >
                           <img
-                            key={index}
                             src={image as string}
                             alt="preview"
                             className="border rounded border-gray-500 w-full h-full"
                           />
-                          {index === 0 && (
-                            <p className="absolute bottom-0 text-center  text-white  bg-black text-[4px] w-full h-2 py-[1px]">
-                              대표사진
-                            </p>
-                          )}
                         </div>
+                        {index === 0 && (
+                          <p className="absolute bottom-0 text-center  text-white  bg-black text-[4px] w-full h-2 py-[1px]">
+                            대표사진
+                          </p>
+                        )}
                       </div>
                     );
                   }}
@@ -90,6 +91,6 @@ const ProductImageList = ({
       </DragDropContext>
     </div>
   );
-};
+}
 
 export default ProductImageList;
