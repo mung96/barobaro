@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 @Data
 @Builder
-public class ProductDto {
+public class MyProductDto {
     private Long productId;
 
     private String productMainImage;
