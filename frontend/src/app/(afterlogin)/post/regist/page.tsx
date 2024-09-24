@@ -5,11 +5,7 @@ const PostFunnel = dynamic(() => import('@/components/post/PostFunnel'), {
 });
 
 function PostRegistPage() {
-  return (
-    <main>
-      <PostFunnel />
-    </main>
-  );
+  return <PostFunnel />;
 }
 
 export default PostRegistPage;

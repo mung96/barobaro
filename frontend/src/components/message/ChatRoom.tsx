@@ -1,7 +1,7 @@
 // 채팅목록에 띄울 채팅방(1개)
 import Link from 'next/link';
 import Image from 'next/image';
-import { ChatRoomType } from './ChatRoomType';
+import ChatRoomType from './ChatRoomType';
 
 export default function ChatRoomEach({
   profileImageSrc,
