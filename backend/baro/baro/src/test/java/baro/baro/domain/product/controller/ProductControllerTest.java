@@ -1,6 +1,6 @@
 package baro.baro.domain.product.controller;
 
-import baro.baro.domain.contract.dto.ContractConditionDto;
+import baro.baro.domain.contract.dto.request.ContractConditionReq;
 import baro.baro.domain.product.dto.request.ProductAddReq;
 import baro.baro.domain.product.entity.ReturnType;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
@@ -53,8 +53,9 @@ class ProductControllerTest {
         List<ReturnType> returnTypes = new ArrayList<>();
         returnTypes.add(DIRECT);
 
-        ContractConditionDto contractConditionDto = new ContractConditionDto(
-                "제조사 또는 공식 수입사의 AS 센터", 5, 2, 7, 7);
+        ContractConditionReq contractConditionReq = new ContractConditionReq(
+                "물품 이름", "물품 일련번호", "제조사 또는 공식 수입사의 AS 센터",
+                5, 2, 7, 7);
 
         ProductAddReq productAddReq = new ProductAddReq("제목",
                 LocalDate.of(2024, 9, 30),
@@ -67,7 +68,7 @@ class ProductControllerTest {
                 "서울특별시 강남구 테헤란로 212",
                 "본문내용본문내용용용",
                 LIGHT_STICK,
-                contractConditionDto);
+                contractConditionReq);
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
@@ -156,7 +157,9 @@ class ProductControllerTest {
                                                 fieldWithPath("body.endDate").type(JsonFieldType.STRING)
                                                         .description("물품 대여 반납일"),
                                                 fieldWithPath("body.rentalFee").type(JsonFieldType.NUMBER)
-                                                        .description("물품 대여비")
+                                                        .description("물품 대여비"),
+                                                fieldWithPath("body.isMine").type(JsonFieldType.BOOLEAN)
+                                                        .description("나의 게시글 여부")
 
                                         )
                                 )
@@ -247,8 +250,9 @@ class ProductControllerTest {
                                                 fieldWithPath("body.endDate").type(JsonFieldType.STRING)
                                                         .description("물품 대여 반납일"),
                                                 fieldWithPath("body.rentalFee").type(JsonFieldType.NUMBER)
-                                                        .description("물품 대여비")
-
+                                                        .description("물품 대여비"),
+                                                fieldWithPath("body.isMine").type(JsonFieldType.BOOLEAN)
+                                                        .description("나의 게시글 여부")
                                         )
                                 )
                                 .requestSchema(Schema.schema("대여 물품 상세 조회 Request"))
@@ -310,6 +314,60 @@ class ProductControllerTest {
                         ))
                 );
     }
+
+    @Test
+    public void 최근_올라온_대여_물품_리스트_조회_성공() throws Exception {
+        //given
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/products/recently-uploaded")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(PRODUCT_RECENTLY_UPLOADED_LIST_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(PRODUCT_RECENTLY_UPLOADED_LIST_OK.getMessage()))
+                .andDo(document(
+                        "최근 올라온 대여 물품 리스트 조회",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Product API")
+                                .summary("최근 올라온 대여 물품 리스트 조회 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body.[].productId").type(JsonFieldType.NUMBER)
+                                                        .description("대여 물품 아이디"),
+                                                fieldWithPath("body.[].productMainImage").type(JsonFieldType.STRING)
+                                                        .description("대여 물품 대표 이미지"),
+                                                fieldWithPath("body.[].isWished").type(JsonFieldType.BOOLEAN)
+                                                        .description("찜한 여부"),
+                                                fieldWithPath("body.[].startDate").type(JsonFieldType.STRING)
+                                                        .description("대여 시작일"),
+                                                fieldWithPath("body.[].endDate").type(JsonFieldType.STRING)
+                                                        .description("대여 마감일"),
+                                                fieldWithPath("body.[].rentalFee").type(JsonFieldType.NUMBER)
+                                                        .description("대여비"),
+                                                fieldWithPath("body.[].title").type(JsonFieldType.STRING)
+                                                        .description("게시글 제목")
+
+                                        )
+                                )
+                                .responseSchema(Schema.schema("최근 올라온 대여 물품 리스트 조회 Response"))
+                                .build()
+                        ))
+                );
+    }
+
 
     @Test
     public void 빌린_내역_리스트_조회_성공() throws Exception {
