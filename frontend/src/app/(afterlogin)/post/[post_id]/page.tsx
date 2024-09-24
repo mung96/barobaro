@@ -7,16 +7,18 @@ import ContractCondition from '@/components/post/ContractCondition';
 // frontend - .env => NEXT_PUBLIC_KAKAO_CLIENT_ID=APIKEY
 export default function PostDetail() {
   return (
-    <>
-      <Header pageName="게시글목록" hasPrevBtn hasSearchBtn hasAlertBtn />
-      <Profile hasEmail={false} hasEditBtn={false} />
-      <section className="flex flex-col justify-center items-center">
+    <section className="flex flex-col items-center">
+      <div className="flex w-full">
+        <Profile hasEmail={false} hasEditBtn={false} />
+        <div className="flex flex-1" />
+      </div>
+      <section className="flex justify-center items-center">
         <PictureCarousel />
       </section>
       <div className="bg-gray-500 w-[90%] h-[1px]" />
       <PostContent />
       <KakaoMap width="85%" height="20dvh" lat={37.498333} lng={126.866667} />
       <ContractCondition />
-    </>
+    </section>
   );
 }

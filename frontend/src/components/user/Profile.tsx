@@ -17,18 +17,19 @@ export default function Profile({ hasEmail, hasEditBtn }: Props) {
 
   return (
     <section
-      className={`flex flex-row items-center ${hasEmail && hasEditBtn ? 'justify-center' : 'm-auto'} w-[90dvw] my-3`}
+      className={`flex flex-row items-center max-w-[500px] w-full my-3
+        ${hasEmail && hasEditBtn ? 'justify-center' : null}`}
     >
-      <div className="border border-gray-200 rounded-full w-12 h-12 items-center relative overflow-hidden">
-        <Image src={Baroping} alt="barorping" width={47} height={47} />
+      <div className="flex items-center">
+        <div className="border border-gray-200 rounded-full w-12 h-12 items-center relative overflow-hidden">
+          <Image src={Baroping} alt="barorping" width={47} height={47} />
+        </div>
+        <div className="ms-3.5 flex flex-col justify-center">
+          <p className="text-[14px] font-bold">바로핑</p>
+          {hasEmail && <p className="text-[12px]">barobaroping@gmail.com</p>}
+        </div>
       </div>
-      <div className="ms-3.5 me-3 flex flex-col justify-center">
-        <p className="text-[14px] font-bold">바로핑</p>
-        {hasEmail ? (
-          <p className="text-[12px]">barobaroping@gmail.com</p>
-        ) : null}
-      </div>
-      {hasEditBtn ? (
+      {hasEditBtn && (
         <button
           type="button"
           onClick={() => goProfileSetting()}
@@ -36,7 +37,7 @@ export default function Profile({ hasEmail, hasEditBtn }: Props) {
         >
           <p className="text-[10px]">프로필 수정</p>
         </button>
-      ) : null}
+      )}
     </section>
   );
 }

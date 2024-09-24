@@ -8,9 +8,7 @@ export default function MyPage() {
     <NavBarLayout current="mypage">
       <Header pageName="" hasPrevBtn={false} hasSearchBtn={false} hasAlertBtn />
       <div>
-        <div className="flex justify-center">
-          <Profile hasEmail={true} hasEditBtn={true} />
-        </div>
+        <Profile hasEmail={true} hasEditBtn={true} />
         <div className="mt-4">
           <MyPageContent />
         </div>
