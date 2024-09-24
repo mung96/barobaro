@@ -27,7 +27,7 @@ public class MemberController {
 
     @GetMapping("/profile")
     public ResponseEntity<?> profileDetails() {
-        ProfileDetailsRes result = new ProfileDetailsRes("프로필 이미지", "닉네임", "010-1111-1111", "ssafy@ssafy.com");
+        ProfileDetailsRes result = new ProfileDetailsRes("아무개", "프로필 이미지", "닉네임", "010-1111-1111", "ssafy@ssafy.com");
 
         return new ResponseEntity<>(ResponseDto.success(PROFILE_DETAILS_OK, result), OK);
     }
@@ -35,7 +35,7 @@ public class MemberController {
     @PostMapping("/profile")
     public ResponseEntity<?> profileModify(@RequestPart(value = "dto") ProfileModifyReq profileModifyReq,
                                            @RequestPart(value = "file") MultipartFile file) {
-        ProfileDetailsRes result = new ProfileDetailsRes("프로필 이미지", "닉네임", "010-1111-1111", "ssafy@ssafy.com");
+        ProfileDetailsRes result = new ProfileDetailsRes("아무개", "프로필 이미지", "닉네임", "010-1111-1111", "ssafy@ssafy.com");
 
         return new ResponseEntity<>(ResponseDto.success(PROFILE_MODIFY_OK, result), OK);
     }
