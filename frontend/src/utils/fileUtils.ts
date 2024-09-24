@@ -1,4 +1,4 @@
-export const readFile = (file: File): Promise<string | ArrayBuffer | null> => {
+const readFile = (file: File): Promise<string | ArrayBuffer | null> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
@@ -7,10 +7,10 @@ export const readFile = (file: File): Promise<string | ArrayBuffer | null> => {
   });
 };
 
-export const convertFileListToArray = async (files: FileList) => {
+export const readFileArray = async (files: File[]) => {
   const fileArr: Array<string | ArrayBuffer | null> = [];
   //파일을 변환하는 과정
-  await Promise.all(Array.from(files).map(readFile))
+  await Promise.all(files.map(readFile))
     .then((results) => {
       results.forEach((result) => fileArr.push(result));
     })
