@@ -1,13 +1,16 @@
 package baro.baro.global.statuscode;
 
-import static org.springframework.http.HttpStatus.*;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 @Getter
 @AllArgsConstructor
 public enum SuccessCode {
+    PRODUCT_CREATED(CREATED.value(), "대여 물품 등록에 성공했습니다"),
+
     RENTAL_PRODUCT_LIST_OK(OK.value(), "빌린 내역 리스트 조회에 성공했습니다."),
     OWNER_PRODUCT_LIST_OK(OK.value(), "빌려준 내역 리스트 조회에 성공했습니다."),
 
