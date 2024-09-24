@@ -15,7 +15,8 @@ public enum SuccessCode {
 
 	NOTIFICATION_LIST_OK(OK.value(), "알림 리스트 조회에 성공했습니다."),
 
-    PASSWORD_MODIFY_OK(OK.value(), "PIN번호 변경에 성공했습니다.")
+    PASSWORD_MODIFY_OK(OK.value(), "PIN번호 변경에 성공했습니다."),
+    PROFILE_DETAILS_OK(OK.value(), "프로필 조회에 성공했습니다."),
     ;
 
 	private final int httpStatusCode;
