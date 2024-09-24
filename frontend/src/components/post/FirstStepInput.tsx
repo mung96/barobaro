@@ -25,7 +25,7 @@ function FirstStepInput({ onNext }: FirstStepInputProps) {
   return (
     <div className="flex flex-col gap-4">
       <h2> 게시글 등록 첫 스탭</h2>
-      <RentalDurationInput selected={range} onSelect={setRange} />
+
       <CategoryTagList
         value={value}
         onChange={(e) => setValue(e.target.value)}
@@ -51,6 +51,7 @@ function FirstStepInput({ onNext }: FirstStepInputProps) {
         onChange={changeFile}
         dropEnd={handleDragEnd}
       />
+      <RentalDurationInput selected={range} onSelect={setRange} />
       <Button onClick={() => onNext(firstData)} width="100%" height="36px">
         다음 스탭으로 가기
       </Button>
