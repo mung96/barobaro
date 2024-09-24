@@ -3,14 +3,14 @@ package baro.baro.global.statuscode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.*;
 
 @Getter
 @AllArgsConstructor
 public enum SuccessCode {
     //대여 물품
-    PRODUCT_CREATED(CREATED.value(), "대여 물품 등록에 성공했습니다"),
+    PRODUCT_CREATED(CREATED.value(), "대여 물품 등록에 성공했습니다."),
+    PRODUCT_DETAILS_OK(OK.value(), "대여 물품 상세 조회에 성공했습니다."),
 
     //계약
     CONTRACT_REQUEST_CREATED(CREATED.value(), "계약 요청에 성공했습니다."),
@@ -31,9 +31,9 @@ public enum SuccessCode {
     OWNER_PRODUCT_LIST_OK(OK.value(), "빌려준 내역 리스트 조회에 성공했습니다."),
 
     ACCOUNT_LIST_OK(OK.value(), "계좌 리스트 조회에 성공했습니다."),
-    ACCOUNT_ADD_CREATED(CREATED.value(), "계좌 연결에 성공했습니다."),
+    ACCOUNT_CREATED(CREATED.value(), "계좌 연결에 성공했습니다."),
     ACCOUNT_ADD_MAIN_OK(OK.value(), "대표 계좌 설정에 성공했습니다."),
-
+    ACCOUNT_DELETED(NO_CONTENT.value(), "대표 계좌 설정에 성공했습니다."),
     PASSWORD_MODIFY_OK(OK.value(), "PIN번호 변경에 성공했습니다."),
     PROFILE_DETAILS_OK(OK.value(), "프로필 조회에 성공했습니다."),
 

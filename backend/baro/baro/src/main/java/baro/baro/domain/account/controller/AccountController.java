@@ -15,8 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static baro.baro.global.statuscode.SuccessCode.*;
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -57,7 +56,12 @@ public class AccountController {
     public ResponseEntity<?> accountAdd(@RequestBody @Valid AccountAddReq accountAddReq) {
         AccountAddRes result = new AccountAddRes("3333-05-681789");
 
-        return new ResponseEntity<>(ResponseDto.success(ACCOUNT_ADD_CREATED, result), CREATED);
+        return new ResponseEntity<>(ResponseDto.success(ACCOUNT_CREATED, result), CREATED);
+    }
+
+    @DeleteMapping("/{accountId}")
+    public ResponseEntity<?> accountRemove(@PathVariable("accountId") Long accountId) {
+        return new ResponseEntity<>(ResponseDto.success(ACCOUNT_DELETED, null), NO_CONTENT);
     }
 
     @PostMapping("/{accountId}")
