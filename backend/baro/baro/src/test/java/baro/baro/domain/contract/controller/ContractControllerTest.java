@@ -88,7 +88,7 @@ class ContractControllerTest {
                                 )
                                 .requestFields(
                                         List.of(
-                                                fieldWithPath("productId").type(JsonFieldType.STRING).description("대여 물품 아이디"),
+                                                fieldWithPath("productId").type(JsonFieldType.NUMBER).description("대여 물품 아이디"),
                                                 fieldWithPath("desiredStartDate").type(JsonFieldType.STRING).description("희망 대여 시작일"),
                                                 fieldWithPath("desiredEndDate").type(JsonFieldType.STRING).description("희망 대여 반납일"),
                                                 fieldWithPath("returnType").type(JsonFieldType.STRING).description("희망 반납 방법(단일)")
