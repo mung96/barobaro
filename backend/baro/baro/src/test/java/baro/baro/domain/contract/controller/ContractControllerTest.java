@@ -4,7 +4,7 @@ import baro.baro.domain.contract.dto.ContractRequestDto;
 import baro.baro.domain.product.entity.ReturnType;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -39,7 +39,7 @@ class ContractControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private Gson gson;
+    private ObjectMapper objectMapper;
 
     private final static String jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
 
@@ -54,7 +54,7 @@ class ContractControllerTest {
                 LocalDate.of(2024, 10, 1),
                 ReturnType.DELIVERY
         );
-        String content = gson.toJson(contractRequestDto);
+        String content = objectMapper.writeValueAsString(contractRequestDto);
 
         //when
         ResultActions actions = mockMvc.perform(
