@@ -16,7 +16,7 @@ function FirstStepInput({ onNext }: FirstStepInputProps) {
   const [value, setValue] = useState('');
   const [address, setAddress] = useState('');
   const [ways, setWays] = useState<string[]>([]);
-  const { files, changeFile } = useFileModel();
+  const { files, changeFile, handleDragEnd } = useFileModel();
   return (
     <div className="flex flex-col gap-4">
       <h2> 게시글 등록 첫 스탭</h2>
@@ -42,6 +42,7 @@ function FirstStepInput({ onNext }: FirstStepInputProps) {
         height={'36px'}
         images={files}
         onChange={changeFile}
+        dropEnd={handleDragEnd}
       />
       <Button onClick={() => onNext(firstData)} width="100%" height="36px">
         다음 스탭으로 가기
