@@ -37,6 +37,7 @@ public enum SuccessCode {
     ACCOUNT_DELETED(NO_CONTENT.value(), "대표 계좌 설정에 성공했습니다."),
     PASSWORD_MODIFY_OK(OK.value(), "PIN번호 변경에 성공했습니다."),
     PROFILE_DETAILS_OK(OK.value(), "프로필 조회에 성공했습니다."),
+    PROFILE_MODIFY_OK(OK.value(), "프로필 수정에 성공했습니다."),
 
 
 

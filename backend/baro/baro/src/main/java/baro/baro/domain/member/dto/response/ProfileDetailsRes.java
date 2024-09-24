@@ -13,13 +13,19 @@ public class ProfileDetailsRes {
 
     private String nickname;
 
+    private String phoneNumber;
+
     private String email;
+
+    private String name;
 
     public static ProfileDetailsRes toDto(Member member) {
         return ProfileDetailsRes.builder()
                 .profileImage(member.getProfileImage())
                 .nickname(member.getNickname())
+                .phoneNumber(member.getPhoneNumber())
                 .email(member.getEmail())
+                .name(member.getName())
                 .build();
     }
 }
