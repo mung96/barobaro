@@ -37,6 +37,7 @@ public enum SuccessCode {
     
     PASSWORD_MODIFY_OK(OK.value(), "PIN번호 변경에 성공했습니다."),
     PROFILE_DETAILS_OK(OK.value(), "프로필 조회에 성공했습니다."),
+    PROFILE_MODIFY_OK(OK.value(), "프로필 수정에 성공했습니다."),
 
     //지역 설정
     
