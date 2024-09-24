@@ -12,6 +12,7 @@ public enum SuccessCode {
     PRODUCT_CREATED(CREATED.value(), "대여 물품 등록에 성공했습니다."),
     PRODUCT_DETAILS_OK(OK.value(), "대여 물품 상세 조회에 성공했습니다."),
     PRODUCT_RECENTLY_VIEWED_LIST_OK(OK.value(), "최근 본 대여 물품 리스트 조회에 성공했습니다."),
+    PRODUCT_RECENTLY_UPLOADED_LIST_OK(OK.value(), "최근 올라온 대여 물품 리스트 조회에 성공했습니다."),
 
     //계약
     CONTRACT_REQUEST_CREATED(CREATED.value(), "계약 요청에 성공했습니다."),
