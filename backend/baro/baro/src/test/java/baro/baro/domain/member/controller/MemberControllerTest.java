@@ -18,10 +18,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static baro.baro.global.ResponseFieldUtils.getCommonResponseFields;
-import static baro.baro.global.statuscode.SuccessCode.PASSWORD_MODIFY_OK;
+import static baro.baro.global.statuscode.SuccessCode.*;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
@@ -90,6 +91,50 @@ class MemberControllerTest {
                                 )
                                 .requestSchema(Schema.schema("PIN번호 변경 Request"))
                                 .responseSchema(Schema.schema("PIN번호 변경 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 프로필_조회_성공() throws Exception {
+        // given
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                get("/members/me/profile")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(PROFILE_DETAILS_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(PROFILE_DETAILS_OK.getMessage()))
+                .andDo(document(
+                        "프로필 조회",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Member API")
+                                .summary("프로필 조회 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body.profileImage").type(JsonFieldType.STRING)
+                                                        .description("프로필 이미지"),
+                                                fieldWithPath("body.nickname").type(JsonFieldType.STRING)
+                                                        .description("닉네임"),
+                                                fieldWithPath("body.email").type(JsonFieldType.STRING)
+                                                        .description("이메일")
+                                        )
+                                )
+                                .responseSchema(Schema.schema("프로필 조회 Response"))
                                 .build()
                         ))
                 );
