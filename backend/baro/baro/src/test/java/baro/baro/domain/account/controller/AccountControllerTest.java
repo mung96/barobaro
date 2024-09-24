@@ -1,5 +1,6 @@
 package baro.baro.domain.account.controller;
 
+import baro.baro.domain.account.dto.request.AccountAddReq;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
 import com.google.gson.Gson;
@@ -14,12 +15,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static baro.baro.global.ResponseFieldUtils.getCommonResponseFields;
-import static baro.baro.global.statuscode.SuccessCode.ACCOUNT_LIST_OK;
+import static baro.baro.global.statuscode.SuccessCode.*;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -81,6 +85,55 @@ class AccountControllerTest {
                                         )
                                 )
                                 .responseSchema(Schema.schema("계좌 리스트 조회 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 계좌_연결_성공() throws Exception {
+        // given
+        AccountAddReq req = new AccountAddReq();
+        req.setAccountNumber("3333-05-681789");
+
+        String content = gson.toJson(req);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                post("/members/me/accounts")
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+
+        // then
+        actions
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(ACCOUNT_ADD_CREATED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(ACCOUNT_ADD_CREATED.getMessage()))
+                .andDo(document(
+                        "계좌 연결",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Account API")
+                                .summary("계좌 연결 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        fieldWithPath("accountNumber").type(JsonFieldType.STRING)
+                                                .description("계좌 번호")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body.accountNumber").type(JsonFieldType.STRING)
+                                                        .description("계좌 번호")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("계좌 연결 Request"))
+                                .responseSchema(Schema.schema("계좌 연결 Response"))
                                 .build()
                         ))
                 );
