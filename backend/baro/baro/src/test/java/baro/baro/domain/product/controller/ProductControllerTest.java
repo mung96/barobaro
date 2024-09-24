@@ -54,9 +54,7 @@ class ProductControllerTest {
         returnTypes.add(DIRECT);
 
         ContractConditionDto contractConditionDto = new ContractConditionDto(
-                "갤럭시S24", "핸드폰시리얼넘버",
-                "제조사 또는 공식 수입사의 AS 센터", 5, 2,
-                7, 7);
+                "제조사 또는 공식 수입사의 AS 센터", 5, 2, 7, 7);
 
         ProductAddReq productAddReq = new ProductAddReq("제목",
                 LocalDate.of(2024, 9, 30),
@@ -141,10 +139,6 @@ class ProductControllerTest {
                                                         .description("경도"),
                                                 fieldWithPath("body.isWriteContract").type(JsonFieldType.BOOLEAN)
                                                         .description("전자계약서 작성여부"),
-                                                fieldWithPath("body.contractCondition.productName").type(JsonFieldType.STRING)
-                                                        .description("물품 이름"),
-                                                fieldWithPath("body.contractCondition.serialNumber").type(JsonFieldType.STRING)
-                                                        .description("물품 일련번호"),
                                                 fieldWithPath("body.contractCondition.repairVendor").type(JsonFieldType.STRING)
                                                         .description("수리 업체"),
                                                 fieldWithPath("body.contractCondition.overdueCriteria").type(JsonFieldType.NUMBER)
@@ -172,6 +166,96 @@ class ProductControllerTest {
                         ))
                 );
 
+    }
+
+    @Test
+    public void 대여_물품_상세_조회_성공() throws Exception {
+        //given
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/products/{productId}", 1L)
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(PRODUCT_DETAILS_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(PRODUCT_DETAILS_OK.getMessage()))
+                .andDo(document(
+                        "대여 물품 상세 조회 성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Product API")
+                                .summary("대여 물품 상세 조회 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body.productId").type(JsonFieldType.NUMBER)
+                                                        .description("물품 ID"),
+                                                fieldWithPath("body.writerId").type(JsonFieldType.STRING)
+                                                        .description("작성자 ID(UUID)"),
+                                                fieldWithPath("body.writerProfileImage").type(JsonFieldType.STRING)
+                                                        .description("작성자 프로필 url"),
+                                                fieldWithPath("body.writerNickname").type(JsonFieldType.STRING)
+                                                        .description("작성자 닉네임"),
+                                                fieldWithPath("body.imageList[]").type(JsonFieldType.ARRAY)
+                                                        .description("물품 이미지 URL 리스트"),
+                                                fieldWithPath("body.productStatus").type(JsonFieldType.STRING)
+                                                        .description("물품 상태"),
+                                                fieldWithPath("body.title").type(JsonFieldType.STRING)
+                                                        .description("게시글 제목"),
+                                                fieldWithPath("body.category").type(JsonFieldType.STRING)
+                                                        .description("물품 카테고리"),
+                                                fieldWithPath("body.dong").type(JsonFieldType.STRING)
+                                                        .description("직거래 동네"),
+                                                fieldWithPath("body.createdAt").type(JsonFieldType.STRING)
+                                                        .description("물품 등록 시간"),
+                                                fieldWithPath("body.wishCount").type(JsonFieldType.NUMBER)
+                                                        .description("찜한 사람 수"),
+                                                fieldWithPath("body.content").type(JsonFieldType.STRING)
+                                                        .description("게시글 본문"),
+                                                fieldWithPath("body.place").type(JsonFieldType.STRING)
+                                                        .description("직거래 세부 장소"),
+                                                fieldWithPath("body.latitude").type(JsonFieldType.NUMBER)
+                                                        .description("위도"),
+                                                fieldWithPath("body.longitude").type(JsonFieldType.NUMBER)
+                                                        .description("경도"),
+                                                fieldWithPath("body.isWriteContract").type(JsonFieldType.BOOLEAN)
+                                                        .description("전자계약서 작성여부"),
+                                                fieldWithPath("body.contractCondition.repairVendor").type(JsonFieldType.STRING)
+                                                        .description("수리 업체"),
+                                                fieldWithPath("body.contractCondition.overdueCriteria").type(JsonFieldType.NUMBER)
+                                                        .description("무단 연체 기준"),
+                                                fieldWithPath("body.contractCondition.overdueFee").type(JsonFieldType.NUMBER)
+                                                        .description("무단 연체 가격"),
+                                                fieldWithPath("body.contractCondition.theftCriteria").type(JsonFieldType.NUMBER)
+                                                        .description("도난 기준"),
+                                                fieldWithPath("body.contractCondition.refundDeadline").type(JsonFieldType.NUMBER)
+                                                        .description("청구 비용 기준"),
+                                                fieldWithPath("body.returnTypes[]").type(JsonFieldType.ARRAY)
+                                                        .description("물품 반환 방법"),
+                                                fieldWithPath("body.startDate").type(JsonFieldType.STRING)
+                                                        .description("물품 대여 시작일"),
+                                                fieldWithPath("body.endDate").type(JsonFieldType.STRING)
+                                                        .description("물품 대여 반납일"),
+                                                fieldWithPath("body.rentalFee").type(JsonFieldType.NUMBER)
+                                                        .description("물품 대여비")
+
+                                        )
+                                )
+                                .requestSchema(Schema.schema("대여 물픔 상세 조회 Request"))
+                                .responseSchema(Schema.schema("대여 물픔 상세 조회 Response"))
+                                .build()
+                        ))
+                );
     }
 
     @Test
