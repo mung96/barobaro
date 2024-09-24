@@ -1,6 +1,6 @@
 package baro.baro.domain.product.controller;
 
-import baro.baro.domain.contract.dto.ContractConditionDto;
+import baro.baro.domain.contract.dto.request.ContractConditionReq;
 import baro.baro.domain.product.dto.request.ProductAddReq;
 import baro.baro.domain.product.entity.ReturnType;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
@@ -53,8 +53,9 @@ class ProductControllerTest {
         List<ReturnType> returnTypes = new ArrayList<>();
         returnTypes.add(DIRECT);
 
-        ContractConditionDto contractConditionDto = new ContractConditionDto(
-                "제조사 또는 공식 수입사의 AS 센터", 5, 2, 7, 7);
+        ContractConditionReq contractConditionReq = new ContractConditionReq(
+                "물품 이름", "물품 일련번호", "제조사 또는 공식 수입사의 AS 센터",
+                5, 2, 7, 7);
 
         ProductAddReq productAddReq = new ProductAddReq("제목",
                 LocalDate.of(2024, 9, 30),
@@ -67,7 +68,7 @@ class ProductControllerTest {
                 "서울특별시 강남구 테헤란로 212",
                 "본문내용본문내용용용",
                 LIGHT_STICK,
-                contractConditionDto);
+                contractConditionReq);
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
@@ -156,7 +157,9 @@ class ProductControllerTest {
                                                 fieldWithPath("body.endDate").type(JsonFieldType.STRING)
                                                         .description("물품 대여 반납일"),
                                                 fieldWithPath("body.rentalFee").type(JsonFieldType.NUMBER)
-                                                        .description("물품 대여비")
+                                                        .description("물품 대여비"),
+                                                fieldWithPath("body.isMine").type(JsonFieldType.BOOLEAN)
+                                                        .description("나의 게시글 여부")
 
                                         )
                                 )
@@ -247,8 +250,9 @@ class ProductControllerTest {
                                                 fieldWithPath("body.endDate").type(JsonFieldType.STRING)
                                                         .description("물품 대여 반납일"),
                                                 fieldWithPath("body.rentalFee").type(JsonFieldType.NUMBER)
-                                                        .description("물품 대여비")
-
+                                                        .description("물품 대여비"),
+                                                fieldWithPath("body.isMine").type(JsonFieldType.BOOLEAN)
+                                                        .description("나의 게시글 여부")
                                         )
                                 )
                                 .requestSchema(Schema.schema("대여 물품 상세 조회 Request"))
