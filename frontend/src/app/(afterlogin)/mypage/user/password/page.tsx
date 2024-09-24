@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import KeyPadDelete from '@/components/(SVG_component)/(mypage)/KeyPadDelete';
-import DisplayPassword from '@/components/(user)/DisplayPassword';
+import DisplayPassword from '@/components/user/DisplayPassword';
 import Header from '@/components/Header';
 import { useRouter } from 'next/navigation';
 
@@ -18,8 +18,11 @@ export default function PasswordChange() {
   // 추후 진짜 비밀번호는 다른곳에서 가져올 예정.
   const [inputPassword, setInputPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
-  const [step, setStep] = useState<PasswordChangeStep>(PasswordChangeStep.CURRENT);
-  const [passwordMessage, setPasswordMessage] = useState<string>('현재 비밀번호를 입력해주세요');
+  const [step, setStep] = useState<PasswordChangeStep>(
+    PasswordChangeStep.CURRENT,
+  );
+  const [passwordMessage, setPasswordMessage] =
+    useState<string>('현재 비밀번호를 입력해주세요');
   const [isFinished, setIsFinished] = useState<boolean>(false);
 
   const passwordHandler = (press: string) => {
@@ -57,7 +60,9 @@ export default function PasswordChange() {
           // 변경이 완료된 이후 메인페이지로 replace.
         } else {
           setStep(PasswordChangeStep.NEW);
-          setPasswordMessage('일치하지 않습니다. 새로운 비밀번호를 다시 입력해주세요');
+          setPasswordMessage(
+            '일치하지 않습니다. 새로운 비밀번호를 다시 입력해주세요',
+          );
         }
         break;
     }
@@ -79,7 +84,9 @@ export default function PasswordChange() {
       <main className="flex flex-col justify-center items-center flex-1">
         <p className="text-[14px] text-black-100">{passwordMessage}</p>
         <div className="mt-9">
-          {!isFinished ? <DisplayPassword length={inputPassword.length} /> : null}
+          {!isFinished ? (
+            <DisplayPassword length={inputPassword.length} />
+          ) : null}
           {/* 비밀번호를 설정하고 완료되었다면 ---이걸 표시하지 않음. */}
         </div>
       </main>
