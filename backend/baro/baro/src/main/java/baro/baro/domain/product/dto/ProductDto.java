@@ -1,4 +1,4 @@
-package baro.baro.domain.product.dto.response;
+package baro.baro.domain.product.dto;
 
 import baro.baro.domain.product.entity.ProductStatus;
 import lombok.Builder;
@@ -9,9 +9,9 @@ import java.time.LocalDate;
 @Data
 @Builder
 public class ProductDto {
-    private Long product_id;
+    private Long productId;
 
-    private String product_main_image;
+    private String productMainImage;
 
     private String title;
 
