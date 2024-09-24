@@ -14,15 +14,8 @@ export default function ChatWindow() {
   };
 
   const sendChat = () => {
-    if (!!chatValue) {
-      // 입력 필드가 비지 않았을 때(보내기 버튼이 활성화될 때)
-      setChatValue('');
-      if (messageRef.current) {
-        message = messageRef.current.value;
-        messageRef.current.value = '';
-        messageRef.current.focus();
-      }
-    }
+    setChatValue('');
+    messageRef.current?.focus();
   };
 
   return (
@@ -42,6 +35,7 @@ export default function ChatWindow() {
               onClick={sendChat}
               role="presentation"
               className="w-2/12 focus:outline-none"
+              disabled={!chatValue}
             >
               <SendButton active={!!chatValue} className="w-full" />
             </button>

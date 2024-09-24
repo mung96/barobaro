@@ -4,11 +4,13 @@ import Message from './Message';
 
 export default function Dialogs() {
   const getCurrentTime = () => {
+    // 데이터 들어오기 전까지 임시 사용
     const now = new Date();
     return `${now.getFullYear()}년 ${String(now.getMonth() + 1).padStart(2, '0')}월 ${String(now.getDate()).padStart(2, '0')}일, ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
   };
   return (
     <>
+      {/* axios로 불러온 데이터 map */}
       <Message
         type={3}
         timestamp={getCurrentTime().split(',')[0]}
