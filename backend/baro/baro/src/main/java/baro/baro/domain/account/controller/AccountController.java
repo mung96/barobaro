@@ -1,18 +1,21 @@
 package baro.baro.domain.account.controller;
 
 import baro.baro.domain.account.dto.AccountDto;
+import baro.baro.domain.account.dto.request.AccountAddReq;
+import baro.baro.domain.account.dto.response.AccountAddRes;
 import baro.baro.domain.account.dto.response.AccountListRes;
 import baro.baro.global.dto.ResponseDto;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static baro.baro.global.statuscode.SuccessCode.ACCOUNT_ADD_CREATED;
 import static baro.baro.global.statuscode.SuccessCode.ACCOUNT_LIST_OK;
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
@@ -48,5 +51,12 @@ public class AccountController {
         AccountListRes result = new AccountListRes(accounts);
 
         return new ResponseEntity<>(ResponseDto.success(ACCOUNT_LIST_OK, result), OK);
+    }
+
+    @PostMapping
+    public ResponseEntity<?> accountAdd(@RequestBody @Valid AccountAddReq accountAddReq) {
+        AccountAddRes result = new AccountAddRes("3333-05-681789");
+
+        return new ResponseEntity<>(ResponseDto.success(ACCOUNT_ADD_CREATED, result), CREATED);
     }
 }
