@@ -1,5 +1,5 @@
 import { readFileArray } from '@/utils/fileUtils';
-import { ChangeEvent, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { DropResult } from 'react-beautiful-dnd';
 
 const useFileModel = () => {
@@ -28,11 +28,18 @@ const useFileModel = () => {
     const add = copiedFiles[source.index];
     copiedFiles.splice(source.index, 1);
     copiedFiles.splice(destination.index, 0, add);
-
     setFiles(copiedFiles);
   };
 
-  return { files, file, changeFile, handleDragEnd };
+  const deleteFileByIndex = (index: number) => {
+    const newFiles: Array<string | ArrayBuffer | null> = [];
+    files.filter((file, idx) => {
+      idx !== index && newFiles.push(file);
+    });
+    setFiles(newFiles);
+  };
+
+  return { files, file, changeFile, handleDragEnd, deleteFileByIndex };
 };
 
 export default useFileModel;
