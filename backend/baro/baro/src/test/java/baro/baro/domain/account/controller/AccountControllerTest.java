@@ -20,6 +20,7 @@ import java.util.List;
 import static baro.baro.global.ResponseFieldUtils.getCommonResponseFields;
 import static baro.baro.global.statuscode.SuccessCode.*;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
+import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
@@ -102,6 +103,7 @@ class AccountControllerTest {
         ResultActions actions = mockMvc.perform(
                 post("/members/me/accounts")
                         .header("Authorization", "Bearer " + jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
         );
@@ -134,6 +136,56 @@ class AccountControllerTest {
                                 )
                                 .requestSchema(Schema.schema("계좌 연결 Request"))
                                 .responseSchema(Schema.schema("계좌 연결 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 대표_계좌_설정_성공() throws Exception {
+        // given
+        Long accountId = 10000L;
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                post("/members/me/accounts/{accountId}", 10000L)
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(ACCOUNT_ADD_MAIN_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(ACCOUNT_ADD_MAIN_OK.getMessage()))
+                .andDo(document(
+                        "대표 계좌 설정",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Account API")
+                                .summary("대표 계좌 설정 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .pathParameters(
+                                        parameterWithName("accountId")
+                                                .description("계좌 식별자")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body.accountNumber").type(JsonFieldType.STRING)
+                                                        .description("계좌 번호"),
+                                                fieldWithPath("body.accountId").type(JsonFieldType.NUMBER)
+                                                        .description("계좌 식별자"),
+                                                fieldWithPath("body.main").type(JsonFieldType.BOOLEAN)
+                                                        .description("대표 계좌 여부")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("대표 계좌 설정 Request"))
+                                .responseSchema(Schema.schema("대표 계좌 설정 Response"))
                                 .build()
                         ))
                 );

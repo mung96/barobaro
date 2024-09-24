@@ -13,6 +13,7 @@ public enum SuccessCode {
 
     ACCOUNT_LIST_OK(OK.value(), "계좌 리스트 조회에 성공했습니다."),
     ACCOUNT_ADD_CREATED(CREATED.value(), "계좌 연결에 성공했습니다."),
+    ACCOUNT_ADD_MAIN_OK(OK.value(), "대표 계좌 설정에 성공했습니다."),
 
 	NOTIFICATION_LIST_OK(OK.value(), "알림 리스트 조회에 성공했습니다."),
 
