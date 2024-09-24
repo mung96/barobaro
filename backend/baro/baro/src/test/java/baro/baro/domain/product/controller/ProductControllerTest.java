@@ -259,6 +259,59 @@ class ProductControllerTest {
     }
 
     @Test
+    public void 최근_본_대여_물품_리스트_조회_성공() throws Exception {
+        //given
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/products/recently-viewed")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(PRODUCT_RECENTLY_VIEWED_LIST_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(PRODUCT_RECENTLY_VIEWED_LIST_OK.getMessage()))
+                .andDo(document(
+                        "최근 본 대여 물품 리스트 조회",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Product API")
+                                .summary("최근 본 대여 물품 리스트 조회 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body.[].productId").type(JsonFieldType.NUMBER)
+                                                        .description("대여 물품 아이디"),
+                                                fieldWithPath("body.[].productMainImage").type(JsonFieldType.STRING)
+                                                        .description("대여 물품 대표 이미지"),
+                                                fieldWithPath("body.[].isWished").type(JsonFieldType.BOOLEAN)
+                                                        .description("찜한 여부"),
+                                                fieldWithPath("body.[].startDate").type(JsonFieldType.STRING)
+                                                        .description("대여 시작일"),
+                                                fieldWithPath("body.[].endDate").type(JsonFieldType.STRING)
+                                                        .description("대여 마감일"),
+                                                fieldWithPath("body.[].rentalFee").type(JsonFieldType.NUMBER)
+                                                        .description("대여비"),
+                                                fieldWithPath("body.[].title").type(JsonFieldType.STRING)
+                                                        .description("게시글 제목")
+
+                                        )
+                                )
+                                .responseSchema(Schema.schema("최근 본 대여 물품 리스트 조회 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
     public void 빌린_내역_리스트_조회_성공() throws Exception {
         // given
 
