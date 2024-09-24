@@ -61,7 +61,10 @@ public class ProductDetails {
 
     private Integer rentalFee;
 
-    public static ProductDetails toDto(Product product, Member member, List<String> imageList, ContractConditionDto contractCondition) {
+    private Boolean isMine;
+
+    public static ProductDetails toDto(Product product, Member member, List<String> imageList,
+                                       ContractConditionDto contractCondition, Boolean isMine) {
         return ProductDetails.builder()
                 .productId(product.getId())
                 .writerId(member.getUuid())
@@ -84,6 +87,7 @@ public class ProductDetails {
                 .startDate(product.getStartDate())
                 .endDate(product.getEndDate())
                 .rentalFee(product.getRentalFee())
+                .isMine(isMine)
                 .build();
     }
 }
