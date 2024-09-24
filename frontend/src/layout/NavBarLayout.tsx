@@ -1,15 +1,18 @@
 import NavBar from '@/components/NavBar';
+import React from 'react';
 
 type Props = {
-  children: React.ReactNode,
-  current: string
+  children: React.ReactNode;
+  current: string;
 };
 
-export default function RootLayout({ children, current }: Props) {
+export default function NavBarLayout({ children, current }: Props) {
   return (
     <>
       {children}
-      <nav><NavBar current={current} /></nav>
+      <nav>
+        <NavBar current={current} />
+      </nav>
     </>
   );
 }
