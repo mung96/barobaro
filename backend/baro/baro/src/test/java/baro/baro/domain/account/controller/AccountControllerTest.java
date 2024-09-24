@@ -23,6 +23,7 @@ import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -108,8 +109,8 @@ class AccountControllerTest {
         // then
         actions
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.header.httpStatusCode").value(ACCOUNT_ADD_CREATED.getHttpStatusCode()))
-                .andExpect(jsonPath("$.header.message").value(ACCOUNT_ADD_CREATED.getMessage()))
+                .andExpect(jsonPath("$.header.httpStatusCode").value(ACCOUNT_CREATED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(ACCOUNT_CREATED.getMessage()))
                 .andDo(document(
                         "계좌 연결",
                         preprocessRequest(prettyPrint()),
@@ -133,6 +134,52 @@ class AccountControllerTest {
                                 )
                                 .requestSchema(Schema.schema("계좌 연결 Request"))
                                 .responseSchema(Schema.schema("계좌 연결 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 계좌_삭제_성공() throws Exception {
+        // given
+        Long accountId = 10000L;
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                delete("/members/me/accounts/{accountId}", 10000L)
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        actions
+                .andExpect(status().isNoContent())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(ACCOUNT_DELETED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(ACCOUNT_DELETED.getMessage()))
+                .andDo(document(
+                        "계좌 삭제",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Account API")
+                                .summary("계좌 삭제 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .pathParameters(
+                                        parameterWithName("accountId")
+                                                .description("계좌 식별자")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(JsonFieldType.NULL)
+                                                        .description("내용 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("계좌 삭제 Request"))
+                                .responseSchema(Schema.schema("계좌 삭제 Response"))
                                 .build()
                         ))
                 );
