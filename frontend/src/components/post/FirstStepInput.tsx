@@ -19,7 +19,8 @@ function FirstStepInput({ onNext }: FirstStepInputProps) {
   const [value, setValue] = useState('');
   const [address, setAddress] = useState('');
   const [ways, setWays] = useState<string[]>([]);
-  const { files, changeFile, handleDragEnd } = useFileModel();
+  const { files, changeFile, handleDragEnd, deleteFileByIndex } =
+    useFileModel();
   const [range, setRange] = useState<DateRange | undefined>(undefined);
 
   return (
@@ -45,10 +46,11 @@ function FirstStepInput({ onNext }: FirstStepInputProps) {
       </div>
 
       <ProductImageList
-        width={'36px'}
-        height={'36px'}
+        width={'72px'}
+        height={'72px'}
         images={files}
-        onChange={changeFile}
+        addFile={changeFile}
+        deleteFile={deleteFileByIndex}
         dropEnd={handleDragEnd}
       />
       <RentalDurationInput selected={range} onSelect={setRange} />
