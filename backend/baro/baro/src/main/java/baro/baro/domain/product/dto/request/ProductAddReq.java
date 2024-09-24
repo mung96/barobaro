@@ -1,6 +1,6 @@
 package baro.baro.domain.product.dto.request;
 
-import baro.baro.domain.contract.dto.ContractConditionDto;
+import baro.baro.domain.contract.dto.request.ContractConditionReq;
 import baro.baro.domain.product.entity.Category;
 import baro.baro.domain.product.entity.ReturnType;
 import lombok.AllArgsConstructor;
@@ -34,5 +34,5 @@ public class ProductAddReq {
 
     private Category category;
 
-    private ContractConditionDto contractCondition;
+    private ContractConditionReq contractConditionReq;
 }
