@@ -1,31 +1,39 @@
 package baro.baro.domain.product.controller;
 
+import baro.baro.domain.contract.dto.ContractConditionDto;
+import baro.baro.domain.product.dto.request.ProductAddReq;
+import baro.baro.domain.product.entity.ReturnType;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
+import static baro.baro.domain.product.entity.Category.LIGHT_STICK;
+import static baro.baro.domain.product.entity.ReturnType.DIRECT;
 import static baro.baro.global.ResponseFieldUtils.getCommonResponseFields;
-import static baro.baro.global.statuscode.SuccessCode.OWNER_PRODUCT_LIST_OK;
-import static baro.baro.global.statuscode.SuccessCode.RENTAL_PRODUCT_LIST_OK;
+import static baro.baro.global.statuscode.SuccessCode.*;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.multipart;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -37,10 +45,134 @@ class ProductControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private Gson gson;
-
     private final static String jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+
+    @Test
+    public void 대여_물품_등록_성공() throws Exception {
+        //given
+        List<ReturnType> returnTypes = new ArrayList<>();
+        returnTypes.add(DIRECT);
+
+        ContractConditionDto contractConditionDto = new ContractConditionDto(
+                "갤럭시S24", "핸드폰시리얼넘버",
+                "제조사 또는 공식 수입사의 AS 센터", 5, 2,
+                7, 7);
+
+        ProductAddReq productAddReq = new ProductAddReq("제목",
+                LocalDate.of(2024, 9, 30),
+                LocalDate.of(2024, 10, 24),
+                15000,
+                "고척스카이돔 중앙출입문C게이트앞",
+                37.50,
+                126.87,
+                returnTypes,
+                "서울특별시 강남구 테헤란로 212",
+                "본문내용본문내용용용",
+                LIGHT_STICK,
+                contractConditionDto);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+
+        MockMultipartFile file1 = new MockMultipartFile("files", "sample1.jpg", "image/jpeg", "image/sample1.jpg".getBytes());
+        MockMultipartFile file2 = new MockMultipartFile("files", "sample2.jpg", "image/jpeg", "image/sample2.jpg".getBytes());
+
+        MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", mapper.writeValueAsBytes(productAddReq));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                multipart("/products")
+                        .file(file1)
+                        .file(file2)
+                        .file(dto)
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .contentType("multipart/form-data")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+        );
+
+        //then
+        actions
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(PRODUCT_CREATED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(PRODUCT_CREATED.getMessage()))
+                .andDo(document(
+                        "대여 물품 등록 성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Product API")
+                                .summary("대여 물픔 등록 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body.productId").type(JsonFieldType.NUMBER)
+                                                        .description("물품 ID"),
+                                                fieldWithPath("body.writerId").type(JsonFieldType.STRING)
+                                                        .description("작성자 ID(UUID)"),
+                                                fieldWithPath("body.writerProfileImage").type(JsonFieldType.STRING)
+                                                        .description("작성자 프로필 url"),
+                                                fieldWithPath("body.writerNickname").type(JsonFieldType.STRING)
+                                                        .description("작성자 닉네임"),
+                                                fieldWithPath("body.imageList[]").type(JsonFieldType.ARRAY)
+                                                        .description("물품 이미지 URL 리스트"),
+                                                fieldWithPath("body.productStatus").type(JsonFieldType.STRING)
+                                                        .description("물품 상태"),
+                                                fieldWithPath("body.title").type(JsonFieldType.STRING)
+                                                        .description("게시글 제목"),
+                                                fieldWithPath("body.category").type(JsonFieldType.STRING)
+                                                        .description("물품 카테고리"),
+                                                fieldWithPath("body.dong").type(JsonFieldType.STRING)
+                                                        .description("직거래 동네"),
+                                                fieldWithPath("body.createdAt").type(JsonFieldType.STRING)
+                                                        .description("물품 등록 시간"),
+                                                fieldWithPath("body.wishCount").type(JsonFieldType.NUMBER)
+                                                        .description("찜한 사람 수"),
+                                                fieldWithPath("body.content").type(JsonFieldType.STRING)
+                                                        .description("게시글 본문"),
+                                                fieldWithPath("body.place").type(JsonFieldType.STRING)
+                                                        .description("직거래 세부 장소"),
+                                                fieldWithPath("body.latitude").type(JsonFieldType.NUMBER)
+                                                        .description("위도"),
+                                                fieldWithPath("body.longitude").type(JsonFieldType.NUMBER)
+                                                        .description("경도"),
+                                                fieldWithPath("body.isWriteContract").type(JsonFieldType.BOOLEAN)
+                                                        .description("전자계약서 작성여부"),
+                                                fieldWithPath("body.contractCondition.productName").type(JsonFieldType.STRING)
+                                                        .description("물품 이름"),
+                                                fieldWithPath("body.contractCondition.serialNumber").type(JsonFieldType.STRING)
+                                                        .description("물품 일련번호"),
+                                                fieldWithPath("body.contractCondition.repairVendor").type(JsonFieldType.STRING)
+                                                        .description("수리 업체"),
+                                                fieldWithPath("body.contractCondition.overdueCriteria").type(JsonFieldType.NUMBER)
+                                                        .description("무단 연체 기준"),
+                                                fieldWithPath("body.contractCondition.overdueFee").type(JsonFieldType.NUMBER)
+                                                        .description("무단 연체 가격"),
+                                                fieldWithPath("body.contractCondition.theftCriteria").type(JsonFieldType.NUMBER)
+                                                        .description("도난 기준"),
+                                                fieldWithPath("body.contractCondition.refundDeadline").type(JsonFieldType.NUMBER)
+                                                        .description("청구 비용 기준"),
+                                                fieldWithPath("body.returnTypes[]").type(JsonFieldType.ARRAY)
+                                                        .description("물품 반환 방법"),
+                                                fieldWithPath("body.startDate").type(JsonFieldType.STRING)
+                                                        .description("물품 대여 시작일"),
+                                                fieldWithPath("body.endDate").type(JsonFieldType.STRING)
+                                                        .description("물품 대여 반납일"),
+                                                fieldWithPath("body.rentalFee").type(JsonFieldType.NUMBER)
+                                                        .description("물품 대여비")
+
+                                        )
+                                )
+                                .requestSchema(Schema.schema("대여 물픔 등록 Request"))
+                                .responseSchema(Schema.schema("대여 물픔 등록 Response"))
+                                .build()
+                        ))
+                );
+
+    }
 
     @Test
     public void 빌린_내역_리스트_조회_성공() throws Exception {
@@ -72,9 +204,9 @@ class ProductControllerTest {
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
-                                                fieldWithPath("body.*[].product_id").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.*[].productId").type(JsonFieldType.NUMBER)
                                                         .description("대여 물품 아이디"),
-                                                fieldWithPath("body.*[].product_main_image").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.*[].productMainImage").type(JsonFieldType.STRING)
                                                         .description("대여 물품 대표 이미지"),
                                                 fieldWithPath("body.*[].title").type(JsonFieldType.STRING)
                                                         .description("대여 물품 제목"),
@@ -127,9 +259,9 @@ class ProductControllerTest {
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
-                                                fieldWithPath("body.*[].product_id").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.*[].productId").type(JsonFieldType.NUMBER)
                                                         .description("대여 물품 아이디"),
-                                                fieldWithPath("body.*[].product_main_image").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.*[].productMainImage").type(JsonFieldType.STRING)
                                                         .description("대여 물품 대표 이미지"),
                                                 fieldWithPath("body.*[].title").type(JsonFieldType.STRING)
                                                         .description("대여 물품 제목"),
