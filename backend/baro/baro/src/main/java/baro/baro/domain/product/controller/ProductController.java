@@ -70,6 +70,7 @@ public class ProductController {
                 .startDate(LocalDate.of(2024, 9, 30))
                 .endDate(LocalDate.of(2024, 10, 24))
                 .rentalFee(10000)
+                .isMine(true)
                 .build();
 
         return new ResponseEntity<>(ResponseDto.success(PRODUCT_CREATED, result), CREATED);
@@ -114,6 +115,7 @@ public class ProductController {
                 .startDate(LocalDate.of(2024, 9, 30))
                 .endDate(LocalDate.of(2024, 10, 24))
                 .rentalFee(10000)
+                .isMine(false)
                 .build();
 
         return new ResponseEntity<>(ResponseDto.success(PRODUCT_DETAILS_OK, result), OK);
