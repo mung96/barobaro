@@ -9,10 +9,6 @@ import lombok.Data;
 @Builder
 @AllArgsConstructor
 public class ContractConditionDto {
-    private String productName;
-
-    private String serialNumber;
-
     private String repairVendor;
 
     private Integer overdueCriteria;
@@ -25,8 +21,6 @@ public class ContractConditionDto {
 
     public static ContractConditionDto toDto(ContractCondition contractCondition) {
         return ContractConditionDto.builder()
-                .productName(contractCondition.getProductName())
-                .serialNumber(contractCondition.getSerialNumber())
                 .repairVendor(contractCondition.getRepairVendor())
                 .overdueCriteria(contractCondition.getOverdueCriteria())
                 .overdueFee(contractCondition.getOverdueFee())

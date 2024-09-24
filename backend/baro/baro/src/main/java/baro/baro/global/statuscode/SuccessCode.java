@@ -9,7 +9,8 @@ import static org.springframework.http.HttpStatus.*;
 @AllArgsConstructor
 public enum SuccessCode {
     //대여 물품
-    PRODUCT_CREATED(CREATED.value(), "대여 물품 등록에 성공했습니다"),
+    PRODUCT_CREATED(CREATED.value(), "대여 물품 등록에 성공했습니다."),
+    PRODUCT_DETAILS_OK(OK.value(), "대여 물품 상세 조회에 성공했습니다."),
 
     //계약
     CONTRACT_REQUEST_CREATED(CREATED.value(), "계약 요청에 성공했습니다."),
