@@ -1,9 +1,11 @@
 import CategoryTagList from '@/components/post/CategoryTagList';
+import ProductImageList from '@/components/post/ProductImageList';
 
 import RentalDurationInput from '@/components/post/RentalDurationInput';
 import ReturnTypeList from '@/components/post/ReturnTypeList';
 import Button from '@/components/shared/Button';
 import Input from '@/components/shared/Input';
+import useFileModel from '@/hooks/shared/useFileModel';
 
 import { useState } from 'react';
 import { DateRange } from 'react-day-picker';
@@ -17,12 +19,14 @@ function FirstStepInput({ onNext }: FirstStepInputProps) {
   const [value, setValue] = useState('');
   const [address, setAddress] = useState('');
   const [ways, setWays] = useState<string[]>([]);
+  const { files, changeFile, handleDragEnd, deleteFileByIndex } =
+    useFileModel();
   const [range, setRange] = useState<DateRange | undefined>(undefined);
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-4">
       <h2> 게시글 등록 첫 스탭</h2>
-      <RentalDurationInput selected={range} onSelect={setRange} />
+
       <CategoryTagList
         value={value}
         onChange={(e) => setValue(e.target.value)}
@@ -40,6 +44,16 @@ function FirstStepInput({ onNext }: FirstStepInputProps) {
           />
         )}
       </div>
+
+      <ProductImageList
+        width={'72px'}
+        height={'72px'}
+        images={files}
+        addFile={changeFile}
+        deleteFile={deleteFileByIndex}
+        dropEnd={handleDragEnd}
+      />
+      <RentalDurationInput selected={range} onSelect={setRange} />
       <Button onClick={() => onNext(firstData)} width="100%" height="36px">
         다음 스탭으로 가기
       </Button>
