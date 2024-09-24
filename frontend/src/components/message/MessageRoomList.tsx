@@ -1,7 +1,7 @@
 'use client';
 
 import ChatRoomEach from './ChatRoom';
-import { ChatRoomType } from './ChatRoomType';
+import ChatRoomType from './ChatRoomType';
 
 interface MessageRoomListParam {
   selectValue: string;
