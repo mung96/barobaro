@@ -1,6 +1,6 @@
 package baro.baro.domain.product.dto;
 
-import baro.baro.domain.product.entity.ProductStatus;
+import baro.baro.domain.product.entity.Product;
 import lombok.Builder;
 import lombok.Data;
 
@@ -13,7 +13,7 @@ public class ProductDto {
 
     private String productMainImage;
 
-    private String title;
+    private Boolean isWished;
 
     private LocalDate startDate;
 
@@ -21,5 +21,17 @@ public class ProductDto {
 
     private Integer rentalFee;
 
-    private ProductStatus productStatus;
+    private String title;
+
+    public static ProductDto toDto(Product product, String mainImageUrl, Boolean isWished) {
+        return ProductDto.builder()
+                .productId(product.getId())
+                .productMainImage(mainImageUrl)
+                .isWished(isWished)
+                .startDate(product.getStartDate())
+                .endDate(product.getEndDate())
+                .rentalFee(product.getRentalFee())
+                .title(product.getTitle())
+                .build();
+    }
 }

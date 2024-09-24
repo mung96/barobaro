@@ -1,10 +1,11 @@
 package baro.baro.domain.product.controller;
 
 import baro.baro.domain.contract.dto.ContractConditionDto;
+import baro.baro.domain.product.dto.MyProductDto;
 import baro.baro.domain.product.dto.ProductDetails;
 import baro.baro.domain.product.dto.ProductDto;
 import baro.baro.domain.product.dto.request.ProductAddReq;
-import baro.baro.domain.product.dto.response.ProductListRes;
+import baro.baro.domain.product.dto.response.MyProductListRes;
 import baro.baro.domain.product.entity.ReturnType;
 import baro.baro.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -75,7 +76,7 @@ public class ProductController {
     }
 
     @GetMapping("/products/{productId}")
-    public ResponseEntity<?> productAdd(@PathVariable Long productId) {
+    public ResponseEntity<?> productDetails(@PathVariable Long productId) {
         List<String> images = new ArrayList<>();
         images.add("이미지1");
         images.add("이미지2");
@@ -118,14 +119,49 @@ public class ProductController {
         return new ResponseEntity<>(ResponseDto.success(PRODUCT_DETAILS_OK, result), OK);
     }
 
+    @GetMapping("products/recently-viewed")
+    public ResponseEntity<?> recentlyViewedList() {
+        List<ProductDto> result = new ArrayList<>();
+
+        for(int i = 0; i < 10; i++) {
+            Long id = 1000L+i;
+
+            if(i % 2 == 0) {
+                ProductDto dto = ProductDto.builder()
+                        .productId(id)
+                        .productMainImage("상품 대표 이미지 url")
+                        .isWished(true)
+                        .startDate(LocalDate.of(2024, 9, 30))
+                        .endDate(LocalDate.of(2024, 10, 30))
+                        .rentalFee(10000+1000*i)
+                        .title("제목")
+                    .build();
+                result.add(dto);
+            } else {
+                ProductDto dto = ProductDto.builder()
+                        .productId(id)
+                        .productMainImage("상품 대표 이미지 url")
+                        .isWished(false)
+                        .startDate(LocalDate.of(2024, 9, 26))
+                        .endDate(LocalDate.of(2024, 10, 26))
+                        .rentalFee(10000+1000*i)
+                        .title("제목")
+                    .build();
+                result.add(dto);
+            }
+        }
+
+        return new ResponseEntity<>(ResponseDto.success(PRODUCT_RECENTLY_VIEWED_LIST_OK, result), OK);
+    }
+
     @GetMapping("/members/me/rental")
     public ResponseEntity<?> rentalProductList() {
-        List<ProductDto> products = new ArrayList<>();
+        List<MyProductDto> products = new ArrayList<>();
 
         for(int i = 0; i < 5; i++) {
             Long id = 10000L + i;
 
-            ProductDto dto = ProductDto.builder()
+            MyProductDto dto = MyProductDto.builder()
                     .productId(id)
                     .productMainImage("대표 이미지 " + id)
                     .title("제목 " + id)
@@ -141,7 +177,7 @@ public class ProductController {
         for(int i = 5; i < 10; i++) {
             Long id = 10000L + i;
 
-            ProductDto dto = ProductDto.builder()
+            MyProductDto dto = MyProductDto.builder()
                     .productId(id)
                     .productMainImage("대표 이미지 " + id)
                     .title("제목 " + id)
@@ -154,19 +190,19 @@ public class ProductController {
             products.add(dto);
         }
 
-        ProductListRes result = new ProductListRes(products);
+        MyProductListRes result = new MyProductListRes(products);
 
         return new ResponseEntity<>(ResponseDto.success(RENTAL_PRODUCT_LIST_OK, result), OK);
     }
 
     @GetMapping("/members/me/owner")
     public ResponseEntity<?> ownerProductList() {
-        List<ProductDto> products = new ArrayList<>();
+        List<MyProductDto> products = new ArrayList<>();
 
         for(int i = 0; i < 5; i++) {
             Long id = 10000L + i;
 
-            ProductDto dto = ProductDto.builder()
+            MyProductDto dto = MyProductDto.builder()
                     .productId(id)
                     .productMainImage("대표 이미지 " + id)
                     .title("제목 " + id)
@@ -182,7 +218,7 @@ public class ProductController {
         for(int i = 5; i < 10; i++) {
             Long id = 10000L + i;
 
-            ProductDto dto = ProductDto.builder()
+            MyProductDto dto = MyProductDto.builder()
                     .productId(id)
                     .productMainImage("대표 이미지 " + id)
                     .title("제목 " + id)
@@ -195,7 +231,7 @@ public class ProductController {
             products.add(dto);
         }
 
-        ProductListRes result = new ProductListRes(products);
+        MyProductListRes result = new MyProductListRes(products);
 
         return new ResponseEntity<>(ResponseDto.success(OWNER_PRODUCT_LIST_OK, result), OK);
     }
