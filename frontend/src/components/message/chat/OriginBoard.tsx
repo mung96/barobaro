@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import React from 'react';
 import ProcessButton from './ProcessButton';
+import ProcessTypes from './ProcessTypes';
 
 // 채팅창 상단에 뜨는 원본 글 미리보기 영역
 export default function OriginBoard() {
@@ -27,7 +28,7 @@ export default function OriginBoard() {
           </div>
         </div>
         <div className="h-1/4 flex flex-row justify-start space-x-1 pt-[1.4vh] overflow-x-auto whitespace-nowrap">
-          <ProcessButton process={3} role={true} />
+          <ProcessButton process={ProcessTypes.CONTACT} role={true} />
         </div>
       </div>
     </div>
