@@ -10,6 +10,7 @@ function StepBar({ totalStep, currentStep }: StepBarProps) {
         <div
           className={`flex justify-center items-center w-5 h-5 rounded-full text-3xs font-bold
             ${stepNumber < currentStep ? 'bg-blue-100 text-white' : 'bg-gray-200 text-gray-100'}`}
+          key={stepNumber}
         >
           <p>{stepNumber + 1}</p>
         </div>
