@@ -1,4 +1,5 @@
 import CategoryTagList from '@/components/post/CategoryTagList';
+import PostTitleInput from '@/components/post/PostTitleInput';
 import ProductImageList from '@/components/post/ProductImageList';
 
 import RentalDurationInput from '@/components/post/RentalDurationInput';
@@ -16,6 +17,7 @@ type FirstStepInputProps = {
 
 function FirstStepInput({ onNext }: FirstStepInputProps) {
   const firstData = 'firstData';
+  const [title, setTitle] = useState('');
   const [value, setValue] = useState('');
   const [address, setAddress] = useState('');
   const [ways, setWays] = useState<string[]>([]);
@@ -25,6 +27,8 @@ function FirstStepInput({ onNext }: FirstStepInputProps) {
 
   return (
     <div className="flex flex-col gap-4">
+      <PostTitleInput title={title} onChange={setTitle} />
+
       <CategoryTagList
         value={value}
         onChange={(e) => setValue(e.target.value)}
@@ -35,7 +39,7 @@ function FirstStepInput({ onNext }: FirstStepInputProps) {
         {ways.includes('택배') && (
           <Input
             width="100%"
-            height="24px"
+            height="32px"
             placeholder="주소등록"
             value={address}
             onChange={setAddress}
