@@ -17,7 +17,9 @@ public enum SuccessCode {
     //계약
     CONTRACT_REQUEST_CREATED(CREATED.value(), "계약 요청에 성공했습니다."),
     CONTRACT_REQUEST_OK(OK.value(), "계약 요청 조회에 성공했습니다."),
+
     //채팅
+    CHATROOM_LIST_OK(OK.value(), "채팅방 리스트 조회에 성공했습니다."),
 
     //검색
 
