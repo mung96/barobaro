@@ -64,8 +64,8 @@ class MemberControllerTest {
         // then
         actions
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.header.httpStatusCode").value(PASSWORD_MODIFY_OK.getHttpStatusCode()))
-                .andExpect(jsonPath("$.header.message").value(PASSWORD_MODIFY_OK.getMessage()))
+                .andExpect(jsonPath("$.header.httpStatusCode").value(PASSWORD_MODIFIED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(PASSWORD_MODIFIED.getMessage()))
                 .andDo(document(
                         "PIN번호 변경",
                         preprocessRequest(prettyPrint()),
@@ -168,8 +168,8 @@ class MemberControllerTest {
         // then
         actions
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.header.httpStatusCode").value(PROFILE_MODIFY_OK.getHttpStatusCode()))
-                .andExpect(jsonPath("$.header.message").value(PROFILE_MODIFY_OK.getMessage()))
+                .andExpect(jsonPath("$.header.httpStatusCode").value(PROFILE_MODIFIED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(PROFILE_MODIFIED.getMessage()))
                 .andDo(document(
                         "프로필 수정",
                         preprocessRequest(prettyPrint()),
