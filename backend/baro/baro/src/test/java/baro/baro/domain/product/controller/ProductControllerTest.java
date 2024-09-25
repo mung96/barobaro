@@ -31,8 +31,7 @@ import static baro.baro.global.statuscode.SuccessCode.*;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.multipart;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -491,6 +490,45 @@ class ProductControllerTest {
                         ))
                 );
 
+    }
+
+    @Test
+    public void 대여_물품_삭제_성공() throws Exception {
+        //given
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                delete("/products/{productId}", 1L)
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .characterEncoding("UTF-8")
+        );
+
+        //then
+        actions
+                .andExpect(status().isNoContent())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(PRODUCT_DELETED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(PRODUCT_DELETED.getMessage()))
+                .andDo(document(
+                        "대여 물품 삭제 성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Product API")
+                                .summary("대여 물품 삭제 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(JsonFieldType.NULL)
+                                                        .description("본문 없음")
+                                        )
+                                )
+                                .responseSchema(Schema.schema("대여 물품 삭제 Response"))
+                                .build()
+                        ))
+                );
     }
 
     @Test

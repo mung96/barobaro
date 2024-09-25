@@ -11,6 +11,7 @@ public enum SuccessCode {
     //대여 물품
     PRODUCT_CREATED(CREATED.value(), "대여 물품 등록에 성공했습니다."),
     PRODUCT_MODIFIED(OK.value(), "대여 물품 수정에 성공했습니다."),
+    PRODUCT_DELETED(NO_CONTENT.value(), "대여 물품 삭제에 성공했습니다."),
     PRODUCT_DETAILS_OK(OK.value(), "대여 물품 상세 조회에 성공했습니다."),
     PRODUCT_RECENTLY_VIEWED_LIST_OK(OK.value(), "최근 본 대여 물품 리스트 조회에 성공했습니다."),
     PRODUCT_RECENTLY_UPLOADED_LIST_OK(OK.value(), "최근 올라온 대여 물품 리스트 조회에 성공했습니다."),
