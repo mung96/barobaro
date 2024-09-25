@@ -1,8 +1,9 @@
 'use client';
 
 import React from 'react';
-import checkStatus from '@/services/post/checkProcess';
 import ReactModal from 'react-modal';
+import ModalWarningSVG from '@/components/(SVG_component)/ModalWarning';
+import ModalContent from '@/components/modal/ModalContent';
 
 type Props = {
   modalType: string;
@@ -16,7 +17,7 @@ const messageList = [
   '오직 작성자만 수정 가능합니다.',
 ];
 
-const modalStyle = {
+const modalStyle: ReactModal.Styles = {
   overlay: {
     backgroundColor: 'rgba(0, 0, 0, 0.75)', // 어두운 배경
     display: 'flex',
@@ -24,7 +25,9 @@ const modalStyle = {
     justifyContent: 'center',
   },
   content: {
-    position: 'relative' as 'relative',
+    position: 'relative',
+    width: '320px',
+    height: '230px',
     top: 'auto',
     left: 'auto',
     right: 'auto',
@@ -34,7 +37,7 @@ const modalStyle = {
     border: '1px solid #ccc',
     background: '#fff',
     overflow: 'auto',
-    borderRadius: '4px',
+    borderRadius: '10px',
     outline: 'none',
     zIndex: '1000',
   },
@@ -45,8 +48,6 @@ export default function PostCheckModal({
   isOpen,
   onRequestClose,
 }: Props) {
-  const message = checkStatus(modalType);
-
   return (
     <ReactModal
       isOpen={isOpen}
@@ -55,7 +56,10 @@ export default function PostCheckModal({
       ariaHideApp={false}
       style={modalStyle}
     >
-      <div className="w-[400px] h-[400px] bg-amber-200 z-1000">{message}</div>
+      <div className="flex flex-col justify-center items-center">
+        <ModalWarningSVG />
+        <ModalContent data={modalType} />
+      </div>
     </ReactModal>
   );
 }
