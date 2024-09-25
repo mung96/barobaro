@@ -5,8 +5,7 @@ import PictureCarousel from '@/components/post/Carousel';
 import Profile from '@/components/user/Profile';
 import PostContent from '@/components/post/PostContent';
 import ContractCondition from '@/components/post/ContractCondition';
-import { useState } from 'react';
-import PostCheckModal from '@/components/modal/PostCheckModal';
+
 // frontend - .env => NEXT_PUBLIC_KAKAO_CLIENT_ID=APIKEY
 export default function PostDetail() {
   return (
