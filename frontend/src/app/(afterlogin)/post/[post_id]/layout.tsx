@@ -1,13 +1,41 @@
-import { ReactNode } from 'react';
+'use client';
+
+import { ReactNode, useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import LikeButton from '@/components/(SVG_component)/LikeButton';
 import CalendarSVG from '@/components/(SVG_component)/Calendar';
+import checkStatus from '@/services/post/checkProcess';
 
 export default function PostDetailLayout({
   children,
 }: {
   children: ReactNode;
 }) {
+  // 나중엔 API 호출로 값을 받고, 이를 활용해 Modal 띄울 여부 판단
+  // const [showModal, setShowModal] = useState(false);
+  // const [showDirectly, setShowDirectly] = useState(false);
+
+  // const data = 'needLogin';
+  // useEffect(() => {
+  //   const checkLoginStatus = async () => {
+  //     try {
+  //       const status = await checkStatus(data);
+  //       console.log('try');
+  //       if (status !== 0) {
+  //         setShowModal(true);
+  //         if (status !== 3) {
+  //           setShowDirectly(true);
+  //         }
+  //       }
+  //     } catch (error) {
+  //       console.error('로그인 상태 확인 중 오류 발생:', error);
+  //       // 오류 처리 로직 (예: 에러 모달 표시)
+  //     }
+  //   };
+  //
+  //   checkLoginStatus();
+  // }, [data]); // data가 변경될 때만 효과 실행
+
   return (
     <>
       <Header pageName="게시글 목록" hasPrevBtn hasSearchBtn hasAlertBtn />
