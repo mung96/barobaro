@@ -24,7 +24,7 @@ function ReturnTypeList({ values, onChange }: ReturnTypeListProps) {
           <CheckBox.Item
             value={returnType.value}
             className={
-              'relative has-[:checked]:border-blue-100 has-[:checked]:border-[1px] bg-gray-400 rounded flex w-24 h-6 items-center justify-center has-[:checked]:bg-white has-[checked]:text-blue-100'
+              'relative has-[:checked]:border-blue-100 has-[:checked]:border-[1px] bg-gray-400 rounded flex w-24 h-8 items-center justify-center has-[:checked]:bg-white has-[checked]:text-blue-100'
             }
             key={returnType.value}
           >
