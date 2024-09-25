@@ -24,7 +24,7 @@ const ProcessButton: React.FC<ProcessButtonPraram> = ({ process, isOwner }) => {
         <span>&nbsp;계약조건</span>
       </button>
 
-      {isOwner === false &&
+      {!isOwner &&
         process >= PROCESSTYPES.CONTACT &&
         process <= PROCESSTYPES.ACCEPTED_PACK && (
           <button
@@ -39,36 +39,36 @@ const ProcessButton: React.FC<ProcessButtonPraram> = ({ process, isOwner }) => {
             </span>
           </button>
         )}
-      {((isOwner === false && process === PROCESSTYPES.PAID_PACK) ||
-        (isOwner === true && process === PROCESSTYPES.SIGNED_PACK)) && (
+      {((!isOwner && process === PROCESSTYPES.PAID_PACK) ||
+        (isOwner && process === PROCESSTYPES.SIGNED_PACK)) && (
         <button type="button" className={buttonStyle}>
           <UploadVideo />
           <span>&nbsp;영상제출</span>
         </button>
       )}
 
-      {((isOwner === false && process >= PROCESSTYPES.SIGNED_DIRECT) ||
-        (isOwner === true && process >= PROCESSTYPES.PAID_DIRECT)) && (
+      {((!isOwner && process >= PROCESSTYPES.SIGNED_DIRECT) ||
+        (isOwner && process >= PROCESSTYPES.PAID_DIRECT)) && (
         <>
           <button
             type="button"
             className={buttonStyle}
             disabled={
-              (isOwner === false && process > PROCESSTYPES.SIGNED_PACK) ||
-              (isOwner === true && process > PROCESSTYPES.PAID_PACK)
+              (!isOwner && process > PROCESSTYPES.SIGNED_PACK) ||
+              (isOwner && process > PROCESSTYPES.PAID_PACK)
             }
           >
             <Checked />
             <span>
               &nbsp;수령
-              {(isOwner === false && process <= PROCESSTYPES.SIGNED_PACK) ||
-              (isOwner === true && process <= PROCESSTYPES.PAID_PACK)
+              {(!isOwner && process <= PROCESSTYPES.SIGNED_PACK) ||
+              (isOwner && process <= PROCESSTYPES.PAID_PACK)
                 ? '확인'
                 : '완료'}
             </span>
           </button>
-          {((isOwner === false && process === PROCESSTYPES.SIGNED_PACK) ||
-            (isOwner === true && process === PROCESSTYPES.PAID_PACK)) && (
+          {((!isOwner && process === PROCESSTYPES.SIGNED_PACK) ||
+            (isOwner && process === PROCESSTYPES.PAID_PACK)) && (
             <button type="button" className={buttonStyle}>
               <OpenedBox />
               <span>&nbsp;택배조회</span>
@@ -77,7 +77,7 @@ const ProcessButton: React.FC<ProcessButtonPraram> = ({ process, isOwner }) => {
         </>
       )}
 
-      {isOwner === false && process >= PROCESSTYPES.RECEIVED_DIRECT && (
+      {!isOwner && process >= PROCESSTYPES.RECEIVED_DIRECT && (
         <button
           type="button"
           className={buttonStyle}
