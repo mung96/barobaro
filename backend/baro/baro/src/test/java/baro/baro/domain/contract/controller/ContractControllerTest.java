@@ -107,6 +107,7 @@ class ContractControllerTest {
                                                         .description("반납 방법(단일)")
                                         )
                                 )
+                                .requestSchema(Schema.schema("계약 요청 생성 Request"))
                                 .responseSchema(Schema.schema("계약 요청 생성 Response"))
                                 .build()
                         ))
@@ -165,8 +166,8 @@ class ContractControllerTest {
                                                         .description("반납 방법(단일)")
                                         )
                                 )
-                                .requestSchema(Schema.schema("계약 요청 생성 Request"))
-                                .responseSchema(Schema.schema("계약 요청 생성 Response"))
+                                .requestSchema(Schema.schema("계약 요청 조회 Request"))
+                                .responseSchema(Schema.schema("계약 요청 조회 Response"))
                                 .build()
                         ))
                 );
