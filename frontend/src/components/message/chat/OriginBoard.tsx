@@ -2,10 +2,8 @@
 
 import Image from 'next/image';
 import React from 'react';
-
-// import SVG files
-import Clipboard from '@/components/(SVG_component)/(message)/Clipboard';
-import AddMessage from '@/components/(SVG_component)/(message)/AddMessage';
+import ProcessButton from './ProcessButton';
+import ProcessTypes from './ProcessTypes';
 
 // 채팅창 상단에 뜨는 원본 글 미리보기 영역
 export default function OriginBoard() {
@@ -29,22 +27,8 @@ export default function OriginBoard() {
             <p className="font-bold text-black-100">100,000원/일</p>
           </div>
         </div>
-        <div className="h-1/4 flex flex-row justify-start space-x-1 pt-[1.4vh]">
-          {/* 버튼 세 개 들어감 */}
-          <button
-            type="button"
-            className="bg-gray-400 pl-[2vh] pr-[2vh] pt-[0.4vh] pb-[0.4vh] rounded-lg flex items-center"
-          >
-            <Clipboard />
-            <span>&nbsp;계약조건</span>
-          </button>
-          <button
-            type="button"
-            className="bg-gray-400 pl-[2vh] pr-[2vh] rounded-lg flex items-center"
-          >
-            <AddMessage />
-            <span>&nbsp;계약요청</span>
-          </button>
+        <div className="h-1/4 flex flex-row justify-start space-x-1 pt-[1.4vh] overflow-x-auto whitespace-nowrap">
+          <ProcessButton process={ProcessTypes.REQUESTED} isOwner={true} />
         </div>
       </div>
     </div>
