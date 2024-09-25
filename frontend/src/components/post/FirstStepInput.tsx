@@ -46,8 +46,8 @@ function FirstStepInput({ onNext }: FirstStepInputProps) {
       />
 
       <ProductImageList
-        width={'72px'}
-        height={'72px'}
+        width={'56px'}
+        height={'56px'}
         images={files}
         addFile={changeFile}
         deleteFile={deleteFileByIndex}
