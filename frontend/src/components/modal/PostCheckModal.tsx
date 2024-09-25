@@ -4,6 +4,7 @@ import React from 'react';
 import ReactModal from 'react-modal';
 import ModalWarningSVG from '@/components/(SVG_component)/ModalWarning';
 import ModalContent from '@/components/modal/ModalContent';
+import { useRouter } from 'next/navigation';
 
 type Props = {
   modalType: string;
@@ -27,7 +28,7 @@ const modalStyle: ReactModal.Styles = {
   content: {
     position: 'relative',
     width: '320px',
-    height: '230px',
+    height: '250px',
     top: 'auto',
     left: 'auto',
     right: 'auto',
@@ -48,6 +49,10 @@ export default function PostCheckModal({
   isOpen,
   onRequestClose,
 }: Props) {
+  const router = useRouter();
+  const modalBtn = (go: string) => {
+    router.replace(go);
+  };
   return (
     <ReactModal
       isOpen={isOpen}
@@ -59,6 +64,17 @@ export default function PostCheckModal({
       <div className="flex flex-col justify-center items-center">
         <ModalWarningSVG />
         <ModalContent data={modalType} />
+        <button
+          type="button"
+          className="w-[126px] h-[34px] rounded-[8px] bg-blue-100 font-bold text-[13px] text-white"
+          onClick={() => {
+            modalType === 'needPassword'
+              ? modalBtn('/password')
+              : modalBtn('/post');
+          }}
+        >
+          확인
+        </button>
       </div>
     </ReactModal>
   );
