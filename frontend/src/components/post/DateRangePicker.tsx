@@ -17,13 +17,13 @@ function DateRangePicker({ selected, onSelect, open }: DateRangePickerProps) {
       <p className="font-bold text-xl py-4 px-4" onClick={() => open(false)}>
         대여날짜를 선택해주세요
       </p>
-      <tr className="flex gap-[22px]">
+      <div className="flex gap-[22px]">
         {['월', '화', '수', '목', '금', '토', '일'].map((day) => (
-          <th key={day} className="text-gray-300 text-sm font-semibold h-6">
+          <div key={day} className="text-gray-300 text-sm font-semibold h-6">
             {day}
-          </th>
+          </div>
         ))}
-      </tr>
+      </div>
       <DayPicker
         locale={ko}
         mode="range"
