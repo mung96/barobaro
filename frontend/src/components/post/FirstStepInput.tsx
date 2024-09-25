@@ -28,6 +28,7 @@ function FirstStepInput({ onNext }: FirstStepInputProps) {
   return (
     <div className="flex flex-col gap-4">
       <PostTitleInput title={title} onChange={setTitle} />
+      <RentalDurationInput selected={range} onSelect={setRange} />
 
       <CategoryTagList
         value={value}
@@ -55,7 +56,7 @@ function FirstStepInput({ onNext }: FirstStepInputProps) {
         deleteFile={deleteFileByIndex}
         dropEnd={handleDragEnd}
       />
-      <RentalDurationInput selected={range} onSelect={setRange} />
+
       <Button onClick={() => onNext(firstData)} width="100%" height="36px">
         다음 스탭으로 가기
       </Button>
