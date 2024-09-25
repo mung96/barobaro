@@ -34,6 +34,7 @@ function FirstStepInput({ onNext }: FirstStepInputProps) {
       <PostTitleInput value={title} onChange={setTitle} />
       <RentalDurationInput selected={range} onSelect={setRange} />
       <RentalFeeInput value={fee} onChange={setFee} />
+      <ReturnPlaceInput />
       <CategoryTagList
         value={value}
         onChange={(e) => setValue(e.target.value)}
@@ -51,7 +52,6 @@ function FirstStepInput({ onNext }: FirstStepInputProps) {
           />
         )}
       </div>
-      <ReturnPlaceInput />
 
       <ProductImageList
         width={'72px'}
