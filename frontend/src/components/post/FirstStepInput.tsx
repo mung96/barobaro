@@ -4,12 +4,14 @@ import ProductImageList from '@/components/post/ProductImageList';
 
 import RentalDurationInput from '@/components/post/RentalDurationInput';
 import RentalFeeInput from '@/components/post/RentalFeeInput';
+import ReturnPlaceInput from '@/components/post/ReturnPlaceInput';
 import ReturnTypeList from '@/components/post/ReturnTypeList';
 import Button from '@/components/shared/Button';
 import Input from '@/components/shared/Input';
 import useFileModel from '@/hooks/shared/useFileModel';
 
 import { useState } from 'react';
+
 import { DateRange } from 'react-day-picker';
 
 type FirstStepInputProps = {
@@ -49,6 +51,7 @@ function FirstStepInput({ onNext }: FirstStepInputProps) {
           />
         )}
       </div>
+      <ReturnPlaceInput />
 
       <ProductImageList
         width={'72px'}
