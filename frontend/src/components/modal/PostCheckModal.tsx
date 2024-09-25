@@ -72,7 +72,7 @@ export default function PostCheckModal({
           className="w-[126px] h-[34px] rounded-[8px] bg-blue-100 font-bold text-[13px] text-white"
           onClick={() => {
             modalType === 'needPassword'
-              ? modalBtn('/password')
+              ? modalBtn('/mypage/user/password')
               : modalBtn('/post');
           }}
         >
