@@ -26,6 +26,7 @@ function ReturnTypeList({ values, onChange }: ReturnTypeListProps) {
             className={
               'relative has-[:checked]:border-blue-100 has-[:checked]:border-[1px] bg-gray-400 rounded flex w-24 h-6 items-center justify-center has-[:checked]:bg-white has-[checked]:text-blue-100'
             }
+            key={returnType.value}
           >
             <p className=" text-gray-300 text-xs peer-checked:text-blue-100 peer-checked:font-bold ">
               {returnType.label}
