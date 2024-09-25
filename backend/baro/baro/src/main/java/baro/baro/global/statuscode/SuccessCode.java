@@ -10,6 +10,7 @@ import static org.springframework.http.HttpStatus.*;
 public enum SuccessCode {
     //대여 물품
     PRODUCT_CREATED(CREATED.value(), "대여 물품 등록에 성공했습니다."),
+    PRODUCT_MODIFIED(OK.value(), "대여 물품 수정에 성공했습니다."),
     PRODUCT_DETAILS_OK(OK.value(), "대여 물품 상세 조회에 성공했습니다."),
     PRODUCT_RECENTLY_VIEWED_LIST_OK(OK.value(), "최근 본 대여 물품 리스트 조회에 성공했습니다."),
     PRODUCT_RECENTLY_UPLOADED_LIST_OK(OK.value(), "최근 올라온 대여 물품 리스트 조회에 성공했습니다."),
@@ -36,9 +37,9 @@ public enum SuccessCode {
     ACCOUNT_CREATED(CREATED.value(), "계좌 연결에 성공했습니다."),
     ACCOUNT_ADD_MAIN_OK(OK.value(), "대표 계좌 설정에 성공했습니다."),
     ACCOUNT_DELETED(NO_CONTENT.value(), "대표 계좌 설정에 성공했습니다."),
-    PASSWORD_MODIFY_OK(OK.value(), "PIN번호 변경에 성공했습니다."),
+    PASSWORD_MODIFIED(OK.value(), "PIN번호 변경에 성공했습니다."),
     PROFILE_DETAILS_OK(OK.value(), "프로필 조회에 성공했습니다."),
-    PROFILE_MODIFY_OK(OK.value(), "프로필 수정에 성공했습니다."),
+    PROFILE_MODIFIED(OK.value(), "프로필 수정에 성공했습니다."),
 
 
 
