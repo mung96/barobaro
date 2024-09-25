@@ -12,7 +12,7 @@ export default function KakaoMap({ width, height, lat, lng }: Props) {
   return (
     <Map
       center={{ lat: lat, lng: lng }}
-      style={{ width: width, height: height, zIndex: 100 }}
+      style={{ width: width, height: height, zIndex: -1 }}
     >
       <MapMarker position={{ lat: lat, lng: lng }} />
     </Map>
