@@ -4,6 +4,7 @@ import ProductImageList from '@/components/post/ProductImageList';
 
 import RentalDurationInput from '@/components/post/RentalDurationInput';
 import RentalFeeInput from '@/components/post/RentalFeeInput';
+import ReturnAddressInput from '@/components/post/ReturnAddressInput';
 import ReturnPlaceInput from '@/components/post/ReturnPlaceInput';
 import ReturnTypeList from '@/components/post/ReturnTypeList';
 import Button from '@/components/shared/Button';
@@ -35,23 +36,14 @@ function FirstStepInput({ onNext }: FirstStepInputProps) {
       <RentalDurationInput selected={range} onSelect={setRange} />
       <RentalFeeInput value={fee} onChange={setFee} />
       <ReturnPlaceInput />
+
+      <ReturnTypeList values={ways} onChange={setWays} />
+      {ways.includes('택배') && <ReturnAddressInput />}
+
       <CategoryTagList
         value={value}
         onChange={(e) => setValue(e.target.value)}
       />
-
-      <div className="flex flex-col gap-2">
-        <ReturnTypeList values={ways} onChange={setWays} />
-        {ways.includes('택배') && (
-          <Input
-            width="100%"
-            height="32px"
-            placeholder="주소등록"
-            value={address}
-            onChange={setAddress}
-          />
-        )}
-      </div>
 
       <ProductImageList
         width={'72px'}
