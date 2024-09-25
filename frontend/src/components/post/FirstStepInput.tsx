@@ -25,8 +25,6 @@ function FirstStepInput({ onNext }: FirstStepInputProps) {
 
   return (
     <div className="flex flex-col gap-4">
-      <h2> 게시글 등록 첫 스탭</h2>
-
       <CategoryTagList
         value={value}
         onChange={(e) => setValue(e.target.value)}
