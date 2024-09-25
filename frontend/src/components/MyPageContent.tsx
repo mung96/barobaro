@@ -95,13 +95,21 @@ export default function MyPageContent() {
                 <p className="text-xs text-black-100">본인 인증</p>
               </button>
             </Link>
-            <Link href="/mypage/user/password">
+            <Link
+              href={{
+                pathname: `/mypage/user/password`,
+                query: { needNew: true },
+              }}
+              // as={`/mypage/user/password`}
+            >
               <button
                 type="button"
                 className="flex flex-row justify-center items-center my-1"
               >
                 <ChangePasswordSVG />
-                <p className="text-xs text-black-100">비밀번호 설정</p>
+                <p className="text-xs text-black-100">
+                  비밀번호 설정(추후 등록 기록 O : 수정, X : 등록 로직 구현)
+                </p>
               </button>
             </Link>
             <Link href="/mypage/alarm">
