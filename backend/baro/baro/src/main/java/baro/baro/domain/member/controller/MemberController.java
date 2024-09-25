@@ -22,7 +22,7 @@ public class MemberController {
     public ResponseEntity<?> passwordModify(@RequestBody @Valid PasswordModifyReq passwordModifyReq) {
         PasswordModifyRes result = new PasswordModifyRes("654321");
 
-        return new ResponseEntity<>(ResponseDto.success(PASSWORD_MODIFY_OK, result), OK);
+        return new ResponseEntity<>(ResponseDto.success(PASSWORD_MODIFIED, result), OK);
     }
 
     @GetMapping("/profile")
@@ -37,6 +37,6 @@ public class MemberController {
                                            @RequestPart(value = "file") MultipartFile file) {
         ProfileDetailsRes result = new ProfileDetailsRes("아무개", "프로필 이미지", "닉네임", "010-1111-1111", "ssafy@ssafy.com");
 
-        return new ResponseEntity<>(ResponseDto.success(PROFILE_MODIFY_OK, result), OK);
+        return new ResponseEntity<>(ResponseDto.success(PROFILE_MODIFIED, result), OK);
     }
 }
