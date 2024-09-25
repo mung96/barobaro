@@ -50,6 +50,9 @@ export default function PostCheckModal({
   onRequestClose,
 }: Props) {
   const router = useRouter();
+  // 이미 완료된 거래 ? 뒤로 보내야함.
+  // 비밀번호 설정이 필요? => 비밀번호 설정 창으로 이동
+  // 수정 및 삭제? => 애초에 버튼이 나오지 않도록 (User != Writer)
   const modalBtn = (go: string) => {
     router.replace(go);
   };
