@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import KeyPadDelete from '@/components/(SVG_component)/(mypage)/KeyPadDelete';
 import DisplayPassword from '@/components/user/DisplayPassword';
 import Header from '@/components/Header';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 enum PasswordChangeStep {
   CURRENT,
@@ -14,21 +14,17 @@ enum PasswordChangeStep {
 
 export default function PasswordChange() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const needNewPassword = searchParams.get('needNew');
-  console.log(needNewPassword);
-  console.log(typeof needNewPassword);
+  // 추후 비밀번호 설정이 가능한지 가져오고, 필요하다면? 로직의 수정 필요.
+  const needNewPassword = true;
   const realPassword = '112233';
   // 추후 진짜 비밀번호는 다른곳에서 가져올 예정.
   const [inputPassword, setInputPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [step, setStep] = useState<PasswordChangeStep>(
-    needNewPassword === 'true'
-      ? PasswordChangeStep.NEW
-      : PasswordChangeStep.CURRENT,
+    needNewPassword ? PasswordChangeStep.NEW : PasswordChangeStep.CURRENT,
   );
   const [passwordMessage, setPasswordMessage] = useState<string>(
-    needNewPassword === 'true'
+    needNewPassword
       ? '새로운 비밀번호를 입력해주세요'
       : '현재 비밀번호를 입력해주세요',
   );
@@ -64,7 +60,7 @@ export default function PasswordChange() {
         if (inputPassword === newPassword) {
           setIsFinished(true);
           setPasswordMessage(
-            needNewPassword === 'true'
+            needNewPassword
               ? '비밀번호가 성공적으로 등록되었습니다.'
               : '비밀번호가 성공적으로 변경되었습니다.',
           );
@@ -92,7 +88,7 @@ export default function PasswordChange() {
     <div className="flex flex-col h-[93dvh]">
       <header className="flex flex-col text-center font-bold">
         <Header pageName="" hasPrevBtn hasSearchBtn={false} hasAlertBtn />
-        {needNewPassword === 'true' ? `비밀번호 등록` : `비밀번호 변경`}
+        {needNewPassword ? `비밀번호 등록` : `비밀번호 변경`}
       </header>
       <main className="flex flex-col justify-center items-center flex-1">
         <p className="text-[14px] text-black-100">{passwordMessage}</p>

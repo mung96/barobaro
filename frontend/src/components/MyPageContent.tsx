@@ -95,13 +95,7 @@ export default function MyPageContent() {
                 <p className="text-xs text-black-100">본인 인증</p>
               </button>
             </Link>
-            <Link
-              href={{
-                pathname: `/mypage/user/password`,
-                query: { needNew: true },
-              }}
-              // as={`/mypage/user/password`}
-            >
+            <Link href={'/mypage/user/password'}>
               <button
                 type="button"
                 className="flex flex-row justify-center items-center my-1"
