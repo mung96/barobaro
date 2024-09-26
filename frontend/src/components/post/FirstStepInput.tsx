@@ -1,4 +1,5 @@
 import CategoryTagList from '@/components/post/CategoryTagList';
+import PostBody from '@/components/post/PostBody';
 import PostTitleInput from '@/components/post/PostTitleInput';
 import ProductImageList from '@/components/post/ProductImageList';
 
@@ -25,6 +26,7 @@ function FirstStepInput({ onNext }: FirstStepInputProps) {
   const [value, setValue] = useState('');
   const [fee, setFee] = useState('');
   const [address, setAddress] = useState('');
+  const [body, setBody] = useState('');
   const [ways, setWays] = useState<string[]>([]);
   const { files, changeFile, handleDragEnd, deleteFileByIndex } =
     useFileModel();
@@ -54,6 +56,7 @@ function FirstStepInput({ onNext }: FirstStepInputProps) {
         dropEnd={handleDragEnd}
       />
 
+      <PostBody value={body} onChange={setBody} />
       <Button onClick={() => onNext(firstData)} width="100%" height="36px">
         다음 스탭으로 가기
       </Button>

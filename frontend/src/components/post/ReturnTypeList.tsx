@@ -31,8 +31,8 @@ function ReturnTypeList({ values, onChange }: ReturnTypeListProps) {
             <p className=" text-gray-300 text-xs peer-checked:text-blue-100 peer-checked:font-bold ">
               {returnType.label}
             </p>
-            <div className="peer-checked:flex items-center justify-center w-4 absolute h-4 hidden  text-blue-100 right-1 bottom-1">
-              <FaCheck className="w-3" />
+            <div className="peer-checked:flex items-center justify-center w-4 absolute h-4 hidden text-blue-100 right-1 bottom-1">
+              <FaCheck className="w-4 h-4 mb-2" />
             </div>
           </CheckBox.Item>
         ))}

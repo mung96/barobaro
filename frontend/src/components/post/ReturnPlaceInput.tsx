@@ -1,6 +1,3 @@
-import { getLocationByQuery } from '@/apis/shared/kakaoApi';
-import Search from '@/components/(SVG_component)/Search';
-import DateRangePicker from '@/components/post/DateRangePicker';
 import DropDownAnimation from '@/components/post/DropDownAnimation';
 import SearchLocationBar from '@/components/post/SearchLocationBar';
 import Input from '@/components/shared/Input';
