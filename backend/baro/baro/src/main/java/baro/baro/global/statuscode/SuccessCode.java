@@ -20,6 +20,8 @@ public enum SuccessCode {
     CONTRACT_REQUEST_CREATED(CREATED.value(), "계약 요청에 성공했습니다."),
     CONTRACT_REQUEST_OK(OK.value(), "계약 요청 조회에 성공했습니다."),
     CONTRACT_OPTION_DETAIL_OK(OK.value(),"계약 조건 상세 조회에 성공했습니다."),
+    CONTRACT_APPROVED_OK(OK.value(),"계약 요청이 승인되었습니다."),
+
     //채팅
     CHATROOM_LIST_OK(OK.value(), "채팅방 리스트 조회에 성공했습니다."),
 
@@ -51,7 +53,7 @@ public enum SuccessCode {
     //회원가입 및 로그인
     ;
 
-	private final int httpStatusCode;
+    private final int httpStatusCode;
 
     private final String message;
 }
