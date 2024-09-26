@@ -52,6 +52,10 @@ public enum SuccessCode {
     //지역 설정
 
     //회원가입 및 로그인
+    MEMBER_CREATED(CREATED.value(), "회원 가입에 성공했습니다."),
+    MEMBER_LOGOUT(OK.value(), "로그아웃에 성공했습니다."),
+    MEMBER_SIGNUP_DETAILS_OK(OK.value(),"회원가입을 위한 멤버 정보 조회에 성공했습니다"),
+    REISSUED_ACCESS_TOKEN(FORBIDDEN.value(), "accessToken을 재발급했습니다."),
     ;
 
     private final int httpStatusCode;
