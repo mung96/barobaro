@@ -1,4 +1,4 @@
-import { KakaoLocalSearchDocument, Location } from '@/types/shared/location';
+import { KakaoLocalSearchDocument, Location } from '@/types/domains/location';
 
 export const convertLocationDataToView = (
   locationData: KakaoLocalSearchDocument,

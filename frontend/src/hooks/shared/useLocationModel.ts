@@ -1,6 +1,6 @@
 import { getLocationListByQuery } from '@/apis/shared/kakaoApi';
 import { convertLocationDataToView } from '@/services/shared/location';
-import { Location } from '@/types/shared/location';
+import { Location } from '@/types/domains/location';
 
 import { useState } from 'react';
 
