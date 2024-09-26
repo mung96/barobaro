@@ -4,8 +4,8 @@ import { DateRange, DayPicker } from 'react-day-picker';
 import 'react-day-picker/style.css';
 import { IoCalendarClearOutline } from 'react-icons/io5';
 import Input from '@/components/shared/Input';
-import DateRangePicker from '@/components/post/DateRangePicker';
-import DropDownAnimation from '@/components/post/DropDownAnimation';
+import DateRangePicker from '@/components/shared/DateRangePicker';
+import DropDownAnimation from '@/components/shared/DropDownAnimation';
 
 type RentalDurationInputProps = {
   selected: DateRange | undefined;

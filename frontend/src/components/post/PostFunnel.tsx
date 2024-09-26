@@ -14,9 +14,9 @@ import {
 
 import PageTransition, {
   DirectionType,
-} from '@/components/post/PageTransition';
+} from '@/components/shared/PageTransition';
 import { useState } from 'react';
-import StepBar from '@/components/post/StepBar';
+import StepBar from '@/components/shared/StepBar';
 import convertRegistStepToStepNumber from '@/services/post/regist';
 import ContractInfoInput from '@/components/post/ContractInfoInput';
 import ContractPreview from '@/components/post/ContractPreview';
