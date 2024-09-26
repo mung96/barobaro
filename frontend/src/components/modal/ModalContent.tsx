@@ -5,7 +5,7 @@ type Props = {
 export default function ModalContent({ data }: Props) {
   if (data === 'noPermissionEdit')
     return (
-      <div className="flex flex-col justify-center items-center">
+      <div className="flex flex-col justify-center items-center h-[80px]">
         <div className="flex flex-row text-[14px] font-bold">
           <h3 className="text-black-100 me-1">게시글을</h3>
           <h3 className="text-blue-100">수정</h3>
@@ -22,7 +22,7 @@ export default function ModalContent({ data }: Props) {
     );
   if (data === 'noPermissionDelete')
     return (
-      <div className="flex flex-col justify-center items-center">
+      <div className="flex flex-col justify-center items-center h-[80px]">
         <div className="flex flex-row text-[14px] font-bold">
           <h3 className="text-black-100 me-1">게시글을</h3>
           <h3 className="text-blue-100">삭제</h3>
@@ -39,7 +39,7 @@ export default function ModalContent({ data }: Props) {
     );
   if (data === 'isComplete')
     return (
-      <div className="flex flex-col justify-center items-center">
+      <div className="flex flex-col justify-center items-center h-[80px]">
         <div className="flex flex-row text-[14px] font-bold">
           <h3 className="text-black-100 me-1">이미</h3>
           <h3 className="text-blue-100">완료</h3>
@@ -53,7 +53,7 @@ export default function ModalContent({ data }: Props) {
     );
   if (data === 'needPassword')
     return (
-      <div className="flex flex-col justify-center items-center">
+      <div className="flex flex-col justify-center items-center h-[80px]">
         <div className="flex flex-row text-[14px] font-bold">
           <h3 className="text-blue-100 me-1">간편비밀번호를</h3>
           <h3 className="text-black-100">설정해주세요!</h3>
