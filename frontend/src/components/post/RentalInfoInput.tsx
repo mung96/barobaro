@@ -13,7 +13,7 @@ type Props = {
   onNext: (data: RentalInfo) => void;
 };
 
-function RentalInfoInput({ onNext }: Props) {
+function RentalInfoInput({ onNext, onPrev }: Props) {
   const [ways, setWays] = useState<string[]>([]);
   const [fee, setFee] = useState('');
   const [range, setRange] = useState<DateRange | undefined>(undefined);
@@ -32,24 +32,30 @@ function RentalInfoInput({ onNext }: Props) {
       <ReturnTypeList values={ways} onChange={setWays} />
       {ways.includes('DELIVERY') && <ReturnAddressInput />}
 
-      <Button
-        onClick={() =>
-          onNext({
-            startDate: range?.from!,
-            endDate: range?.to!,
-            rentalFee: Number(fee),
-            place: place,
-            latitude: latitude,
-            longitude: longitude,
-            returnTypeList: ways,
-            returnAddress: address,
-          })
-        }
-        width="100%"
-        height="36px"
-      >
-        다음 스탭으로 가기
-      </Button>
+      <div className="flex  gap-6">
+        <Button onClick={onPrev} width="100%" height="36px" color="gray">
+          <p className="text-xs">이전</p>
+        </Button>
+
+        <Button
+          onClick={() =>
+            onNext({
+              startDate: range?.from!,
+              endDate: range?.to!,
+              rentalFee: Number(fee),
+              place: place,
+              latitude: latitude,
+              longitude: longitude,
+              returnTypeList: ways,
+              returnAddress: address,
+            })
+          }
+          width="100%"
+          height="36px"
+        >
+          <p className="text-xs">다음</p>
+        </Button>
+      </div>
     </div>
   );
 }

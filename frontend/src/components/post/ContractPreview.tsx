@@ -1,3 +1,5 @@
+import Button from '@/components/shared/Button';
+
 type Props = {
   onPrev: () => void;
 };
@@ -9,7 +11,19 @@ function ContractPreview({ onPrev }: Props) {
       <button type="button" onClick={onPrev}>
         이전 스탭으로 돌아가기
       </button>
-      <button type="button">등록이 완료됐어요.</button>
+      <div className="flex  gap-6">
+        <Button onClick={onPrev} width="100%" height="36px" color="gray">
+          <p className="text-xs">이전</p>
+        </Button>
+        <Button
+          onClick={() => console.log(1)}
+          width="100%"
+          height="36px"
+          color="blue"
+        >
+          <p className="text-xs">다음</p>
+        </Button>
+      </div>
     </div>
   );
 }

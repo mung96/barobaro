@@ -4,16 +4,24 @@ type ButtonProps = {
   height: string;
   onClick: () => void;
   disabled?: boolean;
+  color?: 'blue' | 'gray';
 };
 
-function Button({ children, width, height, onClick, disabled }: ButtonProps) {
+function Button({
+  children,
+  width,
+  height,
+  onClick,
+  disabled,
+  color = 'blue',
+}: ButtonProps) {
   return (
     <button
       type="button"
       onClick={onClick}
       disabled={disabled}
       style={{ width: `${width}`, height: `${height}` }}
-      className="flex justify-center items-center bg-blue-100 text-white text-2xs font-bold py-[10px] rounded-lg disabled:bg-gray-500 disabled:text-gray-300 active:bg-blue-700"
+      className={`flex justify-center items-center text-2xs font-bold py-[10px] disabled:bg-gray-500 disabled:text-gray-300 rounded-lg ${color === 'blue' ? 'bg-blue-100 text-white  active:bg-blue-700' : 'bg-gray-500 text-gray-300  active:bg-gray-200'}`}
     >
       {children}
     </button>
