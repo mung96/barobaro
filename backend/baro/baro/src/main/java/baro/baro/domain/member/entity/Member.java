@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -19,21 +20,29 @@ public class Member {
     @Column(name = "member_id")
     private Long id;
 
-    private String name;
-
     private String email;
 
     private String nickname;
 
-    private LocalDate birthDate;
-
     private String profileImage;
-
-    private String phoneNumber;
 
     private String address;
 
     private String uuid;
 
+    private String name;
+
+    private LocalDate birthDate;
+
+    private String phoneNumber;
+
     private String fcmToken;
+
+    private String providerType;
+
+    private Boolean isDeleted;
+
+    private Boolean isCertificated;
+
+    private LocalDateTime createdAt;
 }
