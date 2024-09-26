@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 // import { file } from '@babel/types';
 
-export default function ProfilePhoto() {
+export default function ProfilePhoto({ isSignup }: { isSignup: boolean }) {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [valid, setValid] = useState<boolean>(false);
@@ -44,9 +44,8 @@ export default function ProfilePhoto() {
     }
   };
 
-  const buttonHandler = (value: string) => {
+  const nextStep = () => {
     // 버튼을 누르면 닉네임 정보를 전송함.
-    console.log('sendNickname');
   };
 
   useEffect(() => {
@@ -62,7 +61,7 @@ export default function ProfilePhoto() {
   }, [imageFile]);
 
   return (
-    <main className="flex flex-col items-center h-[80dvh]">
+    <main className="flex flex-col items-center">
       <section className="w-[90px] h-[90px] justify-center items-center relative">
         <div className="bg-gray-500 w-[89px] h-[89px] rounded-full overflow-hidden relative">
           {preview && (
@@ -92,11 +91,11 @@ export default function ProfilePhoto() {
           onChange={handleProfileImage}
         />
       </section>
-      <section className="max-w-[450px] w-full">
+      <section className="max-w-[450px] w-[90%] mx-[20px]">
         <div className="mb-4 text-[13px]">닉네임</div>
-        <div className="w-full h-[26px] rounded-[7px] flex flex-col justify-center items-center border-gray-500 border-[1px]">
+        <div className="w-full h-[32px] rounded-[7px] flex flex-col justify-center items-center border-gray-500 border-[1px]">
           <input
-            className="w-full max-w-[500px]"
+            className="w-full max-w-[450px]"
             onChange={(e) => nicknameValid(e.target.value)}
           />
         </div>
@@ -110,10 +109,15 @@ export default function ProfilePhoto() {
       </section>
       <button
         type="button"
-        className="bg-blue-100 w-[104px] h-[29px] rounded-[5px] my-3"
-        onClick={() => confirmProfileImage()}
+        className={`${valid ? 'bg-blue-100' : 'bg-gray-400'} w-[104px] h-[29px] rounded-[5px] my-3`}
+        disabled={!valid}
+        onClick={() => nextStep()}
       >
-        <p className="font-bold text-[14px] text-white">변경</p>
+        <p
+          className={`font-bold text-[14px] ${valid ? 'text-white' : 'text-gray-200'}`}
+        >
+          {isSignup ? '다음' : '변경'}
+        </p>
       </button>
     </main>
   );
