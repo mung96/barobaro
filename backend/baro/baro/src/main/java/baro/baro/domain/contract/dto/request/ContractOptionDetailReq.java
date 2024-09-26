@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ContractRequestDetailReq {
+public class ContractOptionDetailReq {
     private Long chatRoomId;
 }
