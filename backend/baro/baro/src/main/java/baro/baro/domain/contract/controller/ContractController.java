@@ -4,8 +4,10 @@ import baro.baro.domain.contract.dto.ContractRequestDto;
 import baro.baro.domain.contract.dto.request.ContractApproveReq;
 import baro.baro.domain.contract.dto.request.ContractOptionDetailReq;
 import baro.baro.domain.contract.dto.request.ContractRequestDetailReq;
+import baro.baro.domain.contract.dto.request.SignatureAddReq;
 import baro.baro.domain.contract.dto.response.ContractApproveRes;
 import baro.baro.domain.contract.dto.response.ContractOptionDetailRes;
+import baro.baro.domain.contract.dto.response.ContractSignedRes;
 import baro.baro.domain.product.entity.ReturnType;
 import baro.baro.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -93,4 +96,24 @@ public class ContractController {
         return new ResponseEntity<>(ResponseDto.success(CONTRACT_APPROVED_OK, result), OK);
     }
 
+    @PostMapping("/sign/owner")
+    public ResponseEntity<?> addOwnerSignature(@RequestBody SignatureAddReq signatureAddReq){
+
+        ContractSignedRes result = ContractSignedRes.builder()
+                .chatRoomId(signatureAddReq.getChatRoomId())
+                .fileUrl("http://test.url/test_A_signed.pdf")
+                .signedAt(LocalDateTime.now())
+                .build();
+        return new ResponseEntity<>(ResponseDto.success(CONTRACT_SIGNED_OK, result), OK);
+    }
+
+    @PostMapping("/sign/rental")
+    public ResponseEntity<?> addRentalSignature(@RequestBody SignatureAddReq signatureAddReq){
+        ContractSignedRes result = ContractSignedRes.builder()
+                .chatRoomId(signatureAddReq.getChatRoomId())
+                .fileUrl("http://test.url/test_B_signed.pdf")
+                .signedAt(LocalDateTime.now())
+                .build();
+        return new ResponseEntity<>(ResponseDto.success(CONTRACT_SIGNED_OK, result), OK);
+    }
 }
