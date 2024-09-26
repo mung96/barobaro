@@ -133,7 +133,7 @@ class AccountControllerTest {
         // when
         ResultActions actions = mockMvc.perform(
                 post("/members/me/accounts")
-                        .header("Authorization", "Bearer " + jwtToken)
+                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
@@ -181,7 +181,7 @@ class AccountControllerTest {
         // when
         ResultActions actions = mockMvc.perform(
                 delete("/members/me/accounts/{accountId}", 10000L)
-                        .header("Authorization", "Bearer " + jwtToken)
+                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
@@ -228,7 +228,7 @@ class AccountControllerTest {
         // when
         ResultActions actions = mockMvc.perform(
                 post("/members/me/accounts/{accountId}", 10000L)
-                        .header("Authorization", "Bearer " + jwtToken)
+                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
