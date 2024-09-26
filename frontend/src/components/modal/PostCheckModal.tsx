@@ -7,8 +7,7 @@ import ModalContent from '@/components/modal/ModalContent';
 import { useRouter } from 'next/navigation';
 
 type ModalType =
-  | 'needLogin'
-  | 'alreadyDone'
+  | 'isComplete'
   | 'noPermissionEdit'
   | 'noPermissionDelete'
   | 'needPassword';

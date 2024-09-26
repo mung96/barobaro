@@ -6,13 +6,19 @@ import LikeButton from '@/components/(SVG_component)/LikeButton';
 import CalendarSVG from '@/components/(SVG_component)/Calendar';
 import PostCheckModal from '@/components/modal/PostCheckModal';
 
+type ModalType =
+  | 'isComplete'
+  | 'noPermissionEdit'
+  | 'noPermissionDelete'
+  | 'needPassword';
+
 export default function PostDetailLayout({
   children,
 }: {
   children: ReactNode;
 }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalType, setModalType] = useState('');
+  const [modalType, setModalType] = useState<ModalType>('noPermissionEdit');
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
