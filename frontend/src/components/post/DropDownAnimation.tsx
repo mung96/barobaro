@@ -19,6 +19,7 @@ function DropDownAnimation({ children, isOpen }: DropDownAnimationProps) {
         }
         exit={{ opacity: 1, y: -10, height: '110px' }}
         transition={{ duration: 0.15 }}
+        className={isOpen ? 'z-10' : '-z-10'}
       >
         {children}
       </motion.div>

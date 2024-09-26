@@ -4,13 +4,7 @@ import { ReactNode, useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import LikeButton from '@/components/(SVG_component)/LikeButton';
 import CalendarSVG from '@/components/(SVG_component)/Calendar';
-import PostCheckModal from '@/components/modal/PostCheckModal';
-
-type ModalType =
-  | 'isComplete'
-  | 'noPermissionEdit'
-  | 'noPermissionDelete'
-  | 'needPassword';
+import PostCheckModal, { ModalType } from '@/components/modal/PostCheckModal';
 
 export default function PostDetailLayout({
   children,
@@ -18,7 +12,7 @@ export default function PostDetailLayout({
   children: ReactNode;
 }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalType, setModalType] = useState<ModalType>('noPermissionEdit');
+  const [modalType, setModalType] = useState<ModalType>('needPassword');
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 

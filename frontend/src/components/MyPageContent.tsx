@@ -150,7 +150,6 @@ export default function MyPageContent() {
           <ConnectAccountContent />
         </ConnectAccountBottomSheet>
       </section>
-      <Link href="/post/1/">TEST - GO /post/1</Link>
     </>
   );
 }

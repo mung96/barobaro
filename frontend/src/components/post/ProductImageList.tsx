@@ -27,76 +27,79 @@ function ProductImageList({
   images,
 }: ProductImageListProps) {
   return (
-    <div className="flex gap-2">
-      {images.length < 5 && (
-        <label
-          style={{ width, height }}
-          className="flex flex-col items-center justify-center border-gray-500 border rounded pt-[6px]"
-        >
-          <FaCamera className="text-gray-300 w-7 h-7" />
-          <p className="text-base">{images.length}/5</p>
-          <input
-            onChange={(event) => addFile(Array.from(event.target.files!))}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            multiple
-          />
-        </label>
-      )}
-      <DragDropContext onDragEnd={dropEnd}>
-        <Droppable droppableId="imagelist" direction="horizontal">
-          {(provided) => (
-            <div
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-              className="flex  gap-2"
-            >
-              {images.map((image, index) => (
-                <Draggable
-                  draggableId={`test-${index}`}
-                  index={index}
-                  key={`test-${index}`}
-                >
-                  {(provided) => {
-                    return (
-                      <div
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                        ref={provided.innerRef}
-                        className="relative"
-                      >
+    <div className="flex gap-1 flex-col">
+      <p className="text-xs text-black">게시글 사진</p>
+      <div className="flex gap-2">
+        {images.length < 5 && (
+          <label
+            style={{ width, height }}
+            className="flex flex-col items-center justify-center border-gray-500 border rounded pt-[6px]"
+          >
+            <FaCamera className="text-gray-300 w-7 h-7" />
+            <p className="text-base">{images.length}/5</p>
+            <input
+              onChange={(event) => addFile(Array.from(event.target.files!))}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              multiple
+            />
+          </label>
+        )}
+        <DragDropContext onDragEnd={dropEnd}>
+          <Droppable droppableId="imagelist" direction="horizontal">
+            {(provided) => (
+              <div
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+                className="flex  gap-2"
+              >
+                {images.map((image, index) => (
+                  <Draggable
+                    draggableId={`test-${index}`}
+                    index={index}
+                    key={`test-${index}`}
+                  >
+                    {(provided) => {
+                      return (
                         <div
-                          className="border rounded border-gray-500 relative"
-                          style={{ width, height }}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          ref={provided.innerRef}
+                          className="relative"
                         >
                           <div
-                            onClick={() => deleteFile(index)}
-                            className="absolute -top-2 z-10  -right-1 rounded-full bg-white w-6 h-6"
+                            className="border rounded border-gray-500 relative"
+                            style={{ width, height }}
                           >
-                            <MdCancel className="w-full h-full" />
+                            <div
+                              onClick={() => deleteFile(index)}
+                              className="absolute -top-2 z-10  -right-1 rounded-full bg-white w-6 h-6"
+                            >
+                              <MdCancel className="w-full h-full" />
+                            </div>
+                            <img
+                              src={image as string}
+                              alt="preview"
+                              className="border rounded border-gray-500 w-full h-full"
+                            />
                           </div>
-                          <img
-                            src={image as string}
-                            alt="preview"
-                            className="border rounded border-gray-500 w-full h-full"
-                          />
+                          {index === 0 && (
+                            <p className="absolute bottom-0 text-center  text-white  bg-black text-2xs w-full h-5 py-[3px]">
+                              대표사진
+                            </p>
+                          )}
                         </div>
-                        {index === 0 && (
-                          <p className="absolute bottom-0 text-center  text-white  bg-black text-2xs w-full h-5 py-[3px]">
-                            대표사진
-                          </p>
-                        )}
-                      </div>
-                    );
-                  }}
-                </Draggable>
-              ))}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
+                      );
+                    }}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
+      </div>
     </div>
   );
 }
