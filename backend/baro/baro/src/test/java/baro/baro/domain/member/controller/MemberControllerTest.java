@@ -2,17 +2,25 @@ package baro.baro.domain.member.controller;
 
 import baro.baro.domain.member.dto.request.PasswordModifyReq;
 import baro.baro.domain.member.dto.request.ProfileModifyReq;
+import baro.baro.global.oauth.jwt.service.JwtService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,25 +31,50 @@ import static baro.baro.global.ResponseFieldUtils.getCommonResponseFields;
 import static baro.baro.global.statuscode.SuccessCode.*;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@WithMockUser
+@Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
-@Transactional
+@ExtendWith(RestDocumentationExtension.class)
 class MemberControllerTest {
+    private final static String UUID = "1604b772-adc0-4212-8a90-81186c57f598";
+    private final static Boolean isCertificated = false;
+
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
     private ObjectMapper objectMapper;
 
-    private final static String jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+    @MockBean
+    private JwtService jwtService;
+
+    private String jwtToken;
+
+    @BeforeEach
+    public void setup() throws JsonProcessingException {
+        jwtToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNjA0Yjc3Mi1hZGMwLZ";
+
+        when(jwtService.createAccessToken(UUID, isCertificated)).thenReturn(jwtToken);
+        when(jwtService.getAuthentication(jwtToken)).thenReturn(
+                new UsernamePasswordAuthenticationToken(123L, null, List.of())
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(123L, null, List.of())
+        );
+    }
 
     @Test
     public void PIN번호_변경_성공() throws Exception {
@@ -59,6 +92,7 @@ class MemberControllerTest {
                         .header("Authorization", "Bearer " + jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
+                        .with(csrf())
         );
 
         // then
@@ -79,14 +113,14 @@ class MemberControllerTest {
                                 )
                                 .requestFields(
                                         List.of(
-                                                fieldWithPath("nowPassword").type(JsonFieldType.STRING).description("기존 PIN번호"),
-                                                fieldWithPath("modifyPassword").type(JsonFieldType.STRING).description("변경할 PIN번호"),
-                                                fieldWithPath("checkPassword").type(JsonFieldType.STRING).description("변경할 PIN번호 확인")
+                                                fieldWithPath("nowPassword").type(STRING).description("기존 PIN번호"),
+                                                fieldWithPath("modifyPassword").type(STRING).description("변경할 PIN번호"),
+                                                fieldWithPath("checkPassword").type(STRING).description("변경할 PIN번호 확인")
                                         )
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
-                                                fieldWithPath("body.password").type(JsonFieldType.STRING).description("변경된 PIN번호")
+                                                fieldWithPath("body.password").type(STRING).description("변경된 PIN번호")
                                         )
                                 )
                                 .requestSchema(Schema.schema("PIN번호 변경 Request"))
@@ -126,15 +160,15 @@ class MemberControllerTest {
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
-                                                fieldWithPath("body.profileImage").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.profileImage").type(STRING)
                                                         .description("프로필 이미지"),
-                                                fieldWithPath("body.nickname").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.nickname").type(STRING)
                                                         .description("닉네임"),
-                                                fieldWithPath("body.phoneNumber").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.phoneNumber").type(STRING)
                                                         .description("핸드폰 번호"),
-                                                fieldWithPath("body.email").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.email").type(STRING)
                                                         .description("이메일"),
-                                                fieldWithPath("body.name").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.name").type(STRING)
                                                         .description("이름")
                                         )
                                 )
@@ -163,6 +197,7 @@ class MemberControllerTest {
                         .contentType("multipart/form-data")
                         .accept(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
+                        .with(csrf())
         );
 
         // then
@@ -183,15 +218,15 @@ class MemberControllerTest {
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
-                                                fieldWithPath("body.profileImage").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.profileImage").type(STRING)
                                                         .description("프로필 이미지"),
-                                                fieldWithPath("body.nickname").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.nickname").type(STRING)
                                                         .description("닉네임"),
-                                                fieldWithPath("body.phoneNumber").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.phoneNumber").type(STRING)
                                                         .description("핸드폰 번호"),
-                                                fieldWithPath("body.email").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.email").type(STRING)
                                                         .description("이메일"),
-                                                fieldWithPath("body.name").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.name").type(STRING)
                                                         .description("이름")
                                         )
                                 )
