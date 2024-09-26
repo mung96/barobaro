@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class ContractRequestDto {
 
-    private Long productId;
+    private Long chatRoomId;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate desiredStartDate;
