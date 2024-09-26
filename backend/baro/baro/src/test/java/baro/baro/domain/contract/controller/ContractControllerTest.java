@@ -1,6 +1,7 @@
 package baro.baro.domain.contract.controller;
 
 import baro.baro.domain.contract.dto.ContractRequestDto;
+import baro.baro.domain.contract.dto.request.ContractOptionDetailReq;
 import baro.baro.domain.contract.dto.request.ContractRequestDetailReq;
 import baro.baro.domain.product.entity.ReturnType;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
@@ -168,6 +169,68 @@ class ContractControllerTest {
                                 )
                                 .requestSchema(Schema.schema("계약 요청 조회 Request"))
                                 .responseSchema(Schema.schema("계약 요청 조회 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 계약_조건_상세_조회_성공() throws Exception {
+
+        //given
+        ContractOptionDetailReq contractOptionDetailReq = new ContractOptionDetailReq(
+                10000L
+        );
+
+        String content = objectMapper.writeValueAsString(contractOptionDetailReq);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/contracts")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CONTRACT_REQUEST_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CONTRACT_REQUEST_OK.getMessage()))
+                .andDo(document(
+                        "계약 조건 상세 조회 성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("계약 조건 상세 조회 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(JsonFieldType.NUMBER).description("현재 대화중인 채팅방 Id")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body.isUsingContract").type(JsonFieldType.BOOLEAN)
+                                                        .description("전자 계약서 사용여부"),
+                                                fieldWithPath("body.returnTypes[]").type(JsonFieldType.ARRAY)
+                                                        .description("물품 반납 방법"),
+                                                fieldWithPath("body.repairVendor").type(JsonFieldType.STRING)
+                                                        .description("수리 업체"),
+                                                fieldWithPath("body.overdueCriteria").type(JsonFieldType.NUMBER)
+                                                        .description("무단 연체 기준"),
+                                                fieldWithPath("body.overdueFee").type(JsonFieldType.NUMBER)
+                                                        .description("무단 연체 가격"),
+                                                fieldWithPath("body.refundDeadline").type(JsonFieldType.NUMBER)
+                                                        .description("청구 비용 기준")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("계약 조건 상세 조회 Request"))
+                                .responseSchema(Schema.schema("계약 조건 상세 조회 Response"))
                                 .build()
                         ))
                 );
