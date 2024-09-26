@@ -2,7 +2,7 @@ import { getLocationByQuery } from '@/apis/shared/kakaoApi';
 import { convertLocationDataToView } from '@/services/shared/location';
 import { Location } from '@/types/shared/location';
 
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 
 const useLocationModel = () => {
   const [locations, setLocations] = useState<Location[]>([]);
