@@ -8,5 +8,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ContractRequestDetailReq {
-    private Long productId;
+    private Long chatRoomId;
 }
