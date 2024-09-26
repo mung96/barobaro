@@ -81,7 +81,7 @@ export default function ProfilePhoto() {
         </section>
         <button
           type="button"
-          className="bg-blue-100 w-[104px] h-[29px] rounded-[5px]"
+          className="bg-blue-100 w-[104px] h-[29px] rounded-[5px] my-3"
           onClick={() => confirmProfileImage()}
         >
           <p className="font-bold text-[14px] text-white">변경</p>

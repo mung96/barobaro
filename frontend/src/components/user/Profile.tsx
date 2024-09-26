@@ -28,16 +28,17 @@ export default function Profile({ hasEmail, hasEditBtn }: Props) {
           <p className="text-[14px] font-bold">바로핑</p>
           {hasEmail && <p className="text-[12px]">barobaroping@gmail.com</p>}
         </div>
+        {hasEditBtn && (
+          <button
+            type="button"
+            onClick={() => goProfileSetting()}
+            className="w-[74px] h-[25px] bg-gray-400 flex justify-center items-center rounded-[5px] mx-2"
+          >
+            <p className="text-[10px]">프로필 수정</p>
+          </button>
+        )}
       </div>
-      {hasEditBtn && (
-        <button
-          type="button"
-          onClick={() => goProfileSetting()}
-          className="w-[74px] h-[25px] bg-gray-400 flex justify-center items-center rounded-[5px]"
-        >
-          <p className="text-[10px]">프로필 수정</p>
-        </button>
-      )}
+
       {!hasEditBtn && !hasEmail ? (
         <div className="flex w-full justify-end">
           <div>
