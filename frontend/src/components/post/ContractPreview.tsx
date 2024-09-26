@@ -1,8 +1,8 @@
-type LastStepInputProps = {
+type Props = {
   onPrev: () => void;
 };
 
-function LastStepInput({ onPrev }: LastStepInputProps) {
+function ContractPreview({ onPrev }: Props) {
   return (
     <div className="flex flex-col">
       <h2>게시글 등록 마지막</h2>
@@ -14,4 +14,4 @@ function LastStepInput({ onPrev }: LastStepInputProps) {
   );
 }
 
-export default LastStepInput;
+export default ContractPreview;
