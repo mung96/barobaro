@@ -3,15 +3,15 @@ import Input from '@/components/shared/Input';
 import useLocationModel from '@/hooks/shared/useLocationModel';
 import { Dispatch, SetStateAction, useState } from 'react';
 
-function SearchLocationBar({
-  open,
-  onSelect,
-}: {
+type SearchLocationBarProps = {
   open: Dispatch<SetStateAction<boolean>>;
   onSelect: Dispatch<SetStateAction<string>>;
-}) {
-  const { locations, searchLocationByQuery } = useLocationModel();
+};
+
+function SearchLocationBar({ open, onSelect }: SearchLocationBarProps) {
+  const { locationList, searchLocationListByQuery } = useLocationModel();
   const [keyWord, setKeyWord] = useState('');
+
   return (
     <div className="mt-2 flex flex-col gap-3">
       <div className="flex gap-2">
@@ -25,7 +25,7 @@ function SearchLocationBar({
         <Button
           width={'72px'}
           height={'32px'}
-          onClick={() => searchLocationByQuery(keyWord)}
+          onClick={() => searchLocationListByQuery(keyWord)}
         >
           검색
         </Button>
@@ -36,7 +36,7 @@ function SearchLocationBar({
           open(false);
         }}
       >
-        {locations.map((location) => (
+        {locationList.map((location) => (
           <div
             className="border-2 rounded-sm flex flex-col gap-1 px-3 py-2"
             onClick={() => onSelect(location.addressName)}

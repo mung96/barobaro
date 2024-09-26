@@ -6,12 +6,13 @@ import ModalWarningSVG from '@/components/(SVG_component)/ModalWarning';
 import ModalContent from '@/components/modal/ModalContent';
 import { useRouter } from 'next/navigation';
 
-type ModalType =
+export type ModalType =
   | 'needLogin'
   | 'alreadyDone'
   | 'noPermissionEdit'
   | 'noPermissionDelete'
-  | 'needPassword';
+  | 'needPassword'
+  | 'isComplete';
 
 type Props = {
   modalType: ModalType;
