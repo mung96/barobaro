@@ -1,6 +1,8 @@
 package baro.baro.domain.contract.controller;
 
 import baro.baro.domain.contract.dto.ContractRequestDto;
+import baro.baro.domain.contract.dto.request.ContractApproveReq;
+import baro.baro.domain.contract.dto.request.ContractOptionDetailReq;
 import baro.baro.domain.contract.dto.request.ContractRequestDetailReq;
 import baro.baro.domain.product.entity.ReturnType;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
@@ -21,8 +23,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static baro.baro.global.ResponseFieldUtils.getCommonResponseFields;
-import static baro.baro.global.statuscode.SuccessCode.CONTRACT_REQUEST_CREATED;
-import static baro.baro.global.statuscode.SuccessCode.CONTRACT_REQUEST_OK;
+import static baro.baro.global.statuscode.SuccessCode.*;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -88,7 +89,7 @@ class ContractControllerTest {
                                 )
                                 .requestFields(
                                         List.of(
-                                                fieldWithPath("productId").type(JsonFieldType.NUMBER).description("대여 물품 아이디"),
+                                                fieldWithPath("chatRoomId").type(JsonFieldType.NUMBER).description("채팅방 아이디"),
                                                 fieldWithPath("desiredStartDate").type(JsonFieldType.STRING).description("희망 대여 시작일"),
                                                 fieldWithPath("desiredEndDate").type(JsonFieldType.STRING).description("희망 대여 반납일"),
                                                 fieldWithPath("returnType").type(JsonFieldType.STRING).description("희망 반납 방법(단일)")
@@ -97,8 +98,8 @@ class ContractControllerTest {
 
                                 .responseFields(
                                         getCommonResponseFields(
-                                                fieldWithPath("body.productId").type(JsonFieldType.NUMBER)
-                                                        .description("대여 물품 아이디"),
+                                                fieldWithPath("body.chatRoomId").type(JsonFieldType.NUMBER)
+                                                        .description("채팅방 아이디"),
                                                 fieldWithPath("body.desiredStartDate").type(JsonFieldType.STRING)
                                                         .description("희망 대여 시작일"),
                                                 fieldWithPath("body.desiredEndDate").type(JsonFieldType.STRING)
@@ -137,7 +138,7 @@ class ContractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(CONTRACT_REQUEST_OK.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(CONTRACT_REQUEST_OK.getMessage()))
-                .andExpect(jsonPath("$.body.productId").value(contractRequestDetailReq.getProductId()))
+                .andExpect(jsonPath("$.body.chatRoomId").value(contractRequestDetailReq.getChatRoomId()))
                 .andDo(document(
                         "계약 요청 조회 성공",
                         preprocessRequest(prettyPrint()),
@@ -151,13 +152,13 @@ class ContractControllerTest {
                                 )
                                 .requestFields(
                                         List.of(
-                                                fieldWithPath("productId").type(JsonFieldType.NUMBER).description("조회할 상품 Id")
+                                                fieldWithPath("chatRoomId").type(JsonFieldType.NUMBER).description("채팅방 Id")
                                         )
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
-                                                fieldWithPath("body.productId").type(JsonFieldType.NUMBER)
-                                                        .description("대여 물품 아이디"),
+                                                fieldWithPath("body.chatRoomId").type(JsonFieldType.NUMBER)
+                                                        .description("채팅방 아이디"),
                                                 fieldWithPath("body.desiredStartDate").type(JsonFieldType.STRING)
                                                         .description("희망 대여 시작일,"),
                                                 fieldWithPath("body.desiredEndDate").type(JsonFieldType.STRING)
@@ -168,6 +169,122 @@ class ContractControllerTest {
                                 )
                                 .requestSchema(Schema.schema("계약 요청 조회 Request"))
                                 .responseSchema(Schema.schema("계약 요청 조회 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 계약_조건_상세_조회_성공() throws Exception {
+
+        //given
+        ContractOptionDetailReq contractOptionDetailReq = new ContractOptionDetailReq(
+                10000L
+        );
+
+        String content = objectMapper.writeValueAsString(contractOptionDetailReq);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/contracts")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CONTRACT_REQUEST_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CONTRACT_REQUEST_OK.getMessage()))
+                .andDo(document(
+                        "계약 조건 상세 조회 성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("계약 조건 상세 조회 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(JsonFieldType.NUMBER).description("현재 대화중인 채팅방 Id")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body.isUsingContract").type(JsonFieldType.BOOLEAN)
+                                                        .description("전자 계약서 사용여부"),
+                                                fieldWithPath("body.returnTypes[]").type(JsonFieldType.ARRAY)
+                                                        .description("물품 반납 방법"),
+                                                fieldWithPath("body.repairVendor").type(JsonFieldType.STRING)
+                                                        .description("수리 업체"),
+                                                fieldWithPath("body.overdueCriteria").type(JsonFieldType.NUMBER)
+                                                        .description("무단 연체 기준"),
+                                                fieldWithPath("body.overdueFee").type(JsonFieldType.NUMBER)
+                                                        .description("무단 연체 가격"),
+                                                fieldWithPath("body.refundDeadline").type(JsonFieldType.NUMBER)
+                                                        .description("청구 비용 기준")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("계약 조건 상세 조회 Request"))
+                                .responseSchema(Schema.schema("계약 조건 상세 조회 Response"))
+                                .build()
+                        ))
+                );
+    }
+    @Test
+    public void 계약_요청_승인_성공() throws Exception {
+
+        //given
+        ContractApproveReq contractApproveReq = new ContractApproveReq(
+                10000L
+        );
+
+        String content = objectMapper.writeValueAsString(contractApproveReq);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/contracts/approve?type=contract")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CONTRACT_APPROVED_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CONTRACT_APPROVED_OK.getMessage()))
+                .andDo(document(
+                        "계약 요청 승인 성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("계약 요청 승인 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(JsonFieldType.NUMBER).description("현재 대화중인 채팅방 Id")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body.chatRoomId").type(JsonFieldType.NUMBER)
+                                                        .description("현재 대화중인 채팅방 Id"),
+                                                fieldWithPath("body.fileUrl").type(JsonFieldType.STRING)
+                                                        .description("Pdf가 저장된 Url")
+
+                                        )
+                                )
+                                .requestSchema(Schema.schema("계약 요청 승인 Request"))
+                                .responseSchema(Schema.schema("계약 요청 승인 Response"))
                                 .build()
                         ))
                 );
