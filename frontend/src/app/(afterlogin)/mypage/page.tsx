@@ -7,7 +7,7 @@ export default function MyPage() {
   return (
     <NavBarLayout current="mypage">
       <Header pageName="" hasPrevBtn={false} hasSearchBtn={false} hasAlertBtn />
-      <div>
+      <div className="flex flex-col justify-center">
         <Profile hasEmail={true} hasEditBtn={true} />
         <div className="mt-4">
           <MyPageContent />
