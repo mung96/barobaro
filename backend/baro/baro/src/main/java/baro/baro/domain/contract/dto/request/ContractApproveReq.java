@@ -1,12 +1,14 @@
 package baro.baro.domain.contract.dto.request;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
+@Builder
 @NoArgsConstructor
-public class ContractRequestDetailReq {
+@AllArgsConstructor
+public class ContractApproveReq {
     private Long chatRoomId;
 }

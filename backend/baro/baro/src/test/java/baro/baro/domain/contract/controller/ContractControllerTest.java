@@ -1,7 +1,10 @@
 package baro.baro.domain.contract.controller;
 
 import baro.baro.domain.contract.dto.ContractRequestDto;
+import baro.baro.domain.contract.dto.request.ContractApproveReq;
+import baro.baro.domain.contract.dto.request.ContractOptionDetailReq;
 import baro.baro.domain.contract.dto.request.ContractRequestDetailReq;
+import baro.baro.domain.contract.dto.request.SignatureAddReq;
 import baro.baro.domain.product.entity.ReturnType;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
@@ -23,16 +26,14 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static baro.baro.global.ResponseFieldUtils.getCommonResponseFields;
-import static baro.baro.global.statuscode.SuccessCode.CONTRACT_REQUEST_CREATED;
-import static baro.baro.global.statuscode.SuccessCode.CONTRACT_REQUEST_OK;
+import static baro.baro.global.statuscode.SuccessCode.*;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
-import static org.springframework.restdocs.payload.JsonFieldType.STRING;
+import static org.springframework.restdocs.payload.JsonFieldType.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -145,7 +146,7 @@ class ContractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(CONTRACT_REQUEST_OK.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(CONTRACT_REQUEST_OK.getMessage()))
-                .andExpect(jsonPath("$.body.productId").value(contractRequestDetailReq.getProductId()))
+                .andExpect(jsonPath("$.body.productId").value(contractRequestDetailReq.getChatRoomId()))
                 .andDo(document(
                         "계약 요청 조회 성공",
                         preprocessRequest(prettyPrint()),
@@ -176,6 +177,237 @@ class ContractControllerTest {
                                 )
                                 .requestSchema(Schema.schema("계약 요청 조회 Request"))
                                 .responseSchema(Schema.schema("계약 요청 조회 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 계약_조건_상세_조회_성공() throws Exception {
+
+        //given
+        ContractOptionDetailReq contractOptionDetailReq = new ContractOptionDetailReq(
+                10000L
+        );
+
+        String content = objectMapper.writeValueAsString(contractOptionDetailReq);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/contracts")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CONTRACT_REQUEST_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CONTRACT_REQUEST_OK.getMessage()))
+                .andDo(document(
+                        "계약 조건 상세 조회 성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("계약 조건 상세 조회 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body.isUsingContract").type(BOOLEAN)
+                                                        .description("전자 계약서 사용여부"),
+                                                fieldWithPath("body.returnTypes[]").type(ARRAY)
+                                                        .description("물품 반납 방법"),
+                                                fieldWithPath("body.repairVendor").type(STRING)
+                                                        .description("수리 업체"),
+                                                fieldWithPath("body.overdueCriteria").type(NUMBER)
+                                                        .description("무단 연체 기준"),
+                                                fieldWithPath("body.overdueFee").type(NUMBER)
+                                                        .description("무단 연체 가격"),
+                                                fieldWithPath("body.refundDeadline").type(NUMBER)
+                                                        .description("청구 비용 기준")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("계약 조건 상세 조회 Request"))
+                                .responseSchema(Schema.schema("계약 조건 상세 조회 Response"))
+                                .build()
+                        ))
+                );
+    }
+    @Test
+    public void 계약_요청_승인_성공() throws Exception {
+
+        //given
+        ContractApproveReq contractApproveReq = new ContractApproveReq(
+                10000L
+        );
+
+        String content = objectMapper.writeValueAsString(contractApproveReq);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/contracts/approve?type=contract")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CONTRACT_APPROVED_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CONTRACT_APPROVED_OK.getMessage()))
+                .andDo(document(
+                        "계약 요청 승인 성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("계약 요청 승인 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body.chatRoomId").type(NUMBER)
+                                                        .description("현재 대화중인 채팅방 Id"),
+                                                fieldWithPath("body.fileUrl").type(STRING)
+                                                        .description("Pdf가 저장된 Url")
+
+                                        )
+                                )
+                                .requestSchema(Schema.schema("계약 요청 승인 Request"))
+                                .responseSchema(Schema.schema("계약 요청 승인 Response"))
+                                .build()
+                        ))
+                );
+    }
+    @Test
+    public void 소유자_계약_서명_성공() throws Exception {
+
+        SignatureAddReq signatureAddReq = new SignatureAddReq(
+                10000L, "123456","signatureData"
+        );
+
+        String content = objectMapper.writeValueAsString(signatureAddReq);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/contracts/sign/owner")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CONTRACT_SIGNED_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CONTRACT_SIGNED_OK.getMessage()))
+                .andDo(document(
+                        "소유자 계약 서명 성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("소유자 계약 서명 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id"),
+                                                fieldWithPath("pinNumber").type(STRING).description("본인의 PIN 6자리"),
+                                                fieldWithPath("signatureData").type(STRING).description("서명 이미지 BASE64 인코딩된 값")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body.chatRoomId").type(NUMBER)
+                                                        .description("현재 대화중인 채팅방 Id"),
+                                                fieldWithPath("body.fileUrl").type(STRING)
+                                                        .description("새롭게 갱신된 Pdf 파일 Url"),
+                                                fieldWithPath("body.signedAt").type(STRING)
+                                                        .description("서명 시간")
+
+                                        )
+                                )
+                                .requestSchema(Schema.schema("소유자 계약 서명 Request"))
+                                .responseSchema(Schema.schema("소유자 계약 서명 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 빌리는_측_계약_서명_성공() throws Exception {
+
+        SignatureAddReq signatureAddReq = new SignatureAddReq(
+                10000L, "123456","signatureData"
+        );
+
+        String content = objectMapper.writeValueAsString(signatureAddReq);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/contracts/sign/rental")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CONTRACT_SIGNED_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CONTRACT_SIGNED_OK.getMessage()))
+                .andDo(document(
+                        "빌리는 측 계약 서명 성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("빌리는 측 계약 서명 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id"),
+                                                fieldWithPath("pinNumber").type(STRING).description("본인의 PIN 6자리"),
+                                                fieldWithPath("signatureData").type(STRING).description("서명 이미지 BASE64 인코딩된 값")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body.chatRoomId").type(NUMBER)
+                                                        .description("현재 대화중인 채팅방 Id"),
+                                                fieldWithPath("body.fileUrl").type(STRING)
+                                                        .description("새롭게 갱신된 Pdf 파일 Url"),
+                                                fieldWithPath("body.signedAt").type(STRING)
+                                                        .description("서명 시간")
+
+                                        )
+                                )
+                                .requestSchema(Schema.schema("빌리는 측 계약 서명 Request"))
+                                .responseSchema(Schema.schema("빌리는 측 계약 서명 Response"))
                                 .build()
                         ))
                 );
