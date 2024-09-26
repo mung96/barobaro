@@ -4,18 +4,26 @@ import baro.baro.domain.contract.dto.request.ContractConditionReq;
 import baro.baro.domain.product.dto.request.ProductAddReq;
 import baro.baro.domain.product.dto.request.ProductModifyReq;
 import baro.baro.domain.product.entity.ReturnType;
+import baro.baro.global.oauth.jwt.service.JwtService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,22 +38,48 @@ import static baro.baro.global.ResponseFieldUtils.getCommonResponseFields;
 import static baro.baro.global.statuscode.SuccessCode.*;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static com.fasterxml.jackson.databind.jsonFormatVisitors.JsonFormatTypes.NUMBER;
+import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.payload.JsonFieldType.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@WithMockUser
+@Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
-@Transactional
+@ExtendWith(RestDocumentationExtension.class)
 class ProductControllerTest {
+    private final static String UUID = "1604b772-adc0-4212-8a90-81186c57f598";
+    private final static Boolean isCertificated = false;
+
     @Autowired
     private MockMvc mockMvc;
 
-    private final static String jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+    @MockBean
+    private JwtService jwtService;
+
+    private String jwtToken;
+
+    @BeforeEach
+    public void setup() throws JsonProcessingException {
+        jwtToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNjA0Yjc3Mi1hZGMwLZ";
+
+        when(jwtService.createAccessToken(UUID, isCertificated)).thenReturn(jwtToken);
+        when(jwtService.getAuthentication(jwtToken)).thenReturn(
+                new UsernamePasswordAuthenticationToken(123L, null, List.of())
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(123L, null, List.of())
+        );
+    }
 
     @Test
     public void 대여_물품_등록_성공() throws Exception {
@@ -88,6 +122,7 @@ class ProductControllerTest {
                         .contentType("multipart/form-data")
                         .accept(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
+                        .with(csrf())
         );
 
         //then
@@ -108,57 +143,57 @@ class ProductControllerTest {
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
-                                                fieldWithPath("body.productId").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.productId").type(NUMBER)
                                                         .description("물품 ID"),
-                                                fieldWithPath("body.writerId").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.writerId").type(STRING)
                                                         .description("작성자 ID(UUID)"),
-                                                fieldWithPath("body.writerProfileImage").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.writerProfileImage").type(STRING)
                                                         .description("작성자 프로필 url"),
-                                                fieldWithPath("body.writerNickname").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.writerNickname").type(STRING)
                                                         .description("작성자 닉네임"),
-                                                fieldWithPath("body.imageList[]").type(JsonFieldType.ARRAY)
+                                                fieldWithPath("body.imageList[]").type(ARRAY)
                                                         .description("물품 이미지 URL 리스트"),
-                                                fieldWithPath("body.productStatus").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.productStatus").type(STRING)
                                                         .description("물품 상태"),
-                                                fieldWithPath("body.title").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.title").type(STRING)
                                                         .description("게시글 제목"),
-                                                fieldWithPath("body.category").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.category").type(STRING)
                                                         .description("물품 카테고리"),
-                                                fieldWithPath("body.dong").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.dong").type(STRING)
                                                         .description("직거래 동네"),
-                                                fieldWithPath("body.createdAt").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.createdAt").type(STRING)
                                                         .description("물품 등록 시간"),
-                                                fieldWithPath("body.wishCount").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.wishCount").type(NUMBER)
                                                         .description("찜한 사람 수"),
-                                                fieldWithPath("body.content").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.content").type(STRING)
                                                         .description("게시글 본문"),
-                                                fieldWithPath("body.place").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.place").type(STRING)
                                                         .description("직거래 세부 장소"),
-                                                fieldWithPath("body.latitude").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.latitude").type(NUMBER)
                                                         .description("위도"),
-                                                fieldWithPath("body.longitude").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.longitude").type(NUMBER)
                                                         .description("경도"),
-                                                fieldWithPath("body.isWriteContract").type(JsonFieldType.BOOLEAN)
+                                                fieldWithPath("body.isWriteContract").type(BOOLEAN)
                                                         .description("전자계약서 작성여부"),
-                                                fieldWithPath("body.contractCondition.repairVendor").type(JsonFieldType.STRING)
-                                                        .description("수리 업체"),
-                                                fieldWithPath("body.contractCondition.overdueCriteria").type(JsonFieldType.NUMBER)
-                                                        .description("무단 연체 기준"),
-                                                fieldWithPath("body.contractCondition.overdueFee").type(JsonFieldType.NUMBER)
-                                                        .description("무단 연체 가격"),
-                                                fieldWithPath("body.contractCondition.theftCriteria").type(JsonFieldType.NUMBER)
-                                                        .description("도난 기준"),
-                                                fieldWithPath("body.contractCondition.refundDeadline").type(JsonFieldType.NUMBER)
-                                                        .description("청구 비용 기준"),
-                                                fieldWithPath("body.returnTypes[]").type(JsonFieldType.ARRAY)
+                                                fieldWithPath("body.contractCondition.repairVendor").type(STRING)
+                                                        .description("수리 업체").optional(),
+                                                fieldWithPath("body.contractCondition.overdueCriteria").type(NUMBER)
+                                                        .description("무단 연체 기준").optional(),
+                                                fieldWithPath("body.contractCondition.overdueFee").type(NUMBER)
+                                                        .description("무단 연체 가격").optional(),
+                                                fieldWithPath("body.contractCondition.theftCriteria").type(NUMBER)
+                                                        .description("도난 기준").optional(),
+                                                fieldWithPath("body.contractCondition.refundDeadline").type(NUMBER)
+                                                        .description("청구 비용 기준").optional(),
+                                                fieldWithPath("body.returnTypes[]").type(ARRAY)
                                                         .description("물품 반환 방법"),
-                                                fieldWithPath("body.startDate").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.startDate").type(STRING)
                                                         .description("물품 대여 시작일"),
-                                                fieldWithPath("body.endDate").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.endDate").type(STRING)
                                                         .description("물품 대여 반납일"),
-                                                fieldWithPath("body.rentalFee").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.rentalFee").type(NUMBER)
                                                         .description("물품 대여비"),
-                                                fieldWithPath("body.isMine").type(JsonFieldType.BOOLEAN)
+                                                fieldWithPath("body.isMine").type(BOOLEAN)
                                                         .description("나의 게시글 여부")
 
                                         )
@@ -201,57 +236,57 @@ class ProductControllerTest {
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
-                                                fieldWithPath("body.productId").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.productId").type(NUMBER)
                                                         .description("물품 ID"),
-                                                fieldWithPath("body.writerId").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.writerId").type(STRING)
                                                         .description("작성자 ID(UUID)"),
-                                                fieldWithPath("body.writerProfileImage").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.writerProfileImage").type(STRING)
                                                         .description("작성자 프로필 url"),
-                                                fieldWithPath("body.writerNickname").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.writerNickname").type(STRING)
                                                         .description("작성자 닉네임"),
-                                                fieldWithPath("body.imageList[]").type(JsonFieldType.ARRAY)
+                                                fieldWithPath("body.imageList[]").type(ARRAY)
                                                         .description("물품 이미지 URL 리스트"),
-                                                fieldWithPath("body.productStatus").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.productStatus").type(STRING)
                                                         .description("물품 상태"),
-                                                fieldWithPath("body.title").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.title").type(STRING)
                                                         .description("게시글 제목"),
-                                                fieldWithPath("body.category").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.category").type(STRING)
                                                         .description("물품 카테고리"),
-                                                fieldWithPath("body.dong").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.dong").type(STRING)
                                                         .description("직거래 동네"),
-                                                fieldWithPath("body.createdAt").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.createdAt").type(STRING)
                                                         .description("물품 등록 시간"),
-                                                fieldWithPath("body.wishCount").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.wishCount").type(NUMBER)
                                                         .description("찜한 사람 수"),
-                                                fieldWithPath("body.content").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.content").type(STRING)
                                                         .description("게시글 본문"),
-                                                fieldWithPath("body.place").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.place").type(STRING)
                                                         .description("직거래 세부 장소"),
-                                                fieldWithPath("body.latitude").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.latitude").type(NUMBER)
                                                         .description("위도"),
-                                                fieldWithPath("body.longitude").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.longitude").type(NUMBER)
                                                         .description("경도"),
-                                                fieldWithPath("body.isWriteContract").type(JsonFieldType.BOOLEAN)
+                                                fieldWithPath("body.isWriteContract").type(BOOLEAN)
                                                         .description("전자계약서 작성여부"),
-                                                fieldWithPath("body.contractCondition.repairVendor").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.contractCondition.repairVendor").type(STRING)
                                                         .description("수리 업체"),
-                                                fieldWithPath("body.contractCondition.overdueCriteria").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.contractCondition.overdueCriteria").type(NUMBER)
                                                         .description("무단 연체 기준"),
-                                                fieldWithPath("body.contractCondition.overdueFee").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.contractCondition.overdueFee").type(NUMBER)
                                                         .description("무단 연체 가격"),
-                                                fieldWithPath("body.contractCondition.theftCriteria").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.contractCondition.theftCriteria").type(NUMBER)
                                                         .description("도난 기준"),
-                                                fieldWithPath("body.contractCondition.refundDeadline").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.contractCondition.refundDeadline").type(NUMBER)
                                                         .description("청구 비용 기준"),
-                                                fieldWithPath("body.returnTypes[]").type(JsonFieldType.ARRAY)
+                                                fieldWithPath("body.returnTypes[]").type(ARRAY)
                                                         .description("물품 반환 방법"),
-                                                fieldWithPath("body.startDate").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.startDate").type(STRING)
                                                         .description("물품 대여 시작일"),
-                                                fieldWithPath("body.endDate").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.endDate").type(STRING)
                                                         .description("물품 대여 반납일"),
-                                                fieldWithPath("body.rentalFee").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.rentalFee").type(NUMBER)
                                                         .description("물품 대여비"),
-                                                fieldWithPath("body.isMine").type(JsonFieldType.BOOLEAN)
+                                                fieldWithPath("body.isMine").type(BOOLEAN)
                                                         .description("나의 게시글 여부")
                                         )
                                 )
@@ -292,19 +327,19 @@ class ProductControllerTest {
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
-                                                fieldWithPath("body.[].productId").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.[].productId").type(NUMBER)
                                                         .description("대여 물품 아이디"),
-                                                fieldWithPath("body.[].productMainImage").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.[].productMainImage").type(STRING)
                                                         .description("대여 물품 대표 이미지"),
-                                                fieldWithPath("body.[].isWished").type(JsonFieldType.BOOLEAN)
+                                                fieldWithPath("body.[].isWished").type(BOOLEAN)
                                                         .description("찜한 여부"),
-                                                fieldWithPath("body.[].startDate").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.[].startDate").type(STRING)
                                                         .description("대여 시작일"),
-                                                fieldWithPath("body.[].endDate").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.[].endDate").type(STRING)
                                                         .description("대여 마감일"),
-                                                fieldWithPath("body.[].rentalFee").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.[].rentalFee").type(NUMBER)
                                                         .description("대여비"),
-                                                fieldWithPath("body.[].title").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.[].title").type(STRING)
                                                         .description("게시글 제목")
 
                                         )
@@ -345,19 +380,19 @@ class ProductControllerTest {
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
-                                                fieldWithPath("body.[].productId").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.[].productId").type(NUMBER)
                                                         .description("대여 물품 아이디"),
-                                                fieldWithPath("body.[].productMainImage").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.[].productMainImage").type(STRING)
                                                         .description("대여 물품 대표 이미지"),
-                                                fieldWithPath("body.[].isWished").type(JsonFieldType.BOOLEAN)
+                                                fieldWithPath("body.[].isWished").type(BOOLEAN)
                                                         .description("찜한 여부"),
-                                                fieldWithPath("body.[].startDate").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.[].startDate").type(STRING)
                                                         .description("대여 시작일"),
-                                                fieldWithPath("body.[].endDate").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.[].endDate").type(STRING)
                                                         .description("대여 마감일"),
-                                                fieldWithPath("body.[].rentalFee").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.[].rentalFee").type(NUMBER)
                                                         .description("대여비"),
-                                                fieldWithPath("body.[].title").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.[].title").type(STRING)
                                                         .description("게시글 제목")
 
                                         )
@@ -409,6 +444,7 @@ class ProductControllerTest {
                         .contentType("multipart/form-data")
                         .accept(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
+                        .with(csrf())
         );
 
         //then
@@ -429,57 +465,57 @@ class ProductControllerTest {
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
-                                                fieldWithPath("body.productId").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.productId").type(NUMBER)
                                                         .description("물품 ID"),
-                                                fieldWithPath("body.writerId").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.writerId").type(STRING)
                                                         .description("작성자 ID(UUID)"),
-                                                fieldWithPath("body.writerProfileImage").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.writerProfileImage").type(STRING)
                                                         .description("작성자 프로필 url"),
-                                                fieldWithPath("body.writerNickname").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.writerNickname").type(STRING)
                                                         .description("작성자 닉네임"),
-                                                fieldWithPath("body.imageList[]").type(JsonFieldType.ARRAY)
+                                                fieldWithPath("body.imageList[]").type(ARRAY)
                                                         .description("물품 이미지 URL 리스트"),
-                                                fieldWithPath("body.productStatus").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.productStatus").type(STRING)
                                                         .description("물품 상태"),
-                                                fieldWithPath("body.title").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.title").type(STRING)
                                                         .description("게시글 제목"),
-                                                fieldWithPath("body.category").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.category").type(STRING)
                                                         .description("물품 카테고리"),
-                                                fieldWithPath("body.dong").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.dong").type(STRING)
                                                         .description("직거래 동네"),
-                                                fieldWithPath("body.createdAt").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.createdAt").type(STRING)
                                                         .description("물품 등록 시간"),
-                                                fieldWithPath("body.wishCount").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.wishCount").type(NUMBER)
                                                         .description("찜한 사람 수"),
-                                                fieldWithPath("body.content").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.content").type(STRING)
                                                         .description("게시글 본문"),
-                                                fieldWithPath("body.place").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.place").type(STRING)
                                                         .description("직거래 세부 장소"),
-                                                fieldWithPath("body.latitude").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.latitude").type(NUMBER)
                                                         .description("위도"),
-                                                fieldWithPath("body.longitude").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.longitude").type(NUMBER)
                                                         .description("경도"),
-                                                fieldWithPath("body.isWriteContract").type(JsonFieldType.BOOLEAN)
+                                                fieldWithPath("body.isWriteContract").type(BOOLEAN)
                                                         .description("전자계약서 작성여부"),
-                                                fieldWithPath("body.contractCondition.repairVendor").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.contractCondition.repairVendor").type(STRING)
                                                         .description("수리 업체"),
-                                                fieldWithPath("body.contractCondition.overdueCriteria").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.contractCondition.overdueCriteria").type(NUMBER)
                                                         .description("무단 연체 기준"),
-                                                fieldWithPath("body.contractCondition.overdueFee").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.contractCondition.overdueFee").type(NUMBER)
                                                         .description("무단 연체 가격"),
-                                                fieldWithPath("body.contractCondition.theftCriteria").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.contractCondition.theftCriteria").type(NUMBER)
                                                         .description("도난 기준"),
-                                                fieldWithPath("body.contractCondition.refundDeadline").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.contractCondition.refundDeadline").type(NUMBER)
                                                         .description("청구 비용 기준"),
-                                                fieldWithPath("body.returnTypes[]").type(JsonFieldType.ARRAY)
+                                                fieldWithPath("body.returnTypes[]").type(ARRAY)
                                                         .description("물품 반환 방법"),
-                                                fieldWithPath("body.startDate").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.startDate").type(STRING)
                                                         .description("물품 대여 시작일"),
-                                                fieldWithPath("body.endDate").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.endDate").type(STRING)
                                                         .description("물품 대여 반납일"),
-                                                fieldWithPath("body.rentalFee").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.rentalFee").type(NUMBER)
                                                         .description("물품 대여비"),
-                                                fieldWithPath("body.isMine").type(JsonFieldType.BOOLEAN)
+                                                fieldWithPath("body.isMine").type(BOOLEAN)
                                                         .description("나의 게시글 여부")
 
                                         )
@@ -501,6 +537,7 @@ class ProductControllerTest {
                 delete("/products/{productId}", 1L)
                         .header("Authorization", "Bearer " + jwtToken)
                         .characterEncoding("UTF-8")
+                        .with(csrf())
         );
 
         //then
@@ -521,7 +558,7 @@ class ProductControllerTest {
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
-                                                fieldWithPath("body").type(JsonFieldType.NULL)
+                                                fieldWithPath("body").type(NULL)
                                                         .description("본문 없음")
                                         )
                                 )
@@ -534,6 +571,7 @@ class ProductControllerTest {
     @Test
     public void 빌린_내역_리스트_조회_성공() throws Exception {
         // given
+
 
         // when
         ResultActions actions = mockMvc.perform(
@@ -561,21 +599,21 @@ class ProductControllerTest {
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
-                                                fieldWithPath("body.*[].productId").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.*[].productId").type(NUMBER)
                                                         .description("대여 물품 아이디"),
-                                                fieldWithPath("body.*[].productMainImage").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.*[].productMainImage").type(STRING)
                                                         .description("대여 물품 대표 이미지"),
-                                                fieldWithPath("body.*[].title").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.*[].title").type(STRING)
                                                         .description("대여 물품 제목"),
-                                                fieldWithPath("body.*[].title").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.*[].title").type(STRING)
                                                         .description("대여 물품 제목"),
-                                                fieldWithPath("body.*[].startDate").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.*[].startDate").type(STRING)
                                                         .description("대여 시작일"),
-                                                fieldWithPath("body.*[].endDate").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.*[].endDate").type(STRING)
                                                         .description("대여 마감일"),
-                                                fieldWithPath("body.*[].rentalFee").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.*[].rentalFee").type(NUMBER)
                                                         .description("대여비"),
-                                                fieldWithPath("body.*[].productStatus").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.*[].productStatus").type(STRING)
                                                         .description("대여 상태")
 
                                         )
@@ -589,6 +627,7 @@ class ProductControllerTest {
     @Test
     public void 빌려준_내역_리스트_조회_성공() throws Exception {
         // given
+
 
         // when
         ResultActions actions = mockMvc.perform(
@@ -616,21 +655,21 @@ class ProductControllerTest {
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
-                                                fieldWithPath("body.*[].productId").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.*[].productId").type(NUMBER)
                                                         .description("대여 물품 아이디"),
-                                                fieldWithPath("body.*[].productMainImage").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.*[].productMainImage").type(STRING)
                                                         .description("대여 물품 대표 이미지"),
-                                                fieldWithPath("body.*[].title").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.*[].title").type(STRING)
                                                         .description("대여 물품 제목"),
-                                                fieldWithPath("body.*[].title").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.*[].title").type(STRING)
                                                         .description("대여 물품 제목"),
-                                                fieldWithPath("body.*[].startDate").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.*[].startDate").type(STRING)
                                                         .description("대여 시작일"),
-                                                fieldWithPath("body.*[].endDate").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.*[].endDate").type(STRING)
                                                         .description("대여 마감일"),
-                                                fieldWithPath("body.*[].rentalFee").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.*[].rentalFee").type(NUMBER)
                                                         .description("대여비"),
-                                                fieldWithPath("body.*[].productStatus").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.*[].productStatus").type(STRING)
                                                         .description("대여 상태")
 
                                         )
