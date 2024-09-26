@@ -1,5 +1,3 @@
-'use client';
-
 import NavBarLayout from '@/layout/NavBarLayout';
 import ProfilePhoto from '@/components/user/ProfilePhoto';
 // import { file } from '@babel/types';
