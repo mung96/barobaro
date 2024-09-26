@@ -11,7 +11,8 @@ export type ModalType =
   | 'alreadyDone'
   | 'noPermissionEdit'
   | 'noPermissionDelete'
-  | 'needPassword';
+  | 'needPassword'
+  | 'isComplete';
 
 type Props = {
   modalType: ModalType;
