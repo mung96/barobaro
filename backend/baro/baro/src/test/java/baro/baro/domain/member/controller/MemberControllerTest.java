@@ -89,7 +89,7 @@ class MemberControllerTest {
         // when
         ResultActions actions = mockMvc.perform(
                 patch("/members/me/password")
-                        .header("Authorization", "Bearer " + jwtToken)
+                        .header("Authorization", jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
                         .with(csrf())
@@ -193,7 +193,7 @@ class MemberControllerTest {
                 multipart("/members/me/profile")
                         .file(dto)
                         .file(file)
-                        .header("Authorization", "Bearer " + jwtToken)
+                        .header("Authorization", jwtToken)
                         .contentType("multipart/form-data")
                         .accept(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")

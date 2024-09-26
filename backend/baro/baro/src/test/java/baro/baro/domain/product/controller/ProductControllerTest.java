@@ -117,7 +117,7 @@ class ProductControllerTest {
                         .file(file1)
                         .file(file2)
                         .file(dto)
-                        .header("Authorization", "Bearer " + jwtToken)
+                        .header("Authorization", jwtToken)
                         .contentType("multipart/form-data")
                         .accept(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
@@ -439,7 +439,7 @@ class ProductControllerTest {
                         .file(file1)
                         .file(file2)
                         .file(dto)
-                        .header("Authorization", "Bearer " + jwtToken)
+                        .header("Authorization", jwtToken)
                         .contentType("multipart/form-data")
                         .accept(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
@@ -534,7 +534,7 @@ class ProductControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 delete("/products/{productId}", 1L)
-                        .header("Authorization", "Bearer " + jwtToken)
+                        .header("Authorization", jwtToken)
                         .characterEncoding("UTF-8")
                         .with(csrf())
         );
