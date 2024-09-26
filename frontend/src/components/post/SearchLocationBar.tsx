@@ -9,7 +9,7 @@ type SearchLocationBarProps = {
 };
 
 function SearchLocationBar({ open, onSelect }: SearchLocationBarProps) {
-  const { locations, searchLocationByQuery } = useLocationModel();
+  const { locationList, searchLocationListByQuery } = useLocationModel();
   const [keyWord, setKeyWord] = useState('');
 
   return (
@@ -25,7 +25,7 @@ function SearchLocationBar({ open, onSelect }: SearchLocationBarProps) {
         <Button
           width={'72px'}
           height={'32px'}
-          onClick={() => searchLocationByQuery(keyWord)}
+          onClick={() => searchLocationListByQuery(keyWord)}
         >
           검색
         </Button>
@@ -36,7 +36,7 @@ function SearchLocationBar({ open, onSelect }: SearchLocationBarProps) {
           open(false);
         }}
       >
-        {locations.map((location) => (
+        {locationList.map((location) => (
           <div
             className="border-2 rounded-sm flex flex-col gap-1 px-3 py-2"
             onClick={() => onSelect(location.addressName)}
