@@ -3,12 +3,12 @@ import SearchLocationBar from '@/components/post/SearchLocationBar';
 import Input from '@/components/shared/Input';
 import { useState } from 'react';
 
-function ReturnPlaceInput() {
+function ReturnAddressInput() {
   const [isOpenSearch, setIsOpenSearch] = useState(false);
   const [value, setValue] = useState('');
   return (
     <div className="flex flex-col gap-1">
-      <p className="text-xs">거래 희망 장소</p>
+      <p className="text-xs">반납 희망 장소</p>
       <Input
         placeholder="위치 추가"
         width="100%"
@@ -24,4 +24,4 @@ function ReturnPlaceInput() {
     </div>
   );
 }
-export default ReturnPlaceInput;
+export default ReturnAddressInput;

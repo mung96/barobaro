@@ -1,65 +1,101 @@
 'use client';
 
 import { useFunnel } from '@use-funnel/browser';
-import FirstStepInput from '@/components/post/FirstStepInput';
-import SecondStepInput from '@/components/post/SecondStepInput';
-import LastStepInput from '@/components/post/LastStepInput';
-import { FirstStep, SecondStep, LastStep } from '@/components/post/context';
+import PostInfoInput from '@/components/post/PostInfoInput';
+import RentalInfoInput from '@/components/post/RentalInfoInput';
+import {
+  PostInfoStep,
+  RentalInfoStep,
+  ContractInfoStep,
+  ContractPreviewStep,
+  PostInfo,
+  RentalInfo,
+} from '@/types/domains/product';
+
 import PageTransition, {
   DirectionType,
 } from '@/components/post/PageTransition';
 import { useState } from 'react';
 import StepBar from '@/components/post/StepBar';
 import convertRegistStepToStepNumber from '@/services/post/regist';
+import ContractInfoInput from '@/components/post/ContractInfoInput';
+import ContractPreview from '@/components/post/ContractPreview';
+import { ContractConditionRequest } from '@/types/apis/productRequest';
 
 function PostFunnel() {
   const [direction, setDirection] = useState<DirectionType>('forward');
-  const {
-    step: registStep,
-    history,
-    context,
-  } = useFunnel<{
-    FirstStep: FirstStep;
-    SecondStep: SecondStep;
-    LastStep: LastStep;
+  const { step: registStep, history } = useFunnel<{
+    PostInfoStep: PostInfoStep;
+    RentalInfoStep: RentalInfoStep;
+    ContractInfoStep: ContractInfoStep;
+    ContractPreviewStep: ContractPreviewStep;
   }>({
     id: 'post-regist',
     initial: {
-      step: 'FirstStep',
+      step: 'PostInfoStep',
       context: {},
     },
   });
 
   return (
-    <>
+    <div className="flex flex-col gap-4">
+      <h2 className="text-base font-bold text-center">대여 물품 등록</h2>
       <StepBar
-        totalStep={3}
+        totalStep={4}
         currentStep={convertRegistStepToStepNumber(registStep)}
       />
       <PageTransition step={registStep} direction={direction}>
-        {registStep === 'FirstStep' && (
-          <FirstStepInput
-            onNext={(firstData: string) => {
-              history.push('SecondStep', { firstData });
+        {registStep === 'PostInfoStep' && (
+          <PostInfoInput
+            onNext={(data: PostInfo) => {
+              history.push('RentalInfoStep', data);
               setDirection('forward');
             }}
           />
         )}
-        {registStep === 'SecondStep' && (
-          <SecondStepInput
-            firstData={context.firstData}
+        {registStep === 'RentalInfoStep' && (
+          <RentalInfoInput
             onPrev={() => {
               history.back();
               setDirection('backward');
             }}
-            onNext={(secondData: string) => {
-              history.push('LastStep', { secondData });
+            onNext={(data: RentalInfo) => {
+              history.push('ContractInfoStep', {
+                startDate: data.startDate || '',
+                endDate: data.endDate || '',
+                rentalFee: data.rentalFee || 0,
+                place: data.place || '',
+                latitude: data.latitude || 0,
+                longitude: data.longitude || 0,
+                returnTypeList: data.returnTypeList || [],
+                returnAddress: data.returnAddress || '',
+              });
               setDirection('forward');
             }}
           />
         )}
-        {registStep === 'LastStep' && (
-          <LastStepInput
+        {registStep === 'ContractInfoStep' && (
+          <ContractInfoInput
+            onPrev={() => {
+              history.back();
+              setDirection('backward');
+            }}
+            onNext={(data: ContractConditionRequest) => {
+              history.push('ContractPreviewStep', {
+                productName: data.productName,
+                serialNumber: data.serialNumber,
+                repairVendor: data.repairVendor,
+                overdueCriteria: data.overdueCriteria,
+                overdueFee: data.overdueFee,
+                theftCriteria: data.theftCriteria,
+                refundDeadline: data.refundDeadline,
+              });
+              setDirection('forward');
+            }}
+          />
+        )}
+        {registStep === 'ContractPreviewStep' && (
+          <ContractPreview
             onPrev={() => {
               history.back();
               setDirection('backward');
@@ -67,7 +103,7 @@ function PostFunnel() {
           />
         )}
       </PageTransition>
-    </>
+    </div>
   );
 }
 
