@@ -1,7 +1,8 @@
 import CheckBox from '@/components/shared/CheckBox';
+import { ReturnType } from '@/types/domains/product';
 import { FaCheck } from 'react-icons/fa';
 
-type ReturnTypeListProps = {
+type Props = {
   values: string[];
   onChange: (values: string[]) => void;
 };
@@ -11,7 +12,7 @@ const RETURN_TYPE = [
   { label: '택배', value: '택배' },
 ];
 
-function ReturnTypeList({ values, onChange }: ReturnTypeListProps) {
+function ReturnTypeList({ values, onChange }: Props) {
   return (
     <div className="flex gap-1 flex-col">
       <p className="text-xs text-black">반납 희망 방법</p>
