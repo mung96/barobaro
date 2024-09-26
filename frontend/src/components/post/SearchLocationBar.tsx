@@ -3,15 +3,15 @@ import Input from '@/components/shared/Input';
 import useLocationModel from '@/hooks/shared/useLocationModel';
 import { Dispatch, SetStateAction, useState } from 'react';
 
-function SearchLocationBar({
-  open,
-  onSelect,
-}: {
+type SearchLocationBarProps = {
   open: Dispatch<SetStateAction<boolean>>;
   onSelect: Dispatch<SetStateAction<string>>;
-}) {
+};
+
+function SearchLocationBar({ open, onSelect }: SearchLocationBarProps) {
   const { locations, searchLocationByQuery } = useLocationModel();
   const [keyWord, setKeyWord] = useState('');
+
   return (
     <div className="mt-2 flex flex-col gap-3">
       <div className="flex gap-2">
