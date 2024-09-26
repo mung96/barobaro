@@ -51,7 +51,7 @@ function PostInfoInput({ onNext }: Props) {
         width="100%"
         height="36px"
       >
-        다음 스탭으로 가기
+        <p className="text-xs">다음</p>
       </Button>
     </div>
   );

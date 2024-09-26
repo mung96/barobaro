@@ -3,7 +3,6 @@
 import { useFunnel } from '@use-funnel/browser';
 import PostInfoInput from '@/components/post/PostInfoInput';
 import RentalInfoInput from '@/components/post/RentalInfoInput';
-
 import {
   PostInfoStep,
   RentalInfoStep,
@@ -16,7 +15,7 @@ import {
 import PageTransition, {
   DirectionType,
 } from '@/components/post/PageTransition';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import StepBar from '@/components/post/StepBar';
 import convertRegistStepToStepNumber from '@/services/post/regist';
 import ContractInfoInput from '@/components/post/ContractInfoInput';
@@ -25,11 +24,7 @@ import { ContractConditionRequest } from '@/types/apis/productRequest';
 
 function PostFunnel() {
   const [direction, setDirection] = useState<DirectionType>('forward');
-  const {
-    step: registStep,
-    history,
-    context,
-  } = useFunnel<{
+  const { step: registStep, history } = useFunnel<{
     PostInfoStep: PostInfoStep;
     RentalInfoStep: RentalInfoStep;
     ContractInfoStep: ContractInfoStep;
@@ -41,13 +36,6 @@ function PostFunnel() {
       context: {},
     },
   });
-
-  useEffect(() => {
-    console.group('PostFunnel');
-    console.log(context);
-    console.log(history);
-    console.groupEnd();
-  }, [context]);
 
   return (
     <div className="flex flex-col gap-4">
