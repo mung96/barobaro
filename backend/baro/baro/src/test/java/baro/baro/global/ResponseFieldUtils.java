@@ -5,8 +5,8 @@ import org.springframework.restdocs.payload.FieldDescriptor;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.springframework.restdocs.payload.NUMBER;
-import static org.springframework.restdocs.payload.STRING;
+import static com.fasterxml.jackson.databind.jsonFormatVisitors.JsonFormatTypes.NUMBER;
+import static com.fasterxml.jackson.databind.jsonFormatVisitors.JsonFormatTypes.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 
 public class ResponseFieldUtils {
