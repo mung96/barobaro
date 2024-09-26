@@ -13,6 +13,20 @@ export default function PostDetail() {
       <div className="flex w-full">
         <Profile hasEmail={false} hasEditBtn={false} />
         <div className="flex flex-1" />
+        <div className="flex">
+          <button
+            type="button"
+            className="text-[10px] underline text-gray-300 me-1 w-[30px]"
+          >
+            수정
+          </button>
+          <button
+            type="button"
+            className="text-[10px] underline text-gray-300 w-[30px]"
+          >
+            삭제
+          </button>
+        </div>
       </div>
       <section className="flex justify-center items-center -z-0">
         <PictureCarousel />
