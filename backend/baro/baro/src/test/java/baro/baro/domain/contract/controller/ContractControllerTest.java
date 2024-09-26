@@ -7,12 +7,14 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,14 +31,19 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.headerWit
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
+import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@WithMockUser
+@Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
-@Transactional
+@ExtendWith(RestDocumentationExtension.class)
 class ContractControllerTest {
 
     @Autowired
@@ -66,6 +73,7 @@ class ContractControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
+                        .with(csrf())
         );
         // then
         actions
@@ -88,22 +96,22 @@ class ContractControllerTest {
                                 )
                                 .requestFields(
                                         List.of(
-                                                fieldWithPath("productId").type(JsonFieldType.NUMBER).description("대여 물품 아이디"),
-                                                fieldWithPath("desiredStartDate").type(JsonFieldType.STRING).description("희망 대여 시작일"),
-                                                fieldWithPath("desiredEndDate").type(JsonFieldType.STRING).description("희망 대여 반납일"),
-                                                fieldWithPath("returnType").type(JsonFieldType.STRING).description("희망 반납 방법(단일)")
+                                                fieldWithPath("productId").type(NUMBER).description("대여 물품 아이디"),
+                                                fieldWithPath("desiredStartDate").type(STRING).description("희망 대여 시작일"),
+                                                fieldWithPath("desiredEndDate").type(STRING).description("희망 대여 반납일"),
+                                                fieldWithPath("returnType").type(STRING).description("희망 반납 방법(단일)")
                                         )
                                 )
 
                                 .responseFields(
                                         getCommonResponseFields(
-                                                fieldWithPath("body.productId").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.productId").type(NUMBER)
                                                         .description("대여 물품 아이디"),
-                                                fieldWithPath("body.desiredStartDate").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.desiredStartDate").type(STRING)
                                                         .description("희망 대여 시작일"),
-                                                fieldWithPath("body.desiredEndDate").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.desiredEndDate").type(STRING)
                                                         .description("희망 대여 반납일"),
-                                                fieldWithPath("body.returnType").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.returnType").type(STRING)
                                                         .description("반납 방법(단일)")
                                         )
                                 )
@@ -151,18 +159,18 @@ class ContractControllerTest {
                                 )
                                 .requestFields(
                                         List.of(
-                                                fieldWithPath("productId").type(JsonFieldType.NUMBER).description("조회할 상품 Id")
+                                                fieldWithPath("productId").type(NUMBER).description("조회할 상품 Id")
                                         )
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
-                                                fieldWithPath("body.productId").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.productId").type(NUMBER)
                                                         .description("대여 물품 아이디"),
-                                                fieldWithPath("body.desiredStartDate").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.desiredStartDate").type(STRING)
                                                         .description("희망 대여 시작일,"),
-                                                fieldWithPath("body.desiredEndDate").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.desiredEndDate").type(STRING)
                                                         .description("희망 대여 반납일"),
-                                                fieldWithPath("body.returnType").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.returnType").type(STRING)
                                                         .description("반납 방법(단일)")
                                         )
                                 )
