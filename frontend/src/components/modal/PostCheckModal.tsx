@@ -6,8 +6,15 @@ import ModalWarningSVG from '@/components/(SVG_component)/ModalWarning';
 import ModalContent from '@/components/modal/ModalContent';
 import { useRouter } from 'next/navigation';
 
+type ModalType =
+  | 'needLogin'
+  | 'alreadyDone'
+  | 'noPermissionEdit'
+  | 'noPermissionDelete'
+  | 'needPassword';
+
 type Props = {
-  modalType: string;
+  modalType: ModalType;
   isOpen: boolean;
   onRequestClose: () => void;
 };
