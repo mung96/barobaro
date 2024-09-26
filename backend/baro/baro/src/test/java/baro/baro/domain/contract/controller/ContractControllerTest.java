@@ -123,7 +123,7 @@ class ContractControllerTest {
                                 )
                                 .requestFields(
                                         List.of(
-                                                fieldWithPath("productId").type(NUMBER).description("대여 물품 아이디"),
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("채팅방 아이디"),
                                                 fieldWithPath("desiredStartDate").type(STRING).description("희망 대여 시작일"),
                                                 fieldWithPath("desiredEndDate").type(STRING).description("희망 대여 반납일"),
                                                 fieldWithPath("returnType").type(STRING).description("희망 반납 방법(단일)")
@@ -132,8 +132,8 @@ class ContractControllerTest {
 
                                 .responseFields(
                                         getCommonResponseFields(
-                                                fieldWithPath("body.productId").type(NUMBER)
-                                                        .description("대여 물품 아이디"),
+                                                fieldWithPath("body.chatRoomId").type(NUMBER)
+                                                        .description("채팅방 아이디"),
                                                 fieldWithPath("body.desiredStartDate").type(STRING)
                                                         .description("희망 대여 시작일"),
                                                 fieldWithPath("body.desiredEndDate").type(STRING)
@@ -172,7 +172,7 @@ class ContractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(CONTRACT_REQUEST_OK.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(CONTRACT_REQUEST_OK.getMessage()))
-                .andExpect(jsonPath("$.body.productId").value(contractRequestDetailReq.getChatRoomId()))
+                .andExpect(jsonPath("$.body.chatRoomId").value(contractRequestDetailReq.getChatRoomId()))
                 .andDo(document(
                         "계약 요청 조회 성공",
                         preprocessRequest(prettyPrint()),
@@ -186,13 +186,13 @@ class ContractControllerTest {
                                 )
                                 .requestFields(
                                         List.of(
-                                                fieldWithPath("productId").type(NUMBER).description("조회할 상품 Id")
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("채팅방 Id")
                                         )
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
-                                                fieldWithPath("body.productId").type(NUMBER)
-                                                        .description("대여 물품 아이디"),
+                                                fieldWithPath("body.chatRoomId").type(NUMBER)
+                                                        .description("채팅방 아이디"),
                                                 fieldWithPath("body.desiredStartDate").type(STRING)
                                                         .description("희망 대여 시작일,"),
                                                 fieldWithPath("body.desiredEndDate").type(STRING)

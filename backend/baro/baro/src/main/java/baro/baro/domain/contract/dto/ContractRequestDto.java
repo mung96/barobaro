@@ -10,7 +10,6 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 public class ContractRequestDto {
-
     private Long chatRoomId;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
