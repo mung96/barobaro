@@ -55,26 +55,29 @@ type CategoryTagListProps = {
 
 function CategoryTagList({ onChange, value, disabled }: CategoryTagListProps) {
   return (
-    <Radio.Group
-      className="gap-1 flex flex-wrap"
-      value={value}
-      fieldSetName="category"
-      onChange={onChange}
-    >
-      {productCategory.map((category) => (
-        <Radio.Item
-          value={category.value}
-          disabled={disabled}
-          className="flex items-center gap-1 rounded-2xl bg-gray-100 text-gray-100 py-1 px-4 has-[:checked]:outline has-[:checked]:outline-[2px] has-[:checked]:outline-blue-100 "
-          key={category.id}
-        >
-          {/* <div className="w-3 h-3">{category.icon}</div> */}
-          <p className="text-xs text-gray-200 peer-checked:text-blue-100 ">
-            {category.label}
-          </p>
-        </Radio.Item>
-      ))}
-    </Radio.Group>
+    <div className="flex gap-1 flex-col">
+      <p className="text-xs text-black">반납 희망 방법</p>
+      <Radio.Group
+        className="gap-1 flex flex-wrap"
+        value={value}
+        fieldSetName="category"
+        onChange={onChange}
+      >
+        {productCategory.map((category) => (
+          <Radio.Item
+            value={category.value}
+            disabled={disabled}
+            className="flex items-center gap-1 rounded-2xl bg-gray-100 text-gray-100 py-1 px-4 has-[:checked]:outline has-[:checked]:outline-[2px] has-[:checked]:outline-blue-100 "
+            key={category.id}
+          >
+            {/* <div className="w-3 h-3">{category.icon}</div> */}
+            <p className="text-xs text-gray-200 peer-checked:text-blue-100 ">
+              {category.label}
+            </p>
+          </Radio.Item>
+        ))}
+      </Radio.Group>
+    </div>
   );
 }
 

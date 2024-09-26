@@ -7,6 +7,12 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 // import { file } from '@babel/types';
 
+type ModalType =
+  | 'isComplete'
+  | 'noPermissionEdit'
+  | 'noPermissionDelete'
+  | 'needPassword';
+
 export default function ProfilePhoto({ isSignup }: { isSignup: boolean }) {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
@@ -107,18 +113,24 @@ export default function ProfilePhoto({ isSignup }: { isSignup: boolean }) {
           </div>
         )}
       </section>
-      <button
-        type="button"
-        className={`${valid ? 'bg-blue-100' : 'bg-gray-400'} w-[104px] h-[29px] rounded-[5px] my-3`}
-        disabled={!valid}
-        onClick={() => nextStep()}
-      >
-        <p
-          className={`font-bold text-[14px] ${valid ? 'text-white' : 'text-gray-200'}`}
+      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white">
+        <button
+          type="button"
+          className={`${
+            valid ? 'bg-blue-100' : 'bg-gray-400'
+          } w-full max-w-[450px] h-[36px] rounded-[5px] mx-auto`}
+          disabled={!valid}
+          onClick={() => nextStep()}
         >
-          {isSignup ? '다음' : '변경'}
-        </p>
-      </button>
+          <p
+            className={`font-bold text-[14px] ${
+              valid ? 'text-white' : 'text-gray-200'
+            }`}
+          >
+            {isSignup ? '다음' : '변경'}
+          </p>
+        </button>
+      </div>
     </main>
   );
 }

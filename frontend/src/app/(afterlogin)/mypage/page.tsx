@@ -9,7 +9,7 @@ export default function MyPage() {
       <Header pageName="" hasPrevBtn={false} hasSearchBtn={false} hasAlertBtn />
       <div className="flex flex-col justify-center">
         <Profile hasEmail={true} hasEditBtn={true} />
-        <div className="mt-4">
+        <div>
           <MyPageContent />
         </div>
       </div>

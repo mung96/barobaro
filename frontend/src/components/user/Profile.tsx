@@ -16,9 +16,7 @@ export default function Profile({ hasEmail, hasEditBtn }: Props) {
   };
   // 수정 및 삭제는 유저 ID와 작성자 ID가 일치하는 경우 띄우도록 추후 수정.
   return (
-    <section
-      className={`flex flex-row items-center max-w-[500px] w-[100%] my-3 mx-8`}
-    >
+    <section className={`flex flex-row items-center max-w-[500px] my-3 mx-8`}>
       <div className="flex items-center">
         <div className="border border-gray-200 rounded-full w-12 h-12 items-center relative overflow-hidden">
           <Image src={Baroping} alt="barorping" width={47} height={47} />

@@ -27,7 +27,7 @@ function RadioGroup({
 }: RadioGroupProps) {
   return (
     <fieldset name={fieldSetName} className={className}>
-      <legend className="my-5">{label}</legend>
+      <legend>{label}</legend>
       <RadioProvider value={{ value, onChange }}>{children}</RadioProvider>
     </fieldset>
   );
