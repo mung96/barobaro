@@ -4,9 +4,17 @@ import React from 'react';
 import ReactModal from 'react-modal';
 import ModalWarningSVG from '@/components/(SVG_component)/ModalWarning';
 import ModalContent from '@/components/modal/ModalContent';
+import { useRouter } from 'next/navigation';
+
+type ModalType =
+  | 'needLogin'
+  | 'alreadyDone'
+  | 'noPermissionEdit'
+  | 'noPermissionDelete'
+  | 'needPassword';
 
 type Props = {
-  modalType: string;
+  modalType: ModalType;
   isOpen: boolean;
   onRequestClose: () => void;
 };
@@ -27,7 +35,7 @@ const modalStyle: ReactModal.Styles = {
   content: {
     position: 'relative',
     width: '320px',
-    height: '230px',
+    height: '250px',
     top: 'auto',
     left: 'auto',
     right: 'auto',
@@ -48,6 +56,13 @@ export default function PostCheckModal({
   isOpen,
   onRequestClose,
 }: Props) {
+  const router = useRouter();
+  // 이미 완료된 거래 ? 뒤로 보내야함.
+  // 비밀번호 설정이 필요? => 비밀번호 설정 창으로 이동
+  // 수정 및 삭제? => 애초에 버튼이 나오지 않도록 (User != Writer)
+  const modalBtn = (go: string) => {
+    router.replace(go);
+  };
   return (
     <ReactModal
       isOpen={isOpen}
@@ -59,6 +74,17 @@ export default function PostCheckModal({
       <div className="flex flex-col justify-center items-center">
         <ModalWarningSVG />
         <ModalContent data={modalType} />
+        <button
+          type="button"
+          className="w-[126px] h-[34px] rounded-[8px] bg-blue-100 font-bold text-[13px] text-white"
+          onClick={() => {
+            modalType === 'needPassword'
+              ? modalBtn('/mypage/user/password')
+              : modalBtn('/post');
+          }}
+        >
+          확인
+        </button>
       </div>
     </ReactModal>
   );
