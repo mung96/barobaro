@@ -17,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,11 +35,11 @@ import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.docume
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.JsonFieldType.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -266,6 +267,7 @@ class ContractControllerTest {
                         ))
                 );
     }
+
     @Test
     public void 계약_요청_승인_성공() throws Exception {
 
@@ -321,11 +323,13 @@ class ContractControllerTest {
                         ))
                 );
     }
+
     @Test
     public void 소유자_계약_서명_성공() throws Exception {
 
+        //given
         SignatureAddReq signatureAddReq = new SignatureAddReq(
-                10000L, "123456","signatureData"
+                10000L, "123456", "signatureData"
         );
 
         String content = objectMapper.writeValueAsString(signatureAddReq);
@@ -383,8 +387,9 @@ class ContractControllerTest {
     @Test
     public void 빌리는_측_계약_서명_성공() throws Exception {
 
+        //given
         SignatureAddReq signatureAddReq = new SignatureAddReq(
-                10000L, "123456","signatureData"
+                10000L, "123456", "signatureData"
         );
 
         String content = objectMapper.writeValueAsString(signatureAddReq);
@@ -442,6 +447,7 @@ class ContractControllerTest {
     @Test
     public void 물품_수령_확인_성공() throws Exception {
 
+        //given
         ProductTakeBackReq productTakeBackReq = new ProductTakeBackReq(
                 10000L
         );
@@ -486,6 +492,56 @@ class ContractControllerTest {
                                 )
                                 .requestSchema(Schema.schema("물품 수령 확인 Request"))
                                 .responseSchema(Schema.schema("물품 수령 확인 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 물품_영상_제출_성공() throws Exception {
+
+        //given
+        Long chatRoomId = 10000L;
+        MockMultipartFile file = new MockMultipartFile("file", "originalName.mp4", "video/type", "originalName.mp4".getBytes());
+
+        //when
+
+        ResultActions actions = mockMvc.perform(
+                multipart("/contracts/{chatRoomId}/video", chatRoomId)
+                        .file(file)
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
+        );
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(PRODUCT_VIDEO_UPLOADED_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(PRODUCT_VIDEO_UPLOADED_OK.getMessage()))
+                .andDo(document(
+                        "물품_영상_제출_성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("물품 영상 제출 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .pathParameters(
+                                        parameterWithName("chatRoomId").description("현재 대화중인 채팅방 Id")
+                                )
+
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body.videoUrl").type(STRING)
+                                                        .description("업로드 된 동영상 Url")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("물품 영상 제출 Request"))
+                                .responseSchema(Schema.schema("물품 영상 제출 Response"))
                                 .build()
                         ))
                 );
