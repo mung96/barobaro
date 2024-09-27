@@ -1,78 +1,48 @@
 'use client';
 
-import NavBarLayout from '@/layout/NavBarLayout';
 import CameraBody from '@/components/(SVG_component)/CameraBody';
-import { useState, useEffect, useRef, ChangeEvent } from 'react';
+import { useRef, useCallback } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-// import { file } from '@babel/types';
-
-type ModalType =
-  | 'isComplete'
-  | 'noPermissionEdit'
-  | 'noPermissionDelete'
-  | 'needPassword';
+import useFileModel from '@/hooks/shared/useFileModel';
+import useNickname from '@/hooks/user/useNicknameModel';
 
 export default function ProfilePhoto({ isSignup }: { isSignup: boolean }) {
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
-  const [valid, setValid] = useState<boolean>(false);
-  const [inputNickname, setInputNickname] = useState<string>('');
+  const { file, changeFile } = useFileModel();
+  const { inputNickname, valid, nicknameValid } = useNickname();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
-  const handleProfileImage = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files ? event.target.files[0] : null;
-    // const file = event.target.files && event.target.files[0];
-    setImageFile(file);
-  };
+  const handleProfileImage = useCallback(
+    async (event: React.ChangeEvent<HTMLInputElement>) => {
+      const newFile = event.target.files ? [event.target.files[0]] : [];
+      await changeFile(newFile);
+    },
+    [changeFile],
+  );
 
   const handleButtonClick = () => {
     fileInputRef.current?.click();
   };
 
-  const confirmProfileImage = () => {
-    console.log('confirm');
-    // 변경한 프로필 사진을 backend로 전송
-    router.replace('/mypage');
-  };
-
-  const nicknameValid = (value: string) => {
-    console.log(value);
-    const regex = /^[a-zA-Z가-힣0-9]{1,10}$/;
-    console.log(regex.test(value));
-    if (regex.test(value)) {
-      setValid(true);
-      setInputNickname(value);
-    } else {
-      setValid(false);
-      setInputNickname('');
-    }
-  };
-
   const nextStep = () => {
-    // 버튼을 누르면 닉네임 정보를 전송함.
-  };
-
-  useEffect(() => {
-    if (imageFile) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result as string);
-      };
-      reader.readAsDataURL(imageFile);
+    console.log('Profile Image:', file);
+    console.log('Nickname:', inputNickname);
+    if (isSignup) {
+      // 회원가입 로직
     } else {
-      setPreview(null);
+      // 프로필 업데이트 로직
+      router.replace('/mypage');
     }
-  }, [imageFile]);
+  };
 
   return (
     <main className="flex flex-col items-center">
       <section className="w-[90px] h-[90px] justify-center items-center relative">
         <div className="bg-gray-500 w-[89px] h-[89px] rounded-full overflow-hidden relative">
-          {preview && (
+          {file && (
             <Image
-              src={preview}
+              src={file as string}
               alt="Profile preview"
               fill
               style={{ objectFit: 'cover' }}
@@ -103,9 +73,10 @@ export default function ProfilePhoto({ isSignup }: { isSignup: boolean }) {
           <input
             className="w-full max-w-[450px]"
             onChange={(e) => nicknameValid(e.target.value)}
+            value={inputNickname}
           />
         </div>
-        {valid ? null : (
+        {!valid && inputNickname !== '' && (
           <div className="flex flex-col items-end w-full max-w-[500px]">
             <p className="text-[10px]" style={{ color: '#F7385A' }}>
               영어, 숫자, 한글만 사용하여 10자 이내의 닉네임을 입력해주세요.
@@ -113,14 +84,14 @@ export default function ProfilePhoto({ isSignup }: { isSignup: boolean }) {
           </div>
         )}
       </section>
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white">
+      <div className="fixed bottom-10 left-0 right-0 p-4 bg-white">
         <button
           type="button"
           className={`${
             valid ? 'bg-blue-100' : 'bg-gray-400'
           } w-full max-w-[450px] h-[36px] rounded-[5px] mx-auto`}
           disabled={!valid}
-          onClick={() => nextStep()}
+          onClick={nextStep}
         >
           <p
             className={`font-bold text-[14px] ${
