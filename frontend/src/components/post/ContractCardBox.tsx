@@ -16,7 +16,7 @@ const ContractCardBox = ({ title, step, children }: Props) => {
         onClick={() => setIsOpen((prev) => !prev)}
         className="w-full flex justify-between"
       >
-        <p className="text-base font-semibold">{title}</p>
+        <p className="text-lg font-semibold">{title}</p>
         <div className="flex items-center justify-center">
           <p>
             <span className="text-base font-bold">{step}</span>
