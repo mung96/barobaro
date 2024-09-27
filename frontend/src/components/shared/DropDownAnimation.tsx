@@ -5,16 +5,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 type DropDownAnimationProps = {
   children: React.ReactNode;
   isOpen: boolean;
-  onClose: () => void;
-  title: string;
 };
 
-function DropDownAnimation({
-  children,
-  isOpen,
-  onClose,
-  title,
-}: DropDownAnimationProps) {
+function DropDownAnimation({ children, isOpen }: DropDownAnimationProps) {
   return (
     <AnimatePresence mode="wait">
       <motion.div
@@ -28,12 +21,7 @@ function DropDownAnimation({
         transition={{ duration: 0.15 }}
         className={isOpen ? 'z-10' : '-z-10'}
       >
-        <div className="rounded-xl bg-white relative flex flex-col items-center h-96 justify-center shadow-md border-gray-300 border-[1px] w-[300px]">
-          <p className="font-bold text-xl py-4 px-4" onClick={onClose}>
-            {title}
-          </p>
-          {children}
-        </div>
+        {children}
       </motion.div>
     </AnimatePresence>
   );
