@@ -1,13 +1,11 @@
 package baro.baro.domain.contract.controller;
 
 import baro.baro.domain.contract.dto.ContractRequestDto;
-import baro.baro.domain.contract.dto.request.ContractApproveReq;
-import baro.baro.domain.contract.dto.request.ContractOptionDetailReq;
-import baro.baro.domain.contract.dto.request.ContractRequestDetailReq;
-import baro.baro.domain.contract.dto.request.SignatureAddReq;
+import baro.baro.domain.contract.dto.request.*;
 import baro.baro.domain.contract.dto.response.ContractApproveRes;
 import baro.baro.domain.contract.dto.response.ContractOptionDetailRes;
 import baro.baro.domain.contract.dto.response.ContractSignedRes;
+import baro.baro.domain.contract.dto.response.ContractTerminatedRes;
 import baro.baro.domain.product.entity.ReturnType;
 import baro.baro.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -97,7 +95,7 @@ public class ContractController {
     }
 
     @PostMapping("/sign/owner")
-    public ResponseEntity<?> addOwnerSignature(@RequestBody SignatureAddReq signatureAddReq){
+    public ResponseEntity<?> addOwnerSignature(@RequestBody SignatureAddReq signatureAddReq) {
 
         ContractSignedRes result = ContractSignedRes.builder()
                 .chatRoomId(signatureAddReq.getChatRoomId())
@@ -108,12 +106,21 @@ public class ContractController {
     }
 
     @PostMapping("/sign/rental")
-    public ResponseEntity<?> addRentalSignature(@RequestBody SignatureAddReq signatureAddReq){
+    public ResponseEntity<?> addRentalSignature(@RequestBody SignatureAddReq signatureAddReq) {
         ContractSignedRes result = ContractSignedRes.builder()
                 .chatRoomId(signatureAddReq.getChatRoomId())
                 .fileUrl("http://test.url/test_B_signed.pdf")
                 .signedAt(LocalDateTime.now())
                 .build();
         return new ResponseEntity<>(ResponseDto.success(CONTRACT_SIGNED_OK, result), OK);
+    }
+
+    @PostMapping("/terminate")
+    public ResponseEntity<?> confirmProductTakeBack(@RequestBody ProductTakeBackReq productTakeBackReq){
+        ContractTerminatedRes result = ContractTerminatedRes.builder()
+                .chatRoomId(productTakeBackReq.getChatRoomId())
+                .build();
+        return new ResponseEntity<>(ResponseDto.success(CONTRACT_TERMINATED_OK, result),OK);
+
     }
 }
