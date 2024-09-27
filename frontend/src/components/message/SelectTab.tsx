@@ -2,10 +2,10 @@
 
 import { MouseEvent } from 'react';
 
-interface SelectTabParams {
+type SelectTabParams = {
   selectValue: string;
   changeSelected: (value: string) => void;
-}
+};
 
 export default function SelectTab({
   selectValue,
