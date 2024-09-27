@@ -2,15 +2,13 @@ package baro.baro.domain.contract.controller;
 
 import baro.baro.domain.contract.dto.ContractRequestDto;
 import baro.baro.domain.contract.dto.request.*;
-import baro.baro.domain.contract.dto.response.ContractApproveRes;
-import baro.baro.domain.contract.dto.response.ContractOptionDetailRes;
-import baro.baro.domain.contract.dto.response.ContractSignedRes;
-import baro.baro.domain.contract.dto.response.ContractTerminatedRes;
+import baro.baro.domain.contract.dto.response.*;
 import baro.baro.domain.product.entity.ReturnType;
 import baro.baro.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -116,11 +114,19 @@ public class ContractController {
     }
 
     @PostMapping("/terminate")
-    public ResponseEntity<?> confirmProductTakeBack(@RequestBody ProductTakeBackReq productTakeBackReq){
+    public ResponseEntity<?> confirmProductTakeBack(@RequestBody ProductTakeBackReq productTakeBackReq) {
         ContractTerminatedRes result = ContractTerminatedRes.builder()
                 .chatRoomId(productTakeBackReq.getChatRoomId())
                 .build();
-        return new ResponseEntity<>(ResponseDto.success(CONTRACT_TERMINATED_OK, result),OK);
+        return new ResponseEntity<>(ResponseDto.success(CONTRACT_TERMINATED_OK, result), OK);
 
+    }
+
+    @PostMapping("/{chatRoomId}/video")
+    public ResponseEntity<?> uploadVideo(@PathVariable("chatRoomId") Long chatRoomId, @RequestPart("file") MultipartFile file) {
+        ContractVideoUploadRes result = ContractVideoUploadRes.builder()
+                .videoUrl("https://test.url.com/saved.mp4")
+                .build();
+        return new ResponseEntity<>(ResponseDto.success(PRODUCT_VIDEO_UPLOADED_OK, result), OK);
     }
 }
