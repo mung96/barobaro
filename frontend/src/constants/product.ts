@@ -4,6 +4,6 @@ export const RETURN_TYPE = [
 ];
 
 export const CONTRACT_YN = [
-  { label: '미작성', value: 'YES' },
-  { label: '작성', value: 'NO' },
+  { label: '작성', value: 'YES' },
+  { label: '미작성', value: 'NO' },
 ];
