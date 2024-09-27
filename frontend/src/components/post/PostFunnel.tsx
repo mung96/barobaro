@@ -24,6 +24,7 @@ import { ContractConditionRequest } from '@/types/apis/productRequest';
 
 function PostFunnel() {
   const [direction, setDirection] = useState<DirectionType>('forward');
+  const [totalStep, setTotalStep] = useState(4);
   const { step: registStep, history } = useFunnel<{
     PostInfoStep: PostInfoStep;
     RentalInfoStep: RentalInfoStep;
@@ -41,7 +42,7 @@ function PostFunnel() {
     <div className="flex flex-col gap-4">
       <h2 className="text-base font-bold text-center">대여 물품 등록</h2>
       <StepBar
-        totalStep={4}
+        totalStep={totalStep}
         currentStep={convertRegistStepToStepNumber(registStep)}
       />
       <PageTransition step={registStep} direction={direction}>
@@ -76,6 +77,7 @@ function PostFunnel() {
         )}
         {registStep === 'ContractInfoStep' && (
           <ContractInfoInput
+            onTotalStepChange={setTotalStep}
             onPrev={() => {
               history.back();
               setDirection('backward');

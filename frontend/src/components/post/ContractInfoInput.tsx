@@ -2,21 +2,26 @@ import Button from '@/components/shared/Button';
 import Radio from '@/components/shared/Radio';
 import SelectableItem from '@/components/shared/SelectableItem';
 import { CONTRACT_YN } from '@/constants/product';
+import { totalStepByContractYN } from '@/services/post/regist';
 import { ContractConditionRequest } from '@/types/apis/productRequest';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 type Props = {
+  onTotalStepChange: (step: number) => void;
   onNext: (data: ContractConditionRequest) => void;
   onPrev: () => void;
 };
-const RETURN_TYPE = [
-  { label: '미작성', value: 'DIRECT' },
-  { label: '작성', value: 'DELIVERY' },
-];
-function ContractInfoInput({ onNext, onPrev }: Props) {
-  const [value, setValue] = useState('');
+
+function ContractInfoInput({ onTotalStepChange, onNext, onPrev }: Props) {
+  const [value, setValue] = useState('YES');
+
+  useEffect(() => {
+    const totalStep = totalStepByContractYN(value);
+    onTotalStepChange(totalStep);
+  }, [value]);
+
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-2">
       <h2>전자계약서 작성 여부</h2>
       <Radio.Group
         fieldSetName="전자계약서 작성 여부"
