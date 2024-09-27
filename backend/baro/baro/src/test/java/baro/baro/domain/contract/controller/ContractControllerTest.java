@@ -546,4 +546,52 @@ class ContractControllerTest {
                         ))
                 );
     }
+
+    @Test
+    public void 물품_영상_정보_조회_성공() throws Exception {
+
+        //given
+        Long chatRoomId = 10000L;
+
+        //when
+
+        ResultActions actions = mockMvc.perform(
+                get("/contracts/{chatRoomId}/video", chatRoomId)
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
+        );
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(PRODUCT_VIDEO_DETAILS_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(PRODUCT_VIDEO_DETAILS_OK.getMessage()))
+                .andDo(document(
+                        "물품_영상_정보_조회_성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("물품 영상 정보 조회 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .pathParameters(
+                                        parameterWithName("chatRoomId").description("현재 대화중인 채팅방 Id")
+                                )
+
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body.videoUrl").type(STRING)
+                                                        .description("업로드 된 동영상 Url")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("물품 영상 정보 조회 Request"))
+                                .responseSchema(Schema.schema("물품 영상 정보 조회 Response"))
+                                .build()
+                        ))
+                );
+    }
 }
