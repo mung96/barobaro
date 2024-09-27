@@ -52,8 +52,6 @@ export default function useSocketClientModel(
   }, [socketClient]);
 
   useEffect(() => {
-    console.log('messageList-client');
-    console.log(messageList);
     messageAddHandler(messageList);
   }, [messageList]);
 

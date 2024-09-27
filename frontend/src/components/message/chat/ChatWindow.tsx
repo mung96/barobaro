@@ -7,9 +7,9 @@ import { ChangeEvent, useRef, useState } from 'react';
 import MessageFormType from './MessageFormType';
 import currentTime from '@/utils/currentTime';
 
-interface ChatWindowParam {
+type ChatWindowParam = {
   client: webSocketClient | null;
-}
+};
 export default function ChatWindow({ client }: ChatWindowParam) {
   const [chatValue, setChatValue] = useState('');
   const messageRef = useRef<HTMLInputElement>(null);
