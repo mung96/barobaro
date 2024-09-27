@@ -1,5 +1,11 @@
+import ContractCardBox from '@/components/post/ContractCardBox';
+
 const ProductRepairInfoCard = () => {
-  return <div>물건 수리</div>;
+  return (
+    <ContractCardBox title={'물건 수리'} step={3}>
+      <div>물건 수리</div>
+    </ContractCardBox>
+  );
 };
 
 export default ProductRepairInfoCard;
