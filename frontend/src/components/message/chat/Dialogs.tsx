@@ -1,29 +1,15 @@
 'use client';
 
 import Message from './Message';
-import { useEffect, useRef, useState } from 'react';
 import MessageFormType from './MessageFormType';
 import currentTime from '@/utils/currentTime';
+import useChatDialogsModel from '@/hooks/message/chat/useChatDialogsModel';
 
 interface DialogParams {
   messages: MessageFormType[];
 }
 export default function Dialogs({ messages }: DialogParams) {
-  const [wholeMessages, setWholeMessages] = useState<MessageFormType[]>([]);
-  const endOfPageRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    messages.map((each) => {
-      // console.log(each);
-      setWholeMessages([...wholeMessages, each]);
-    });
-  }, [messages]);
-
-  useEffect(() => {
-    console.log(wholeMessages);
-    if (endOfPageRef.current)
-      endOfPageRef.current.scrollIntoView({ behavior: 'smooth' });
-  }, [wholeMessages]);
+  const { wholeMessages, endOfPageRef } = useChatDialogsModel(messages);
 
   return (
     <>
