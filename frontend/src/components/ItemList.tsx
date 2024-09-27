@@ -8,6 +8,8 @@ import { itemList } from '@/types/products/products';
 import MeatBallsButton from '@/components/(SVG_component)/(mypage)/MeatBallsButton';
 
 export default function ItemList({ data }: { data: string }) {
+  // 주어진 data에 맞게 List를 받고, 이를 하단의 return 에 맞춰 들어가도록 해야함.
+  // let 으로 정의한건 추후 수정예정.
   const borrowList: itemList = [
     {
       productId: faker.number.int(9999),
