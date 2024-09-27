@@ -16,14 +16,15 @@ function RentalDurationInput({ selected, onSelect }: RentalDurationInputProps) {
   const [isOpenCalendar, setIsOpenCalendar] = useState(false);
 
   return (
-    <>
+    <div className="flex flex-col gap-1">
+      <h3 className="text-xs">대여정보</h3>
       <div className="flex gap-2 relative">
         <Input
           placeholder={'대여 날짜'}
           value={selected ? format(selected.from!, 'yyyy-MM-dd') : ''}
-          width="104px"
-          height="24px"
-          icon={<IoCalendarClearOutline className="w-3 h-3" />}
+          width="108px"
+          height="32px"
+          icon={<IoCalendarClearOutline className="w-4 h-4 mb-[2px]" />}
           readOnly
           onFocus={() => setIsOpenCalendar(true)}
         />
@@ -31,9 +32,9 @@ function RentalDurationInput({ selected, onSelect }: RentalDurationInputProps) {
         <Input
           placeholder={'반납 날짜'}
           value={selected ? format(selected.to!, 'yyyy-MM-dd') : ''}
-          width="104px"
-          height="24px"
-          icon={<IoCalendarClearOutline className="w-3 h-3" />}
+          width="108px"
+          height="32px"
+          icon={<IoCalendarClearOutline className="w-4 h-4 mb-[2px]" />}
           readOnly
           onFocus={() => setIsOpenCalendar(true)}
         />
@@ -45,7 +46,7 @@ function RentalDurationInput({ selected, onSelect }: RentalDurationInputProps) {
           open={setIsOpenCalendar}
         />
       </DropDownAnimation>
-    </>
+    </div>
   );
 }
 

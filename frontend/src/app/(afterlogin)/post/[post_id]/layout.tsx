@@ -4,7 +4,7 @@ import { ReactNode, useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import LikeButton from '@/components/(SVG_component)/LikeButton';
 import CalendarSVG from '@/components/(SVG_component)/Calendar';
-import PostCheckModal from '@/components/modal/PostCheckModal';
+import PostCheckModal, { ModalType } from '@/components/modal/PostCheckModal';
 
 export default function PostDetailLayout({
   children,
@@ -12,7 +12,7 @@ export default function PostDetailLayout({
   children: ReactNode;
 }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalType, setModalType] = useState('');
+  const [modalType, setModalType] = useState<ModalType>('needPassword');
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
@@ -31,42 +31,42 @@ export default function PostDetailLayout({
           onRequestClose={closeModal}
         />
       </div>
-      {/*<button*/}
-      {/*  type="button"*/}
-      {/*  onClick={() => {*/}
-      {/*    setModalType('noPermissionEdit');*/}
-      {/*    openModal();*/}
-      {/*  }}*/}
-      {/*>*/}
-      {/*  ModalTest - 수정*/}
-      {/*</button>*/}
-      {/*<button*/}
-      {/*  type="button"*/}
-      {/*  onClick={() => {*/}
-      {/*    setModalType('noPermissionDelete');*/}
-      {/*    openModal();*/}
-      {/*  }}*/}
-      {/*>*/}
-      {/*  ModalTest - 삭제*/}
-      {/*</button>*/}
-      {/*<button*/}
-      {/*  type="button"*/}
-      {/*  onClick={() => {*/}
-      {/*    setModalType('needPassword');*/}
-      {/*    openModal();*/}
-      {/*  }}*/}
-      {/*>*/}
-      {/*  ModalTest - 비밀번호설정필요*/}
-      {/*</button>*/}
-      {/*<button*/}
-      {/*  type="button"*/}
-      {/*  onClick={() => {*/}
-      {/*    setModalType('isComplete');*/}
-      {/*    openModal();*/}
-      {/*  }}*/}
-      {/*>*/}
-      {/*  ModalTest - 완료된 거래*/}
-      {/*</button>*/}
+      <button
+        type="button"
+        onClick={() => {
+          setModalType('noPermissionEdit');
+          openModal();
+        }}
+      >
+        ModalTest - 수정
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          setModalType('noPermissionDelete');
+          openModal();
+        }}
+      >
+        ModalTest - 삭제
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          setModalType('needPassword');
+          openModal();
+        }}
+      >
+        ModalTest - 비밀번호설정필요
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          setModalType('isComplete');
+          openModal();
+        }}
+      >
+        ModalTest - 완료된 거래
+      </button>
       <div className="mb-[60px]">{children}</div>
       <div className="-z-0 fixed bottom-0 -z-0 max-w-[500px] w-[100%] h-[60px] bg-white flex items-center">
         <div className="flex items-center justify-center w-full">
