@@ -10,6 +10,7 @@ import OpenedBox from '@/components/(SVG_component)/(message)/(chat)/OpenedBox';
 import UploadVideo from '@/components/(SVG_component)/(message)/(chat)/UploadVideo';
 
 import PROCESSTYPES from './ProcessTypes';
+import Money from '@/components/(SVG_component)/(message)/(chat)/Money';
 
 const buttonStyle: string =
   'bg-gray-400 pl-[2vh] pr-[2vh] pt-[0.4vh] pb-[0.4vh] rounded-lg flex items-center active:bg-gray-500 disabled:bg-gray-500';
@@ -35,7 +36,7 @@ const ProcessButton: React.FC<ProcessButtonPraram> = ({ process, isOwner }) => {
             <AddMessage />
             <span>
               &nbsp;
-              {process === PROCESSTYPES.CONTACT ? '계약 요청' : '요청 완료'}
+              {process === PROCESSTYPES.CONTACT ? '계약요청' : '요청완료'}
             </span>
           </button>
         )}
@@ -83,10 +84,8 @@ const ProcessButton: React.FC<ProcessButtonPraram> = ({ process, isOwner }) => {
           className={buttonStyle}
           disabled={process >= PROCESSTYPES.PAID_DIRECT}
         >
-          <AddMessage />
-          <span>
-            &nbsp;송금{process >= PROCESSTYPES.PAID_DIRECT && ' 완료'}
-          </span>
+          <Money />
+          <span>&nbsp;송금{process >= PROCESSTYPES.PAID_DIRECT && '완료'}</span>
         </button>
       )}
     </>
