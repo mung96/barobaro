@@ -1,10 +1,7 @@
 package baro.baro.domain.contract.controller;
 
 import baro.baro.domain.contract.dto.ContractRequestDto;
-import baro.baro.domain.contract.dto.request.ContractApproveReq;
-import baro.baro.domain.contract.dto.request.ContractOptionDetailReq;
-import baro.baro.domain.contract.dto.request.ContractRequestDetailReq;
-import baro.baro.domain.contract.dto.request.SignatureAddReq;
+import baro.baro.domain.contract.dto.request.*;
 import baro.baro.domain.product.entity.ReturnType;
 import baro.baro.global.oauth.jwt.service.JwtService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
@@ -437,6 +434,58 @@ class ContractControllerTest {
                                 )
                                 .requestSchema(Schema.schema("빌리는 측 계약 서명 Request"))
                                 .responseSchema(Schema.schema("빌리는 측 계약 서명 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 물품_수령_확인_성공() throws Exception {
+
+        ProductTakeBackReq productTakeBackReq = new ProductTakeBackReq(
+                10000L
+        );
+
+        String content = objectMapper.writeValueAsString(productTakeBackReq);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/contracts/terminate")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CONTRACT_TERMINATED_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CONTRACT_TERMINATED_OK.getMessage()))
+                .andDo(document(
+                        "물품 수령 확인 성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("물품 수령 확인 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body.chatRoomId").type(NUMBER)
+                                                        .description("현재 대화중인 채팅방 Id")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("물품 수령 확인 Request"))
+                                .responseSchema(Schema.schema("물품 수령 확인 Response"))
                                 .build()
                         ))
                 );
