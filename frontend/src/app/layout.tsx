@@ -8,8 +8,8 @@ import { END_POINT } from '@/constants/api';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: '공공연희',
-  description: '개인과 개인의 대여',
+  title: '바로바로',
+  description: '전자계약서 기반 공연물품 대여 플랫폼',
 };
 
 type Props = {

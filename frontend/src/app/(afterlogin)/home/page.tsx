@@ -2,6 +2,8 @@ import Category from '@/components/Category';
 import SearchBar from '@/components/SearchBar';
 import Cards from '@/components/(recent_list_component)/Cards';
 import NavBarLayout from '@/layout/NavBarLayout';
+import Logo from '../../../../public/assets/png/barobaro_logo.png';
+import Image from 'next/image';
 // import Header from '@/components/Header';
 
 export default function Home() {
@@ -18,9 +20,9 @@ export default function Home() {
       */}
       <br />
       <br />
-      <h1>이곳에 로고가 들어갑니다.</h1>
-      <br />
-      <br />
+      <div className="flex justify-center">
+        <Image src={Logo} alt="baro" width={150} height={150} />
+      </div>
       <SearchBar />
       <br />
       <Category />
