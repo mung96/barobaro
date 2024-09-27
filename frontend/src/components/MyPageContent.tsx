@@ -14,12 +14,12 @@ import ConnectAccountBottomSheet from '@/components/(bottomsheet)/ConnectAccount
 import { useState } from 'react';
 import ConnectAccountContent from '@/components/(bottomsheet)/ConnectAccountContent';
 import { useRouter } from 'next/navigation';
+import AccountBottomSheet from '@/components/(bottomsheet)/AccountBottomSheet';
 
 export default function MyPageContent() {
   const [isBottomSheetOpen, SetIsBottomSheetOpen] = useState(false);
   const openBottomSheet = () => SetIsBottomSheetOpen(true);
   const closeBottomSheet = () => SetIsBottomSheetOpen(false);
-  const route = useRouter();
 
   return (
     <>
@@ -54,15 +54,15 @@ export default function MyPageContent() {
             결제 수단 관리
           </h2>
           <div className="flex flex-col items-start m-3">
-            <Link href="/mypage/payment/main_account">
-              <button
-                type="button"
-                className="flex flex-row justify-center items-center my-1"
-              >
-                <MainAccountSVG />
-                <p className="text-xs text-black-100">대표 계좌 설정</p>
-              </button>
-            </Link>
+            {/*<Link href="/mypage/payment/main_account">*/}
+            {/*  <button*/}
+            {/*    type="button"*/}
+            {/*    className="flex flex-row justify-center items-center my-1"*/}
+            {/*  >*/}
+            {/*    <MainAccountSVG />*/}
+            {/*    <p className="text-xs text-black-100">대표 계좌 설정</p>*/}
+            {/*  </button>*/}
+            {/*</Link>*/}
             <button
               type="button"
               className="flex flex-row justify-center items-center my-1"
@@ -71,16 +71,16 @@ export default function MyPageContent() {
               <ConnectAccountSVG />
               <p className="text-xs text-black-100">계좌 설정</p>
             </button>
-            <Link href="/mypage/payment/idontknow">
-              <button
-                type="button"
-                className="flex flex-row justify-center items-center my-1"
-              >
-                <p className="text-xs text-black-100">
-                  페이 설정 (수정 완료시 주소, 아이콘 설정 마무리하기)
-                </p>
-              </button>
-            </Link>
+            {/*<Link href="/mypage/payment/idontknow">*/}
+            {/*  <button*/}
+            {/*    type="button"*/}
+            {/*    className="flex flex-row justify-center items-center my-1"*/}
+            {/*  >*/}
+            {/*    <p className="text-xs text-black-100">*/}
+            {/*      페이 설정 (수정 완료시 주소, 아이콘 설정 마무리하기)*/}
+            {/*    </p>*/}
+            {/*  </button>*/}
+            {/*</Link>*/}
           </div>
         </div>
         <div className="ml-5 mt-4 mb-4">
@@ -141,15 +141,10 @@ export default function MyPageContent() {
           </div>
         </div>
       </section>
-      <section>
-        <ConnectAccountBottomSheet
-          isOpen={isBottomSheetOpen}
-          onClose={closeBottomSheet}
-          height="400px"
-        >
-          <ConnectAccountContent />
-        </ConnectAccountBottomSheet>
-      </section>
+      <AccountBottomSheet
+        isBottomSheetOpen={isBottomSheetOpen}
+        closeBottomSheet={closeBottomSheet}
+      />
     </>
   );
 }
