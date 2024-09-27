@@ -23,7 +23,7 @@ public enum SuccessCode {
     CONTRACT_APPROVED_OK(OK.value(),"계약 요청이 승인되었습니다."),
     CONTRACT_SIGNED_OK(OK.value(),"계약 서명에 성공했습니다."),
     CONTRACT_TERMINATED_OK(OK.value(), "물품 회수가 확인되었습니다."),
-
+    PRODUCT_VIDEO_UPLOADED_OK(OK.value(), "영상이 정상 제출되었습니다."),
     //채팅
     CHATROOM_LIST_OK(OK.value(), "채팅방 리스트 조회에 성공했습니다."),
 
