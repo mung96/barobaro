@@ -1,5 +1,23 @@
-import Main from './_component/Main';
+'use client';
+
+import Image from 'next/image';
+import BaroPing from '@/../public/assets/png/baroping.png';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
-  return <Main />;
+  const router = useRouter();
+  useEffect(() => {
+    const showLandingImage = setTimeout(() => {
+      console.log('Move!');
+      router.replace('/login');
+    }, 3000);
+  }, []);
+
+  return (
+    <section className="w-full h-[100dvh] flex flex-col justify-center items-center">
+      <Image src={BaroPing} alt="baro" width={200} height={200} />
+      LandingPage, 일단 5초뒤 이동하도록 임의로 지정
+    </section>
+  );
 }
