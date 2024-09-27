@@ -1,10 +1,6 @@
 import ConnectAccountBottomSheet from '@/components/(bottomsheet)/ConnectAccountBottomSheet';
 import ConnectAccountContent from '@/components/(bottomsheet)/ConnectAccountContent';
-
-type BottomSheetProps = {
-  isBottomSheetOpen: boolean;
-  closeBottomSheet: () => void;
-};
+import { BottomSheetProps } from '@/types/overlay/bottomsheet';
 
 export default function AccountBottomSheet({
   isBottomSheetOpen,

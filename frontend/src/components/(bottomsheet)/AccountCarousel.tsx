@@ -54,7 +54,11 @@ export default () => {
           </div>
         </SwiperSlide>
       ))}
-      ...
+      <SwiperSlide>
+        <div className="w-[300px] h-[200px] mx-auto rounded-[8px] bg-gray-100">
+          추가하기(설정)
+        </div>
+      </SwiperSlide>
     </Swiper>
   );
 };
