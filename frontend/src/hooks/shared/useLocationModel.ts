@@ -1,4 +1,4 @@
-import { getLocationListByQuery } from '@/apis/shared/kakaoApi';
+import { getLocationListByQuery } from '@/apis/kakaoApi';
 import { convertLocationDataToView } from '@/services/shared/location';
 import { Location } from '@/types/domains/location';
 
