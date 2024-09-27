@@ -23,7 +23,7 @@ const SelectableItem = ({
 }: Props) => {
   const commonProps = {
     className:
-      'relative has-[:checked]:border-blue-100 has-[:checked]:border-[1px] bg-gray-400 rounded flex w-24 h-8 items-center justify-center has-[:checked]:bg-white has-[checked]:text-blue-100',
+      'relative has-[:checked]:border-blue-100 has-[:checked]:border-[1px] bg-gray-400 rounded flex w-full h-8 items-center justify-center has-[:checked]:bg-white has-[checked]:text-blue-100',
     disabled,
     children: (
       <>
