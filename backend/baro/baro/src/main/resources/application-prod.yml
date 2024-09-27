@@ -9,6 +9,12 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 
+  data:
+    mongodb:
+      uri: ${MONGODB_URL}
+      username: ${MONGODB_USERNAME}
+      password: ${MONGODB_PASSWORD}
+
   jpa:
     database-platform: org.hibernate.spatial.dialect.postgis.PostgisPG95Dialect
     hibernate:
