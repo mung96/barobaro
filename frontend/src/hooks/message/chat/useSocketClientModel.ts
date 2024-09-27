@@ -37,7 +37,7 @@ export default function useSocketClientModel(
             body: parsedMessage.body,
           };
 
-          setMessageList([...messageList, toMessageFormType]);
+          setMessageList((messageList) => [...messageList, toMessageFormType]);
         });
 
         return () => {
@@ -52,6 +52,8 @@ export default function useSocketClientModel(
   }, [socketClient]);
 
   useEffect(() => {
+    console.log('messageList-client');
+    console.log(messageList);
     messageAddHandler(messageList);
   }, [messageList]);
 
