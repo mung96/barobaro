@@ -1,4 +1,4 @@
-type ModalType =
+export type ModalType =
   | 'isComplete'
   | 'noPermissionEdit'
   | 'noPermissionDelete'

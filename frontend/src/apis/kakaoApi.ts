@@ -1,5 +1,5 @@
 import { kakaoInstance } from '@/apis/axiosInstance';
-import { END_POINT } from '@/apis/constants';
+import { END_POINT } from '@/constants/api';
 import { KakaoLocalSearchResponse } from '@/types/domains/location';
 
 export const getLocationListByQuery = async (query: string) => {
