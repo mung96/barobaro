@@ -39,12 +39,12 @@ function RentalDurationInput({ selected, onSelect }: RentalDurationInputProps) {
           onFocus={() => setIsOpenCalendar(true)}
         />
       </div>
-      <DropDownAnimation isOpen={isOpenCalendar}>
-        <DateRangePicker
-          selected={selected}
-          onSelect={onSelect}
-          open={setIsOpenCalendar}
-        />
+      <DropDownAnimation
+        isOpen={isOpenCalendar}
+        onClose={() => setIsOpenCalendar(false)}
+        title="대여날짜를 선택해주세요"
+      >
+        <DateRangePicker selected={selected} onSelect={onSelect} />
       </DropDownAnimation>
     </div>
   );
