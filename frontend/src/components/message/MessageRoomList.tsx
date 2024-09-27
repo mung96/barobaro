@@ -3,9 +3,9 @@
 import ChatRoomEach from './ChatRoom';
 import ChatRoomType from './ChatRoomType';
 
-interface MessageRoomListParam {
+type MessageRoomListParam = {
   selectValue: string;
-}
+};
 
 export default function MessageRoomList({ selectValue }: MessageRoomListParam) {
   const chatList: ChatRoomType[] = [

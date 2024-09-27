@@ -5,9 +5,9 @@ import MessageFormType from './MessageFormType';
 import currentTime from '@/utils/currentTime';
 import useChatDialogsModel from '@/hooks/message/chat/useChatDialogsModel';
 
-interface DialogParams {
+type DialogParams = {
   messages: MessageFormType[];
-}
+};
 export default function Dialogs({ messages }: DialogParams) {
   const { wholeMessages, endOfPageRef } = useChatDialogsModel(messages);
 
@@ -89,7 +89,7 @@ export default function Dialogs({ messages }: DialogParams) {
           type={each.type}
           timestamp={each.timestamp}
           user={each.user}
-          body={each.body} // 이 부분부터 작업 - 메시지 배열은 왜 항상 1개만 넘어오는지 체크하고 동적으로 뿌리기
+          body={each.body}
         />
       ))}
 
