@@ -1,15 +1,10 @@
 import Button from '@/components/shared/Button';
-import DropDownAnimation from '@/components/shared/DropDownAnimation';
-import { IoIosArrowForward, IoIosArrowDown } from 'react-icons/io';
 import Radio from '@/components/shared/Radio';
 import SelectableItem from '@/components/shared/SelectableItem';
 import { CONTRACT_YN } from '@/constants/product';
 import { totalStepByContractYN } from '@/services/post/regist';
 import { ContractConditionRequest } from '@/types/apis/productRequest';
 import { useEffect, useState } from 'react';
-import Input from '@/components/shared/Input';
-import { IoCalendarClearOutline } from 'react-icons/io5';
-import { format } from 'date-fns';
 import RentalInfoCard from '@/components/post/RentalInfoCard';
 import OverdueInfoCard from '@/components/post/OverdueInfoCard';
 import ProductRepairInfoCard from '@/components/post/ProductRepairInfoCard';
