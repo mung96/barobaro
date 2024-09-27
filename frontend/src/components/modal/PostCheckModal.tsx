@@ -7,12 +7,10 @@ import ModalContent from '@/components/modal/ModalContent';
 import { useRouter } from 'next/navigation';
 
 export type ModalType =
-  | 'needLogin'
-  | 'alreadyDone'
+  | 'isComplete'
   | 'noPermissionEdit'
   | 'noPermissionDelete'
-  | 'needPassword'
-  | 'isComplete';
+  | 'needPassword';
 
 type Props = {
   modalType: ModalType;
