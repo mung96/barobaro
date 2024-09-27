@@ -1,8 +1,8 @@
 import React from 'react';
 
-interface LocationParam {
+type LocationParam = {
   where: string;
-}
+};
 
 export default function Location({ where }: LocationParam) {
   return (

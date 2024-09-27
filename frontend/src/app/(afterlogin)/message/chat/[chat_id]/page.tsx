@@ -1,43 +1,48 @@
 'use client';
 
-import { useParams } from 'next/navigation';
-import { useEffect, useRef } from 'react';
+import { useState } from 'react';
 import Header from '@/components/Header';
 import OriginBoard from '@/components/message/chat/OriginBoard';
 import Dialogs from '@/components/message/chat/Dialogs';
 import ChatWindow from '@/components/message/chat/ChatWindow';
+import MessageFormType from '@/components/message/chat/MessageFormType';
+import useSocketClientModel from '@/hooks/message/chat/useSocketClientModel';
+import useChatPageModel from '@/hooks/message/chat/useChatPageModel';
 
 export default function Chat() {
-  // 채팅 참여 상대방 닉네임 떼어서 저장
-  const { chat_id: chatId } = useParams();
-  const roomName: string = `${typeof chatId === 'string' && decodeURI(chatId)}님과의 채팅`;
-  const scrollRef = useRef<HTMLDivElement>(null);
+  // chatting header, scroll setting
+  const { roomName, scrollRef } = useChatPageModel();
+  const UserId = '김말이'; // 사용자 PK
 
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
-  }, []);
+  // message list
+  const [messages, setMessages] = useState<MessageFormType[]>([]);
+  const handleAddMessages = (message: MessageFormType[]): void => {
+    // client 객체에 props로 넘기는 message setter
+    setMessages(message);
+  };
+
+  // webSocket Client
+  const socketClient = useSocketClientModel(UserId, handleAddMessages);
 
   return (
     <div className="flex flex-col h-screen">
-      {/* 상단 고정 헤더와 OriginBoard */}
+      {/* 상단 헤더 + 원본 게시글 미리보기 영역 (Header + OriginBoard) */}
       <div className="fixed top-0 w-full bg-white z-10 max-w-[500px]">
         <Header pageName={roomName} hasPrevBtn hasSearchBtn hasAlertBtn />
         <OriginBoard />
       </div>
 
-      {/* 스크롤 가능한 Dialogs 영역 */}
+      {/* 대화 내용 (Dialogs) */}
       <div
         className="flex-1 mt-[25vh] pb-[8vh] overflow-y-scroll"
         ref={scrollRef}
       >
-        <Dialogs />
+        <Dialogs messages={messages} />
       </div>
 
-      {/* 하단 고정 ChatWindow */}
+      {/* 메시지 입력창 (ChatWindow) */}
       <div className="fixed bottom-0 box-border w-full bg-white z-10 max-w-[500px]">
-        <ChatWindow />
+        <ChatWindow client={socketClient} />
       </div>
     </div>
   );
