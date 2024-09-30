@@ -44,8 +44,8 @@ function ContractInfoInput({ onTotalStepChange, onNext, onPrev }: Props) {
 
       <div className="flex flex-col gap-3">
         <RentalInfoCard />
-        <OverdueInfoCard />
         <ProductRepairInfoCard />
+        <OverdueInfoCard />
         <RefundInfoCard />
         <OwnerInfoCard />
       </div>
