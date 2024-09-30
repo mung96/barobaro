@@ -7,9 +7,10 @@ const readFile = (file: File): Promise<string | ArrayBuffer | null> => {
   });
 };
 
+// eslint-disable-next-line import/prefer-default-export
 export const readFileArray = async (files: File[]) => {
   const fileArr: Array<string | ArrayBuffer | null> = [];
-  //파일을 변환하는 과정
+  // 파일을 변환하는 과정
   await Promise.all(files.map(readFile))
     .then((results) => {
       results.forEach((result) => fileArr.push(result));

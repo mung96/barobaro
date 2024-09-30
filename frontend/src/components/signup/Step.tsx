@@ -1,10 +1,11 @@
 'use client';
 
 // 1, 2에 따라 다른 내용구성
-import StepBar from '@/components/post/StepBar';
+import { useParams } from 'next/navigation';
+
 import StepContent from '@/components/signup/StepContent';
 import SignUpContent from '@/components/signup/SignUpContent';
-import { useParams } from 'next/navigation';
+import StepBar from '@/components/shared/StepBar';
 
 export default function Step() {
   const params = useParams();

@@ -5,6 +5,6 @@ type Props = { process: number };
 
 export default function SignUpContent({ process }: Props) {
   return (
-    <>{process === 1 ? <ProfilePhoto isSignup={true} /> : <SelectArea />}</>
+    <div>{process === 1 ? <ProfilePhoto isSignup /> : <SelectArea />}</div>
   );
 }

@@ -1,9 +1,10 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
+import { ReactNode } from 'react';
 
 type DropDownAnimationProps = {
-  children: React.ReactNode;
+  children: ReactNode;
   isOpen: boolean;
 };
 

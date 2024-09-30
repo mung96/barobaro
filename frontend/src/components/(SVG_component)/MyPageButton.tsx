@@ -1,12 +1,18 @@
 import React from 'react';
 
 type Props = {
-  fill : string
+  fill: string;
 };
 
-function MyPageButton({ fill } : Props) {
+function MyPageButton({ fill }: Props) {
   return (
-    <svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      width="23"
+      height="23"
+      viewBox="0 0 23 23"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <path
         d="M14.8334 7.66659C14.8334 9.50753 13.341 10.9999 11.5001 10.9999C9.65913 10.9999 8.16675 9.50753 8.16675 7.66659C8.16675 5.82564 9.65913 4.33325 11.5001 4.33325C13.341 4.33325 14.8334 5.82564 14.8334 7.66659Z"
         fill={fill}

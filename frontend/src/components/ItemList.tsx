@@ -4,13 +4,13 @@ import { faker } from '@faker-js/faker';
 import Image from 'next/image';
 import CalendarSVG from '@/components/(SVG_component)/Calendar';
 import ContractIcon from '@/components/(SVG_component)/(mypage)/Contract';
-import { itemList } from '@/types/products/products';
+import { ItemListType } from '@/types/products/products';
 import MeatBallsButton from '@/components/(SVG_component)/(mypage)/MeatBallsButton';
 
 export default function ItemList({ data }: { data: string }) {
   // 주어진 data에 맞게 List를 받고, 이를 하단의 return 에 맞춰 들어가도록 해야함.
   // let 으로 정의한건 추후 수정예정.
-  const borrowList: itemList = [
+  const borrowList: ItemListType = [
     {
       productId: faker.number.int(9999),
       productMainImage: faker.image.urlLoremFlickr(),
@@ -34,7 +34,7 @@ export default function ItemList({ data }: { data: string }) {
       productStatus: 'FINISH',
     },
   ];
-  const lentList: itemList = [
+  const lentList: ItemListType = [
     {
       productId: faker.number.int(9999),
       productMainImage: faker.image.urlLoremFlickr(),
