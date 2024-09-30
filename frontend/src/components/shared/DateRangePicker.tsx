@@ -1,9 +1,9 @@
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 import { DateRange, DayPicker } from 'react-day-picker';
 import 'react-day-picker/style.css';
 import './calendar.css';
-import Button from '@/components/shared/Button';
 import { ko } from 'react-day-picker/locale';
+import Button from '@/components/shared/Button';
 
 type DateRangePickerProps = {
   selected: DateRange | undefined;
@@ -19,9 +19,13 @@ function DateRangePicker({
 }: DateRangePickerProps) {
   return (
     <div className="rounded-xl bg-white relative flex flex-col items-center h-96 justify-center shadow-md border-gray-300 border-[1px] w-[300px]">
-      <p className="font-bold text-xl py-4 px-4" onClick={onClose}>
+      <button
+        type="button"
+        className="font-bold text-xl py-4 px-4"
+        onClick={onClose}
+      >
         대여날짜를 선택해주세요
-      </p>
+      </button>
 
       <div className="flex gap-[22px]">
         {['월', '화', '수', '목', '금', '토', '일'].map((day) => (
@@ -35,7 +39,7 @@ function DateRangePicker({
         mode="range"
         className="overflow-y-scroll scrollbar-hide"
         disabled={{ before: new Date() }}
-        excludeDisabled={true}
+        excludeDisabled
         selected={selected}
         onSelect={onSelect}
         numberOfMonths={12}
@@ -43,9 +47,13 @@ function DateRangePicker({
         required
       />
       <div className="flex py-2 justify-between w-full border-t-[1px] px-4">
-        <div className="flex items-center" onClick={() => onSelect(undefined)}>
+        <button
+          type="button"
+          className="flex items-center"
+          onClick={() => onSelect(undefined)}
+        >
           <p className="text-xs underline">재설정</p>
-        </div>
+        </button>
         <Button width="100px" height="40px" onClick={onClose}>
           다음
         </Button>

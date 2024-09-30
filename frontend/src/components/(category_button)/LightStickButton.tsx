@@ -1,9 +1,8 @@
 'use client';
 
-import colors from '@/components/colors';
-
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import colors from '@/components/colors';
 import LightStick from '../(SVG_component)/LightStick';
 
 export default function LightStickButton() {
@@ -29,7 +28,7 @@ export default function LightStickButton() {
         height: '44px',
         display: 'flex',
         justifyContent: 'center',
-          alignItems: 'center',
+        alignItems: 'center',
       }}
     >
       <LightStick fill={buttonColor} />

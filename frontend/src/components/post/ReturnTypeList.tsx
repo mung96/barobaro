@@ -18,7 +18,7 @@ function ReturnTypeList({ values, onChange }: Props) {
       >
         {RETURN_TYPE.map((returnType) => (
           <SelectableItem
-            type={'checkbox'}
+            type="checkbox"
             value={returnType.value}
             label={returnType.label}
           />

@@ -15,7 +15,7 @@ export default function BottomSheet({
   onClose,
   children,
   height = '100%',
-} : BottomSheetProps) {
+}: BottomSheetProps) {
   const [startY, setStartY] = useState<number | null>(null);
   const handleTouchStart = (e: React.TouchEvent) => {
     setStartY(e.touches[0].clientY);
@@ -51,9 +51,7 @@ export default function BottomSheet({
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
           >
-            <div className="p-4 overflow-y-auto">
-              {children}
-            </div>
+            <div className="p-4 overflow-y-auto">{children}</div>
           </motion.div>
         </motion.div>
       )}

@@ -9,7 +9,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { AccountListRequest } from '@/types/apis/accountResquest';
 
-export default () => {
+export default function () {
   const accounts: AccountListRequest = [
     {
       bank: '국민은행',
@@ -37,7 +37,7 @@ export default () => {
       spaceBetween={50}
       slidesPerView={1}
       // navigation
-      centeredSlides={true}
+      centeredSlides
       pagination={{ clickable: true }}
       onSwiper={(swiper) => console.log(swiper)}
       onSlideChange={() => console.log('slide change')}
@@ -61,4 +61,4 @@ export default () => {
       </SwiperSlide>
     </Swiper>
   );
-};
+}

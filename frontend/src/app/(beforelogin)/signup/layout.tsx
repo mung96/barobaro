@@ -1,10 +1,7 @@
+import { ReactNode } from 'react';
 import Header from '@/components/Header';
 
-export default function SignUpLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function SignUpLayout({ children }: { children: ReactNode }) {
   return (
     <>
       <Header

@@ -1,6 +1,12 @@
 export default function FAQSVG() {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <circle cx="8" cy="8" r="5.75" stroke="#33373F" strokeWidth="0.5" />
       <circle cx="8" cy="11.9998" r="0.333333" fill="#33373F" />
       <path
@@ -9,6 +15,5 @@ export default function FAQSVG() {
         strokeWidth="0.5"
       />
     </svg>
-
   );
 }

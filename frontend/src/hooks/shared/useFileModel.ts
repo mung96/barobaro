@@ -1,6 +1,6 @@
-import { readFileArray } from '@/utils/fileUtils';
 import { useMemo, useState } from 'react';
 import { DropResult } from 'react-beautiful-dnd';
+import { readFileArray } from '@/utils/fileUtils';
 
 const useFileModel = () => {
   const [files, setFiles] = useState<Array<string | ArrayBuffer | null>>([]);
@@ -33,8 +33,8 @@ const useFileModel = () => {
 
   const deleteFileByIndex = (index: number) => {
     const newFiles: Array<string | ArrayBuffer | null> = [];
-    files.filter((file, idx) => {
-      idx !== index && newFiles.push(file);
+    files.filter((fileItem, idx) => {
+      return idx !== index && newFiles.push(fileItem);
     });
     setFiles(newFiles);
   };

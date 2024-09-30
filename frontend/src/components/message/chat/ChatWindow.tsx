@@ -1,11 +1,12 @@
 'use client';
 
+import { ChangeEvent, useRef, useState } from 'react';
 import AttatchImage from '@/components/(SVG_component)/(message)/(chat)/AttatchImage';
 import SendButton from '@/components/(SVG_component)/(message)/(chat)/SendButton';
 import webSocketClient from '@/utils/webSocketClient';
-import { ChangeEvent, useRef, useState } from 'react';
-import MessageFormType from './MessageFormType';
 import currentTime from '@/utils/currentTime';
+
+import MessageFormType from './MessageFormType';
 
 type ChatWindowParam = {
   client: webSocketClient | null;
@@ -49,8 +50,8 @@ export default function ChatWindow({ client }: ChatWindowParam) {
               ref={messageRef}
             />
             <button
+              type="button"
               onClick={sendChat}
-              role="presentation"
               className="w-2/12 focus:outline-none"
               disabled={!chatValue}
             >

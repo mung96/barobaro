@@ -1,9 +1,10 @@
 'use client';
 
-import Message from './Message';
-import MessageFormType from './MessageFormType';
 import currentTime from '@/utils/currentTime';
 import useChatDialogsModel from '@/hooks/message/chat/useChatDialogsModel';
+
+import Message from './Message';
+import MessageFormType from './MessageFormType';
 
 type DialogParams = {
   messages: MessageFormType[];
