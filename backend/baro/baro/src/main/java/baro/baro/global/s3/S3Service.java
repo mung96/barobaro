@@ -66,6 +66,9 @@ public abstract class S3Service {
     }
 
     protected String generateS3(String s3FileName) {
+        if (!bucketUrl.endsWith("/")) {
+            bucketUrl += "/";
+        }
         return bucketUrl + s3FileName;
     }
 }
