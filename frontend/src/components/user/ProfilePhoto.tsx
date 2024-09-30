@@ -1,36 +1,25 @@
 'use client';
 
 import CameraBody from '@/components/(SVG_component)/CameraBody';
-import { useRef, useCallback } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import useFileModel from '@/hooks/shared/useFileModel';
-import useNicknameModel from '@/hooks/user/useNicknameModel';
+import useProfilePhotoModel from '@/hooks/user/useProfilePhotoModel';
+import useProfileNicknameModel from '@/hooks/user/useProfileNicknameModel';
+import { signnUp, updateProfile } from '@/services/user/profile';
 
 export default function ProfilePhoto({ isSignup }: { isSignup: boolean }) {
-  const { file, changeFile } = useFileModel();
-  const { inputNickname, valid, nicknameValid } = useNicknameModel();
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { file, fileInputRef, handleProfileImage, handleButtonClick } =
+    useProfilePhotoModel();
+  const { inputNickname, valid, handleNicknameChange } =
+    useProfileNicknameModel();
   const router = useRouter();
-
-  const handleProfileImage = useCallback(
-    async (event: React.ChangeEvent<HTMLInputElement>) => {
-      const newFile = event.target.files ? [event.target.files[0]] : [];
-      await changeFile(newFile);
-    },
-    [changeFile],
-  );
-
-  const handleButtonClick = () => {
-    fileInputRef.current?.click();
-  };
 
   const nextStep = () => {
     if (isSignup) {
-      // 회원가입 로직
+      signnUp();
     } else {
       // 프로필 업데이트 로직
-      router.replace('/mypage');
+      updateProfile();
     }
   };
 
@@ -70,7 +59,7 @@ export default function ProfilePhoto({ isSignup }: { isSignup: boolean }) {
         <div className="w-full h-[32px] rounded-[7px] flex flex-col justify-center items-center border-gray-500 border-[1px]">
           <input
             className="w-full max-w-[450px]"
-            onChange={(e) => nicknameValid(e.target.value)}
+            onChange={(e) => handleNicknameChange(e.target.value)}
             value={inputNickname}
           />
         </div>
