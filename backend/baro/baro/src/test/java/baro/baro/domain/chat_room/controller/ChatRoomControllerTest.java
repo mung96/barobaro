@@ -1,7 +1,9 @@
 package baro.baro.domain.chat_room.controller;
 
+import baro.baro.domain.chat_room.dto.ChatRoomDto;
 import baro.baro.domain.chat_room.dto.request.ChatRoomAddReq;
 import baro.baro.domain.chat_room.dto.response.ChatRoomAddRes;
+import baro.baro.domain.chat_room.dto.response.ChatRoomListRes;
 import baro.baro.domain.chat_room.service.ChatRoomService;
 import baro.baro.global.exception.CustomException;
 import baro.baro.global.oauth.jwt.service.JwtService;
@@ -26,8 +28,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import static baro.baro.domain.chat_room.dto.ChatRoomStatus.OWNER;
+import static baro.baro.domain.chat_room.dto.ChatRoomStatus.RENTAL;
 import static baro.baro.global.ResponseFieldUtils.getCommonResponseFields;
 import static baro.baro.global.statuscode.ErrorCode.*;
 import static baro.baro.global.statuscode.SuccessCode.CHATROOM_CREATED;
@@ -369,6 +374,20 @@ class ChatRoomControllerTest {
     public void 채팅방_리스트_조회_성공() throws Exception {
         // given
 
+        List<ChatRoomDto> res = List.of(
+                ChatRoomDto.builder()
+                        .chatRoomId(1L)
+                        .profileImage("profileImage")
+                        .nickname("nickname")
+                        .productMainImage("productMainImage")
+                        .lastChat("lastChat")
+                        .lastChatTime(LocalDateTime.now())
+                        .chatRoomStatus(OWNER)
+                        .build()
+        );
+        when(chatRoomService.findChatRooms(anyLong()))
+                .thenReturn(new ChatRoomListRes(res));
+
         // when
         ResultActions actions = mockMvc.perform(
                 get("/chatrooms")
@@ -405,6 +424,8 @@ class ChatRoomControllerTest {
                                                         .description("대여 상품 대표 이미지"),
                                                 fieldWithPath("body.*[].lastChat").type(STRING)
                                                         .description("마지막 채팅 메세지"),
+                                                fieldWithPath("body.*[].lastChatTime").type(STRING)
+                                                        .description("마지막 채팅 시각"),
                                                 fieldWithPath("body.*[].chatRoomStatus").type(STRING)
                                                         .description("채팅방 상태")
                                         )
