@@ -21,7 +21,7 @@ export default function ChatRoomEach({
       onMouseDown={isClicked}
     >
       <div className="w-2/12 flex items-center justify-center">
-        <div className="relative w-full h-full">
+        <div className="relative w-full h-full aspect-square">
           <Image
             src={profileImageSrc} // public 폴더 내의 이미지 경로
             alt="profImg" // 이미지 설명 추가

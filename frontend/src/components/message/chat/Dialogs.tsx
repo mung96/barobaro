@@ -1,23 +1,25 @@
 'use client';
 
 import Message from './Message';
+import MessageFormType from './MessageFormType';
+import currentTime from '@/utils/currentTime';
+import useChatDialogsModel from '@/hooks/message/chat/useChatDialogsModel';
 
-export default function Dialogs() {
-  const getCurrentTime = () => {
-    // 데이터 들어오기 전까지 임시 사용
-    const now = new Date();
-    return `${now.getFullYear()}년 ${String(now.getMonth() + 1).padStart(2, '0')}월 ${String(now.getDate()).padStart(2, '0')}일, ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-  };
+type DialogParams = {
+  messages: MessageFormType[];
+};
+export default function Dialogs({ messages }: DialogParams) {
+  const { wholeMessages, endOfPageRef } = useChatDialogsModel(messages);
+
   return (
     <>
       {/* axios로 불러온 데이터 map */}
       <Message
         type={3}
-        timestamp={getCurrentTime().split(',')[0]}
+        timestamp={currentTime('date')}
         user="sys"
         body="datealert"
       />
-
       <Message
         type={1}
         timestamp="12:34"
@@ -30,44 +32,8 @@ export default function Dialogs() {
         user="김말이"
         body="안녕하세요! 고양이 보여드릴까요? 잠시만요"
       />
-      <Message
-        type={1}
-        timestamp="12:34"
-        user="뗀석기팔아요"
-        body="안녕하세요! 고양이 쓰다듬으러 왔는데요. 안녕하세요! 고양이 쓰다듬으러 왔는데요."
-      />
-
       <Message type={3} timestamp="12:34" user="owner" body="accept" />
-      <Message
-        type={1}
-        timestamp="12:34"
-        user="김말이"
-        body="안녕하세요! 고양이 보여드릴까요? 잠시만요 안녕하세요! 고양이 보여드릴까요? 잠시만요"
-      />
-      <Message
-        type={1}
-        timestamp="12:34"
-        user="뗀석기팔아요"
-        body="안녕하세요! 고양이 쓰다듬으러 왔는데요. 안녕하세요! 고양이 쓰다듬으러 왔는데요. 안녕하세요! 고양이 쓰다듬으러 왔는데요."
-      />
-      <Message
-        type={1}
-        timestamp="12:34"
-        user="김말이"
-        body="안녕하세요! 고양이 보여드릴까요? 잠시만요 안녕하세요! 고양이 보여드릴까요? 잠시만요 안녕하세요! 고양이 보여드릴까요? 잠시만요"
-      />
-      <Message
-        type={1}
-        timestamp="12:34"
-        user="뗀석기팔아요"
-        body="안녕하세요! 고양이 쓰다듬으러 왔는데요. 안녕하세요! 고양이 쓰다듬으러 왔는데요. 안녕하세요! 고양이 쓰다듬으러 왔는데요. 안녕하세요! 고양이 쓰다듬으러 왔는데요."
-      />
-      <Message
-        type={1}
-        timestamp="12:34"
-        user="김말이"
-        body="안녕하세요! 고양이 보여드릴까요? 잠시만요 안녕하세요! 고양이 보여드릴까요? 잠시만요 안녕하세요! 고양이 보여드릴까요? 잠시만요 안녕하세요! 고양이 보여드릴까요? 잠시만요"
-      />
+
       <Message
         type={1}
         timestamp="12:34"
@@ -106,7 +72,6 @@ export default function Dialogs() {
         body="https://mblogthumb-phinf.pstatic.net/MjAyMjAxMjVfMjAy/MDAxNjQzMTAyOTk2NjE0.gw_H_jjBM64svaftcnheR6-mHHlmGOyrr6htAuxPETsg.8JJSQNEA5HX2WmrshjZ-VjmJWqhmgE40Qm5csIud9VUg.JPEG.minziminzi128/IMG_7374.JPG?type=w800"
       />
       <Message type={3} timestamp="12:34" user="owner" body="reject" />
-      <Message type={1} timestamp="12:34" user="김말이" body="ㅎ" />
       <Message type={2} timestamp="12:34" user="김말이" body="contract" />
       <Message type={3} timestamp="12:34" user="김말이" body="modified" />
       <Message type={2} timestamp="12:34" user="김말이" body="signature" />
@@ -118,6 +83,17 @@ export default function Dialogs() {
       <Message type={2} timestamp="12:34" user="말이" body="finished" />
 
       <Message type={3} timestamp="12:34" user="김말이" body="coffee" />
+
+      {wholeMessages.map((each) => (
+        <Message
+          type={each.type}
+          timestamp={each.timestamp}
+          user={each.user}
+          body={each.body}
+        />
+      ))}
+
+      <div ref={endOfPageRef} />
     </>
   );
 }
