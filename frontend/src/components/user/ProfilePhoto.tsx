@@ -5,11 +5,11 @@ import { useRef, useCallback } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import useFileModel from '@/hooks/shared/useFileModel';
-import useNickname from '@/hooks/user/useNicknameModel';
+import useNicknameModel from '@/hooks/user/useNicknameModel';
 
 export default function ProfilePhoto({ isSignup }: { isSignup: boolean }) {
   const { file, changeFile } = useFileModel();
-  const { inputNickname, valid, nicknameValid } = useNickname();
+  const { inputNickname, valid, nicknameValid } = useNicknameModel();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
@@ -26,8 +26,6 @@ export default function ProfilePhoto({ isSignup }: { isSignup: boolean }) {
   };
 
   const nextStep = () => {
-    console.log('Profile Image:', file);
-    console.log('Nickname:', inputNickname);
     if (isSignup) {
       // 회원가입 로직
     } else {
@@ -84,7 +82,7 @@ export default function ProfilePhoto({ isSignup }: { isSignup: boolean }) {
           </div>
         )}
       </section>
-      <div className="fixed bottom-10 left-0 right-0 p-4 bg-white">
+      <div className="fixed bottom-10 w-[100%] justify-items-center flex p-4 bg-white">
         <button
           type="button"
           className={`${
