@@ -16,6 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
+import static baro.baro.domain.member.validator.MemberValidator.isInvalidNickname;
 import static baro.baro.global.statuscode.SuccessCode.*;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
@@ -25,11 +28,13 @@ import static org.springframework.http.HttpStatus.OK;
 public class MemberController {
     private final MemberService memberService;
 
-    @PostMapping("/members/signup/{provider}")
-    public ResponseEntity<?> signUp(@PathVariable("provider") String provider,
-                                        @RequestBody SignupReq signupReq,
-                                        HttpServletResponse response) {
-        String accessToken = memberService.signup(signupReq);
+    @PostMapping("/members/signup")
+    public ResponseEntity<?> signUp(@RequestPart(value = "dto") SignupReq signupReq,
+                                    @RequestPart(value = "file") MultipartFile file,
+                                    HttpServletResponse response) throws IOException {
+        isInvalidNickname(signupReq.getNickname());
+
+        String accessToken = memberService.signup(signupReq, file);
 
         CookieUtil.addCookie(response, "token", accessToken, 300);
 
