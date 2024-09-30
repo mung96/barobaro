@@ -5,6 +5,7 @@ import { BottomSheetProps } from '@/types/overlay/bottomsheet';
 export default function AccountBottomSheet({
   isBottomSheetOpen,
   closeBottomSheet,
+  BottomSheetType,
 }: BottomSheetProps) {
   return (
     <section>
@@ -13,7 +14,7 @@ export default function AccountBottomSheet({
         onClose={closeBottomSheet}
         height="400px"
       >
-        <ConnectAccountContent />
+        <ConnectAccountContent BottomSheetTitle={BottomSheetType} />
       </ConnectAccountBottomSheet>
     </section>
   );
