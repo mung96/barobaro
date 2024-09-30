@@ -40,3 +40,8 @@ values (20000, 20000, '대여할 사람', '대여하라고', '2024-08-27'::date,
 insert into product_return_types (product_id, return_type)
 values (20000, 0)
 ;
+
+-- ChatRoom
+insert into chat_room (chat_room_id, product_id, owner_id, rental_id, rental_status, lastChat, lastChatTime, isDeleted)
+values (1, 20000, 20000, 123, 'AVAILABLE', '춤출테니까 빌려줘', CAST('2023-09-30 12:00:00' AS TIMESTAMP),false)
+;
