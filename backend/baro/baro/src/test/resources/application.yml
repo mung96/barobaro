@@ -51,3 +51,19 @@ jwt:
     expiration: 300
   refresh:
     expiration: 7200
+
+cloud:
+  aws:
+    s3:
+      bucket: ${S3_BUCKET}
+    stack:
+      auto: false
+    region:
+      static: ap-northeast-2
+    credentials:
+      accessKey: ${S3_ACCESSKEY}
+      secretKey: ${S3_SECRETKEY}
+
+server:
+  tomcat:
+    max-http-form-post-size: 20MB
