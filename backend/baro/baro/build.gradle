@@ -69,6 +69,10 @@ dependencies {
 	implementation 'org.webjars:sockjs-client:1.5.1'
 	implementation 'org.webjars:stomp-websocket:2.3.4'
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
+	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 	runtimeOnly 'org.postgresql:postgresql'
 	runtimeOnly 'com.h2database:h2'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -119,6 +123,24 @@ tasks.withType(GenerateSwaggerUI) {
 
 		swaggerUIFile.append securitySchemesContent
 	}
+}
+
+// QueryDsl Build Option
+def querydslDir = layout.buildDirectory.dir("generated/querydsl").get().asFile
+sourceSets {
+	main.java.srcDirs += [querydslDir]
+}
+
+tasks.withType(JavaCompile).configureEach {
+	options.getGeneratedSourceOutputDirectory().set(file(querydslDir))
+}
+
+clean.doLast {
+	file(querydslDir).deleteDir()
+}
+
+clean {
+	delete file('src/main/generated')
 }
 
 tasks.named('test') {
