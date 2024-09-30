@@ -1,4 +1,5 @@
-type ProcessButtonPraram = {
+type ProcessButtonParam = {
+  hasContract: boolean; // 계약서가 있는 거래인가
   process: number;
   isOwner: boolean; // 소유자: true, 대여자: false
 };
@@ -11,18 +12,26 @@ import UploadVideo from '@/components/(SVG_component)/(message)/(chat)/UploadVid
 
 import PROCESSTYPES from './ProcessTypes';
 import Money from '@/components/(SVG_component)/(message)/(chat)/Money';
+import useProcessButtonEventModal from '@/hooks/message/chat/useProcessButtonEventModal';
 
 const buttonStyle: string =
   'bg-gray-400 pl-[2vh] pr-[2vh] pt-[0.4vh] pb-[0.4vh] rounded-lg flex items-center active:bg-gray-500 disabled:bg-gray-500';
 
-const ProcessButton: React.FC<ProcessButtonPraram> = ({ process, isOwner }) => {
+const ProcessButton: React.FC<ProcessButtonParam> = ({
+  process,
+  isOwner,
+  hasContract,
+}) => {
+  const { requestEvent, receivedEvent, paidEvent } =
+    useProcessButtonEventModal();
+
   return (
     <>
       {/* 계약 프로세스와 사용자 역할(파라메터 값)에 따라 노출되는 버튼 결정 */}
 
       <button type="button" className={buttonStyle}>
         <Clipboard />
-        <span>&nbsp;계약조건</span>
+        <span>&nbsp;{hasContract ? '계약조건' : '반납방법'}</span>
       </button>
 
       {!isOwner &&
@@ -32,6 +41,7 @@ const ProcessButton: React.FC<ProcessButtonPraram> = ({ process, isOwner }) => {
             type="button"
             className={buttonStyle}
             disabled={process >= PROCESSTYPES.REQUESTED}
+            onClick={requestEvent}
           >
             <AddMessage />
             <span>
@@ -58,6 +68,7 @@ const ProcessButton: React.FC<ProcessButtonPraram> = ({ process, isOwner }) => {
               (!isOwner && process > PROCESSTYPES.SIGNED_PACK) ||
               (isOwner && process > PROCESSTYPES.PAID_PACK)
             }
+            onClick={receivedEvent}
           >
             <Checked />
             <span>
@@ -83,6 +94,7 @@ const ProcessButton: React.FC<ProcessButtonPraram> = ({ process, isOwner }) => {
           type="button"
           className={buttonStyle}
           disabled={process >= PROCESSTYPES.PAID_DIRECT}
+          onClick={paidEvent}
         >
           <Money />
           <span>&nbsp;송금{process >= PROCESSTYPES.PAID_DIRECT && '완료'}</span>
