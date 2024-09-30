@@ -1,0 +1,53 @@
+spring:
+  profiles:
+    active: test
+
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:test;MODE=postgreSQL
+    username: sa
+    password:
+
+  h2:
+    console:
+      enabled: true
+      settings:
+        web-allow-others: true
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+
+  sql:
+    init:
+      mode: always
+      data-sources: classpath:sql/data.sql
+
+  web:
+    resources:
+      add-mappings: false
+
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: 6379
+
+logging:
+  level:
+    io.lettuce.core.protocol: ERROR
+
+jwt:
+  secret: ${JWT_SECRET_KEY}
+  access:
+    expiration: 300
+  refresh:
+    expiration: 7200
