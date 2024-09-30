@@ -1,5 +1,9 @@
 package baro.baro.domain.chat_room.controller;
 
+import baro.baro.domain.chat_room.dto.request.ChatRoomAddReq;
+import baro.baro.domain.chat_room.dto.response.ChatRoomAddRes;
+import baro.baro.domain.chat_room.service.ChatRoomService;
+import baro.baro.global.exception.CustomException;
 import baro.baro.global.oauth.jwt.service.JwtService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
@@ -25,16 +29,21 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static baro.baro.global.ResponseFieldUtils.getCommonResponseFields;
+import static baro.baro.global.statuscode.ErrorCode.*;
+import static baro.baro.global.statuscode.SuccessCode.CHATROOM_CREATED;
 import static baro.baro.global.statuscode.SuccessCode.CHATROOM_LIST_OK;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
-import static org.springframework.restdocs.payload.JsonFieldType.STRING;
+import static org.springframework.restdocs.payload.JsonFieldType.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -57,6 +66,9 @@ class ChatRoomControllerTest {
     @MockBean
     private JwtService jwtService;
 
+    @MockBean
+    private ChatRoomService chatRoomService;
+
     private String jwtToken;
 
     @BeforeEach
@@ -71,6 +83,286 @@ class ChatRoomControllerTest {
         SecurityContextHolder.getContext().setAuthentication(
                 new UsernamePasswordAuthenticationToken(123L, null, List.of())
         );
+    }
+
+    @Test
+    public void 채팅방_생성_성공() throws Exception {
+        // given
+        ChatRoomAddReq req = new ChatRoomAddReq();
+        req.setProductId(20000L);
+
+        String content = objectMapper.writeValueAsString(req);
+
+        ChatRoomAddRes res = new ChatRoomAddRes(1L);
+        when(chatRoomService.addChatRoom(anyLong(), any()))
+                .thenReturn(res);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                post("/chatrooms")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+
+        // then
+        actions
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CHATROOM_CREATED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CHATROOM_CREATED.getMessage()))
+                .andDo(document(
+                        "채팅방 생성",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("ChatRoom API")
+                                .summary("채팅방 생성 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        fieldWithPath("productId").type(NUMBER)
+                                                .description("대여 물품 어아디")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body.chatRoomId").type(NUMBER)
+                                                        .description("채팅방 아이디")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("채팅방 생성 Request"))
+                                .responseSchema(Schema.schema("채팅방 생성 Response"))
+                                .build()
+                        ))
+                );
+
+    }
+
+    @Test
+    public void 채팅방_생성_실패_존재하지_않는_대여_물품() throws Exception {
+        // given
+        ChatRoomAddReq req = new ChatRoomAddReq();
+        req.setProductId(30000L);
+
+        String content = objectMapper.writeValueAsString(req);
+
+        ChatRoomAddRes res = new ChatRoomAddRes(1L);
+        when(chatRoomService.addChatRoom(anyLong(), any()))
+                .thenThrow(new CustomException(PRODUCT_NOT_FOUND));
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                post("/chatrooms")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+
+        // then
+        actions
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(PRODUCT_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(PRODUCT_NOT_FOUND.getMessage()))
+                .andDo(document(
+                        "채팅방 생성 실패 - 존재하지 않는 대여 물품의 채팅방을 만드는 경우",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("ChatRoom API")
+                                .summary("채팅방 생성 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        fieldWithPath("productId").type(NUMBER)
+                                                .description("대여 물품 어아디")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("내용 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("채팅방 생성 Request"))
+                                .responseSchema(Schema.schema("채팅방 생성 Response"))
+                                .build()
+                        ))
+                );
+
+    }
+
+    @Test
+    public void 채팅방_생성_실패_존재하지_않는_사용자가_올린_대여_물품() throws Exception {
+        // given
+        ChatRoomAddReq req = new ChatRoomAddReq();
+        req.setProductId(20001L);
+
+        String content = objectMapper.writeValueAsString(req);
+
+        ChatRoomAddRes res = new ChatRoomAddRes(1L);
+        when(chatRoomService.addChatRoom(anyLong(), any()))
+                .thenThrow(new CustomException(MEMBER_NOT_FOUND));
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                post("/chatrooms")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+
+        // then
+        actions
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(MEMBER_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(MEMBER_NOT_FOUND.getMessage()))
+                .andDo(document(
+                        "채팅방 생성 실패 - 존재하지 않는 사용자가 올린 대여 물품일 경우",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("ChatRoom API")
+                                .summary("채팅방 생성 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        fieldWithPath("productId").type(NUMBER)
+                                                .description("대여 물품 어아디")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("내용 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("채팅방 생성 Request"))
+                                .responseSchema(Schema.schema("채팅방 생성 Response"))
+                                .build()
+                        ))
+                );
+
+    }
+
+    @Test
+    public void 채팅방_생성_실패_본인이_올린_대여_상품() throws Exception {
+        // given
+        ChatRoomAddReq req = new ChatRoomAddReq();
+        req.setProductId(20002L);
+
+        String content = objectMapper.writeValueAsString(req);
+
+        ChatRoomAddRes res = new ChatRoomAddRes(1L);
+        when(chatRoomService.addChatRoom(anyLong(), any()))
+                .thenThrow(new CustomException(CHATROOM_SELF_CREATED));
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                post("/chatrooms")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+
+        // then
+        actions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CHATROOM_SELF_CREATED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CHATROOM_SELF_CREATED.getMessage()))
+                .andDo(document(
+                        "채팅방 생성 실패 - 본인이 올린 대여 상품인 경우",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("ChatRoom API")
+                                .summary("채팅방 생성 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        fieldWithPath("productId").type(NUMBER)
+                                                .description("대여 물품 어아디")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("내용 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("채팅방 생성 Request"))
+                                .responseSchema(Schema.schema("채팅방 생성 Response"))
+                                .build()
+                        ))
+                );
+
+    }
+
+    @Test
+    public void 채팅방_생성_실패_거래_불가능한_대여_상품() throws Exception {
+        // given
+        ChatRoomAddReq req = new ChatRoomAddReq();
+        req.setProductId(20003L);
+
+        String content = objectMapper.writeValueAsString(req);
+
+        ChatRoomAddRes res = new ChatRoomAddRes(1L);
+        when(chatRoomService.addChatRoom(anyLong(), any()))
+                .thenThrow(new CustomException(PRODUCT_UNAVAILABLE));
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                post("/chatrooms")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+
+        // then
+        actions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(PRODUCT_UNAVAILABLE.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(PRODUCT_UNAVAILABLE.getMessage()))
+                .andDo(document(
+                        "채팅방 생성 실패 - 거래 불가능한 대여 상품인 경우",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("ChatRoom API")
+                                .summary("채팅방 생성 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        fieldWithPath("productId").type(NUMBER)
+                                                .description("대여 물품 어아디")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("내용 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("채팅방 생성 Request"))
+                                .responseSchema(Schema.schema("채팅방 생성 Response"))
+                                .build()
+                        ))
+                );
+
     }
 
     @Test
