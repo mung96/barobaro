@@ -9,7 +9,6 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -61,6 +60,9 @@ class ProductControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @MockBean
     private JwtService jwtService;
 
@@ -103,13 +105,10 @@ class ProductControllerTest {
                 LIGHT_STICK,
                 contractConditionReq);
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-
         MockMultipartFile file1 = new MockMultipartFile("files", "sample1.jpg", "image/jpeg", "image/sample1.jpg".getBytes());
         MockMultipartFile file2 = new MockMultipartFile("files", "sample2.jpg", "image/jpeg", "image/sample2.jpg".getBytes());
 
-        MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", mapper.writeValueAsBytes(productAddReq));
+        MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", objectMapper.writeValueAsBytes(productAddReq));
 
         //when
         ResultActions actions = mockMvc.perform(
@@ -425,13 +424,10 @@ class ProductControllerTest {
                 LIGHT_STICK,
                 contractConditionReq);
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-
         MockMultipartFile file1 = new MockMultipartFile("files", "sample1.jpg", "image/jpeg", "image/sample1.jpg".getBytes());
         MockMultipartFile file2 = new MockMultipartFile("files", "sample2.jpg", "image/jpeg", "image/sample2.jpg".getBytes());
 
-        MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", mapper.writeValueAsBytes(productModifyReq));
+        MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", objectMapper.writeValueAsBytes(productModifyReq));
 
         //when
         ResultActions actions = mockMvc.perform(
