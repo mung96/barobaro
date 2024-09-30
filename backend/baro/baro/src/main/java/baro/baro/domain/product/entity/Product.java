@@ -62,4 +62,6 @@ public class Product {
     private Long regionId;
 
     private String regionNm;
+
+    private Boolean isDeleted;
 }
