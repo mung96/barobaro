@@ -1,8 +1,8 @@
 import React from 'react';
 
-interface AttatchImageParam {
+type AttatchImageParam = {
   className: string;
-}
+};
 export default function AttatchImage({ className }: AttatchImageParam) {
   return (
     <svg

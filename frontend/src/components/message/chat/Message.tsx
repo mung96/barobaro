@@ -24,35 +24,36 @@ const Message: React.FC<MessageFormType> = ({
 
   return (
     <>
-      {
-        // A. 시스템 메시지
-        isSys ? (
-          <SystemMessage
-            type={type}
-            body={body}
-            timestamp={timestamp}
-            user={user}
-          />
-        ) : isStatus ? ( // B. 상태 메시지
-          <StatusMessage
-            type={type}
-            body={body}
-            timestamp={timestamp}
-            user={user}
-            isMine={isMine}
-          />
-        ) : (
-          // C. 텍스트 / 이미지 메시지
-          <UserMessage
-            type={type}
-            body={body}
-            timestamp={timestamp}
-            user={user}
-            isMine={isMine}
-            isImg={isImg}
-          />
-        )
-      }
+      {/*  A. 시스템 메시지 */}
+      {isSys && (
+        <SystemMessage
+          type={type}
+          body={body}
+          timestamp={timestamp}
+          user={user}
+        />
+      )}
+      {/* B. 상태 메시지 */}
+      {isStatus && (
+        <StatusMessage
+          type={type}
+          body={body}
+          timestamp={timestamp}
+          user={user}
+          isMine={isMine}
+        />
+      )}
+      {/* C. 텍스트 / 이미지 메시지 */}
+      {!isSys && !isStatus && (
+        <UserMessage
+          type={type}
+          body={body}
+          timestamp={timestamp}
+          user={user}
+          isMine={isMine}
+          isImg={isImg}
+        />
+      )}
     </>
   );
 };

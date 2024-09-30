@@ -2,7 +2,7 @@ import { useContext, ChangeEvent, ReactNode } from 'react';
 import { RadioContext, RadioProvider } from '@/contexts/RadioContext';
 
 type RadioProps = {
-  children: React.ReactNode;
+  children: ReactNode;
   value: string;
   className?: string;
   disabled?: boolean;

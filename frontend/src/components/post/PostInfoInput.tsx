@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import CategoryTagList from '@/components/post/CategoryTagList';
 import PostBody from '@/components/post/PostBody';
 import PostTitleInput from '@/components/post/PostTitleInput';
@@ -6,8 +7,6 @@ import ProductImageList from '@/components/post/ProductImageList';
 import Button from '@/components/shared/Button';
 import useFileModel from '@/hooks/shared/useFileModel';
 import { PostInfo, ProductCategory } from '@/types/domains/product';
-
-import { useState } from 'react';
 
 type Props = {
   onNext: (postData: PostInfo) => void;
@@ -30,8 +29,8 @@ function PostInfoInput({ onNext }: Props) {
       />
 
       <ProductImageList
-        width={'56px'}
-        height={'56px'}
+        width="56px"
+        height="56px"
         images={files}
         addFile={changeFile}
         deleteFile={deleteFileByIndex}
@@ -42,10 +41,10 @@ function PostInfoInput({ onNext }: Props) {
       <Button
         onClick={() =>
           onNext({
-            title: title,
+            title,
             content: body,
-            category: category,
-            files: files,
+            category,
+            files,
           })
         }
         width="100%"

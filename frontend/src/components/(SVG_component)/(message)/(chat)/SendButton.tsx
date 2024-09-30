@@ -1,9 +1,9 @@
 import React from 'react';
 
-interface SendButtonState {
+type SendButtonState = {
   active: boolean;
   className: string;
-}
+};
 export default function SendButton({ active, className }: SendButtonState) {
   return (
     <svg

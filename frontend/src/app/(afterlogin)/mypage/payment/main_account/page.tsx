@@ -5,7 +5,12 @@ export default function MainAccountPage() {
   return (
     <NavBarLayout current="mypage">
       <header>
-        <Header pageName="마이페이지" hasPrevBtn hasSearchBtn={false} hasAlertBtn />
+        <Header
+          pageName="마이페이지"
+          hasPrevBtn
+          hasSearchBtn={false}
+          hasAlertBtn
+        />
       </header>
       <main>
         <p>메인계좌</p>
