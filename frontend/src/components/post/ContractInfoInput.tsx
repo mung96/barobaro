@@ -1,15 +1,16 @@
+import { useEffect, useState } from 'react';
 import Button from '@/components/shared/Button';
 import Radio from '@/components/shared/Radio';
 import SelectableItem from '@/components/shared/SelectableItem';
 import { CONTRACT_YN } from '@/constants/product';
 import { totalStepByContractYN } from '@/services/post/regist';
 import { ContractConditionRequest } from '@/types/apis/productRequest';
-import { useEffect, useState } from 'react';
 import RentalInfoCard from '@/components/post/RentalInfoCard';
 import OverdueInfoCard from '@/components/post/OverdueInfoCard';
 import ProductRepairInfoCard from '@/components/post/ProductRepairInfoCard';
 import RefundInfoCard from '@/components/post/RefundInfoCard';
 import OwnerInfoCard from '@/components/post/OwnerInfoCard';
+
 type Props = {
   onTotalStepChange: (step: number) => void;
   onNext: (data: ContractConditionRequest) => void;
@@ -34,11 +35,7 @@ function ContractInfoInput({ onTotalStepChange, onNext, onPrev }: Props) {
         className="flex gap-4"
       >
         {CONTRACT_YN.map((item) => (
-          <SelectableItem
-            type={'radio'}
-            value={item.value}
-            label={item.label}
-          />
+          <SelectableItem type="radio" value={item.value} label={item.label} />
         ))}
       </Radio.Group>
 
