@@ -22,11 +22,12 @@ const fontColor = {
 };
 
 const img = {
-  Naver: Naver,
-  Kakao: Kakao,
-  Google: Google,
+  Naver,
+  Kakao,
+  Google,
 };
 
+// eslint-disable-next-line import/prefer-default-export
 export const socialSelect = ({ socialName }: Props): SocialBarInfo => {
   return {
     backgroundColor: color[socialName],

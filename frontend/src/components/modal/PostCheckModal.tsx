@@ -2,11 +2,11 @@
 
 import React from 'react';
 import ReactModal from 'react-modal';
+import { useRouter } from 'next/navigation';
 import ModalWarningSVG from '@/components/(SVG_component)/ModalWarning';
 import ModalContent from '@/components/modal/ModalContent';
-import { useRouter } from 'next/navigation';
 import { ModalProps } from '@/types/overlay/modal';
-import { messageList, modalStyle } from '@/services/overlay/modal';
+import { modalStyle } from '@/services/overlay/modal';
 
 export default function PostCheckModal({
   modalType,
@@ -35,6 +35,7 @@ export default function PostCheckModal({
           type="button"
           className="w-[126px] h-[34px] rounded-[8px] bg-blue-100 font-bold text-[13px] text-white"
           onClick={() => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
             modalType === 'needPassword'
               ? modalBtn('/mypage/user/password')
               : modalBtn('/post');

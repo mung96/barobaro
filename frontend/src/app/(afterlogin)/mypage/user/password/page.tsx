@@ -3,14 +3,14 @@
 import DisplayPassword from '@/components/user/DisplayPassword';
 import Header from '@/components/Header';
 import KeyPadDelete from '@/components/(SVG_component)/(mypage)/KeyPadDelete';
-import { usePasswordChange } from '@/hooks/user/usePasswordModel';
-import { useKeypad } from '@/hooks/keypad/useKeyPadModel';
+import usePasswordChange from '@/hooks/user/usePasswordModel';
+import useKeypad from '@/hooks/keypad/useKeyPadModel';
 
 export default function PasswordChange() {
   const needNewPassword = true;
   const realPassword = '112233';
 
-  const { inputPassword, setInputPassword, passwordMessage, isFinished, step } =
+  const { inputPassword, setInputPassword, passwordMessage, isFinished } =
     usePasswordChange(needNewPassword, realPassword);
 
   const { passwordHandler, deleteHandler } = useKeypad(setInputPassword);

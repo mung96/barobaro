@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, useState, useEffect } from 'react';
+import { ReactNode, useState } from 'react';
 import Header from '@/components/Header';
 import LikeButton from '@/components/(SVG_component)/LikeButton';
 import CalendarSVG from '@/components/(SVG_component)/Calendar';

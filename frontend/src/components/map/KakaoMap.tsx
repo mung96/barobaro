@@ -1,4 +1,5 @@
 'use client';
+
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 
 type Props = {
@@ -10,11 +11,8 @@ type Props = {
 
 export default function KakaoMap({ width, height, lat, lng }: Props) {
   return (
-    <Map
-      center={{ lat: lat, lng: lng }}
-      style={{ width: width, height: height, zIndex: -0 }}
-    >
-      <MapMarker position={{ lat: lat, lng: lng }} />
+    <Map center={{ lat, lng }} style={{ width, height, zIndex: -0 }}>
+      <MapMarker position={{ lat, lng }} />
     </Map>
   );
 }

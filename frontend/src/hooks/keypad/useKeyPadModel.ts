@@ -1,8 +1,6 @@
-import { useCallback } from 'react';
+import { Dispatch, SetStateAction, useCallback } from 'react';
 
-export function useKeypad(
-  setInputPassword: React.Dispatch<React.SetStateAction<string>>,
-) {
+function useKeypad(setInputPassword: Dispatch<SetStateAction<string>>) {
   const passwordHandler = useCallback(
     (press: string) => {
       setInputPassword((prev) => (prev.length !== 6 ? prev + press : prev));
@@ -19,3 +17,5 @@ export function useKeypad(
     deleteHandler,
   };
 }
+
+export default useKeypad;
