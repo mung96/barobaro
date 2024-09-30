@@ -13,7 +13,6 @@ export default function ProfilePhoto({ isSignup }: { isSignup: boolean }) {
   const { inputNickname, valid, handleNicknameChange } =
     useProfileNicknameModel();
   const router = useRouter();
-
   const nextStep = () => {
     if (isSignup) {
       signnUp();
