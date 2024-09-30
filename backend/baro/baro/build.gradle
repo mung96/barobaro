@@ -30,6 +30,7 @@ java {
 
 repositories {
 	mavenCentral()
+	maven { url 'https://maven.jfrog.org/artifactory/libs-releases' }
 }
 
 swaggerSources {
@@ -56,9 +57,6 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-	implementation 'org.postgresql:postgresql'
-	implementation 'org.hibernate:hibernate-core:6.4.0.Final'
-	implementation 'org.hibernate:hibernate-spatial:6.4.0.Final'
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -69,6 +67,12 @@ dependencies {
 	implementation 'org.webjars:sockjs-client:1.5.1'
 	implementation 'org.webjars:stomp-websocket:2.3.4'
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+	implementation 'org.postgresql:postgresql'
+	implementation 'org.hibernate:hibernate-core:6.4.0.Final'
+	implementation 'org.hibernate:hibernate-spatial:6.4.0.Final'
+	implementation 'net.postgis:postgis-jdbc:2.5.0'
+	implementation 'org.locationtech.jts:jts-core:1.19.0'
 	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
 	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
 	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
