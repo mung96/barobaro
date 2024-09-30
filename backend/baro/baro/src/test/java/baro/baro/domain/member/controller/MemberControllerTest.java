@@ -5,6 +5,7 @@ import baro.baro.domain.member.dto.request.ProfileModifyReq;
 import baro.baro.domain.member.dto.request.SignupReq;
 import baro.baro.domain.member.service.MemberService;
 import baro.baro.domain.member_location.dto.request.MemberLocationReq;
+import baro.baro.global.exception.CustomException;
 import baro.baro.global.oauth.jwt.service.JwtService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
@@ -32,6 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static baro.baro.global.ResponseFieldUtils.getCommonResponseFields;
+import static baro.baro.global.statuscode.ErrorCode.INVALID_NICKNAME;
+import static baro.baro.global.statuscode.ErrorCode.LOCATION_NOT_FOUND;
 import static baro.baro.global.statuscode.SuccessCode.*;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
@@ -40,8 +43,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.JsonFieldType.NULL;
-import static org.springframework.restdocs.payload.JsonFieldType.STRING;
+import static org.springframework.restdocs.payload.JsonFieldType.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -132,6 +134,122 @@ class MemberControllerTest {
                                         getCommonResponseFields(
                                                 fieldWithPath("body").type(NULL)
                                                         .description("본문 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("회원 가입 Request"))
+                                .responseSchema(Schema.schema("회원 가입 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 회원가입_실패_닉네임_10자_이상() throws Exception {
+        // given
+        SignupReq req = new SignupReq();
+        req.setEmail("test@gmail.com");
+        req.setProviderType("google");
+        req.setNickname("Member1234535");
+        req.setProfileImage("s3 url");
+
+        List<MemberLocationReq> memberLocationReq = new ArrayList<>();
+        memberLocationReq.add(new MemberLocationReq(11010530L, true));
+        memberLocationReq.add(new MemberLocationReq(11010540L, false));
+
+        req.setLocations(memberLocationReq);
+
+        MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", objectMapper.writeValueAsBytes(req));
+        MockMultipartFile file = new MockMultipartFile("file", "sample.jpg", "image/jpeg", "image/sample.jpg".getBytes());
+
+        when(memberService.signup(any(), any()))
+                .thenThrow(new CustomException(INVALID_NICKNAME));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                multipart("/members/signup")
+                        .file(dto)
+                        .file(file)
+                        .contentType("multipart/form-data")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .with(csrf())
+        );
+
+        //then
+        actions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(INVALID_NICKNAME.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(INVALID_NICKNAME.getMessage()))
+                .andDo(document(
+                        "회원가입 실패 - 올바르지 않은 닉네임 형식",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Member API")
+                                .summary("회원가입 API")
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").
+                                                        type(OBJECT).description("에러 상세")
+                                                        .optional().ignored()
+                                        )
+                                )
+                                .requestSchema(Schema.schema("회원 가입 Request"))
+                                .responseSchema(Schema.schema("회원 가입 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 회원가입_실패_존재하지_않는_지역() throws Exception {
+        // given
+        SignupReq req = new SignupReq();
+        req.setEmail("test@gmail.com");
+        req.setProviderType("google");
+        req.setNickname("Member12");
+        req.setProfileImage("s3 url");
+
+        List<MemberLocationReq> memberLocationReq = new ArrayList<>();
+        memberLocationReq.add(new MemberLocationReq(11010530L, true));
+        memberLocationReq.add(new MemberLocationReq(11010531L, false));
+
+        req.setLocations(memberLocationReq);
+
+        MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", objectMapper.writeValueAsBytes(req));
+        MockMultipartFile file = new MockMultipartFile("file", "sample.jpg", "image/jpeg", "image/sample.jpg".getBytes());
+
+        when(memberService.signup(any(), any()))
+                .thenThrow(new CustomException(LOCATION_NOT_FOUND));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                multipart("/members/signup")
+                        .file(dto)
+                        .file(file)
+                        .contentType("multipart/form-data")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .with(csrf())
+        );
+
+        //then
+        actions
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(LOCATION_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(LOCATION_NOT_FOUND.getMessage()))
+                .andDo(document(
+                        "회원가입 실패 - 존재하지 않는 지역",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Member API")
+                                .summary("회원가입 API")
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").
+                                                        type(OBJECT).description("에러 상세")
+                                                        .optional().ignored()
                                         )
                                 )
                                 .requestSchema(Schema.schema("회원 가입 Request"))
