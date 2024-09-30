@@ -4,7 +4,7 @@ type Props = {
 
 export default function StepContent({ process }: Props) {
   return (
-    <>
+    <div>
       {process === 1 ? (
         <>
           <h2 className="text-black-100 text-[15px] font-bold">
@@ -44,6 +44,6 @@ export default function StepContent({ process }: Props) {
           </div>
         </>
       )}
-    </>
+    </div>
   );
 }

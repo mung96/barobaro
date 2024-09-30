@@ -1,7 +1,7 @@
 import NavBarLayout from '@/layout/NavBarLayout';
 import Header from '@/components/Header';
 
-export default function TermsPage() {
+export default function MainAccountPage() {
   return (
     <NavBarLayout current="mypage">
       <header>
@@ -11,9 +11,10 @@ export default function TermsPage() {
           hasSearchBtn={false}
           hasAlertBtn
         />
-        <h1 className="text-[15px] font-bold text-center">약관 및 정책</h1>
       </header>
-      <main>사기치지마시오</main>
+      <main>
+        <p>메인계좌</p>
+      </main>
     </NavBarLayout>
   );
 }

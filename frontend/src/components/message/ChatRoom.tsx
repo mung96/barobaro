@@ -1,6 +1,7 @@
 // 채팅목록에 띄울 채팅방(1개)
 import Link from 'next/link';
 import Image from 'next/image';
+import { MouseEvent } from 'react';
 import ChatRoomType from './ChatRoomType';
 
 export default function ChatRoomEach({
@@ -10,7 +11,7 @@ export default function ChatRoomEach({
   stuffThumbImageSrc,
   unread,
 }: ChatRoomType) {
-  const isClicked = (e: React.MouseEvent<HTMLElement>) => {
+  const isClicked = (e: MouseEvent<HTMLElement>) => {
     e.currentTarget.classList.add('bg-gray-200');
   };
 

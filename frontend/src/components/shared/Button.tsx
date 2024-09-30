@@ -1,5 +1,7 @@
+import { ReactNode } from 'react';
+
 type ButtonProps = {
-  children: React.ReactNode;
+  children: ReactNode;
   width: string;
   height: string;
   onClick: () => void;

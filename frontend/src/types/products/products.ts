@@ -1,7 +1,7 @@
 import { SetStateAction } from 'react';
 
 // 빌린 것, 빌려준 것
-export type itemList = {
+export type ItemListType = {
   productId: number;
   productMainImage: string;
   title: string;
@@ -22,7 +22,7 @@ export type currentList = {
   isWished: boolean;
 }[];
 
-export type searchHookType = {
+export type SearchHookType = {
   search: string;
   goSearch: () => void;
   handleSearch: (value: string) => void;

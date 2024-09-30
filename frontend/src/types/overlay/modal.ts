@@ -4,7 +4,7 @@ export type ModalType =
   | 'noPermissionDelete'
   | 'needPassword';
 
-export type modalProps = {
+export type ModalProps = {
   modalType: ModalType;
   isOpen: boolean;
   onRequestClose: () => void;

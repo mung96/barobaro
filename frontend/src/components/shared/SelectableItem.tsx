@@ -1,7 +1,7 @@
 import React from 'react';
+import { FaCheck } from 'react-icons/fa';
 import CheckBox from '@/components/shared/CheckBox';
 import Radio from '@/components/shared/Radio';
-import { FaCheck } from 'react-icons/fa';
 
 type Props = {
   type: 'checkbox' | 'radio';
@@ -13,14 +13,14 @@ type Props = {
   disabled?: boolean;
 };
 
-const SelectableItem = ({
+function SelectableItem({
   type,
   value,
   label,
   checked,
   onChange,
   disabled,
-}: Props) => {
+}: Props) {
   const commonProps = {
     className:
       'relative has-[:checked]:border-blue-100 has-[:checked]:border-[1px] bg-gray-400 rounded flex w-full h-8 items-center justify-center has-[:checked]:bg-white has-[checked]:text-blue-100',
@@ -39,14 +39,16 @@ const SelectableItem = ({
 
   return type === 'checkbox' ? (
     <CheckBox.Item
+      // eslint-disable-next-line react/jsx-props-no-spreading
       {...commonProps}
       value={value}
       checked={checked}
       onChange={onChange}
     />
   ) : (
+    // eslint-disable-next-line react/jsx-props-no-spreading
     <Radio.Item {...commonProps} value={value} />
   );
-};
+}
 
 export default SelectableItem;

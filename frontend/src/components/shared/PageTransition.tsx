@@ -1,10 +1,11 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
+import { ReactNode } from 'react';
 
 export type DirectionType = 'forward' | 'backward';
 type PageTransitionProps = {
-  children: React.ReactNode;
+  children: ReactNode;
   step: string;
   direction: DirectionType;
 };

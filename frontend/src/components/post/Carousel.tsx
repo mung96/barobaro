@@ -50,14 +50,14 @@ export default function PictureCarousel() {
         slidesPerView={1}
         spaceBetween={30}
         pagination={{ clickable: true }}
-        loop={true}
+        loop
         modules={[Pagination, Navigation]}
         onBeforeInit={(swiper) => {
           swiperRef.current = swiper;
         }}
       >
         {pictureList.map((item, index) => (
-          <SwiperSlide key={index} style={slideStyle}>
+          <SwiperSlide key={item} style={slideStyle}>
             <Image
               src={item}
               alt={`image-${index}`}

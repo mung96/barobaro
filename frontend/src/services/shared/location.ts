@@ -1,5 +1,6 @@
 import { KakaoLocalSearchDocument, Location } from '@/types/domains/location';
 
+// eslint-disable-next-line import/prefer-default-export
 export const convertLocationDataToView = (
   locationData: KakaoLocalSearchDocument,
 ) => {
