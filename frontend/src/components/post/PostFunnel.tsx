@@ -33,7 +33,7 @@ function PostFunnel() {
   }>({
     id: 'post-regist',
     initial: {
-      step: 'PostInfoStep',
+      step: 'ContractInfoStep',
       context: {},
     },
   });
