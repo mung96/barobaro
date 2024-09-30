@@ -14,7 +14,7 @@ export default function OriginBoard() {
           {/* 이미지, p 태그 들어감 */}
           <div className="w-3/12 flex flex-row">
             <Image
-              src="/tempdata/cat5.jpg"
+              src="https://loremflickr.com/320/240"
               alt="cat"
               width={100}
               height={100}
