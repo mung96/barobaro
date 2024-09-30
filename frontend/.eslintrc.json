@@ -26,7 +26,9 @@
   },
 
   "rules": {
-    "prettier/prettier": "error"
+    "prettier/prettier": "error",
+    "react/react-in-jsx-scope":"off",
+    "import/extensions": "off"
     // "react/react-in-jsx-scope": "off",
     // "react/require-default-props": "off",
     // "import/no-extraneous-dependencies": "off",

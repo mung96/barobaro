@@ -5,14 +5,14 @@ import ReactModal from 'react-modal';
 import ModalWarningSVG from '@/components/(SVG_component)/ModalWarning';
 import ModalContent from '@/components/modal/ModalContent';
 import { useRouter } from 'next/navigation';
-import { modalProps } from '@/types/overlay/modal';
+import { ModalProps } from '@/types/overlay/modal';
 import { messageList, modalStyle } from '@/services/overlay/modal';
 
 export default function PostCheckModal({
   modalType,
   isOpen,
   onRequestClose,
-}: modalProps) {
+}: ModalProps) {
   const router = useRouter();
   // 이미 완료된 거래 ? 뒤로 보내야함.
   // 비밀번호 설정이 필요? => 비밀번호 설정 창으로 이동
