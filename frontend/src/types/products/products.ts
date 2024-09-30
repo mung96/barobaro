@@ -1,6 +1,4 @@
-import { SetStateAction } from 'react';
-
-export type itemList = {
+export type ItemListType = {
   productId: number;
   productMainImage: string;
   title: string;
@@ -10,7 +8,7 @@ export type itemList = {
   productStatus: string;
 }[];
 
-export type searchHookType = {
+export type SearchHookType = {
   search: string;
   goSearch: () => void;
   handleSearch: (value: string) => void;

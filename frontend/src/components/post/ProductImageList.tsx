@@ -9,6 +9,7 @@ import {
   DropResult,
 } from 'react-beautiful-dnd';
 import { MdCancel } from 'react-icons/md';
+
 type ProductImageListProps = {
   width: string;
   height: string;
@@ -50,22 +51,25 @@ function ProductImageList({
           <Droppable droppableId="imagelist" direction="horizontal">
             {(provided) => (
               <div
+                // eslint-disable-next-line react/jsx-props-no-spreading
                 {...provided.droppableProps}
                 ref={provided.innerRef}
                 className="flex  gap-2"
               >
                 {images.map((image, index) => (
                   <Draggable
-                    draggableId={`test-${index}`}
+                    draggableId={`test-${image}`}
                     index={index}
-                    key={`test-${index}`}
+                    key={`test-${image}`}
                   >
-                    {(provided) => {
+                    {(dragProvided) => {
                       return (
                         <div
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          ref={provided.innerRef}
+                          // eslint-disable-next-line react/jsx-props-no-spreading
+                          {...dragProvided.draggableProps}
+                          // eslint-disable-next-line react/jsx-props-no-spreading
+                          {...dragProvided.dragHandleProps}
+                          ref={dragProvided.innerRef}
                           className="relative"
                         >
                           <div
@@ -73,6 +77,7 @@ function ProductImageList({
                             style={{ width, height }}
                           >
                             <div
+                              role="none"
                               onClick={() => deleteFile(index)}
                               className="absolute -top-2 z-10  -right-1 rounded-full bg-white w-6 h-6"
                             >

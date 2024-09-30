@@ -1,7 +1,3 @@
 export default function Registration() {
-  return (
-    <>
-      Registration
-    </>
-  );
+  return <div>Registration</div>;
 }

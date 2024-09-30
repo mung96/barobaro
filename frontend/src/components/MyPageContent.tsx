@@ -1,5 +1,7 @@
 'use client';
 
+import Link from 'next/link';
+import { useState } from 'react';
 import BorrowSVG from '@/components/(SVG_component)/(mypage)/Borrow';
 import LentSVG from '@/components/(SVG_component)/(mypage)/Lent';
 import ConnectAccountSVG from '@/components/(SVG_component)/(mypage)/ConnectAccount';
@@ -8,8 +10,6 @@ import ChangePasswordSVG from '@/components/(SVG_component)/(mypage)/ChangePassw
 import AlarmSVG from '@/components/(SVG_component)/(mypage)/Alarm';
 import FAQSVG from '@/components/(SVG_component)/(mypage)/FAQ';
 import TermsofUseSVG from '@/components/(SVG_component)/(mypage)/TermsofUse';
-import Link from 'next/link';
-import { useState } from 'react';
 import AccountBottomSheet from '@/components/(bottomsheet)/AccountBottomSheet';
 
 export default function MyPageContent() {
@@ -50,15 +50,15 @@ export default function MyPageContent() {
             결제 수단 관리
           </h2>
           <div className="flex flex-col items-start m-3">
-            {/*<Link href="/mypage/payment/main_account">*/}
-            {/*  <button*/}
-            {/*    type="button"*/}
-            {/*    className="flex flex-row justify-center items-center my-1"*/}
-            {/*  >*/}
-            {/*    <MainAccountSVG />*/}
-            {/*    <p className="text-xs text-black-100">대표 계좌 설정</p>*/}
-            {/*  </button>*/}
-            {/*</Link>*/}
+            {/* <Link href="/mypage/payment/main_account"> */}
+            {/*  <button */}
+            {/*    type="button" */}
+            {/*    className="flex flex-row justify-center items-center my-1" */}
+            {/*  > */}
+            {/*    <MainAccountSVG /> */}
+            {/*    <p className="text-xs text-black-100">대표 계좌 설정</p> */}
+            {/*  </button> */}
+            {/* </Link> */}
             <button
               type="button"
               className="flex flex-row justify-center items-center my-1"
@@ -67,16 +67,16 @@ export default function MyPageContent() {
               <ConnectAccountSVG />
               <p className="text-xs text-black-100">계좌 설정</p>
             </button>
-            {/*<Link href="/mypage/payment/idontknow">*/}
-            {/*  <button*/}
-            {/*    type="button"*/}
-            {/*    className="flex flex-row justify-center items-center my-1"*/}
-            {/*  >*/}
-            {/*    <p className="text-xs text-black-100">*/}
-            {/*      페이 설정 (수정 완료시 주소, 아이콘 설정 마무리하기)*/}
-            {/*    </p>*/}
-            {/*  </button>*/}
-            {/*</Link>*/}
+            {/* <Link href="/mypage/payment/idontknow"> */}
+            {/*  <button */}
+            {/*    type="button" */}
+            {/*    className="flex flex-row justify-center items-center my-1" */}
+            {/*  > */}
+            {/*    <p className="text-xs text-black-100"> */}
+            {/*      페이 설정 (수정 완료시 주소, 아이콘 설정 마무리하기) */}
+            {/*    </p> */}
+            {/*  </button> */}
+            {/* </Link> */}
           </div>
         </div>
         <div className="ml-5 mt-4 mb-4">
@@ -91,7 +91,7 @@ export default function MyPageContent() {
                 <p className="text-xs text-black-100">본인 인증</p>
               </button>
             </Link>
-            <Link href={'/mypage/user/password'}>
+            <Link href="/mypage/user/password">
               <button
                 type="button"
                 className="flex flex-row justify-center items-center my-1"

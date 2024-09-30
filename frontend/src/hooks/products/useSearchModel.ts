@@ -1,15 +1,15 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { searchHookType } from '@/types/products/products';
+import { SearchHookType } from '@/types/products/products';
 
-export function useSearchModel(): searchHookType {
+function useSearchModel(): SearchHookType {
   const router = useRouter();
   const [search, setSearch] = useState('');
   const handleSearch = (value: string) => {
     setSearch(value);
   };
   const goSearch = () => {
-    search.length !== 0
+    return search.length !== 0
       ? router.push(
           `/search/category/all?product=${encodeURIComponent(search)}`,
         )
@@ -21,3 +21,5 @@ export function useSearchModel(): searchHookType {
     goSearch,
   };
 }
+
+export default useSearchModel;
