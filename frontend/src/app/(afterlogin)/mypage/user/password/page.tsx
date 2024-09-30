@@ -1,89 +1,19 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import KeyPadDelete from '@/components/(SVG_component)/(mypage)/KeyPadDelete';
 import DisplayPassword from '@/components/user/DisplayPassword';
 import Header from '@/components/Header';
-import { useRouter } from 'next/navigation';
-
-enum PasswordChangeStep {
-  CURRENT,
-  NEW,
-  CONFIRMNEW,
-}
+import KeyPadDelete from '@/components/(SVG_component)/(mypage)/KeyPadDelete';
+import usePasswordChange from '@/hooks/user/usePasswordModel';
+import useKeypad from '@/hooks/keypad/useKeyPadModel';
 
 export default function PasswordChange() {
-  const router = useRouter();
-  // 추후 비밀번호 설정이 가능한지 가져오고, 필요하다면? 로직의 수정 필요.
   const needNewPassword = true;
   const realPassword = '112233';
-  // 추후 진짜 비밀번호는 다른곳에서 가져올 예정.
-  const [inputPassword, setInputPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [step, setStep] = useState<PasswordChangeStep>(
-    needNewPassword ? PasswordChangeStep.NEW : PasswordChangeStep.CURRENT,
-  );
-  const [passwordMessage, setPasswordMessage] = useState<string>(
-    needNewPassword
-      ? '새로운 비밀번호를 입력해주세요'
-      : '현재 비밀번호를 입력해주세요',
-  );
-  const [isFinished, setIsFinished] = useState<boolean>(false);
 
-  const passwordHandler = (press: string) => {
-    if (inputPassword.length !== 6) {
-      setInputPassword((prev) => prev + press);
-    }
-  };
+  const { inputPassword, setInputPassword, passwordMessage, isFinished } =
+    usePasswordChange(needNewPassword, realPassword);
 
-  const deleteHandler = () => {
-    setInputPassword((prev) => prev.slice(0, -1));
-  };
-
-  const handlePasswordSubmit = useCallback(() => {
-    // eslint-disable-next-line default-case
-    switch (step) {
-      case PasswordChangeStep.CURRENT:
-        if (inputPassword === realPassword) {
-          setStep(PasswordChangeStep.NEW);
-          setPasswordMessage('새로운 비밀번호를 입력해주세요');
-        } else {
-          setPasswordMessage('비밀번호가 일치하지 않습니다. 다시 입력해주세요');
-        }
-        break;
-      case PasswordChangeStep.NEW:
-        setNewPassword(inputPassword);
-        setStep(PasswordChangeStep.CONFIRMNEW);
-        setPasswordMessage('새로운 비밀번호를 다시 한 번 입력해주세요');
-        break;
-      case PasswordChangeStep.CONFIRMNEW:
-        if (inputPassword === newPassword) {
-          setIsFinished(true);
-          setPasswordMessage(
-            needNewPassword
-              ? '비밀번호가 성공적으로 등록되었습니다.'
-              : '비밀번호가 성공적으로 변경되었습니다.',
-          );
-          // 여기에 비밀번호 변경 API 호출 로직을 추가할 수 있습니다.
-          setTimeout(() => router.replace('/mypage'), 1000);
-          // 변경이 완료된 이후 메인페이지로 replace.
-        } else {
-          setStep(PasswordChangeStep.NEW);
-          setPasswordMessage(
-            '일치하지 않습니다. 새로운 비밀번호를 다시 입력해주세요',
-          );
-        }
-        break;
-    }
-    setInputPassword('');
-  }, [inputPassword, newPassword, realPassword, step, isFinished]);
-
-  useEffect(() => {
-    if (inputPassword.length === 6) {
-      handlePasswordSubmit();
-    }
-  }, [inputPassword, handlePasswordSubmit]);
-
+  const { passwordHandler, deleteHandler } = useKeypad(setInputPassword);
   return (
     <div className="flex flex-col h-[93dvh]">
       <header className="flex flex-col text-center font-bold">

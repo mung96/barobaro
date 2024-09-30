@@ -1,4 +1,6 @@
 import dynamic from 'next/dynamic';
 
-const DynamicItemList = dynamic(() => import('@/components/ItemList'), { ssr: false });
+const DynamicItemList = dynamic(() => import('@/components/ItemList'), {
+  ssr: false,
+});
 export default DynamicItemList;

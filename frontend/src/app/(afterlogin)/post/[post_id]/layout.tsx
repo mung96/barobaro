@@ -1,10 +1,11 @@
 'use client';
 
-import { ReactNode, useState, useEffect } from 'react';
+import { ReactNode, useState } from 'react';
 import Header from '@/components/Header';
 import LikeButton from '@/components/(SVG_component)/LikeButton';
 import CalendarSVG from '@/components/(SVG_component)/Calendar';
-import PostCheckModal, { ModalType } from '@/components/modal/PostCheckModal';
+import PostCheckModal from '@/components/modal/PostCheckModal';
+import { ModalType } from '@/types/overlay/modal';
 
 export default function PostDetailLayout({
   children,

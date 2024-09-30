@@ -2,61 +2,17 @@
 
 import React from 'react';
 import ReactModal from 'react-modal';
+import { useRouter } from 'next/navigation';
 import ModalWarningSVG from '@/components/(SVG_component)/ModalWarning';
 import ModalContent from '@/components/modal/ModalContent';
-import { useRouter } from 'next/navigation';
-
-export type ModalType =
-  | 'needLogin'
-  | 'alreadyDone'
-  | 'noPermissionEdit'
-  | 'noPermissionDelete'
-  | 'needPassword'
-  | 'isComplete';
-
-type Props = {
-  modalType: ModalType;
-  isOpen: boolean;
-  onRequestClose: () => void;
-};
-
-const messageList = [
-  '로그인이 필요합니다',
-  '이미 거래가 완료되었습니다.',
-  '오직 작성자만 수정 가능합니다.',
-];
-
-const modalStyle: ReactModal.Styles = {
-  overlay: {
-    backgroundColor: 'rgba(0, 0, 0, 0.75)', // 어두운 배경
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  content: {
-    position: 'relative',
-    width: '320px',
-    height: '250px',
-    top: 'auto',
-    left: 'auto',
-    right: 'auto',
-    bottom: 'auto',
-    margin: 'auto',
-    padding: '20px',
-    border: '1px solid #ccc',
-    background: '#fff',
-    overflow: 'auto',
-    borderRadius: '10px',
-    outline: 'none',
-    zIndex: '1000',
-  },
-};
+import { ModalProps } from '@/types/overlay/modal';
+import { modalStyle } from '@/services/overlay/modal';
 
 export default function PostCheckModal({
   modalType,
   isOpen,
   onRequestClose,
-}: Props) {
+}: ModalProps) {
   const router = useRouter();
   // 이미 완료된 거래 ? 뒤로 보내야함.
   // 비밀번호 설정이 필요? => 비밀번호 설정 창으로 이동
@@ -79,6 +35,7 @@ export default function PostCheckModal({
           type="button"
           className="w-[126px] h-[34px] rounded-[8px] bg-blue-100 font-bold text-[13px] text-white"
           onClick={() => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
             modalType === 'needPassword'
               ? modalBtn('/mypage/user/password')
               : modalBtn('/post');

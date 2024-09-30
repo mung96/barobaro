@@ -39,12 +39,14 @@ function SelectableItem({
 
   return type === 'checkbox' ? (
     <CheckBox.Item
+      // eslint-disable-next-line react/jsx-props-no-spreading
       {...commonProps}
       value={value}
       checked={checked}
       onChange={onChange}
     />
   ) : (
+    // eslint-disable-next-line react/jsx-props-no-spreading
     <Radio.Item {...commonProps} value={value} />
   );
 }

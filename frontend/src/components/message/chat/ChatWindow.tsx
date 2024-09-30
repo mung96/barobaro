@@ -1,19 +1,37 @@
 'use client';
 
+import { ChangeEvent, useRef, useState } from 'react';
 import AttatchImage from '@/components/(SVG_component)/(message)/(chat)/AttatchImage';
 import SendButton from '@/components/(SVG_component)/(message)/(chat)/SendButton';
-import { ChangeEvent, useRef, useState } from 'react';
+import webSocketClient from '@/utils/webSocketClient';
+import currentTime from '@/utils/currentTime';
 
-export default function ChatWindow() {
+import MessageFormType from './MessageFormType';
+
+type ChatWindowParam = {
+  client: webSocketClient | null;
+};
+export default function ChatWindow({ client }: ChatWindowParam) {
   const [chatValue, setChatValue] = useState('');
-  let message: string;
   const messageRef = useRef<HTMLInputElement>(null);
 
   const handleChatValue = (e: ChangeEvent<HTMLInputElement>) => {
     setChatValue(e.target.value);
   };
 
+  const UserId = '김말이';
+
   const sendChat = () => {
+    const tempMsg: MessageFormType = {
+      type: 1,
+      user: UserId,
+      body: chatValue,
+      timestamp: currentTime(),
+    };
+    const destination: string = '/pub/message';
+    const msg: string = JSON.stringify(tempMsg);
+
+    if (client) client.send(destination, msg);
     setChatValue('');
     messageRef.current?.focus();
   };
@@ -32,8 +50,8 @@ export default function ChatWindow() {
               ref={messageRef}
             />
             <button
+              type="button"
               onClick={sendChat}
-              role="presentation"
               className="w-2/12 focus:outline-none"
               disabled={!chatValue}
             >

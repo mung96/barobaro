@@ -1,9 +1,9 @@
 'use client';
 
+import { useState } from 'react';
 import NavBarLayout from '@/layout/NavBarLayout';
 import BlueToggle from '@/components/(toggle)/BlueToggle';
 
-import { useState } from 'react';
 import Header from '@/components/Header';
 
 export default function AlarmSetting() {
@@ -24,9 +24,14 @@ export default function AlarmSetting() {
             <div className="mx-1 my-2 flex flex-row justify-between">
               <div>
                 <h3 className="text-[12px]">가격 변동</h3>
-                <p className="text-[10px] text-gray-600">찜한 게시글의 가격이 달라진 경우 알려드려요!</p>
+                <p className="text-[10px] text-gray-600">
+                  찜한 게시글의 가격이 달라진 경우 알려드려요!
+                </p>
               </div>
-              <button type="button" onClick={() => setPriceChange(!priceChange)}>
+              <button
+                type="button"
+                onClick={() => setPriceChange(!priceChange)}
+              >
                 <BlueToggle isSelected={priceChange} />
               </button>
             </div>
@@ -36,7 +41,9 @@ export default function AlarmSetting() {
             <div className="mx-1 my-2 flex flex-row justify-between">
               <div>
                 <h3 className="text-[12px]">채팅 알림</h3>
-                <p className="text-[10px] text-gray-600">채팅 메시지가 왔을 때 알려드려요!</p>
+                <p className="text-[10px] text-gray-600">
+                  채팅 메시지가 왔을 때 알려드려요!
+                </p>
               </div>
               <button type="button" onClick={() => setChatAlarm(!chatAlarm)}>
                 <BlueToggle isSelected={chatAlarm} />
