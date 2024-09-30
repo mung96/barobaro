@@ -1,14 +1,14 @@
-import ContractCardBox from '@/components/post/ContractCardBox';
-import { ContractWidget } from '@/components/post/ContractWidget';
 import React, { useState } from 'react';
 import { HiOutlineCurrencyDollar } from 'react-icons/hi2';
 import { IoCalendarClearOutline } from 'react-icons/io5';
+import ContractWidget from '@/components/post/ContractWidget';
+import ContractCardBox from '@/components/post/ContractCardBox';
 
-const RentalInfoCard = () => {
+function RentalInfoCard() {
   const [productName, setProductName] = useState('');
   const [serialNumber, setSerialNumber] = useState('');
   return (
-    <ContractCardBox title={'물건 소유자 및 대여 정보'} step={1}>
+    <ContractCardBox title="물건 소유자 및 대여 정보" step={1}>
       <div className="flex flex-col gap-2">
         <ContractWidget
           title="물건 소유자(갑)"
@@ -34,18 +34,18 @@ const RentalInfoCard = () => {
         <ContractWidget
           title="대여 기간"
           name={<IoCalendarClearOutline className="text-xl" />}
-          value={'2024.09.24-2025.0925'}
+          value="2024.09.24-2025.0925"
           disabled
         />
         <ContractWidget
           title="대여료"
           name={<HiOutlineCurrencyDollar className="text-xl" />}
-          value={'60000원'}
+          value="60000원"
           disabled
         />
       </div>
     </ContractCardBox>
   );
-};
+}
 
 export default RentalInfoCard;

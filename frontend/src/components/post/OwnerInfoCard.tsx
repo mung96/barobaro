@@ -1,5 +1,5 @@
 import ContractCardBox from '@/components/post/ContractCardBox';
-import { ContractWidget } from '@/components/post/ContractWidget';
+import ContractWidget from '@/components/post/ContractWidget';
 
 function OwnerInfoCard() {
   return (

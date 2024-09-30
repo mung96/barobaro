@@ -1,12 +1,26 @@
+import { ReactNode } from 'react';
+
 type Props = {
   title: string;
-  name?: string | React.ReactNode;
+  name?: string | ReactNode;
   value: string;
   end?: string;
-  [key: string]: any;
+  onChange?: (value: string) => void;
+  type?: string;
+  disabled?: boolean;
+  placeholder?: string;
 };
 
-export const ContractWidget = ({ title, name, value, end, ...rest }: Props) => {
+function ContractWidget({
+  title,
+  name,
+  value,
+  end,
+  onChange,
+  type,
+  disabled,
+  placeholder,
+}: Props) {
   return (
     <div className="flex flex-col gap-1">
       <p className="text-base">{title}</p>
@@ -15,10 +29,19 @@ export const ContractWidget = ({ title, name, value, end, ...rest }: Props) => {
         <input
           className="text-sm text-center bg-gray-500 outline-none inline-block max-w-40"
           value={value}
-          {...rest}
+          type={type}
+          onChange={(e) => {
+            if (onChange) {
+              onChange(e.target.value);
+            }
+          }}
+          disabled={disabled}
+          placeholder={placeholder}
         />
         {end && <p className="text-sm pr-2 py-1">{end}</p>}
-      </div> 
+      </div>
     </div>
   );
-};
+}
+
+export default ContractWidget;
