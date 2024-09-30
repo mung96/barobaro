@@ -33,7 +33,8 @@ export default () => {
   ];
   const [selectedAccount, setSelectedAccount] = useState<number | null>(null);
   const handleAccountSelect = (accountId: number) => {
-    setSelectedAccount(accountId);
+    if (accountId === selectedAccount) setSelectedAccount(null);
+    else setSelectedAccount(accountId);
   };
 
   return (
