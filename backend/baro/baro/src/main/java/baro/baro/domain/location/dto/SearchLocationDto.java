@@ -17,7 +17,7 @@ public class SearchLocationDto {
 
     private String dong;
 
-    public static SearchLocationDto toEntity(Location location) {
+    public static SearchLocationDto toDto(Location location) {
         return SearchLocationDto.builder()
                 .locationId(location.getId())
                 .name(location.getName())
