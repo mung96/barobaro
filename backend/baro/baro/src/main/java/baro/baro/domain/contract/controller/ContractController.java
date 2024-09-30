@@ -28,7 +28,6 @@ public class ContractController {
 
     @PostMapping("/request")
     public ResponseEntity<?> contractRequestAdd(@RequestBody ContractRequestDto contractRequestDto) {
-
         ContractRequestDto result = new ContractRequestDto(
                 10000L,
                 LocalDate.of(2024, 9, 25),
@@ -41,7 +40,6 @@ public class ContractController {
 
     @GetMapping("/request")
     public ResponseEntity<?> contractRequestDetail(@RequestBody ContractRequestDetailReq contractRequestDetailReq) {
-
         ContractRequestDto result = new ContractRequestDto(
                 contractRequestDetailReq.getChatRoomId(),
                 LocalDate.of(2024, 9, 25),
@@ -54,7 +52,6 @@ public class ContractController {
 
     @GetMapping("")
     public ResponseEntity<?> contractOptionDetail(@RequestBody ContractOptionDetailReq contractOptionDetailReq) {
-
         List<ReturnType> returnTypes = new ArrayList<>();
         returnTypes.add(DELIVERY);
         returnTypes.add(DIRECT);
@@ -72,7 +69,6 @@ public class ContractController {
 
     @PostMapping("/approve")
     public ResponseEntity<?> approveContractRequest(@RequestBody ContractApproveReq contractApproveReq, @RequestParam(name = "type", defaultValue = "default") String type) {
-
         ContractApproveRes result = switch (type) {
             case "default" ->
                 //거래 status 변경 및 물품 status 변경
@@ -94,7 +90,6 @@ public class ContractController {
 
     @PostMapping("/sign/owner")
     public ResponseEntity<?> addOwnerSignature(@RequestBody SignatureAddReq signatureAddReq) {
-
         ContractSignedRes result = ContractSignedRes.builder()
                 .chatRoomId(signatureAddReq.getChatRoomId())
                 .fileUrl("http://test.url/test_A_signed.pdf")
@@ -128,5 +123,13 @@ public class ContractController {
                 .videoUrl("https://test.url.com/saved.mp4")
                 .build();
         return new ResponseEntity<>(ResponseDto.success(PRODUCT_VIDEO_UPLOADED_OK, result), OK);
+    }
+
+    @GetMapping("/{chatRoomId}/video")
+    public ResponseEntity<?> videoDetails(@PathVariable("chatRoomId") Long chatRoomId) {
+        ContractVideoDetailsRes result = ContractVideoDetailsRes.builder()
+                .videoUrl("https://test.url.com/saved.mp4")
+                .build();
+        return new ResponseEntity<>(ResponseDto.success(PRODUCT_VIDEO_DETAILS_OK, result), OK);
     }
 }
