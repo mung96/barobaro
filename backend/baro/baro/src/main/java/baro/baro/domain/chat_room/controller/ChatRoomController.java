@@ -41,39 +41,9 @@ public class ChatRoomController {
 
     @GetMapping
     public ResponseEntity<?> chatRoomList() {
-        List<ChatRoomDto> chatRooms = new ArrayList<>();
+        Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
 
-        for(int i = 0; i < 5; i++) {
-            Long id = 10000L + i;
-
-            ChatRoomDto dto = ChatRoomDto.builder()
-                    .chatRoomId(id)
-                    .profileImage("상대방 프로필 이미지")
-                    .nickname("상대방 닉네임")
-                    .productMainImage("대여 상품 메인 이미지")
-                    .lastChat("돈 낸나!")
-                    .chatRoomStatus(OWNER)
-                    .build();
-
-            chatRooms.add(dto);
-        }
-
-        for(int i = 5; i < 10; i++) {
-            Long id = 10000L + i;
-
-            ChatRoomDto dto = ChatRoomDto.builder()
-                    .chatRoomId(id)
-                    .profileImage("상대방 프로필 이미지")
-                    .nickname("상대방 닉네임")
-                    .productMainImage("대여 상품 메인 이미지")
-                    .lastChat("춤춰줄테니 빌려줘.. 제발 나 돈이 없어..")
-                    .chatRoomStatus(RENTAL)
-                    .build();
-
-            chatRooms.add(dto);
-        }
-
-        ChatRoomListRes result = new ChatRoomListRes(chatRooms);
+        ChatRoomListRes result = chatRoomService.findChatRooms(memberId);
 
         return new ResponseEntity<>(ResponseDto.success(CHATROOM_LIST_OK, result), OK);
     }
