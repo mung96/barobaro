@@ -1,9 +1,9 @@
+import Image from 'next/image';
 import Category from '@/components/Category';
 import SearchBar from '@/components/SearchBar';
 import Cards from '@/components/(recent_list_component)/Cards';
 import NavBarLayout from '@/layout/NavBarLayout';
 import Logo from '../../../../public/assets/png/barobaro_logo.png';
-import Image from 'next/image';
 // import Header from '@/components/Header';
 
 export default function Home() {

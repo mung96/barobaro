@@ -1,17 +1,19 @@
 'use client';
 
 import Image from 'next/image';
-import Logo from '@/../public/assets/png/barobaro_logo.png';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Logo from '@/../public/assets/png/barobaro_logo.png';
 
 export default function Home() {
   const router = useRouter();
   useEffect(() => {
-    const showLandingImage = setTimeout(() => {
-      console.log('Move!');
-      router.replace('/login');
-    }, 3000);
+    const showLandingImage = () =>
+      setTimeout(() => {
+        console.log('Move!');
+        router.replace('/login');
+      }, 3000);
+    showLandingImage();
   }, []);
 
   return (

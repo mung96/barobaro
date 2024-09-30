@@ -4,8 +4,9 @@ import SockJS from 'sockjs-client';
 const API_URL = 'http://localhost:8080';
 const SOCKET_URL = `${API_URL}/ws`; // 로컬 테스트 시 사용
 
-export default class webSocketClient {
+export default class WebSocketClient {
   private client: Client;
+
   private isConnected: boolean = false;
 
   constructor(private userIdVal: string) {
@@ -14,7 +15,7 @@ export default class webSocketClient {
       connectHeaders: {
         UserId: userIdVal,
       },
-      debug: (str: string) => {
+      debug: () => {
         // console.log('STOMP: ' + str);
       },
       onConnect: () => {
@@ -25,7 +26,7 @@ export default class webSocketClient {
         // console.log('Disconnected from WebSocket');
         this.isConnected = false; // Set connected status to false
       },
-      onStompError: (frame) => {
+      onStompError: () => {
         // console.error('Broker reported error: ' + frame.headers['message']);
         // console.error('Additional details: ' + frame.body);
       },
@@ -48,7 +49,7 @@ export default class webSocketClient {
       this.client.onStompError = (frame) => {
         // console.error('Broker reported error: ' + frame.headers['message']);
         // console.error('Additional details: ' + frame.body);
-        reject(new Error('STOMP error: ' + frame.body));
+        reject(new Error(`STOMP error: ${frame.body}`));
       };
     });
   }

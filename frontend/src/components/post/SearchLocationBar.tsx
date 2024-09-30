@@ -1,7 +1,7 @@
+import { Dispatch, SetStateAction, useState } from 'react';
 import Button from '@/components/shared/Button';
 import Input from '@/components/shared/Input';
 import useLocationModel from '@/hooks/shared/useLocationModel';
-import { Dispatch, SetStateAction, useState } from 'react';
 
 type SearchLocationBarProps = {
   open: Dispatch<SetStateAction<boolean>>;
@@ -23,8 +23,8 @@ function SearchLocationBar({ open, onSelect }: SearchLocationBarProps) {
           onChange={setKeyWord}
         />
         <Button
-          width={'72px'}
-          height={'32px'}
+          width="72px"
+          height="32px"
           onClick={() => searchLocationListByQuery(keyWord)}
         >
           검색
@@ -32,12 +32,14 @@ function SearchLocationBar({ open, onSelect }: SearchLocationBarProps) {
       </div>
       <div
         className="flex flex-col gap-2"
+        role="none"
         onClick={() => {
           open(false);
         }}
       >
         {locationList.map((location) => (
           <div
+            role="none"
             className="border-2 rounded-sm flex flex-col gap-1 px-3 py-2"
             onClick={() => onSelect(location.addressName)}
           >

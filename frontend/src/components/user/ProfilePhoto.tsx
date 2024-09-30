@@ -1,25 +1,26 @@
 'use client';
 
-import NavBarLayout from '@/layout/NavBarLayout';
-import CameraBody from '@/components/(SVG_component)/CameraBody';
+// import NavBarLayout from '@/layout/NavBarLayout';
 import { useState, useEffect, useRef, ChangeEvent } from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
+import CameraBody from '@/components/(SVG_component)/CameraBody';
 // import { file } from '@babel/types';
 
-type ModalType =
-  | 'isComplete'
-  | 'noPermissionEdit'
-  | 'noPermissionDelete'
-  | 'needPassword';
+// type ModalType =
+//   | 'isComplete'
+//   | 'noPermissionEdit'
+//   | 'noPermissionDelete'
+//   | 'needPassword';
 
 export default function ProfilePhoto({ isSignup }: { isSignup: boolean }) {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [valid, setValid] = useState<boolean>(false);
   const [inputNickname, setInputNickname] = useState<string>('');
+  console.log(inputNickname);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const router = useRouter();
+  // const router = useRouter();
 
   const handleProfileImage = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files ? event.target.files[0] : null;
@@ -31,16 +32,14 @@ export default function ProfilePhoto({ isSignup }: { isSignup: boolean }) {
     fileInputRef.current?.click();
   };
 
-  const confirmProfileImage = () => {
-    console.log('confirm');
-    // 변경한 프로필 사진을 backend로 전송
-    router.replace('/mypage');
-  };
+  // const confirmProfileImage = () => {
+  //   console.log('confirm');
+  //   // 변경한 프로필 사진을 backend로 전송
+  //   router.replace('/mypage');
+  // };
 
   const nicknameValid = (value: string) => {
-    console.log(value);
     const regex = /^[a-zA-Z가-힣0-9]{1,10}$/;
-    console.log(regex.test(value));
     if (regex.test(value)) {
       setValid(true);
       setInputNickname(value);

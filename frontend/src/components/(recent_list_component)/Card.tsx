@@ -34,7 +34,7 @@ export default function Card() {
     }
   }
 
-  function handleKeyDown(event: React.KeyboardEvent) {
+  function handleKeyDown(event: KeyboardEvent) {
     if (event.key === 'Enter' || event.key === ' ') {
       handleCard();
     }
@@ -48,7 +48,7 @@ export default function Card() {
     <div>
       <div
         onClick={handleCard}
-        onKeyDown={handleKeyDown}
+        onKeyDown={() => handleKeyDown}
         role="button"
         tabIndex={0}
         className="w-[125px] h-[168px] rounded-[10px] bg-red-50 items-center relative overflow-hidden cursor-pointer"

@@ -1,18 +1,18 @@
 import { useEffect, useState } from 'react';
-import webSocketClient from '@/utils/webSocketClient';
+import WebSocketClient from '@/utils/webSocketClient';
 import MessageFormType from '@/components/message/chat/MessageFormType';
 
 export default function useSocketClientModel(
   UserId: string,
   messageAddHandler: (messages: MessageFormType[]) => void,
 ) {
-  const [socketClient, setSocketClient] = useState<webSocketClient | null>(
+  const [socketClient, setSocketClient] = useState<WebSocketClient | null>(
     null,
   );
   const [messageList, setMessageList] = useState<MessageFormType[]>([]);
 
   useEffect(() => {
-    const client = new webSocketClient(UserId);
+    const client = new WebSocketClient(UserId);
     setSocketClient(client);
 
     return () => {
@@ -25,8 +25,7 @@ export default function useSocketClientModel(
       if (!socketClient) return;
       try {
         await socketClient.connect();
-        console.log('STOMP connected');
-        socketClient.subscribe('/sub/message/' + UserId, (message) => {
+        socketClient.subscribe(`/sub/message/${UserId}`, (message) => {
           const parsedMessage = JSON.parse(message.body);
 
           // 메시지 타입으로 반환하기
@@ -37,14 +36,17 @@ export default function useSocketClientModel(
             body: parsedMessage.body,
           };
 
-          setMessageList((messageList) => [...messageList, toMessageFormType]);
-        });
+          setMessageList((_messageList) => [
+            ..._messageList,
+            toMessageFormType,
+          ]);
 
-        return () => {
-          socketClient.disconnect();
-        };
+          return () => {
+            socketClient.disconnect();
+          };
+        });
       } catch (error) {
-        console.error('Error connecting to WebSocket:', error);
+        // console.error('Error connecting to WebSocket:', error);
       }
     };
 
