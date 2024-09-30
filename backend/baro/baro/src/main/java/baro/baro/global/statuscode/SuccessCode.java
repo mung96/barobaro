@@ -31,7 +31,7 @@ public enum SuccessCode {
     CHATROOM_LIST_OK(OK.value(), "채팅방 리스트 조회에 성공했습니다."),
 
     //검색
-
+    SEARCH_LOCATION_OK(OK.value(), "지역 조회에 성공했습니다."),
     //본인인증
 
     //알림 및 푸시
