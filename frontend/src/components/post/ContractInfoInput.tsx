@@ -38,14 +38,15 @@ function ContractInfoInput({ onTotalStepChange, onNext, onPrev }: Props) {
           <SelectableItem type="radio" value={item.value} label={item.label} />
         ))}
       </Radio.Group>
-
-      <div className="flex flex-col gap-3">
-        <RentalInfoCard />
-        <ProductRepairInfoCard />
-        <OverdueInfoCard />
-        <RefundInfoCard />
-        <OwnerInfoCard />
-      </div>
+      {value === 'YES' && (
+        <div className="flex flex-col gap-3">
+          <RentalInfoCard />
+          <ProductRepairInfoCard />
+          <OverdueInfoCard />
+          <RefundInfoCard />
+          <OwnerInfoCard />
+        </div>
+      )}
       <div className="flex  gap-6">
         <Button onClick={onPrev} width="100%" height="36px" color="gray">
           <p className="text-xs">이전</p>

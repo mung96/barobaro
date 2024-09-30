@@ -1,3 +1,4 @@
+import { ChangeEvent } from 'react';
 import CameraBody from '@/components/(SVG_component)/CameraBody';
 import CameraLens from '@/components/(SVG_component)/CameraLens';
 import Etc from '@/components/(SVG_component)/Etc';
@@ -6,7 +7,6 @@ import SmartPhone from '@/components/(SVG_component)/SmartPhone';
 import TeleScope from '@/components/(SVG_component)/TeleScope';
 import colors from '@/components/colors';
 import Radio from '@/components/shared/Radio';
-import { ChangeEvent } from 'react';
 
 export const productCategory = [
   {
