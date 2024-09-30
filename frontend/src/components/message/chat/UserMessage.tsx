@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import MessageFormType from './MessageFormType';
 import MessageCommonStyles from './MessageStyles';
 
@@ -21,8 +22,11 @@ const UserMessage: React.FC<MessageFormType> = ({
           </div>
         )}
         {isImg ? (
-          <img
+          <Image
             src={body}
+            alt="userImage"
+            width={100}
+            height={100}
             className={`w-[30vh] rounded-b-2xl rounded-t${isMine ? 'l' : 'r'}-2xl mb-[2.3vh]`}
           />
         ) : (
