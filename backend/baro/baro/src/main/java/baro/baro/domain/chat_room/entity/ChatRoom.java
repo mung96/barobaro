@@ -7,12 +7,18 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@SQLDelete(sql = " UPDATE ChatRoom SET is_deleted = true WHERE chat_room_id = ? ")
+@SQLRestriction("is_deleted = false")
 public class ChatRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,6 +38,10 @@ public class ChatRoom {
     private Member rental;
 
     private RentalStatus rentalStatus;
+
+    private String lastChat;
+
+    private LocalDateTime lastChatTime;
 
     private Boolean isDeleted;
 }

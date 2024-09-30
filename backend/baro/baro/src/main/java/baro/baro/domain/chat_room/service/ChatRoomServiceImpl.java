@@ -1,7 +1,9 @@
 package baro.baro.domain.chat_room.service;
 
+import baro.baro.domain.chat_room.dto.ChatRoomDto;
 import baro.baro.domain.chat_room.dto.request.ChatRoomAddReq;
 import baro.baro.domain.chat_room.dto.response.ChatRoomAddRes;
+import baro.baro.domain.chat_room.dto.response.ChatRoomListRes;
 import baro.baro.domain.chat_room.entity.ChatRoom;
 import baro.baro.domain.chat_room.entity.RentalStatus;
 import baro.baro.domain.chat_room.repository.ChatRoomRepository;
@@ -14,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static baro.baro.domain.product.entity.ProductStatus.AVAILABLE;
@@ -27,6 +31,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     private final ProductRepository productRepository;
     private final MemberRepository memberRepository;
 
+    @Override
     public ChatRoomAddRes addChatRoom(Long rentalId, ChatRoomAddReq chatRoomAddReq) {
         // 채팅방 생성이 불가능한 경우
         // 1. 대여 상품이 삭제된 경우
@@ -68,6 +73,13 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                 .owner(owner)
                 .rental(rental)
                 .rentalStatus(RentalStatus.AVAILABLE)
+                .lastChatTime(LocalDateTime.now())
+                .isDeleted(false)
                 .build()));
+    }
+
+    @Override
+    public ChatRoomListRes findChatRooms(Long memberId) {
+        return new ChatRoomListRes(chatRoomRepository.findAllChatRooms(memberId));
     }
 }
