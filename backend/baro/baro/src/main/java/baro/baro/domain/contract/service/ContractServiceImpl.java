@@ -16,7 +16,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Objects;
 
 import static baro.baro.domain.chat_room.entity.RentalStatus.APPLICATION;
@@ -41,9 +40,6 @@ public class ContractServiceImpl implements ContractService {
         validateContractRequestDto(contractRequestDto);
 
         //존재하지 않는 채팅방
-        List<ChatRoom> chatRooms = chatRoomRepository.findAll();
-        log.info(String.valueOf(chatRooms.size()));
-
         ChatRoom chatRoom = chatRoomRepository.findById(contractRequestDto.getChatRoomId())
                 .orElseThrow(() -> new CustomException(CHATROOM_NOT_FOUND));
 
