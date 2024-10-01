@@ -2,6 +2,7 @@ package baro.baro.domain.contract.controller;
 
 import baro.baro.domain.contract.dto.ContractRequestDto;
 import baro.baro.domain.contract.dto.request.*;
+import baro.baro.domain.contract.service.ContractService;
 import baro.baro.domain.product.entity.ReturnType;
 import baro.baro.global.oauth.jwt.service.JwtService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
@@ -33,6 +34,9 @@ import static baro.baro.global.ResponseFieldUtils.getCommonResponseFields;
 import static baro.baro.global.statuscode.SuccessCode.*;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
@@ -63,6 +67,9 @@ class ContractControllerTest {
     @MockBean
     private JwtService jwtService;
 
+    @MockBean
+    private ContractService contractService;
+
     private String jwtToken;
 
     @BeforeEach
@@ -84,13 +91,13 @@ class ContractControllerTest {
 
         //given
         ContractRequestDto contractRequestDto = new ContractRequestDto(
-                10000L,
-                LocalDate.of(2024, 9, 25),
-                LocalDate.of(2024, 10, 1),
+                1L,
+                LocalDate.now().plusDays(1),
+                LocalDate.now().plusDays(4),
                 ReturnType.DELIVERY
         );
         String content = objectMapper.writeValueAsString(contractRequestDto);
-
+        doNothing().when(contractService).addContractRequest(any(), anyLong());
         //when
         ResultActions actions = mockMvc.perform(
                 post("/contracts/request")
@@ -105,9 +112,6 @@ class ContractControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(CONTRACT_REQUEST_CREATED.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(CONTRACT_REQUEST_CREATED.getMessage()))
-                .andExpect(jsonPath("$.body.desiredStartDate").value("2024-09-25"))
-                .andExpect(jsonPath("$.body.desiredEndDate").value("2024-10-01"))
-                .andExpect(jsonPath("$.body.returnType").value("DELIVERY"))
                 .andDo(document(
                         "계약 요청 생성",
                         preprocessRequest(prettyPrint()),
@@ -128,18 +132,6 @@ class ContractControllerTest {
                                         )
                                 )
 
-                                .responseFields(
-                                        getCommonResponseFields(
-                                                fieldWithPath("body.chatRoomId").type(NUMBER)
-                                                        .description("채팅방 아이디"),
-                                                fieldWithPath("body.desiredStartDate").type(STRING)
-                                                        .description("희망 대여 시작일"),
-                                                fieldWithPath("body.desiredEndDate").type(STRING)
-                                                        .description("희망 대여 반납일"),
-                                                fieldWithPath("body.returnType").type(STRING)
-                                                        .description("반납 방법(단일)")
-                                        )
-                                )
                                 .requestSchema(Schema.schema("계약 요청 생성 Request"))
                                 .responseSchema(Schema.schema("계약 요청 생성 Response"))
                                 .build()
