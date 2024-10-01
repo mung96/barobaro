@@ -34,9 +34,6 @@ import static baro.baro.global.ResponseFieldUtils.getCommonResponseFields;
 import static baro.baro.global.statuscode.SuccessCode.*;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
@@ -97,7 +94,6 @@ class ContractControllerTest {
                 ReturnType.DELIVERY
         );
         String content = objectMapper.writeValueAsString(contractRequestDto);
-        doNothing().when(contractService).addContractRequest(any(), anyLong());
         //when
         ResultActions actions = mockMvc.perform(
                 post("/contracts/request")
@@ -129,6 +125,12 @@ class ContractControllerTest {
                                                 fieldWithPath("desiredStartDate").type(STRING).description("희망 대여 시작일"),
                                                 fieldWithPath("desiredEndDate").type(STRING).description("희망 대여 반납일"),
                                                 fieldWithPath("returnType").type(STRING).description("희망 반납 방법(단일)")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("내용 없음")
                                         )
                                 )
 
