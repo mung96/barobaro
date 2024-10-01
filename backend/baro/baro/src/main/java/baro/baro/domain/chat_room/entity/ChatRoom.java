@@ -37,6 +37,7 @@ public class ChatRoom {
     @JoinColumn(name = "rental_id")
     private Member rental;
 
+    @Enumerated(EnumType.STRING)
     private RentalStatus rentalStatus;
 
     private String lastChat;
@@ -44,4 +45,10 @@ public class ChatRoom {
     private LocalDateTime lastChatTime;
 
     private Boolean isDeleted;
+
+    public void updateRentalStatus(RentalStatus rentalStatus) {
+        this.rentalStatus = rentalStatus;
+    }
+
+
 }
