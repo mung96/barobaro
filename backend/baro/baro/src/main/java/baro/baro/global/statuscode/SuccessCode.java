@@ -38,6 +38,7 @@ public enum SuccessCode {
     NOTIFICATION_LIST_OK(OK.value(), "알림 리스트 조회에 성공했습니다."),
 
     //찜
+    WISH_LIST_CREATED(CREATED.value(), "관심내역에 추가됐습니다."),
 
     //마이페이지
     RENTAL_PRODUCT_LIST_OK(OK.value(), "빌린 내역 리스트 조회에 성공했습니다."),
