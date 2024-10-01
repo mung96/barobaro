@@ -3,10 +3,14 @@ package baro.baro.domain.contract.controller;
 import baro.baro.domain.contract.dto.ContractRequestDto;
 import baro.baro.domain.contract.dto.request.*;
 import baro.baro.domain.contract.dto.response.*;
+import baro.baro.domain.contract.service.ContractService;
 import baro.baro.domain.product.entity.ReturnType;
 import baro.baro.global.dto.ResponseDto;
+import baro.baro.global.oauth.jwt.service.JwtService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,21 +25,21 @@ import static baro.baro.global.statuscode.SuccessCode.*;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/contracts")
 public class ContractController {
 
-    @PostMapping("/request")
-    public ResponseEntity<?> contractRequestAdd(@RequestBody ContractRequestDto contractRequestDto) {
-        ContractRequestDto result = new ContractRequestDto(
-                10000L,
-                LocalDate.of(2024, 9, 25),
-                LocalDate.of(2024, 10, 1),
-                ReturnType.DELIVERY
-        );
+    private final JwtService jwtService;
+    private final ContractService contractService;
 
-        return new ResponseEntity<>(ResponseDto.success(CONTRACT_REQUEST_CREATED, result), CREATED);
+    @PostMapping("/request")
+    public ResponseEntity<?> contractRequestAdd(@RequestBody final ContractRequestDto contractRequestDto) {
+        Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
+        contractService.addContractRequest(contractRequestDto,memberId);
+
+        return new ResponseEntity<>(ResponseDto.success(CONTRACT_REQUEST_CREATED, null), CREATED);
     }
 
     @GetMapping("/request")
@@ -52,6 +56,7 @@ public class ContractController {
 
     @GetMapping("")
     public ResponseEntity<?> contractOptionDetail(@RequestBody ContractOptionDetailReq contractOptionDetailReq) {
+
         List<ReturnType> returnTypes = new ArrayList<>();
         returnTypes.add(DELIVERY);
         returnTypes.add(DIRECT);
@@ -69,6 +74,7 @@ public class ContractController {
 
     @PostMapping("/approve")
     public ResponseEntity<?> approveContractRequest(@RequestBody ContractApproveReq contractApproveReq, @RequestParam(name = "type", defaultValue = "default") String type) {
+
         ContractApproveRes result = switch (type) {
             case "default" ->
                 //거래 status 변경 및 물품 status 변경
@@ -90,6 +96,7 @@ public class ContractController {
 
     @PostMapping("/sign/owner")
     public ResponseEntity<?> addOwnerSignature(@RequestBody SignatureAddReq signatureAddReq) {
+
         ContractSignedRes result = ContractSignedRes.builder()
                 .chatRoomId(signatureAddReq.getChatRoomId())
                 .fileUrl("http://test.url/test_A_signed.pdf")

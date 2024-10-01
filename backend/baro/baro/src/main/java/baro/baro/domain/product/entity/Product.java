@@ -1,11 +1,14 @@
 package baro.baro.domain.product.entity;
 
+import baro.baro.domain.contract.entity.Contract;
 import baro.baro.domain.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,6 +19,8 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@SQLDelete(sql = " UPDATE Product SET is_deleted = true WHERE product_id = ? ")
+@SQLRestriction("is_deleted = false")
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,6 +30,9 @@ public class Product {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "product")
+    private Contract contract;
 
     private String title;
 
@@ -38,8 +46,10 @@ public class Product {
 
     private Integer wishCount;
 
+    @Enumerated(EnumType.STRING)
     private Category category;
 
+    @Enumerated(EnumType.STRING)
     private ProductStatus productStatus;
 
     private String place;
