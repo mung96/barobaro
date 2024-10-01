@@ -14,7 +14,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,12 +43,8 @@ public class ContractController {
 
     @GetMapping("/request")
     public ResponseEntity<?> contractRequestDetail(@RequestBody ContractRequestDetailReq contractRequestDetailReq) {
-        ContractRequestDto result = new ContractRequestDto(
-                contractRequestDetailReq.getChatRoomId(),
-                LocalDate.of(2024, 9, 25),
-                LocalDate.of(2024, 10, 1),
-                ReturnType.DELIVERY
-        );
+        Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
+        ContractRequestDto result = contractService.findContractRequestDetail(contractRequestDetailReq,memberId);
 
         return new ResponseEntity<>(ResponseDto.success(CONTRACT_REQUEST_OK, result), OK);
     }
