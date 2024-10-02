@@ -1,21 +1,17 @@
-import Card from './Card';
+import Card from '@/components/(recent_list_component)/Card';
+import { CardsType } from '@/types/products/products';
+import { productListSelector } from '@/services/products/productselector';
 
-export default function Cards() {
+export default function Cards({ CardsData }: { CardsData: CardsType }) {
+  const data = productListSelector(CardsData);
   return (
     <section className="w-full overflow-x-auto scrollbar-hide">
       <div className="flex flex-row space-x-4 p-4 min-w-max">
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        {/* 5 */}
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        {/* 10 */}
+        {data.map((card) => (
+          <div key={card.productId}>
+            <Card cardInfo={card} />
+          </div>
+        ))}
       </div>
     </section>
   );
