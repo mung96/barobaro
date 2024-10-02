@@ -28,9 +28,9 @@ export default function Home() {
       <Category />
       <br />
       <h1 className="text-xs font-bold ml-4">최근 올라온 목록</h1>
-      <Cards />
+      <Cards CardsType="recentlyUploaded" />
       <h1 className="text-xs font-bold ml-4">최근 본 목록</h1>
-      <Cards />
+      <Cards CardsType="recentlyView" />
       <div className="h-12" />
     </NavBarLayout>
   );

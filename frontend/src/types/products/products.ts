@@ -20,8 +20,20 @@ export type CurrentList = {
   isWished: boolean;
 }[];
 
+export type CurrentProduct = {
+  productId: number;
+  productMainImage: string;
+  title: string;
+  startDate: string;
+  endDate: string;
+  rentalFee: number;
+  isWished: boolean;
+};
+
 export type SearchHookType = {
   search: string;
   goSearch: () => void;
   handleSearch: (value: string) => void;
 };
+
+export type CardsType = 'recentlyView' | 'recentlyUploaded';
