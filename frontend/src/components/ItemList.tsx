@@ -64,7 +64,7 @@ export default function ItemList({ data }: { data: string }) {
       </header>
       {result &&
         result.map((item: any) => (
-          <div key={item.id}>
+          <div key={item.productId}>
             <div className="flex flex-row ml-3.5">
               <div className="w-[98px] h-[98px] rounded-[10px] overflow-hidden relative">
                 <Image src={item.productMainImage} alt="product_image" fill />
