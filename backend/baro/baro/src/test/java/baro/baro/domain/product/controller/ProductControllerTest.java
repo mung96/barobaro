@@ -344,6 +344,7 @@ class ProductControllerTest {
 
                                         )
                                 )
+                                .requestSchema(Schema.schema("최근 본 대여 물품 리스트 조회 Request"))
                                 .responseSchema(Schema.schema("최근 본 대여 물품 리스트 조회 Response"))
                                 .build()
                         ))
@@ -397,6 +398,7 @@ class ProductControllerTest {
 
                                         )
                                 )
+                                .requestSchema(Schema.schema("최근 올라온 대여 물품 리스트 조회 Request"))
                                 .responseSchema(Schema.schema("최근 올라온 대여 물품 리스트 조회 Response"))
                                 .build()
                         ))
@@ -559,6 +561,7 @@ class ProductControllerTest {
                                                         .description("본문 없음")
                                         )
                                 )
+                                .requestSchema(Schema.schema("대여 물품 삭제 Request"))
                                 .responseSchema(Schema.schema("대여 물품 삭제 Response"))
                                 .build()
                         ))
@@ -613,6 +616,7 @@ class ProductControllerTest {
 
                                         )
                                 )
+                                .requestSchema(Schema.schema("빌린 내역 리스트 조회 Request"))
                                 .responseSchema(Schema.schema("빌린 내역 리스트 조회 Response"))
                                 .build()
                         ))
@@ -667,6 +671,7 @@ class ProductControllerTest {
 
                                         )
                                 )
+                                .requestSchema(Schema.schema("빌려준 내역 리스트 조회 Request"))
                                 .responseSchema(Schema.schema("빌려준 내역 리스트 조회 Response"))
                                 .build()
                         ))
@@ -733,6 +738,51 @@ class ProductControllerTest {
                                         )
                                 )
                                 .responseSchema(Schema.schema("빌려준 내역 리스트 조회 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 검색어_자동완성_성공() throws Exception {
+        //given
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/search/suggestions")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .param("keyword", "세븐틴")
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(SUGGEST_KEYWORD_LIST_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(SUGGEST_KEYWORD_LIST_OK.getMessage()))
+                .andDo(document(
+                        "검색어 자동완성",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Product API")
+                                .summary("검색어 자동완성 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .queryParameters(
+                                        parameterWithName("keyword").description("검색 할 단어")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body.keywords[].name").type(STRING)
+                                                        .description("자동완성된 검색어")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("검색어 자동완성 Request"))
+                                .responseSchema(Schema.schema("검색어 자동완성 Response"))
                                 .build()
                         ))
                 );
