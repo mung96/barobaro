@@ -4,7 +4,6 @@ import baro.baro.domain.contract.dto.ContractRequestDto;
 import baro.baro.domain.contract.dto.request.*;
 import baro.baro.domain.contract.dto.response.*;
 import baro.baro.domain.contract.service.ContractService;
-import baro.baro.domain.product.entity.ReturnType;
 import baro.baro.global.dto.ResponseDto;
 import baro.baro.global.oauth.jwt.service.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -14,13 +13,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
-import static baro.baro.domain.product.entity.ReturnType.DELIVERY;
-import static baro.baro.domain.product.entity.ReturnType.DIRECT;
 import static baro.baro.global.statuscode.SuccessCode.*;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
@@ -37,38 +31,24 @@ public class ContractController {
     @PostMapping("/request")
     public ResponseEntity<?> contractRequestAdd(@RequestBody final ContractRequestDto contractRequestDto) {
         Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
-        contractService.addContractRequest(contractRequestDto,memberId);
+        contractService.addContractRequest(contractRequestDto, memberId);
 
         return new ResponseEntity<>(ResponseDto.success(CONTRACT_REQUEST_CREATED, null), CREATED);
     }
 
     @GetMapping("/request")
     public ResponseEntity<?> contractRequestDetail(@RequestBody ContractRequestDetailReq contractRequestDetailReq) {
-        ContractRequestDto result = new ContractRequestDto(
-                contractRequestDetailReq.getChatRoomId(),
-                LocalDate.of(2024, 9, 25),
-                LocalDate.of(2024, 10, 1),
-                ReturnType.DELIVERY
-        );
+        Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
+        ContractRequestDto result = contractService.findContractRequestDetail(contractRequestDetailReq, memberId);
 
         return new ResponseEntity<>(ResponseDto.success(CONTRACT_REQUEST_OK, result), OK);
     }
 
     @GetMapping("")
     public ResponseEntity<?> contractOptionDetail(@RequestBody ContractOptionDetailReq contractOptionDetailReq) {
+        Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
+        ContractOptionDetailRes result = contractService.findContractOptionDetail(contractOptionDetailReq, memberId);
 
-        List<ReturnType> returnTypes = new ArrayList<>();
-        returnTypes.add(DELIVERY);
-        returnTypes.add(DIRECT);
-
-        ContractOptionDetailRes result = ContractOptionDetailRes.builder()
-                .isUsingContract(Boolean.TRUE)
-                .returnTypes(returnTypes)
-                .repairVendor("제조사 또는 공식 수입사의 AS 센터")
-                .overdueCriteria(5)
-                .overdueFee(2)
-                .refundDeadline(7)
-                .build();
         return new ResponseEntity<>(ResponseDto.success(CONTRACT_REQUEST_OK, result), OK);
     }
 
