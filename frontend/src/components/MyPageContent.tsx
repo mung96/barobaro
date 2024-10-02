@@ -5,11 +5,8 @@ import { useState } from 'react';
 import BorrowSVG from '@/components/(SVG_component)/(mypage)/Borrow';
 import LentSVG from '@/components/(SVG_component)/(mypage)/Lent';
 import ConnectAccountSVG from '@/components/(SVG_component)/(mypage)/ConnectAccount';
-import VerificationSVG from '@/components/(SVG_component)/(mypage)/Verification';
 import ChangePasswordSVG from '@/components/(SVG_component)/(mypage)/ChangePassword';
 import AlarmSVG from '@/components/(SVG_component)/(mypage)/Alarm';
-import FAQSVG from '@/components/(SVG_component)/(mypage)/FAQ';
-import TermsofUseSVG from '@/components/(SVG_component)/(mypage)/TermsofUse';
 import AccountBottomSheet from '@/components/(bottomsheet)/AccountBottomSheet';
 
 export default function MyPageContent() {
