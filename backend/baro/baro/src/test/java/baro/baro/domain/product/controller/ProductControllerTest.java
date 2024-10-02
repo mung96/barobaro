@@ -737,7 +737,8 @@ class ProductControllerTest {
                                                         .description("찜한 사람 수")
                                         )
                                 )
-                                .responseSchema(Schema.schema("빌려준 내역 리스트 조회 Response"))
+                                .requestSchema(Schema.schema("물품 검색 Request"))
+                                .responseSchema(Schema.schema("물품 검색 Response"))
                                 .build()
                         ))
                 );
