@@ -32,6 +32,8 @@ public enum SuccessCode {
 
     //검색
     SEARCH_LOCATION_OK(OK.value(), "지역 조회에 성공했습니다."),
+    SEARCH_PRODUCT_OK(OK.value(), "상품 검색에 성공했습니다."),
+
     //본인인증
 
     //알림 및 푸시
