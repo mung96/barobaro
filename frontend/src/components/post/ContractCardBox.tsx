@@ -8,16 +8,16 @@ type Props = {
   children: ReactNode;
 };
 
-const ContractCardBox = ({ title, step, children }: Props) => {
+function ContractCardBox({ title, step, children }: Props) {
   const [isOpen, setIsOpen] = useState(true);
   return (
     <div className="bg-gray-400 py-5 px-4 w-full rounded-xl flex flex-col gap-3">
-      <div
-        role="none"
+      <button
+        type="button"
         onClick={() => setIsOpen((prev) => !prev)}
         className="w-full flex justify-between"
       >
-        <p className="text-base font-semibold">{title}</p>
+        <p className="text-lg font-semibold">{title}</p>
         <div className="flex items-center justify-center">
           <p>
             <span className="text-base font-bold">{step}</span>
@@ -25,10 +25,10 @@ const ContractCardBox = ({ title, step, children }: Props) => {
           </p>
           {isOpen ? <IoIosArrowDown /> : <IoIosArrowForward />}
         </div>
-      </div>
+      </button>
       <DropDownAnimation isOpen={isOpen}>{children}</DropDownAnimation>
     </div>
   );
-};
+}
 
 export default ContractCardBox;
