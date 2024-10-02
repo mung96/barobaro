@@ -63,11 +63,8 @@ const recentlyUploaded = [
 ];
 
 export function productListSelector(data: CardsType) {
-  let ans;
-  {
-    data === 'recentlyView' ? (ans = recentlyView) : (ans = recentlyUploaded);
-  }
-  return ans;
+  if (data === 'recentlyView') return recentlyView;
+  return recentlyUploaded;
 }
 
 const productAll = 'ALL';
