@@ -9,11 +9,13 @@ function useSearchModel(): SearchHookType {
     setSearch(value);
   };
   const goSearch = () => {
-    return search.length !== 0
-      ? router.push(
-          `/search/category/all?product=${encodeURIComponent(search)}`,
-        )
-      : null;
+    if (search.length !== 0) {
+      const queryParams = new URLSearchParams({
+        category: 'all',
+        product: search,
+      });
+      router.push(`/search?${queryParams.toString()}`);
+    }
   };
   return {
     search,
