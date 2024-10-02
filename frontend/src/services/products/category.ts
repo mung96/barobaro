@@ -1,4 +1,4 @@
-export const categoryNameList = {
+const categoryNameList = {
   all: '전체',
   lightstick: '응원봉',
   smartphone: '스마트폰',
@@ -7,3 +7,5 @@ export const categoryNameList = {
   cameralens: '카메라렌즈',
   etc: '기타',
 };
+
+export default categoryNameList;

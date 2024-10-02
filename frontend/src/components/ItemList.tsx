@@ -114,12 +114,12 @@ export default function ItemList({ data }: { data: string }) {
                     <ContractIcon />
                     <p className="text-[10px] text-gray-600">계약서보기</p>
                   </button>
-                  <div className="flex flex-1"></div>
+                  <div className="flex flex-1" />
                   <div className="flex flex-row mr-4 mt-4 items-center">
                     <div className="mx-1">
                       <HeartIcon fill="none" />
                     </div>
-                    {/*TODO : 나중에 좋아요 목록 받고, 해당 값을 하단에 입력*/}
+                    {/* TODO : 나중에 좋아요 목록 받고, 해당 값을 하단에 입력 */}
                     <p className="text-[12px] text-gray-200 mt-[1px]">3</p>
                   </div>
                 </div>
