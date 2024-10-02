@@ -58,9 +58,8 @@ public enum SuccessCode {
     PROFILE_DETAILS_OK(OK.value(), "프로필 조회에 성공했습니다."),
     PROFILE_MODIFIED(OK.value(), "프로필 수정에 성공했습니다."),
 
-
-
     //지역 설정
+    LOCATION_SETTING_OK(OK.value(), "지역 설정에 성공했습니다."),
 
     //회원가입 및 로그인
     MEMBER_CREATED(CREATED.value(), "회원 가입에 성공했습니다."),
