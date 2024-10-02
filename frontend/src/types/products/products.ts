@@ -1,5 +1,3 @@
-import { SetStateAction } from 'react';
-
 // 빌린 것, 빌려준 것
 export type ItemListType = {
   productId: number;
@@ -12,7 +10,7 @@ export type ItemListType = {
 }[];
 
 // 최근 본 것들 목록 (위의 타입과 다른 점 : productStatus냐 isWished냐)
-export type currentList = {
+export type CurrentList = {
   productId: number;
   productMainImage: string;
   title: string;
