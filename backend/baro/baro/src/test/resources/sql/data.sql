@@ -17,7 +17,7 @@ values (123, 'ssafy123@email.com', 'ssafy123', 'image 123', '주소',
 insert into product (product_id, member_id, title, content, start_date,
                      end_date, rental_fee, wish_count, category, product_status,
                      place, latitude, longitude, return_address,
-                     created_at, last_modified_at, region_id, region_nm)
+                     created_at, last_modified_at, location_id, dong)
 values (20000, 20000, '대여할 사람', '대여하라고', '2024-08-27'::date,
         '2024-09-27'::date, 10000, 1, 'ETC', 'AVAILABLE',
         '우리집', 1.0, 1.0, '우리집',
