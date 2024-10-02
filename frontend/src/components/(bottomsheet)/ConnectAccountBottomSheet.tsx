@@ -17,6 +17,7 @@ export default function BottomSheet({
   height = '100%',
 }: BottomSheetProps) {
   const [startY, setStartY] = useState<number | null>(null);
+
   const handleTouchStart = (e: React.TouchEvent) => {
     setStartY(e.touches[0].clientY);
   };

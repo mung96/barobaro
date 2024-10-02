@@ -10,7 +10,7 @@ import 'swiper/css/pagination';
 import { AccountListRequest } from '@/types/apis/accountResquest';
 import AccountCard from '@/components/(bottomsheet)/AccountCard';
 
-export default function () {
+export default function AccountCarousel() {
   const accounts: AccountListRequest = [
     {
       bank: '국민은행',
