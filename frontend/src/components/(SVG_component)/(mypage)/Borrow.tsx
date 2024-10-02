@@ -1,6 +1,12 @@
 export default function BorrowSVG() {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <path
         d="M10.3333 3.3335C11.2696 3.3335 11.7378 3.3335 12.0741 3.5582C12.2197 3.65548 12.3447 3.78048 12.442 3.92607C12.6667 4.26237 12.6667 4.73052 12.6667 5.66683V12.0002C12.6667 13.2572 12.6667 13.8858 12.2761 14.2763C11.8856 14.6668 11.2571 14.6668 9.99999 14.6668H5.99999C4.74292 14.6668 4.11438 14.6668 3.72385 14.2763C3.33333 13.8858 3.33333 13.2572 3.33333 12.0002V5.66683C3.33333 4.73052 3.33333 4.26237 3.55804 3.92607C3.65531 3.78048 3.78031 3.65548 3.9259 3.5582C4.2622 3.3335 4.73035 3.3335 5.66666 3.3335"
         stroke="#33373F"
@@ -11,9 +17,18 @@ export default function BorrowSVG() {
         stroke="#33373F"
         strokeWidth="0.5"
       />
-      <path d="M6 8L10 8" stroke="#33373F" strokeWidth="0.5" strokeLinecap="round" />
-      <path d="M6 10.6665L8.66667 10.6665" stroke="#33373F" strokeWidth="0.5" strokeLinecap="round" />
+      <path
+        d="M6 8L10 8"
+        stroke="#33373F"
+        strokeWidth="0.5"
+        strokeLinecap="round"
+      />
+      <path
+        d="M6 10.6665L8.66667 10.6665"
+        stroke="#33373F"
+        strokeWidth="0.5"
+        strokeLinecap="round"
+      />
     </svg>
-
   );
 }

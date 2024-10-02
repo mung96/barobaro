@@ -1,23 +1,24 @@
-type ProcessButtonParam = {
-  hasContract: boolean; // 계약서가 있는 거래인가
-  process: number;
-  isOwner: boolean; // 소유자: true, 대여자: false
-};
-
+import { FC } from 'react';
 import Clipboard from '@/components/(SVG_component)/(message)/Clipboard';
 import AddMessage from '@/components/(SVG_component)/(message)/AddMessage';
 import Checked from '@/components/(SVG_component)/(message)/(chat)/Checked';
 import OpenedBox from '@/components/(SVG_component)/(message)/(chat)/OpenedBox';
 import UploadVideo from '@/components/(SVG_component)/(message)/(chat)/UploadVideo';
 
-import PROCESSTYPES from './ProcessTypes';
 import Money from '@/components/(SVG_component)/(message)/(chat)/Money';
 import useProcessButtonEventModal from '@/hooks/message/chat/useProcessButtonEventModal';
+import PROCESSTYPES from './ProcessTypes';
+
+type ProcessButtonParam = {
+  hasContract: boolean; // 계약서가 있는 거래인가
+  process: number;
+  isOwner: boolean; // 소유자: true, 대여자: false
+};
 
 const buttonStyle: string =
   'bg-gray-400 pl-[2vh] pr-[2vh] pt-[0.4vh] pb-[0.4vh] rounded-lg flex items-center active:bg-gray-500 disabled:bg-gray-500';
 
-const ProcessButton: React.FC<ProcessButtonParam> = ({
+const ProcessButton: FC<ProcessButtonParam> = ({
   process,
   isOwner,
   hasContract,

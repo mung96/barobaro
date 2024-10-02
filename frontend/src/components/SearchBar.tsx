@@ -1,10 +1,10 @@
 'use client';
 
 import SearchEnterSVG from '@/components/(SVG_component)/SearchEnter';
-import { useSearchModel } from '@/hooks/products/useSearchModel';
+import useSearchModel from '@/hooks/products/useSearchModel';
 
 export default function SearchBar() {
-  const { search, handleSearch, goSearch } = useSearchModel();
+  const { handleSearch, goSearch } = useSearchModel();
   return (
     <section className="flex justify-center">
       <div className="flex flex-row h-12 w-[90%] items-center justify-between rounded-[52px] shadow-xl bg-white">

@@ -27,8 +27,8 @@ export default function ChatWindow({ client }: ChatWindowParam) {
               onKeyDown={handleEnterPress}
             />
             <button
+              type="button"
               onClick={sendChat}
-              role="presentation"
               className="w-2/12 focus:outline-none"
               disabled={!chatValue}
             >

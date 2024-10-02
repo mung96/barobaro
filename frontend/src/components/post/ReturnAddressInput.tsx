@@ -1,4 +1,4 @@
-import DropDownAnimation from '@/components/post/DropDownAnimation';
+import DropDownAnimation from '@/components/shared/DropDownAnimation';
 import SearchLocationBar from '@/components/post/SearchLocationBar';
 import Input from '@/components/shared/Input';
 import { useState } from 'react';
