@@ -1,15 +1,16 @@
 // import Swiper core and required modules
 import { Navigation, Pagination, A11y } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { convertAccountColor } from '@/services/account/accountcolor';
+import { useState } from 'react';
 
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { AccountListRequest } from '@/types/apis/accountResquest';
+import AccountCard from '@/components/(bottomsheet)/AccountCard';
 
-export default () => {
+export default function () {
   const accounts: AccountListRequest = [
     {
       bank: '국민은행',
@@ -30,6 +31,12 @@ export default () => {
       main: false,
     },
   ];
+  const [selectedAccount, setSelectedAccount] = useState<number | null>(null);
+  const handleAccountSelect = (accountId: number) => {
+    if (accountId === selectedAccount) setSelectedAccount(null);
+    else setSelectedAccount(accountId);
+  };
+
   return (
     <Swiper
       // install Swiper modules
@@ -37,7 +44,7 @@ export default () => {
       spaceBetween={50}
       slidesPerView={1}
       // navigation
-      centeredSlides={true}
+      centeredSlides
       pagination={{ clickable: true }}
       onSwiper={(swiper) => console.log(swiper)}
       onSlideChange={() => console.log('slide change')}
@@ -45,12 +52,15 @@ export default () => {
       {accounts.map((account) => (
         <SwiperSlide key={account.accountId}>
           <div
-            className="w-[300px] h-[200px] mx-auto rounded-[8px]"
-            style={{ backgroundColor: convertAccountColor(account) }}
+            role="none"
+            onClick={() => handleAccountSelect(account.accountId)}
           >
-            <p>Bank: {account.bank}</p>
-            <p>Account Number: {account.accountNumber}</p>
-            <p>Main Account: {account.main ? 'Yes' : 'No'}</p>
+            <AccountCard
+              bank={account.bank}
+              accountNumber={account.accountNumber}
+              main={account.main}
+              isSelected={account.accountId === selectedAccount}
+            />
           </div>
         </SwiperSlide>
       ))}
@@ -61,4 +71,4 @@ export default () => {
       </SwiperSlide>
     </Swiper>
   );
-};
+}

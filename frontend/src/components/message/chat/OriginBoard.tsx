@@ -31,7 +31,7 @@ export default function OriginBoard() {
           <ProcessButton
             process={ProcessTypes.RECEIVED_DIRECT}
             isOwner={false}
-            hasContract={true}
+            hasContract
           />
         </div>
       </div>

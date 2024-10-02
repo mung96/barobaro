@@ -7,7 +7,7 @@ enum PasswordChangeStep {
   CONFIRMNEW,
 }
 
-export function usePasswordChange(
+export default function usePasswordChange(
   needNewPassword: boolean,
   realPassword: string,
 ) {
@@ -55,6 +55,7 @@ export function usePasswordChange(
           );
         }
         break;
+      default:
     }
     setInputPassword('');
   }, [inputPassword, newPassword, realPassword, step, needNewPassword, router]);

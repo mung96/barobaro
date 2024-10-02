@@ -10,14 +10,14 @@ const ModalClose = () => {
       <path
         d="M18 6L6 18"
         stroke="#222222"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M6 6L18 18"
         stroke="#222222"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );

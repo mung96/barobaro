@@ -1,12 +1,18 @@
 import React from 'react';
 
 type Props = {
-  fill : string
+  fill: string;
 };
 
-function PostButton({ fill } : Props) {
+function PostButton({ fill }: Props) {
   return (
-    <svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      width="23"
+      height="23"
+      viewBox="0 0 23 23"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <g clipPath="url(#clip0_176_1231)">
         <path
           fillRule="evenodd"

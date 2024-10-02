@@ -1,7 +1,5 @@
-import AttatchImage from '@/components/(SVG_component)/(message)/(chat)/AttatchImage';
-import SendButton from '@/components/(SVG_component)/(message)/(chat)/SendButton';
+import React, { ChangeEvent, useRef, useState } from 'react';
 import webSocketClient from '@/utils/webSocketClient';
-import { ChangeEvent, useRef, useState } from 'react';
 import MessageFormType from '@/components/message/chat/MessageFormType';
 import currentTime from '@/utils/currentTime';
 

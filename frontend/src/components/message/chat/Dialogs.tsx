@@ -1,11 +1,12 @@
 'use client';
 
-import Message from './Message';
-import MessageFormType from './MessageFormType';
 import currentTime from '@/utils/currentTime';
 import useChatDialogsModel from '@/hooks/message/chat/useChatDialogsModel';
+
+import Message from './Message';
+import MessageFormType from './MessageFormType';
 import UserNickname from './UserNickname';
-import profileImg from '../../../../public/tempdata/cat2.jpg';
+
 type DialogParams = {
   messages: MessageFormType[];
   otherNickname: string;

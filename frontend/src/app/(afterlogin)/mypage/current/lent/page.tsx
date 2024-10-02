@@ -8,7 +8,12 @@ export default function List() {
   return (
     <NavBarLayout current="mypage">
       <header>
-        <Header pageName="마이페이지" hasPrevBtn hasSearchBtn={false} hasAlertBtn />
+        <Header
+          pageName="마이페이지"
+          hasPrevBtn
+          hasSearchBtn={false}
+          hasAlertBtn
+        />
       </header>
       <main>
         <DynamicItemList data="lent" />

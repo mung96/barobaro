@@ -1,7 +1,7 @@
 'use client';
 
+import { MouseEvent, useState } from 'react';
 import colors from '@/components/colors';
-import { useState } from 'react';
 import HeartIcon from './HeartIcon';
 
 export default function LikeButton() {
@@ -9,7 +9,7 @@ export default function LikeButton() {
   const isInLikeList = false;
   const [isClicked, setClicked] = useState(isInLikeList);
   const heartFillColor = isClicked ? colors.blue[200] : 'none';
-  const handleClick = (event:React.MouseEvent<HTMLElement, MouseEvent>) => {
+  const handleClick = (event: MouseEvent<HTMLElement>) => {
     event.stopPropagation();
     setClicked(!isClicked);
   };
