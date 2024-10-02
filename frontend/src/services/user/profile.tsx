@@ -1,4 +1,4 @@
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
 // import { UserProfile } from '@/types/user/userData';
 
 export function signnUp() {
@@ -7,7 +7,7 @@ export function signnUp() {
 }
 
 export function updateProfile() {
-  const router = useRouter();
+  // const router = useRouter();
   console.log('updateProfile');
-  router.replace('/mypage');
+  // router.replace('/mypage');
 }

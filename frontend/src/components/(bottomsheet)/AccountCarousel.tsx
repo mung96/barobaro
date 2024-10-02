@@ -7,7 +7,7 @@ import { useState } from 'react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import { Account, AccountListRequest } from '@/types/apis/accountResquest';
+import { AccountListRequest } from '@/types/apis/accountResquest';
 import AccountCard from '@/components/(bottomsheet)/AccountCard';
 
 export default function () {
@@ -51,7 +51,10 @@ export default function () {
     >
       {accounts.map((account) => (
         <SwiperSlide key={account.accountId}>
-          <div onClick={() => handleAccountSelect(account.accountId)}>
+          <div
+            role="none"
+            onClick={() => handleAccountSelect(account.accountId)}
+          >
             <AccountCard
               bank={account.bank}
               accountNumber={account.accountNumber}
