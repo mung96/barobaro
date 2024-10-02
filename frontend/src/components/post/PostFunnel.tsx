@@ -1,6 +1,7 @@
 'use client';
 
 import { useFunnel } from '@use-funnel/browser';
+import { useState } from 'react';
 import PostInfoInput from '@/components/post/PostInfoInput';
 import RentalInfoInput from '@/components/post/RentalInfoInput';
 import {
@@ -15,7 +16,6 @@ import {
 import PageTransition, {
   DirectionType,
 } from '@/components/shared/PageTransition';
-import { useState } from 'react';
 import StepBar from '@/components/shared/StepBar';
 import convertRegistStepToStepNumber from '@/services/post/regist';
 import ContractInfoInput from '@/components/post/ContractInfoInput';
@@ -33,7 +33,7 @@ function PostFunnel() {
   }>({
     id: 'post-regist',
     initial: {
-      step: 'ContractInfoStep',
+      step: 'PostInfoStep',
       context: {},
     },
   });

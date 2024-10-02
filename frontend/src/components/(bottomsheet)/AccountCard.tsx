@@ -1,8 +1,8 @@
+import Image from 'next/image';
 import {
   convertAccountColor,
   convertAccountImage,
 } from '@/services/account/accountInfo';
-import Image from 'next/image';
 
 type Props = {
   bank: string;
@@ -26,7 +26,7 @@ export default function AccountCard({
         {isSelected ? 'Selected!' : null}
         <Image
           src={convertAccountImage(bank)}
-          alt={'bank'}
+          alt="bank"
           width={100}
           height={100}
         />
@@ -43,7 +43,7 @@ export default function AccountCard({
           </p>
         ) : null}
       </div>
-      {/*<p>Main Account: {main ? 'Yes' : 'NO'}</p>*/}
+      {/* <p>Main Account: {main ? 'Yes' : 'NO'}</p> */}
     </div>
   );
 }
