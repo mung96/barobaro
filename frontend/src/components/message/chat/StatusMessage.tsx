@@ -1,5 +1,7 @@
+import useStatusMessageModel from '@/hooks/message/chat/useStatusMessageModel';
 import MessageFormType from './MessageFormType';
 import MessageCommonStyles from './MessageStyles';
+import SignatureModal from '@/components/modal/SignatureModal';
 
 const StatusMessage: React.FC<MessageFormType> = ({
   body,
@@ -8,6 +10,20 @@ const StatusMessage: React.FC<MessageFormType> = ({
   isMine,
   type,
 }) => {
+  const {
+    isModalOpen,
+    openSignatureModal,
+    closeSignatureModal,
+    openContractModal,
+  } = useStatusMessageModel();
+  const buttonClickHandler = (body: string) => {
+    if (body === 'signature') {
+      openSignatureModal();
+    } else if (body === 'contract') {
+      openContractModal();
+    }
+  };
+
   return (
     <div
       className={`${MessageCommonStyles.outerDivStyle} ${isMine ? 'justify-end' : 'justify-start'}`}
@@ -78,16 +94,23 @@ const StatusMessage: React.FC<MessageFormType> = ({
 
             {isMine === false &&
               (body === 'signature' || body === 'contract') && (
-                <button
-                  type="button"
-                  className="bg-blue-100 text-white text-center rounded-md pt-[1vh] pb-[1vh] mt-[1vh] active:bg-blue-500"
-                >
-                  {body === 'signature'
-                    ? '서명하기'
-                    : body === 'contract'
-                      ? '상세보기'
-                      : ''}
-                </button>
+                <>
+                  <button
+                    type="button"
+                    className="bg-blue-100 text-white text-center rounded-md pt-[1vh] pb-[1vh] mt-[1vh] active:bg-blue-500"
+                    onClick={() => buttonClickHandler(body)}
+                  >
+                    {body === 'signature'
+                      ? '서명하기'
+                      : body === 'contract'
+                        ? '상세보기'
+                        : ''}
+                  </button>
+                  <SignatureModal
+                    isOpen={isModalOpen}
+                    onRequestClose={closeSignatureModal}
+                  />
+                </>
               )}
           </div>
         </>
