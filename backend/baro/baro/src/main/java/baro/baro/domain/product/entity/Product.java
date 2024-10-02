@@ -73,9 +73,9 @@ public class Product {
 
     private LocalDateTime lastModifiedAt;
 
-    private Long regionId;
+    private Long locationId;
 
-    private String regionNm;
+    private String dong;
 
     private Boolean isDeleted;
 }

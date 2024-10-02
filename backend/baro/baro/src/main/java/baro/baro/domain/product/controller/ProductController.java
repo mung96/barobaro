@@ -4,9 +4,12 @@ import baro.baro.domain.contract.dto.ContractConditionDto;
 import baro.baro.domain.product.dto.MyProductDto;
 import baro.baro.domain.product.dto.ProductDetails;
 import baro.baro.domain.product.dto.ProductDto;
+import baro.baro.domain.product.dto.SearchProductDto;
 import baro.baro.domain.product.dto.request.ProductAddReq;
 import baro.baro.domain.product.dto.request.ProductModifyReq;
+import baro.baro.domain.product.dto.request.SearchProductsReq;
 import baro.baro.domain.product.dto.response.MyProductListRes;
+import baro.baro.domain.product.dto.response.SearchProductRes;
 import baro.baro.domain.product.entity.ReturnType;
 import baro.baro.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +28,7 @@ import static baro.baro.domain.product.entity.ProductStatus.IN_PROGRESS;
 import static baro.baro.domain.product.entity.ReturnType.DELIVERY;
 import static baro.baro.global.formatter.DateFormatter.calculateTime;
 import static baro.baro.global.statuscode.SuccessCode.*;
+import static baro.baro.global.statuscode.SuccessCode.SEARCH_PRODUCT_OK;
 import static org.springframework.http.HttpStatus.*;
 
 @RestController
@@ -322,5 +326,32 @@ public class ProductController {
         MyProductListRes result = new MyProductListRes(products);
 
         return new ResponseEntity<>(ResponseDto.success(OWNER_PRODUCT_LIST_OK, result), OK);
+    }
+
+    @GetMapping("/search/products")
+    public ResponseEntity<?> searchProducts(@ModelAttribute SearchProductsReq searchProductsReq) {
+        List<SearchProductDto> products = new ArrayList<>();
+
+        for(int i = 0; i < 10; i++) {
+            Long id = 10000L + i;
+
+            SearchProductDto dto = SearchProductDto.builder()
+                    .productId(id)
+                    .productMainImage("대표 이미지 " + id)
+                    .title("제목 " + id)
+                    .startDate(LocalDate.of(2024, 1, 2))
+                    .endDate(LocalDate.of(2024, 5, 24))
+                    .dong("역삼동")
+                    .uploadDate(calculateTime(LocalDateTime.now()))
+                    .rentalFee(100000)
+                    .wishCount(10*i)
+                    .build();
+
+            products.add(dto);
+        }
+
+        SearchProductRes result = new SearchProductRes(products);
+
+        return new ResponseEntity<>(ResponseDto.success(SEARCH_PRODUCT_OK, result), OK);
     }
 }

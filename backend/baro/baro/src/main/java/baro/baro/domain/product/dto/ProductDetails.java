@@ -74,7 +74,7 @@ public class ProductDetails {
                 .productStatus(product.getProductStatus())
                 .title(product.getTitle())
                 .category(product.getCategory())
-                .dong(product.getRegionNm())
+                .dong(product.getDong())
                 .createdAt(calculateTime(product.getCreatedAt()))
                 .wishCount(product.getWishCount())
                 .content(product.getContent())
