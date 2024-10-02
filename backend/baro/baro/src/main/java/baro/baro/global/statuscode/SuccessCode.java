@@ -33,6 +33,7 @@ public enum SuccessCode {
     //검색
     SEARCH_LOCATION_OK(OK.value(), "지역 조회에 성공했습니다."),
     SEARCH_PRODUCT_OK(OK.value(), "상품 검색에 성공했습니다."),
+    SUGGEST_KEYWORD_LIST_OK(OK.value(), "검색어 자동완성에 성공했습니다"),
 
     //본인인증
 
