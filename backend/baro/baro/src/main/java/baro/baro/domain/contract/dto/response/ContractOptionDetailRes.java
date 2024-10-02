@@ -1,5 +1,6 @@
 package baro.baro.domain.contract.dto.response;
 
+import baro.baro.domain.contract.dto.ContractConditionDto;
 import baro.baro.domain.product.entity.ReturnType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,16 +13,10 @@ import java.util.List;
 @AllArgsConstructor
 public class ContractOptionDetailRes {
 
-    private Boolean isUsingContract;
+    private Boolean isWriteContract;
 
     private List<ReturnType> returnTypes;
 
-    private String repairVendor;
-
-    private Integer overdueCriteria;
-
-    private Integer overdueFee;
-
-    private Integer refundDeadline;
+    private ContractConditionDto contractCondition;
 
 }

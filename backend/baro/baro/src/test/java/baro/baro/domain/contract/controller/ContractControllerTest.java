@@ -1,7 +1,9 @@
 package baro.baro.domain.contract.controller;
 
+import baro.baro.domain.contract.dto.ContractConditionDto;
 import baro.baro.domain.contract.dto.ContractRequestDto;
 import baro.baro.domain.contract.dto.request.*;
+import baro.baro.domain.contract.dto.response.ContractOptionDetailRes;
 import baro.baro.domain.contract.service.ContractService;
 import baro.baro.domain.product.entity.ReturnType;
 import baro.baro.global.exception.CustomException;
@@ -29,13 +31,17 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
+import static baro.baro.domain.product.entity.ReturnType.DELIVERY;
+import static baro.baro.domain.product.entity.ReturnType.DIRECT;
 import static baro.baro.global.ResponseFieldUtils.getCommonResponseFields;
 import static baro.baro.global.statuscode.ErrorCode.*;
 import static baro.baro.global.statuscode.SuccessCode.*;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static java.lang.Boolean.TRUE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doThrow;
@@ -155,7 +161,7 @@ class ContractControllerTest {
                 ReturnType.DELIVERY
         );
         String content = objectMapper.writeValueAsString(contractRequestDto);
-        doThrow(new CustomException(CHATROOM_NOT_FOUND)).when(contractService).addContractRequest(any(),anyLong());
+        doThrow(new CustomException(CHATROOM_NOT_FOUND)).when(contractService).addContractRequest(any(), anyLong());
         //when
         ResultActions actions = mockMvc.perform(
                 post("/contracts/request")
@@ -202,6 +208,7 @@ class ContractControllerTest {
                         ))
                 );
     }
+
     @Test
     public void 계약_요청_생성_실패_참여하지_않는_채팅방() throws Exception {
         //given
@@ -212,7 +219,7 @@ class ContractControllerTest {
                 ReturnType.DELIVERY
         );
         String content = objectMapper.writeValueAsString(contractRequestDto);
-        doThrow(new CustomException(CHATROOM_NOT_ENROLLED)).when(contractService).addContractRequest(any(),anyLong());
+        doThrow(new CustomException(CHATROOM_NOT_ENROLLED)).when(contractService).addContractRequest(any(), anyLong());
         //when
         ResultActions actions = mockMvc.perform(
                 post("/contracts/request")
@@ -259,9 +266,9 @@ class ContractControllerTest {
                         ))
                 );
     }
+
     @Test
     public void 계약_요청_생성_실패_존재하지_않는_상품() throws Exception {
-        //TODO
         //given
         ContractRequestDto contractRequestDto = new ContractRequestDto(
                 1L,
@@ -270,7 +277,7 @@ class ContractControllerTest {
                 ReturnType.DELIVERY
         );
         String content = objectMapper.writeValueAsString(contractRequestDto);
-        doThrow(new CustomException(PRODUCT_NOT_FOUND)).when(contractService).addContractRequest(any(),anyLong());
+        doThrow(new CustomException(PRODUCT_NOT_FOUND)).when(contractService).addContractRequest(any(), anyLong());
         //when
         ResultActions actions = mockMvc.perform(
                 post("/contracts/request")
@@ -317,9 +324,9 @@ class ContractControllerTest {
                         ))
                 );
     }
+
     @Test
     public void 계약_요청_생성_실패_다른사람이_진행중인_계약_물품() throws Exception {
-        //TODO
         //given
         ContractRequestDto contractRequestDto = new ContractRequestDto(
                 1L,
@@ -328,7 +335,7 @@ class ContractControllerTest {
                 ReturnType.DELIVERY
         );
         String content = objectMapper.writeValueAsString(contractRequestDto);
-        doThrow(new CustomException(CONTRACT_IN_PROGRESS_BY_OTHERS)).when(contractService).addContractRequest(any(),anyLong());
+        doThrow(new CustomException(CONTRACT_IN_PROGRESS_BY_OTHERS)).when(contractService).addContractRequest(any(), anyLong());
         //when
         ResultActions actions = mockMvc.perform(
                 post("/contracts/request")
@@ -378,14 +385,17 @@ class ContractControllerTest {
 
     @Test
     public void 계약_요청_조회_성공() throws Exception {
-
         //given
         ContractRequestDetailReq contractRequestDetailReq = new ContractRequestDetailReq(
-                10000L
+                1L
         );
 
         String content = objectMapper.writeValueAsString(contractRequestDetailReq);
-
+        ContractRequestDto res = new ContractRequestDto(1L, LocalDate.now().plusDays(1),
+                LocalDate.now().plusDays(4),
+                ReturnType.DELIVERY);
+        when(contractService.findContractRequestDetail(any(), anyLong()))
+                .thenReturn(res);
         //when
         ResultActions actions = mockMvc.perform(
                 get("/contracts/request")
@@ -436,15 +446,232 @@ class ContractControllerTest {
     }
 
     @Test
-    public void 계약_조건_상세_조회_성공() throws Exception {
-
+    public void 계약_요청_조회_실패_존재하지_않는_채팅방() throws Exception {
         //given
-        ContractOptionDetailReq contractOptionDetailReq = new ContractOptionDetailReq(
-                10000L
+        ContractRequestDetailReq contractRequestDetailReq = new ContractRequestDetailReq(
+                1L
         );
 
-        String content = objectMapper.writeValueAsString(contractOptionDetailReq);
+        String content = objectMapper.writeValueAsString(contractRequestDetailReq);
+        when(contractService.findContractRequestDetail(any(), anyLong()))
+                .thenThrow(new CustomException(CHATROOM_NOT_FOUND));
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/contracts/request")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        // then
+        actions
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CHATROOM_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CHATROOM_NOT_FOUND.getMessage()))
+                .andDo(document(
+                        "계약 요청 조회 실패 - 존재하지 않는 채팅방인 경우",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("계약 요청 조회 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("채팅방 Id")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("내용 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("계약 요청 조회 Request"))
+                                .responseSchema(Schema.schema("계약 요청 조회 Response"))
+                                .build()
+                        ))
+                );
+    }
 
+    @Test
+    public void 계약_요청_조회_실패_참여하지_않는_채팅방() throws Exception {
+        //given
+        ContractRequestDetailReq contractRequestDetailReq = new ContractRequestDetailReq(
+                1L
+        );
+
+        String content = objectMapper.writeValueAsString(contractRequestDetailReq);
+        when(contractService.findContractRequestDetail(any(), anyLong()))
+                .thenThrow(new CustomException(CHATROOM_NOT_ENROLLED));
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/contracts/request")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        // then
+        actions
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CHATROOM_NOT_ENROLLED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CHATROOM_NOT_ENROLLED.getMessage()))
+                .andDo(document(
+                        "계약 요청 조회 실패 - 참여하지 않는 채팅방인 경우",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("계약 요청 조회 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("채팅방 Id")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("내용 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("계약 요청 조회 Request"))
+                                .responseSchema(Schema.schema("계약 요청 조회 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 계약_요청_조회_실패_존재하지_않는_상품() throws Exception {
+        //given
+        ContractRequestDetailReq contractRequestDetailReq = new ContractRequestDetailReq(
+                1L
+        );
+
+        String content = objectMapper.writeValueAsString(contractRequestDetailReq);
+        when(contractService.findContractRequestDetail(any(), anyLong()))
+                .thenThrow(new CustomException(PRODUCT_NOT_FOUND));
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/contracts/request")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        // then
+        actions
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(PRODUCT_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(PRODUCT_NOT_FOUND.getMessage()))
+                .andDo(document(
+                        "계약 요청 조회 실패 - 존재하지 않는 상품인 경우",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("계약 요청 조회 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("채팅방 Id")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("내용 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("계약 요청 조회 Request"))
+                                .responseSchema(Schema.schema("계약 요청 조회 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 계약_요청_조회_실패_존재하지_않는_계약_요청() throws Exception {
+        //given
+        ContractRequestDetailReq contractRequestDetailReq = new ContractRequestDetailReq(
+                1L
+        );
+
+        String content = objectMapper.writeValueAsString(contractRequestDetailReq);
+        when(contractService.findContractRequestDetail(any(), anyLong()))
+                .thenThrow(new CustomException(CONTRACT_REQUEST_NOT_FOUND));
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/contracts/request")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        // then
+        actions
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CONTRACT_REQUEST_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CONTRACT_REQUEST_NOT_FOUND.getMessage()))
+                .andDo(document(
+                        "계약 요청 조회 실패 - 계약 요청이 존재하지 않는 경우",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("계약 요청 조회 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("채팅방 Id")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("내용 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("계약 요청 조회 Request"))
+                                .responseSchema(Schema.schema("계약 요청 조회 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 계약_조건_상세_조회_성공() throws Exception {
+        //given
+        ContractOptionDetailReq contractOptionDetailReq = new ContractOptionDetailReq(
+                1L
+        );
+        List<ReturnType> returnTypes = new ArrayList<>();
+        returnTypes.add(DIRECT);
+        returnTypes.add(DELIVERY);
+        ContractConditionDto contractConditionDto = new ContractConditionDto(
+                "제조사 또는 공식 수입사의 AS 센터",
+                5, 2, 7, 7
+        );
+        ContractOptionDetailRes res = new ContractOptionDetailRes(
+                TRUE, returnTypes, contractConditionDto
+        );
+        String content = objectMapper.writeValueAsString(contractOptionDetailReq);
+        when(contractService.findContractOptionDetail(any(), anyLong()))
+                .thenReturn(res);
         //when
         ResultActions actions = mockMvc.perform(
                 get("/contracts")
@@ -476,18 +703,175 @@ class ContractControllerTest {
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
-                                                fieldWithPath("body.isUsingContract").type(BOOLEAN)
+                                                fieldWithPath("body.isWriteContract").type(BOOLEAN)
                                                         .description("전자 계약서 사용여부"),
                                                 fieldWithPath("body.returnTypes[]").type(ARRAY)
                                                         .description("물품 반납 방법"),
-                                                fieldWithPath("body.repairVendor").type(STRING)
-                                                        .description("수리 업체"),
-                                                fieldWithPath("body.overdueCriteria").type(NUMBER)
-                                                        .description("무단 연체 기준"),
-                                                fieldWithPath("body.overdueFee").type(NUMBER)
-                                                        .description("무단 연체 가격"),
-                                                fieldWithPath("body.refundDeadline").type(NUMBER)
-                                                        .description("청구 비용 기준")
+                                                fieldWithPath("body.contractCondition").type(OBJECT).optional()
+                                                        .description("계약 조건 (optional, 전자 계약서를 사용하지 않은 경우 null)"),
+                                                fieldWithPath("body.contractCondition.repairVendor").type(STRING).optional()
+                                                        .description("수리 업체 (optional)"),
+                                                fieldWithPath("body.contractCondition.overdueCriteria").type(NUMBER).optional()
+                                                        .description("무단 연체 기준 (optional)"),
+                                                fieldWithPath("body.contractCondition.overdueFee").type(NUMBER).optional()
+                                                        .description("무단 연체 가격 (optional)"),
+                                                fieldWithPath("body.contractCondition.theftCriteria").type(NUMBER).optional()
+                                                        .description("도난 기준 (optional)"),
+                                                fieldWithPath("body.contractCondition.refundDeadline").type(NUMBER).optional()
+                                                        .description("청구 비용 기준 (optional)")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("계약 조건 상세 조회 Request"))
+                                .responseSchema(Schema.schema("계약 조건 상세 조회 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 계약_조건_상세_조회_실패_존재하지_않는_채팅방() throws Exception {
+        //given
+        ContractOptionDetailReq contractOptionDetailReq = new ContractOptionDetailReq(
+                1L
+        );
+        String content = objectMapper.writeValueAsString(contractOptionDetailReq);
+        when(contractService.findContractOptionDetail(any(), anyLong()))
+                .thenThrow(new CustomException(CHATROOM_NOT_FOUND));
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/contracts")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        // then
+        actions
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CHATROOM_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CHATROOM_NOT_FOUND.getMessage()))
+                .andDo(document(
+                        "계약 조건 상세 조회 실패 - 존재하지 않는 채팅방인 경우",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("계약 조건 상세 조회 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("내용 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("계약 조건 상세 조회 Request"))
+                                .responseSchema(Schema.schema("계약 조건 상세 조회 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 계약_조건_상세_조회_실패_참여하지_않는_채팅방() throws Exception {
+        //given
+        ContractOptionDetailReq contractOptionDetailReq = new ContractOptionDetailReq(
+                1L
+        );
+        String content = objectMapper.writeValueAsString(contractOptionDetailReq);
+        when(contractService.findContractOptionDetail(any(), anyLong()))
+                .thenThrow(new CustomException(CHATROOM_NOT_ENROLLED));
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/contracts")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        // then
+        actions
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CHATROOM_NOT_ENROLLED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CHATROOM_NOT_ENROLLED.getMessage()))
+                .andDo(document(
+                        "계약 조건 상세 조회 실패 - 참여하지 않는 채팅방인 경우",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("계약 조건 상세 조회 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("내용 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("계약 조건 상세 조회 Request"))
+                                .responseSchema(Schema.schema("계약 조건 상세 조회 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 계약_조건_상세_조회_실패_존재하지_않는_상품() throws Exception {
+        //given
+        ContractOptionDetailReq contractOptionDetailReq = new ContractOptionDetailReq(
+                1L
+        );
+        String content = objectMapper.writeValueAsString(contractOptionDetailReq);
+        when(contractService.findContractOptionDetail(any(), anyLong()))
+                .thenThrow(new CustomException(PRODUCT_NOT_FOUND));
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/contracts")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        // then
+        actions
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(PRODUCT_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(PRODUCT_NOT_FOUND.getMessage()))
+                .andDo(document(
+                        "계약 조건 상세 조회 실패 - 상품이 존재하지 않는 경우",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("계약 조건 상세 조회 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("내용 없음")
                                         )
                                 )
                                 .requestSchema(Schema.schema("계약 조건 상세 조회 Request"))
