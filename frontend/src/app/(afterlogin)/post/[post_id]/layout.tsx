@@ -72,7 +72,6 @@ export default function PostDetailLayout({
       <div className="-z-0 fixed bottom-0 -z-0 max-w-[500px] w-[100%] h-[60px] bg-white flex items-center">
         <div className="flex items-center justify-center w-full">
           <div className="mx-5">
-            // TODO: API값을 받고, 좋아요 인지 아닌지 판단하는 로직 구현
             <LikeButton isWished />
           </div>
           <div className="h-[42px] w-[1px] bg-gray-500" />
