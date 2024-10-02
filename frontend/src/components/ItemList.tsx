@@ -61,6 +61,19 @@ export default function ItemList({ data }: { data: string }) {
       productStatus: 'FINISH',
     },
   ];
+  const likeList: ItemListType = [
+    {
+      productId: faker.number.int(9999),
+      productMainImage: faker.image.urlLoremFlickr(),
+      title: 'Example1 - Like!',
+      startDate: faker.date.recent().toLocaleDateString('ko-KR'),
+      endDate: faker.date.recent().toLocaleDateString('ko-KR'),
+      rentalFee: Number(
+        faker.commerce.price({ min: 1000, max: 100000, dec: 0 }),
+      ),
+      productStatus: 'FINISH',
+    },
+  ];
   let result = null;
   let title = null;
   if (data === 'borrow') {
@@ -71,6 +84,9 @@ export default function ItemList({ data }: { data: string }) {
     title = '빌려준 물품 내역';
   } else if (data === 'search') {
     result = searchList;
+    title = null;
+  } else if (data === 'like') {
+    result = likeList;
     title = null;
   }
 
