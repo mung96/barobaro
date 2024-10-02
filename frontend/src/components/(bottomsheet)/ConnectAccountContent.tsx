@@ -1,11 +1,19 @@
 import AccountCarousel from '@/components/(bottomsheet)/AccountCarousel';
 
-export default function ConnectAccountContent() {
+type Props = {
+  BottomSheetTitle: string;
+};
+
+export default function ConnectAccountContent({ BottomSheetTitle }: Props) {
   return (
     <section className="flex flex-col h-[360px]">
       <section className="mb-3">
         <div className="flex flex-row justify-center">
-          <h2 className="text-xl font-bold">주 거래계좌를 선택해주세요.</h2>
+          <h2 className="text-xl font-bold">
+            {BottomSheetTitle === 'selectMainAccount'
+              ? '주 계좌를 선택해주세요.'
+              : '결제할 수단을 선택해주세요.'}
+          </h2>
           <button type="button" className="absolute right-0 mr-3 text-blue-500">
             추가
           </button>

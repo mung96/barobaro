@@ -140,6 +140,7 @@ export default function MyPageContent() {
       <AccountBottomSheet
         isBottomSheetOpen={isBottomSheetOpen}
         closeBottomSheet={closeBottomSheet}
+        BottomSheetType="selectMainAccount"
       />
     </>
   );
