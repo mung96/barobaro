@@ -18,7 +18,7 @@ public class ContractCondition {
     @Column(name = "contract_condition_id")
     private Long id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Product product;
 
