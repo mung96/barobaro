@@ -3,6 +3,7 @@ package baro.baro.domain.product.controller;
 import baro.baro.domain.contract.dto.request.ContractConditionReq;
 import baro.baro.domain.product.dto.request.ProductAddReq;
 import baro.baro.domain.product.dto.request.ProductModifyReq;
+import baro.baro.domain.product.dto.request.SearchProductsReq;
 import baro.baro.domain.product.entity.ReturnType;
 import baro.baro.global.oauth.jwt.service.JwtService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
@@ -36,6 +37,7 @@ import static baro.baro.domain.product.entity.ReturnType.DIRECT;
 import static baro.baro.global.ResponseFieldUtils.getCommonResponseFields;
 import static baro.baro.global.statuscode.SuccessCode.*;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
+import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static com.fasterxml.jackson.databind.jsonFormatVisitors.JsonFormatTypes.*;
 import static org.mockito.Mockito.when;
@@ -600,8 +602,6 @@ class ProductControllerTest {
                                                         .description("대여 물품 대표 이미지"),
                                                 fieldWithPath("body.*[].title").type(STRING)
                                                         .description("대여 물품 제목"),
-                                                fieldWithPath("body.*[].title").type(STRING)
-                                                        .description("대여 물품 제목"),
                                                 fieldWithPath("body.*[].startDate").type(STRING)
                                                         .description("대여 시작일"),
                                                 fieldWithPath("body.*[].endDate").type(STRING)
@@ -656,8 +656,6 @@ class ProductControllerTest {
                                                         .description("대여 물품 대표 이미지"),
                                                 fieldWithPath("body.*[].title").type(STRING)
                                                         .description("대여 물품 제목"),
-                                                fieldWithPath("body.*[].title").type(STRING)
-                                                        .description("대여 물품 제목"),
                                                 fieldWithPath("body.*[].startDate").type(STRING)
                                                         .description("대여 시작일"),
                                                 fieldWithPath("body.*[].endDate").type(STRING)
@@ -667,6 +665,71 @@ class ProductControllerTest {
                                                 fieldWithPath("body.*[].productStatus").type(STRING)
                                                         .description("대여 상태")
 
+                                        )
+                                )
+                                .responseSchema(Schema.schema("빌려준 내역 리스트 조회 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 물품_검색_성공() throws Exception {
+        // given
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                get("/search/products")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .param("locationId","11010530")
+                        .param("keyword", "세븐틴")
+                        .param("category", "LIGHT_STICK")
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(SEARCH_PRODUCT_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(SEARCH_PRODUCT_OK.getMessage()))
+                .andDo(document(
+                        "물품 검색",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Product API")
+                                .summary("물품 검색 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .queryParameters(
+                                        parameterWithName("keyword").description("검색 할 단어"),
+                                        parameterWithName("category").description("카테고리"),
+                                        parameterWithName("locationId").description("지역 아이디"),
+                                        parameterWithName("lastProductId").description("마지막으로 조회한 물품 Id(Optional)").optional()
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body.products[].productId").type(NUMBER)
+                                                        .description("대여 물품 아이디"),
+                                                fieldWithPath("body.products[].productMainImage").type(STRING)
+                                                        .description("대여 물품 대표 이미지"),
+                                                fieldWithPath("body.products[].title").type(STRING)
+                                                        .description("대여 물품 제목"),
+                                                fieldWithPath("body.products[].startDate").type(STRING)
+                                                        .description("대여 시작일"),
+                                                fieldWithPath("body.products[].endDate").type(STRING)
+                                                        .description("대여 마감일"),
+                                                fieldWithPath("body.products[].dong").type(STRING)
+                                                        .description("거래 희망 동 정보"),
+                                                fieldWithPath("body.products[].uploadDate").type(STRING)
+                                                        .description("게시글 작성일"),
+                                                fieldWithPath("body.products[].rentalFee").type(NUMBER)
+                                                        .description("대여비"),
+                                                fieldWithPath("body.products[].wishCount").type(NUMBER)
+                                                        .description("찜한 사람 수")
                                         )
                                 )
                                 .responseSchema(Schema.schema("빌려준 내역 리스트 조회 Response"))
