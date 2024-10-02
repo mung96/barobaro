@@ -11,9 +11,10 @@ import Etc from '@/components/(SVG_component)/Etc';
 type Props = {
   type: string;
   selected: boolean;
+  searchData: string;
 };
 
-export default function CategoryCard({ type, selected }: Props) {
+export default function CategoryCard({ type, selected, searchData }: Props) {
   const btnList = {
     all: null,
     lightstick: (
@@ -65,18 +66,27 @@ export default function CategoryCard({ type, selected }: Props) {
   };
   const title = categoryList[type as keyof typeof categoryList];
   const router = useRouter();
-  const handleClick = (target: string) => {
-    // console.log(typeof target)
-    router.replace(`/search/category/${target}`);
+  const handleClick = () => {
+    if (!selected) {
+      const queryParams = new URLSearchParams({
+        category: type,
+        product: searchData,
+      });
+      router.push(`/search?${queryParams.toString()}`);
+    }
   };
 
   return (
     <button
       type="button"
-      onClick={selected ? undefined : () => handleClick(type)}
-      className={`flex justify-evenly items-center w-[85px] h-[30px] rounded-[5px] text-[12px] ${selected === true ? 'border-[1px] border-blue-100 text-blue-100' : 'bg-gray-100 text-gray-200'}`}
+      onClick={handleClick}
+      className={`flex justify-evenly items-center w-[85px] h-[30px] rounded-[5px] text-[12px] ${
+        selected
+          ? 'border-[1px] border-blue-100 text-blue-100'
+          : 'bg-gray-100 text-gray-200'
+      }`}
     >
-      {btn !== null ? <span>{btn}</span> : null}
+      {btn !== null && <span>{btn}</span>}
       <span>{title}</span>
     </button>
   );
