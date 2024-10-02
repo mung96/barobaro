@@ -1,13 +1,14 @@
 // import Swiper core and required modules
 import { Navigation, Pagination, A11y } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { convertAccountColor } from '@/services/account/accountcolor';
+import { useState } from 'react';
 
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import { AccountListRequest } from '@/types/apis/accountResquest';
+import { Account, AccountListRequest } from '@/types/apis/accountResquest';
+import AccountCard from '@/components/(bottomsheet)/AccountCard';
 
 export default function () {
   const accounts: AccountListRequest = [
@@ -30,6 +31,12 @@ export default function () {
       main: false,
     },
   ];
+  const [selectedAccount, setSelectedAccount] = useState<number | null>(null);
+  const handleAccountSelect = (accountId: number) => {
+    if (accountId === selectedAccount) setSelectedAccount(null);
+    else setSelectedAccount(accountId);
+  };
+
   return (
     <Swiper
       // install Swiper modules
@@ -44,13 +51,13 @@ export default function () {
     >
       {accounts.map((account) => (
         <SwiperSlide key={account.accountId}>
-          <div
-            className="w-[300px] h-[200px] mx-auto rounded-[8px]"
-            style={{ backgroundColor: convertAccountColor(account) }}
-          >
-            <p>Bank: {account.bank}</p>
-            <p>Account Number: {account.accountNumber}</p>
-            <p>Main Account: {account.main ? 'Yes' : 'No'}</p>
+          <div onClick={() => handleAccountSelect(account.accountId)}>
+            <AccountCard
+              bank={account.bank}
+              accountNumber={account.accountNumber}
+              main={account.main}
+              isSelected={account.accountId === selectedAccount}
+            />
           </div>
         </SwiperSlide>
       ))}
