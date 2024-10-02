@@ -12,8 +12,12 @@ export default function LightStickButton() {
   const router = useRouter();
   const handleClick = (delay: number) => {
     setIsClicked(!isClicked);
+    const queryParams = new URLSearchParams({
+      category: 'lightstick',
+      product: '',
+    });
     setTimeout(() => {
-      router.push('/search/category/lightstick');
+      router.push(`/search?${queryParams.toString()}`);
     }, delay);
   };
   // console.log(backgroundColor);

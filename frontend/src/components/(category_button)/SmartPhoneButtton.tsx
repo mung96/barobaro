@@ -12,8 +12,12 @@ export default function SmartPhoneButton() {
   const router = useRouter();
   const handleClick = (delay: number) => {
     setIsClicked(!isClicked);
+    const queryParams = new URLSearchParams({
+      category: 'smartphone',
+      product: '',
+    });
     setTimeout(() => {
-      router.push('/search/category/smartphone');
+      router.push(`/search?${queryParams.toString()}`);
     }, delay);
   };
   // console.log(backgroundColor);
