@@ -1,13 +1,11 @@
 package baro.baro.domain.product.controller;
 
 import baro.baro.domain.contract.dto.ContractConditionDto;
-import baro.baro.domain.product.dto.MyProductDto;
-import baro.baro.domain.product.dto.ProductDetails;
-import baro.baro.domain.product.dto.ProductDto;
-import baro.baro.domain.product.dto.SearchProductDto;
+import baro.baro.domain.product.dto.*;
 import baro.baro.domain.product.dto.request.ProductAddReq;
 import baro.baro.domain.product.dto.request.ProductModifyReq;
 import baro.baro.domain.product.dto.request.SearchProductsReq;
+import baro.baro.domain.product.dto.response.KeywordListRes;
 import baro.baro.domain.product.dto.response.MyProductListRes;
 import baro.baro.domain.product.dto.response.SearchProductRes;
 import baro.baro.domain.product.entity.ReturnType;
@@ -353,5 +351,22 @@ public class ProductController {
         SearchProductRes result = new SearchProductRes(products);
 
         return new ResponseEntity<>(ResponseDto.success(SEARCH_PRODUCT_OK, result), OK);
+    }
+
+    @GetMapping("/search/suggestions")
+    public ResponseEntity<?> keywordList(@RequestParam("keyword") String keyword) {
+        List<KeywordDto> keywords = new ArrayList<>();
+
+        for(int i = 0; i < 10; i++) {
+            KeywordDto keywordDto = KeywordDto.builder()
+                    .name("추천검색어"+i)
+                    .build();
+
+            keywords.add(keywordDto);
+        }
+
+        KeywordListRes result = new KeywordListRes(keywords);
+
+        return new ResponseEntity<>(ResponseDto.success(SUGGEST_KEYWORD_LIST_OK, result), OK);
     }
 }
