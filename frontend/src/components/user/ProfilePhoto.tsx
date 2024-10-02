@@ -1,8 +1,7 @@
 'use client';
 
-import CameraBody from '@/components/(SVG_component)/CameraBody';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import CameraBody from '@/components/(SVG_component)/CameraBody';
 import useProfilePhotoModel from '@/hooks/user/useProfilePhotoModel';
 import useProfileNicknameModel from '@/hooks/user/useProfileNicknameModel';
 import { signnUp, updateProfile } from '@/services/user/profile';
@@ -12,7 +11,6 @@ export default function ProfilePhoto({ isSignup }: { isSignup: boolean }) {
     useProfilePhotoModel();
   const { inputNickname, valid, handleNicknameChange } =
     useProfileNicknameModel();
-  const router = useRouter();
   const nextStep = () => {
     if (isSignup) {
       signnUp();
