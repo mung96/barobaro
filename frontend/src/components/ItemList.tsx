@@ -6,6 +6,7 @@ import CalendarSVG from '@/components/(SVG_component)/Calendar';
 import ContractIcon from '@/components/(SVG_component)/(mypage)/Contract';
 import { ItemListType } from '@/types/products/products';
 import MeatBallsButton from '@/components/(SVG_component)/(mypage)/MeatBallsButton';
+import HeartIcon from '@/components/(SVG_component)/HeartIcon';
 
 export default function ItemList({ data }: { data: string }) {
   // 주어진 data에 맞게 List를 받고, 이를 하단의 return 에 맞춰 들어가도록 해야함.
@@ -47,6 +48,19 @@ export default function ItemList({ data }: { data: string }) {
       productStatus: 'FINISH',
     },
   ];
+  const searchList: ItemListType = [
+    {
+      productId: faker.number.int(9999),
+      productMainImage: faker.image.urlLoremFlickr(),
+      title: 'Example1 - Search',
+      startDate: faker.date.recent().toLocaleDateString('ko-KR'),
+      endDate: faker.date.recent().toLocaleDateString('ko-KR'),
+      rentalFee: Number(
+        faker.commerce.price({ min: 1000, max: 100000, dec: 0 }),
+      ),
+      productStatus: 'FINISH',
+    },
+  ];
   let result = null;
   let title = null;
   if (data === 'borrow') {
@@ -55,6 +69,9 @@ export default function ItemList({ data }: { data: string }) {
   } else if (data === 'lent') {
     result = lentList;
     title = '빌려준 물품 내역';
+  } else if (data === 'search') {
+    result = searchList;
+    title = null;
   }
 
   return (
@@ -89,13 +106,23 @@ export default function ItemList({ data }: { data: string }) {
                   {item.rentalFee}
                   원/일
                 </p>
-                <button
-                  type="button"
-                  className="w-[68px] h-[22px] bg-gray-400 rounded-[3px] flex flex-row justify-center items-center"
-                >
-                  <ContractIcon />
-                  <p className="text-[10px] text-gray-600">계약서보기</p>
-                </button>
+                <div className="flex flex-row w-full">
+                  <button
+                    type="button"
+                    className="w-[68px] h-[22px] bg-gray-400 rounded-[3px] flex flex-row justify-center items-center mt-4"
+                  >
+                    <ContractIcon />
+                    <p className="text-[10px] text-gray-600">계약서보기</p>
+                  </button>
+                  <div className="flex flex-1"></div>
+                  <div className="flex flex-row mr-4 mt-4 items-center">
+                    <div className="mx-1">
+                      <HeartIcon fill="none" />
+                    </div>
+                    {/*TODO : 나중에 좋아요 목록 받고, 해당 값을 하단에 입력*/}
+                    <p className="text-[12px] text-gray-200 mt-[1px]">3</p>
+                  </div>
+                </div>
                 <MeatBallsButton data={item.id} />
               </div>
             </div>
