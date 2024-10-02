@@ -7,14 +7,14 @@ import TeleScope from '@/components/(SVG_component)/TeleScope';
 import CameraBody from '@/components/(SVG_component)/CameraBody';
 import CameraLens from '@/components/(SVG_component)/CameraLens';
 import Etc from '@/components/(SVG_component)/Etc';
+import { categoryNameList } from '@/services/products/category';
+import { CategoryCardType } from '@/types/products/products';
 
-type Props = {
-  type: string;
-  selected: boolean;
-  searchData: string;
-};
-
-export default function CategoryCard({ type, selected, searchData }: Props) {
+export default function CategoryCard({
+  type,
+  selected,
+  searchData,
+}: CategoryCardType) {
   const btnList = {
     all: null,
     lightstick: (
@@ -55,15 +55,7 @@ export default function CategoryCard({ type, selected, searchData }: Props) {
     etc: <Etc fill={selected ? '#3897F0' : '#B6BDC8'} width="15" height="15" />,
   };
   const btn = btnList[type as keyof typeof btnList];
-  const categoryList = {
-    all: '전체',
-    lightstick: '응원봉',
-    smartphone: '스마트폰',
-    telescope: '망원경',
-    camerabody: '카메라바디',
-    cameralens: '카메라렌즈',
-    etc: '기타',
-  };
+  const categoryList = categoryNameList;
   const title = categoryList[type as keyof typeof categoryList];
   const router = useRouter();
   const handleClick = () => {

@@ -36,4 +36,10 @@ export type SearchHookType = {
   handleSearch: (value: string) => void;
 };
 
+export type CategoryCardType = {
+  type: string;
+  selected: boolean;
+  searchData: string;
+};
+
 export type CardsType = 'recentlyView' | 'recentlyUploaded';
