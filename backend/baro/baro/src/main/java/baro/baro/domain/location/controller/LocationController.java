@@ -2,7 +2,10 @@ package baro.baro.domain.location.controller;
 
 import baro.baro.domain.location.dto.LocationDto;
 import baro.baro.domain.location.dto.SearchLocationDto;
+import baro.baro.domain.location.dto.request.DefaultLocationReq;
 import baro.baro.domain.location.dto.request.LocationsAddReq;
+import baro.baro.domain.location.dto.response.DefaultLocationRes;
+import baro.baro.domain.location.dto.response.MyLocationListRes;
 import baro.baro.domain.location.dto.response.LocationsAddRes;
 import baro.baro.domain.location.dto.response.SearchLocationRes;
 import baro.baro.global.dto.ResponseDto;
@@ -13,8 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static baro.baro.global.statuscode.SuccessCode.LOCATION_SETTING_OK;
-import static baro.baro.global.statuscode.SuccessCode.SEARCH_LOCATION_OK;
+import static baro.baro.global.statuscode.SuccessCode.*;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
@@ -56,5 +58,45 @@ public class LocationController {
         LocationsAddRes result = new LocationsAddRes(locations);
 
         return new ResponseEntity<>(ResponseDto.success(LOCATION_SETTING_OK, result), OK);
+    }
+
+    @GetMapping("/members/me/locations")
+    public ResponseEntity<?> LocationList() {
+        List<LocationDto> locations = new ArrayList<>();
+
+        for(int i = 0; i < 3; i++) {
+            LocationDto location = LocationDto.builder()
+                    .locationId(11010530L + (10*i))
+                    .name("서울특별시 종로구 사직동(시군동)")
+                    .dong("사직동(동만)")
+                    .isMain(i == 0)
+                    .build();
+
+            locations.add(location);
+        }
+
+        MyLocationListRes result = new MyLocationListRes(locations);
+
+        return new ResponseEntity<>(ResponseDto.success(LOCATION_LIST_OK, result), OK);
+    }
+
+    @PostMapping("/members/me/default-location")
+    public ResponseEntity<?> DefaultLocation(@RequestBody DefaultLocationReq defaultLocationReq) {
+        List<LocationDto> locations = new ArrayList<>();
+
+        for(int i = 0; i < 3; i++) {
+            LocationDto location = LocationDto.builder()
+                    .locationId(11010530L + (10*i))
+                    .name("서울특별시 종로구 사직동(시군동)")
+                    .dong("사직동(동만)")
+                    .isMain(i == 0)
+                    .build();
+
+            locations.add(location);
+        }
+
+        DefaultLocationRes result = new DefaultLocationRes(locations);
+
+        return new ResponseEntity<>(ResponseDto.success(DEFAULT_LOCATION_UPDATE_OK, result), OK);
     }
 }

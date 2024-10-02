@@ -60,6 +60,8 @@ public enum SuccessCode {
 
     //지역 설정
     LOCATION_SETTING_OK(OK.value(), "지역 설정에 성공했습니다."),
+    LOCATION_LIST_OK(OK.value(), "지역 리스트 조회에 성공했습니다."),
+    DEFAULT_LOCATION_UPDATE_OK(OK.value(), "대표 지역 변경에 성공했습니다."),
 
     //회원가입 및 로그인
     MEMBER_CREATED(CREATED.value(), "회원 가입에 성공했습니다."),
