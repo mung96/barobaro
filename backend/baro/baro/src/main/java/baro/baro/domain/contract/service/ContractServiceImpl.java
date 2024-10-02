@@ -3,8 +3,11 @@ package baro.baro.domain.contract.service;
 import baro.baro.domain.chat_room.entity.ChatRoom;
 import baro.baro.domain.chat_room.repository.ChatRoomRepository;
 import baro.baro.domain.contract.dto.ContractApplicationDto;
+import baro.baro.domain.contract.dto.ContractConditionDto;
 import baro.baro.domain.contract.dto.ContractRequestDto;
+import baro.baro.domain.contract.dto.request.ContractOptionDetailReq;
 import baro.baro.domain.contract.dto.request.ContractRequestDetailReq;
+import baro.baro.domain.contract.dto.response.ContractOptionDetailRes;
 import baro.baro.domain.contract.entity.Contract;
 import baro.baro.domain.contract.repository.ContractRepository;
 import baro.baro.domain.product.entity.Product;
@@ -80,8 +83,7 @@ public class ContractServiceImpl implements ContractService {
                 .productId(product.getId())
                 .desiredStartDate(contractRequestDto.getDesiredStartDate())
                 .desiredEndDate(contractRequestDto.getDesiredEndDate())
-                .returnType(contractRequestDto.getReturnType())
-                .build();
+                .returnType(contractRequestDto.getReturnType()).build();
         redisUtils.addListData("contract_" + product.getId(), contractApplicationDto); //거래정보);
 
         //분산락 풀기. Transaction 내부에 unlock이 있을 경우, 동시성 이슈 발생 가능.
@@ -112,12 +114,56 @@ public class ContractServiceImpl implements ContractService {
 
         //redis에서 ContractRequest 못찾을 때
         ContractApplicationDto contractApplicationDto = contractRequestList.stream()
-                .map(item->(ContractApplicationDto)item)
-                .filter(contractRequest->contractRequest.getChatRoomId().equals(contractRequestDetailReq.getChatRoomId()))
+                .map(item -> (ContractApplicationDto) item)
+                .filter(contractRequest -> contractRequest.getChatRoomId().equals(contractRequestDetailReq.getChatRoomId()))
                 .findFirst()
                 .orElseThrow(() -> new CustomException(CONTRACT_REQUEST_NOT_FOUND));
 
         return ContractRequestDto.from(contractApplicationDto);
+    }
+
+    @Transactional(readOnly = true)
+    public ContractOptionDetailRes findContractOptionDetail(ContractOptionDetailReq contractOptionDetailReq, Long memberId) {
+
+        //존재하지 않는 채팅방
+        ChatRoom chatRoom = chatRoomRepository.findById(contractOptionDetailReq.getChatRoomId())
+                .orElseThrow(() -> new CustomException(CHATROOM_NOT_FOUND));
+
+        //채팅방의 참여자가 아님
+        if (!Objects.equals(chatRoom.getRental().getId(), memberId)
+                && !Objects.equals(chatRoom.getOwner().getId(), memberId)) {
+            throw new CustomException(CHATROOM_NOT_ENROLLED);
+        }
+
+        Product product = chatRoom.getProduct();
+
+        //상품이 존재하지 않음
+        if (product == null) {
+            throw new CustomException(PRODUCT_NOT_FOUND);
+        }
+
+
+        boolean isUsingContract = product.getContractCondition() != null;
+
+        ContractOptionDetailRes contractOptionDetailRes;
+
+        if (isUsingContract) { //전자계약서 작성한 경우
+            ContractConditionDto contractConditionDto = ContractConditionDto.toDto(product.getContractCondition());
+            contractOptionDetailRes = ContractOptionDetailRes.builder()
+                    .isWriteContract(true)
+                    .returnTypes(product.getReturnTypes())
+                    .contractCondition(contractConditionDto)
+                    .build();
+
+        } else { //전자계약서 작성하지 않은 경우
+            contractOptionDetailRes = ContractOptionDetailRes.builder()
+                    .isWriteContract(false)
+                    .returnTypes(product.getReturnTypes())
+                    .contractCondition(null)
+                    .build();
+        }
+
+        return contractOptionDetailRes;
     }
 
 
