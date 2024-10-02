@@ -14,7 +14,7 @@ export default function OriginBoard() {
           {/* 이미지, p 태그 들어감 */}
           <div className="w-3/12 flex flex-row">
             <Image
-              src="/tempdata/cat5.jpg"
+              src="https://loremflickr.com/320/240"
               alt="cat"
               width={100}
               height={100}
@@ -28,7 +28,11 @@ export default function OriginBoard() {
           </div>
         </div>
         <div className="h-1/4 flex flex-row justify-start space-x-1 pt-[1.4vh] overflow-x-auto whitespace-nowrap">
-          <ProcessButton process={ProcessTypes.REQUESTED} isOwner={false} />
+          <ProcessButton
+            process={ProcessTypes.RECEIVED_DIRECT}
+            isOwner={false}
+            hasContract
+          />
         </div>
       </div>
     </div>

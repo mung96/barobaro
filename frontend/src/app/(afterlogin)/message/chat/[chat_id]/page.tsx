@@ -11,7 +11,7 @@ import useChatPageModel from '@/hooks/message/chat/useChatPageModel';
 
 export default function Chat() {
   // chatting header, scroll setting
-  const { roomName, scrollRef } = useChatPageModel();
+  const { roomName, scrollRef, otherNickname } = useChatPageModel();
   const UserId = '김말이'; // 사용자 PK
 
   // message list
@@ -37,7 +37,7 @@ export default function Chat() {
         className="flex-1 mt-[25vh] pb-[8vh] overflow-y-scroll"
         ref={scrollRef}
       >
-        <Dialogs messages={messages} />
+        <Dialogs messages={messages} otherNickname={otherNickname} />
       </div>
 
       {/* 메시지 입력창 (ChatWindow) */}
