@@ -1,8 +1,8 @@
 import Image from 'next/image';
-import CameraLensBlack from '../../../public/assets/png/camera_lens.png';
-import CameraLensWhite from '../../../public/assets/png/camera_lens_white.png';
-import CameraLensBlue from '../../../public/assets/png/camera_lens_blue.png';
-import CameraLensGray from '../../../public/assets/png/camera_lens_gray.png';
+import CameraLensBlack from '@/../public/assets/png/camera_lens.png';
+import CameraLensWhite from '@/../public/assets/png/camera_lens_white.png';
+import CameraLensBlue from '@/../public/assets/png/camera_lens_blue.png';
+import CameraLensGray from '@/../public/assets/png/camera_lens_gray.png';
 
 export default function CameraLens({
   fill,
