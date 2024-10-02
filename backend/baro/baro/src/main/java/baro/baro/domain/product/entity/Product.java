@@ -1,6 +1,7 @@
 package baro.baro.domain.product.entity;
 
 import baro.baro.domain.contract.entity.Contract;
+import baro.baro.domain.contract.entity.ContractCondition;
 import baro.baro.domain.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -33,6 +34,9 @@ public class Product {
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "product")
     private Contract contract;
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "product")
+    private ContractCondition contractCondition;
 
     private String title;
 
