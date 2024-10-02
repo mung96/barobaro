@@ -1,7 +1,5 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { faker } from '@faker-js/faker';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import LikeButton from '@/components/(SVG_component)/LikeButton';
@@ -16,6 +14,7 @@ export default function Card({ cardInfo }: { cardInfo: CurrentProduct }) {
   };
   return (
     <div>
+      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events */}
       <div
         onClick={() => cardHandler()}
         role="button"

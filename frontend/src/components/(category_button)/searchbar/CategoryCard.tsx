@@ -7,7 +7,7 @@ import TeleScope from '@/components/(SVG_component)/TeleScope';
 import CameraBody from '@/components/(SVG_component)/CameraBody';
 import CameraLens from '@/components/(SVG_component)/CameraLens';
 import Etc from '@/components/(SVG_component)/Etc';
-import { categoryNameList } from '@/services/products/category';
+import categoryNameList from '@/services/products/category';
 import { CategoryCardType } from '@/types/products/products';
 
 export default function CategoryCard({
