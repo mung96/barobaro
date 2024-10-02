@@ -1,5 +1,7 @@
 package baro.baro.domain.location.controller;
 
+import baro.baro.domain.location.dto.LocationReqDto;
+import baro.baro.domain.location.dto.request.LocationsAddReq;
 import baro.baro.global.oauth.jwt.service.JwtService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
@@ -22,9 +24,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static baro.baro.global.ResponseFieldUtils.getCommonResponseFields;
+import static baro.baro.global.statuscode.SuccessCode.LOCATION_SETTING_OK;
 import static baro.baro.global.statuscode.SuccessCode.SEARCH_LOCATION_OK;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
@@ -32,10 +36,11 @@ import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
-import static org.springframework.restdocs.payload.JsonFieldType.STRING;
+import static org.springframework.restdocs.payload.JsonFieldType.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -119,6 +124,71 @@ public class LocationControllerTest {
                                 )
                                 .requestSchema(Schema.schema("지역 검색 Request"))
                                 .responseSchema(Schema.schema("지역 검색 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 지역설정_성공() throws Exception {
+        // given
+        List<LocationReqDto> locations = new ArrayList<>();
+        locations.add(new LocationReqDto(11010540L, true));
+        locations.add(new LocationReqDto(11010550L, false));
+
+        LocationsAddReq req = new LocationsAddReq();
+        req.setLocations(locations);
+
+        String content = objectMapper.writeValueAsString(req);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/members/me/locations")
+                        .header("Authorization", jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(csrf())
+        );
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(LOCATION_SETTING_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(LOCATION_SETTING_OK.getMessage()))
+                .andDo(document(
+                        "지역 설정 성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Location API")
+                                .summary("지역 설정 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                            fieldWithPath("locations[].locationId").type(NUMBER)
+                                                    .description("지역 ID"),
+                                            fieldWithPath("locations[].isMain").type(BOOLEAN)
+                                                    .description("대표 지역 여부")
+                                            )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body.locations[].locationId").type(NUMBER)
+                                                        .description("지역 아이디"),
+                                                fieldWithPath("body.locations[].name").type(STRING)
+                                                        .description("시군동 이름"),
+                                                fieldWithPath("body.locations[].dong").type(STRING)
+                                                        .description("동 이름"),
+                                                fieldWithPath("body.locations[].isMain").type(BOOLEAN)
+                                                        .description("대표 지역 여부")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("지역 설정 Request"))
+                                .responseSchema(Schema.schema("지역 설정 Response"))
                                 .build()
                         ))
                 );
