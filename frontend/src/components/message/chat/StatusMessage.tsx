@@ -1,12 +1,28 @@
 import { FC } from 'react';
 import { neverExpected } from '@/utils/typeGuard';
 
+import useStatusMessageModel from '@/hooks/message/chat/useStatusMessageModel';
+import SignatureModal from '@/components/modal/SignatureModal';
 import MessageFormType from './MessageFormType';
 import MessageCommonStyles from './MessageStyles';
 
 type BodyType = 'contract' | 'signature' | 'finished';
 
 const StatusMessage: FC<MessageFormType> = ({ body, timestamp, isMine }) => {
+  const {
+    isModalOpen,
+    openSignatureModal,
+    closeSignatureModal,
+    openContractModal,
+  } = useStatusMessageModel();
+  const buttonClickHandler = (content: string) => {
+    if (content === 'signature') {
+      openSignatureModal();
+    } else if (content === 'contract') {
+      openContractModal();
+    }
+  };
+
   const messageBody = (bodyProp: BodyType) => {
     if (bodyProp === 'contract') {
       return (
@@ -84,13 +100,20 @@ const StatusMessage: FC<MessageFormType> = ({ body, timestamp, isMine }) => {
           )}
 
           {!isMine && (body === 'signature' || body === 'contract') && (
-            <button
-              type="button"
-              className="bg-blue-100 text-white text-center rounded-md pt-[1vh] pb-[1vh] mt-[1vh] active:bg-blue-500"
-            >
-              {body === 'signature' && '서명하기'}
-              {body === 'contract' && '상세보기'}
-            </button>
+            <>
+              <button
+                type="button"
+                className="bg-blue-100 text-white text-center rounded-md pt-[1vh] pb-[1vh] mt-[1vh] active:bg-blue-500"
+                onClick={() => buttonClickHandler(body)}
+              >
+                {body === 'signature' && '서명하기'}
+                {body === 'contract' && '상세보기'}
+              </button>
+              <SignatureModal
+                isOpen={isModalOpen}
+                onRequestClose={closeSignatureModal}
+              />
+            </>
           )}
         </div>
       </div>

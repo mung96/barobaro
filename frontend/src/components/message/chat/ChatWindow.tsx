@@ -1,40 +1,16 @@
 'use client';
 
-import { ChangeEvent, useRef, useState } from 'react';
 import AttatchImage from '@/components/(SVG_component)/(message)/(chat)/AttatchImage';
 import SendButton from '@/components/(SVG_component)/(message)/(chat)/SendButton';
 import webSocketClient from '@/utils/webSocketClient';
-import currentTime from '@/utils/currentTime';
-
-import MessageFormType from './MessageFormType';
+import useChatWindowModel from '@/hooks/message/chat/useChatWindowModel';
 
 type ChatWindowParam = {
   client: webSocketClient | null;
 };
 export default function ChatWindow({ client }: ChatWindowParam) {
-  const [chatValue, setChatValue] = useState('');
-  const messageRef = useRef<HTMLInputElement>(null);
-
-  const handleChatValue = (e: ChangeEvent<HTMLInputElement>) => {
-    setChatValue(e.target.value);
-  };
-
-  const UserId = '김말이';
-
-  const sendChat = () => {
-    const tempMsg: MessageFormType = {
-      type: 1,
-      user: UserId,
-      body: chatValue,
-      timestamp: currentTime(),
-    };
-    const destination: string = '/pub/message';
-    const msg: string = JSON.stringify(tempMsg);
-
-    if (client) client.send(destination, msg);
-    setChatValue('');
-    messageRef.current?.focus();
-  };
+  const { chatValue, messageRef, handleChatValue, sendChat, handleEnterPress } =
+    useChatWindowModel(client);
 
   return (
     <div className="box-border ">
@@ -48,6 +24,7 @@ export default function ChatWindow({ client }: ChatWindowParam) {
               onChange={handleChatValue}
               value={chatValue}
               ref={messageRef}
+              onKeyDown={handleEnterPress}
             />
             <button
               type="button"
