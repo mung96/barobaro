@@ -9,12 +9,16 @@ import baro.baro.domain.product.dto.response.KeywordListRes;
 import baro.baro.domain.product.dto.response.MyProductListRes;
 import baro.baro.domain.product.dto.response.SearchProductRes;
 import baro.baro.domain.product.entity.ReturnType;
+import baro.baro.domain.product.service.ProductService;
 import baro.baro.global.dto.ResponseDto;
+import baro.baro.global.oauth.jwt.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -32,48 +36,14 @@ import static org.springframework.http.HttpStatus.*;
 @RestController
 @RequiredArgsConstructor
 public class ProductController {
+    private final JwtService jwtService;
+    private final ProductService productService;
+
     @PostMapping("/products")
     public ResponseEntity<?> productAdd(@RequestPart(value = "dto") ProductAddReq productAddReq,
-                                        @RequestPart(value = "files") List<MultipartFile> files) {
-        List<String> images = new ArrayList<>();
-        images.add("이미지1");
-        images.add("이미지2");
-
-        ContractConditionDto contractConditionDto = ContractConditionDto.builder()
-                .repairVendor("제조사 또는 공식 수입사의 AS 센터")
-                .overdueCriteria(5)
-                .overdueFee(2)
-                .theftCriteria(7)
-                .refundDeadline(7)
-                .build();
-
-        List<ReturnType> returnTypes = new ArrayList<>();
-        returnTypes.add(DELIVERY);
-
-        ProductDetails result = ProductDetails.builder()
-                .productId(1L)
-                .writerId("ffefwsfd-sfewwertwet-3rrsefsedf")
-                .writerProfileImage("유저 image url")
-                .writerNickname("유저 닉네임")
-                .imageList(images)
-                .productStatus(IN_PROGRESS)
-                .title("제목")
-                .category(LIGHT_STICK)
-                .dong("봉천동")
-                .createdAt(calculateTime(LocalDateTime.now()))
-                .wishCount(0)
-                .content("본문내용본문내용용용")
-                .place("고척스카이돔 중앙출입문C게이트앞")
-                .latitude(37.50)
-                .longitude(126.87)
-                .isWriteContract(true)
-                .contractCondition(contractConditionDto)
-                .returnTypes(returnTypes)
-                .startDate(LocalDate.of(2024, 9, 30))
-                .endDate(LocalDate.of(2024, 10, 24))
-                .rentalFee(10000)
-                .isMine(true)
-                .build();
+                                        @RequestPart(value = "files") List<MultipartFile> files) throws IOException {
+        Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
+        ProductDetails result = productService.addProduct(productAddReq, files, memberId);
 
         return new ResponseEntity<>(ResponseDto.success(PRODUCT_CREATED, result), CREATED);
     }
