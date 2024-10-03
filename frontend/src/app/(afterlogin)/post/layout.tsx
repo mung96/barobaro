@@ -5,5 +5,5 @@ type Props = {
 };
 
 export default function PostLayout({ children }: Props) {
-  return <main className="flex flex-col items-center">{children}</main>;
+  return <main className="flex flex-col items-center ">{children}</main>;
 }
