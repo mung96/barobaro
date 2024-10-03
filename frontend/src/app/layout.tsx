@@ -36,7 +36,7 @@ export default function RootLayout({ children }: Props) {
           src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID}&libraries=services,clusterer&autoload=false`}
           strategy="beforeInteractive"
         />
-        <div className="w-full max-w-[500px] mx-auto content-center">
+        <div className="w-full max-w-[500px] mx-auto content-center ">
           {children}
         </div>
       </body>

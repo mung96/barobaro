@@ -32,7 +32,9 @@
     "react/require-default-props": "off",
     "react/function-component-definition": "off",
     "jsx-a11y/label-has-associated-control": "off",
-    "react/jsx-no-comment-textnodes" : "off"
+    "react/jsx-no-comment-textnodes" : "off",
+    "react/jsx-props-no-spreading": "off"
+    
     // "react/react-in-jsx-scope": "off",
     // "react/require-default-props": "off",
     // "import/no-extraneous-dependencies": "off",
