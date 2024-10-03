@@ -19,9 +19,9 @@ export type PostProcess =
 
 export type PostInfo = {
   title: string;
-  content: string;
+  body: string;
   category: ProductCategory;
-  files: (string | ArrayBuffer | null)[];
+  images: (string | ArrayBuffer | null)[];
 };
 
 export type RentalInfo = {

@@ -1,11 +1,14 @@
+import { Control, useWatch } from 'react-hook-form';
 import Input from '@/components/shared/Input';
+import { PostInfo } from '@/types/domains/product';
 
 type PostTitleInputProps = {
-  value: string;
-  onChange: (title: string) => void;
+  control: Control<PostInfo>;
+  onChange?: (title: string) => void;
 };
 
-const PostTitleInput = ({ value, onChange }: PostTitleInputProps) => {
+const PostTitleInput = ({ control, onChange }: PostTitleInputProps) => {
+  const title = useWatch({ control, name: 'title' });
   return (
     <div className="flex flex-col gap-1">
       <h3 className="text-xs">제목</h3>
@@ -13,7 +16,7 @@ const PostTitleInput = ({ value, onChange }: PostTitleInputProps) => {
         width="100%"
         height="32px"
         placeholder="게시글 제목을 입력해주세요"
-        value={value}
+        value={title}
         onChange={onChange}
       />
     </div>

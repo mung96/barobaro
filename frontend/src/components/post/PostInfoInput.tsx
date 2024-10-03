@@ -1,9 +1,8 @@
-import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import CategoryTagList from '@/components/post/CategoryTagList';
 import PostBody from '@/components/post/PostBody';
 import PostTitleInput from '@/components/post/PostTitleInput';
 import ProductImageList from '@/components/post/ProductImageList';
-
 import Button from '@/components/shared/Button';
 import useFileModel from '@/hooks/shared/useFileModel';
 import { PostInfo, ProductCategory } from '@/types/domains/product';
@@ -13,19 +12,24 @@ type Props = {
 };
 
 function PostInfoInput({ onNext }: Props) {
-  const [title, setTitle] = useState('');
-  const [category, setCategory] = useState<ProductCategory>('LIGHT_STICK');
-  const [body, setBody] = useState('');
   const { files, changeFile, handleDragEnd, deleteFileByIndex } =
     useFileModel();
 
+  const { getValues, control, setValue } = useForm<PostInfo>({
+    defaultValues: { title: '', body: '', category: 'LIGHT_STICK' },
+  });
   return (
     <div className="flex flex-col gap-4">
-      <PostTitleInput value={title} onChange={setTitle} />
+      <PostTitleInput
+        control={control}
+        onChange={(value) => setValue('title', value)}
+      />
 
       <CategoryTagList
-        value={category}
-        onChange={(e) => setCategory(e.target.value as ProductCategory)}
+        control={control}
+        onChange={(e) =>
+          setValue('category', e.target.value as ProductCategory)
+        }
       />
 
       <ProductImageList
@@ -37,20 +41,12 @@ function PostInfoInput({ onNext }: Props) {
         dropEnd={handleDragEnd}
       />
 
-      <PostBody value={body} onChange={setBody} />
-      <Button
-        onClick={() =>
-          onNext({
-            title,
-            content: body,
-            category,
-            files,
-          })
-        }
-        width="100%"
-        height="36px"
-      >
-        <p className="text-xs">다음</p>
+      <PostBody
+        control={control}
+        onChange={(value) => setValue('body', value)}
+      />
+      <Button onClick={() => onNext(getValues())} width="100%" height="36px">
+        <p className="text-xs text-white">다음</p>
       </Button>
     </div>
   );

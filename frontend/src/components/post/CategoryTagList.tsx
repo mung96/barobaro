@@ -1,4 +1,5 @@
 import { ChangeEvent } from 'react';
+import { Control, useWatch } from 'react-hook-form';
 import CameraBody from '@/components/(SVG_component)/CameraBody';
 import CameraLens from '@/components/(SVG_component)/CameraLens';
 import Etc from '@/components/(SVG_component)/Etc';
@@ -7,6 +8,7 @@ import SmartPhone from '@/components/(SVG_component)/SmartPhone';
 import TeleScope from '@/components/(SVG_component)/TeleScope';
 import colors from '@/components/colors';
 import Radio from '@/components/shared/Radio';
+import { PostInfo } from '@/types/domains/product';
 
 export const productCategory = [
   {
@@ -48,31 +50,36 @@ export const productCategory = [
 ];
 
 type CategoryTagListProps = {
-  value: string;
+  control: Control<PostInfo>;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   disabled?: boolean;
 };
 
-function CategoryTagList({ onChange, value, disabled }: CategoryTagListProps) {
+function CategoryTagList({
+  onChange,
+  control,
+  disabled,
+}: CategoryTagListProps) {
+  const category = useWatch({ control, name: 'category' });
   return (
     <div className="flex gap-1 flex-col">
       <p className="text-xs text-black">반납 희망 방법</p>
       <Radio.Group
         className="gap-1 flex flex-wrap"
-        value={value}
+        value={category}
         fieldSetName="category"
         onChange={onChange}
       >
-        {productCategory.map((category) => (
+        {productCategory.map((categoryItem) => (
           <Radio.Item
-            value={category.value}
+            value={categoryItem.value}
             disabled={disabled}
             className="flex items-center gap-1 rounded-2xl bg-gray-100 text-gray-100 py-1 px-4 has-[:checked]:outline has-[:checked]:outline-[2px] has-[:checked]:outline-blue-100 "
-            key={category.id}
+            key={categoryItem.id}
           >
             {/* <div className="w-3 h-3">{category.icon}</div> */}
             <p className="text-xs text-gray-200 peer-checked:text-blue-100 ">
-              {category.label}
+              {categoryItem.label}
             </p>
           </Radio.Item>
         ))}
