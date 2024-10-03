@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 import static baro.baro.global.formatter.DateFormatter.convertToDateFormat;
@@ -34,6 +36,23 @@ public class Images3Service extends S3Service {
         byte[] content = multipartFile.getBytes();
 
         return uploadFile(content, s3FileName, "image/" + extension);
+    }
+
+    // 다중 파일 업로드 메서드
+    public List<String> uploadMultipleFiles(List<MultipartFile> multipartFiles, String dirName) throws IOException {
+        if (multipartFiles == null || multipartFiles.isEmpty()) {
+            throw new CustomException(FILE_UPLOAD_FAIL);
+        }
+
+        // 결과 URL 리스트
+        List<String> uploadedUrls = new ArrayList<>();
+
+        for (MultipartFile multipartFile : multipartFiles) {
+            String uploadedUrl = upload(multipartFile, dirName);
+            uploadedUrls.add(uploadedUrl);
+        }
+
+        return uploadedUrls; // 업로드된 파일들의 S3 URL 리스트 반환
     }
 
     private void validateImageFileExtension(String extension) {

@@ -9,6 +9,8 @@ import java.util.Arrays;
 
 import static baro.baro.global.statuscode.ErrorCode.INVALID_DATE_OPTION;
 import static baro.baro.global.statuscode.ErrorCode.INVALID_RETURN_TYPE;
+import static baro.baro.global.validator.GlobalValidator.validateDateRangeOption;
+import static baro.baro.global.validator.GlobalValidator.validateReturnType;
 
 public class ContractValidator {
 
@@ -17,24 +19,4 @@ public class ContractValidator {
         validateReturnType(contractRequestDto.getReturnType());
     }
 
-    private static void validateReturnType(final ReturnType returnType) {
-        if(!isValidReturnType(returnType)) {
-            throw new CustomException(INVALID_RETURN_TYPE);
-        }
-    }
-    private static boolean isValidReturnType(final ReturnType returnType) {
-        return returnType != null && Arrays.stream(ReturnType.values())
-                .anyMatch(type -> type == returnType);
-    }
-
-    private static void validateDateRangeOption(final LocalDate startDate, final LocalDate endDate) {
-        if (notValidDate(startDate) || notValidDate(endDate) || endDate.isBefore(startDate)
-        ) {
-            throw new CustomException(INVALID_DATE_OPTION);
-        }
-    }
-
-    private static boolean notValidDate(final LocalDate date) {
-        return date == null || date.isBefore(LocalDate.now());
-    }
 }
