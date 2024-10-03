@@ -27,7 +27,7 @@ public class ProductImage {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    private String imageKeyName;
+    private String src;
 
-    private boolean main;
+    private boolean isMain;
 }

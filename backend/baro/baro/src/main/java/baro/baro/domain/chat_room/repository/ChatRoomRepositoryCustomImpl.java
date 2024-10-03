@@ -28,9 +28,9 @@ public class ChatRoomRepositoryCustomImpl implements ChatRoomRepositoryCustom {
                 .stream()
                 .map(room -> {
                     String productMainImage = queryFactory
-                            .select(productImage.imageKeyName)
+                            .select(productImage.src)
                             .from(productImage)
-                            .where(productImage.product.id.eq(room.getProduct().getId()).and(productImage.main.isTrue()))
+                            .where(productImage.product.id.eq(room.getProduct().getId()).and(productImage.isMain.isTrue()))
                             .fetchOne(); // 메인 이미지 가져오기
 
                     Member member;

@@ -78,4 +78,8 @@ public class Product {
     private String dong;
 
     private Boolean isDeleted;
+
+    public void updateContractCondition(ContractCondition contractCondition) {
+        this.contractCondition = contractCondition;
+    }
 }
