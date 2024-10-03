@@ -1,10 +1,15 @@
 package baro.baro.domain.product.controller;
 
+import baro.baro.domain.contract.dto.ContractConditionDto;
 import baro.baro.domain.contract.dto.request.ContractConditionReq;
+import baro.baro.domain.product.dto.ProductDetails;
 import baro.baro.domain.product.dto.request.ProductAddReq;
 import baro.baro.domain.product.dto.request.ProductModifyReq;
 import baro.baro.domain.product.dto.request.SearchProductsReq;
+import baro.baro.domain.product.entity.Category;
 import baro.baro.domain.product.entity.ReturnType;
+import baro.baro.domain.product.service.ProductService;
+import baro.baro.global.exception.CustomException;
 import baro.baro.global.oauth.jwt.service.JwtService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
@@ -29,17 +34,23 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import static baro.baro.domain.product.entity.Category.LIGHT_STICK;
+import static baro.baro.domain.product.entity.ProductStatus.IN_PROGRESS;
+import static baro.baro.domain.product.entity.ReturnType.DELIVERY;
 import static baro.baro.domain.product.entity.ReturnType.DIRECT;
 import static baro.baro.global.ResponseFieldUtils.getCommonResponseFields;
+import static baro.baro.global.formatter.DateFormatter.calculateTime;
+import static baro.baro.global.statuscode.ErrorCode.*;
 import static baro.baro.global.statuscode.SuccessCode.*;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static com.fasterxml.jackson.databind.jsonFormatVisitors.JsonFormatTypes.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
@@ -68,6 +79,9 @@ class ProductControllerTest {
     @MockBean
     private JwtService jwtService;
 
+    @MockBean
+    private ProductService productService;
+
     private String jwtToken;
 
     @BeforeEach
@@ -87,8 +101,9 @@ class ProductControllerTest {
     @Test
     public void 대여_물품_등록_성공() throws Exception {
         //given
-        List<ReturnType> returnTypes = new ArrayList<>();
-        returnTypes.add(DIRECT);
+        List<String> returnTypes = new ArrayList<>();
+        returnTypes.add("DIRECT");
+        returnTypes.add("DELIVERY");
 
         ContractConditionReq contractConditionReq = new ContractConditionReq(
                 "물품 이름", "물품 일련번호", "제조사 또는 공식 수입사의 AS 센터",
@@ -104,13 +119,55 @@ class ProductControllerTest {
                 returnTypes,
                 "서울특별시 강남구 테헤란로 212",
                 "본문내용본문내용용용",
-                LIGHT_STICK,
+                "LIGHT_STICK",
                 contractConditionReq);
 
         MockMultipartFile file1 = new MockMultipartFile("files", "sample1.jpg", "image/jpeg", "image/sample1.jpg".getBytes());
         MockMultipartFile file2 = new MockMultipartFile("files", "sample2.jpg", "image/jpeg", "image/sample2.jpg".getBytes());
 
         MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", objectMapper.writeValueAsBytes(productAddReq));
+
+        List<String> images = new ArrayList<>();
+        images.add("이미지1");
+        images.add("이미지2");
+
+        ContractConditionDto contractConditionDto = ContractConditionDto.builder()
+                .repairVendor("제조사 또는 공식 수입사의 AS 센터")
+                .overdueCriteria(5)
+                .overdueFee(2)
+                .theftCriteria(7)
+                .refundDeadline(7)
+                .build();
+
+        List<ReturnType> returnTypeList = new ArrayList<>();
+        returnTypeList.add(DELIVERY);
+
+        ProductDetails result = ProductDetails.builder()
+                .productId(1L)
+                .writerId("ffefwsfd-sfewwertwet-3rrsefsedf")
+                .writerProfileImage("유저 image url")
+                .writerNickname("유저 닉네임")
+                .imageList(images)
+                .productStatus(IN_PROGRESS)
+                .title("제목")
+                .category(LIGHT_STICK)
+                .dong("봉천동")
+                .createdAt(calculateTime(LocalDateTime.now()))
+                .wishCount(0)
+                .content("본문내용본문내용용용")
+                .place("고척스카이돔 중앙출입문C게이트앞")
+                .latitude(37.50)
+                .longitude(126.87)
+                .isWriteContract(true)
+                .contractCondition(contractConditionDto)
+                .returnTypes(returnTypeList)
+                .startDate(LocalDate.of(2024, 9, 30))
+                .endDate(LocalDate.of(2024, 10, 24))
+                .rentalFee(10000)
+                .isMine(true)
+                .build();
+
+        when(productService.addProduct(any(), anyList(), anyLong())).thenReturn(result);
 
         //when
         ResultActions actions = mockMvc.perform(
@@ -196,6 +253,521 @@ class ProductControllerTest {
                                                 fieldWithPath("body.isMine").type(BOOLEAN)
                                                         .description("나의 게시글 여부")
 
+                                        )
+                                )
+                                .requestSchema(Schema.schema("대여 물품 등록 Request"))
+                                .responseSchema(Schema.schema("대여 물품 등록 Response"))
+                                .build()
+                        ))
+                );
+
+    }
+
+    @Test
+    public void 대여_물품_등록_실패_현재_시간보다_이전인_대여시작일() throws Exception {
+        //given
+        List<String> returnTypes = new ArrayList<>();
+        returnTypes.add("DIRECT");
+
+        ContractConditionReq contractConditionReq = new ContractConditionReq(
+                "물품 이름", "물품 일련번호", "제조사 또는 공식 수입사의 AS 센터",
+                5, 2, 7, 7);
+
+        ProductAddReq productAddReq = new ProductAddReq("제목",
+                LocalDate.of(2024, 9, 30),
+                LocalDate.of(2024, 10, 24),
+                15000,
+                "고척스카이돔 중앙출입문C게이트앞",
+                37.50,
+                126.87,
+                returnTypes,
+                "서울특별시 강남구 테헤란로 212",
+                "본문내용본문내용용용",
+                "LIGHT_STICK",
+                contractConditionReq);
+
+        MockMultipartFile file1 = new MockMultipartFile("files", "sample1.jpg", "image/jpeg", "image/sample1.jpg".getBytes());
+        MockMultipartFile file2 = new MockMultipartFile("files", "sample2.jpg", "image/jpeg", "image/sample2.jpg".getBytes());
+
+        MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", objectMapper.writeValueAsBytes(productAddReq));
+
+        when(productService.addProduct(any(), anyList(), anyLong())).thenThrow(new CustomException(INVALID_DATE_OPTION));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                multipart("/products")
+                        .file(file1)
+                        .file(file2)
+                        .file(dto)
+                        .header("Authorization", jwtToken)
+                        .contentType("multipart/form-data")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .with(csrf())
+        );
+
+        //then
+        actions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(INVALID_DATE_OPTION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(INVALID_DATE_OPTION.getMessage()))
+                .andDo(document(
+                        "대여 물품 등록 실패 - 잘못된 날짜 범위(현재 시간보다 이전인 대여시작일)",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Product API")
+                                .summary("대여 물품 등록 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("본문 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("대여 물품 등록 Request"))
+                                .responseSchema(Schema.schema("대여 물품 등록 Response"))
+                                .build()
+                        ))
+                );
+
+    }
+
+    @Test
+    public void 대여_물품_등록_실패_현재_시간보다_이전인_대여마감일() throws Exception {
+        //given
+        List<String> returnTypes = new ArrayList<>();
+        returnTypes.add("DIRECT");
+
+        ContractConditionReq contractConditionReq = new ContractConditionReq(
+                "물품 이름", "물품 일련번호", "제조사 또는 공식 수입사의 AS 센터",
+                5, 2, 7, 7);
+
+        ProductAddReq productAddReq = new ProductAddReq("제목",
+                LocalDate.now(),
+                LocalDate.of(2024, 9, 24),
+                15000,
+                "고척스카이돔 중앙출입문C게이트앞",
+                37.50,
+                126.87,
+                returnTypes,
+                "서울특별시 강남구 테헤란로 212",
+                "본문내용본문내용용용",
+                "LIGHT_STICK",
+                contractConditionReq);
+
+        MockMultipartFile file1 = new MockMultipartFile("files", "sample1.jpg", "image/jpeg", "image/sample1.jpg".getBytes());
+        MockMultipartFile file2 = new MockMultipartFile("files", "sample2.jpg", "image/jpeg", "image/sample2.jpg".getBytes());
+
+        MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", objectMapper.writeValueAsBytes(productAddReq));
+
+        when(productService.addProduct(any(), anyList(), anyLong())).thenThrow(new CustomException(INVALID_DATE_OPTION));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                multipart("/products")
+                        .file(file1)
+                        .file(file2)
+                        .file(dto)
+                        .header("Authorization", jwtToken)
+                        .contentType("multipart/form-data")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .with(csrf())
+        );
+
+        //then
+        actions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(INVALID_DATE_OPTION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(INVALID_DATE_OPTION.getMessage()))
+                .andDo(document(
+                        "대여 물품 등록 실패 - 잘못된 날짜 범위(현재 시간보다 이전인 대여마감일)",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Product API")
+                                .summary("대여 물품 등록 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("본문 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("대여 물품 등록 Request"))
+                                .responseSchema(Schema.schema("대여 물품 등록 Response"))
+                                .build()
+                        ))
+                );
+
+    }
+
+    @Test
+    public void 대여_물품_등록_실패_대여시작일보다_빠른_대여마감일() throws Exception {
+        //given
+        List<String> returnTypes = new ArrayList<>();
+        returnTypes.add("DIRECT");
+
+        ContractConditionReq contractConditionReq = new ContractConditionReq(
+                "물품 이름", "물품 일련번호", "제조사 또는 공식 수입사의 AS 센터",
+                5, 2, 7, 7);
+
+        ProductAddReq productAddReq = new ProductAddReq("제목",
+                LocalDate.of(2024, 10, 30),
+                LocalDate.of(2024, 10, 24),
+                15000,
+                "고척스카이돔 중앙출입문C게이트앞",
+                37.50,
+                126.87,
+                returnTypes,
+                "서울특별시 강남구 테헤란로 212",
+                "본문내용본문내용용용",
+                "LIGHT_STICK",
+                contractConditionReq);
+
+        MockMultipartFile file1 = new MockMultipartFile("files", "sample1.jpg", "image/jpeg", "image/sample1.jpg".getBytes());
+        MockMultipartFile file2 = new MockMultipartFile("files", "sample2.jpg", "image/jpeg", "image/sample2.jpg".getBytes());
+
+        MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", objectMapper.writeValueAsBytes(productAddReq));
+
+        when(productService.addProduct(any(), anyList(), anyLong())).thenThrow(new CustomException(INVALID_DATE_OPTION));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                multipart("/products")
+                        .file(file1)
+                        .file(file2)
+                        .file(dto)
+                        .header("Authorization", jwtToken)
+                        .contentType("multipart/form-data")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .with(csrf())
+        );
+
+        //then
+        actions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(INVALID_DATE_OPTION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(INVALID_DATE_OPTION.getMessage()))
+                .andDo(document(
+                        "대여 물품 등록 실패 - 잘못된 날짜 범위(대여시작일보다 대여마감일이 빠른 경우)",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Product API")
+                                .summary("대여 물품 등록 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("본문 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("대여 물품 등록 Request"))
+                                .responseSchema(Schema.schema("대여 물품 등록 Response"))
+                                .build()
+                        ))
+                );
+
+    }
+
+    @Test
+    public void 대여_물품_등록_실패_유효하지_않은_리턴타입() throws Exception {
+        //given
+        List<String> returnTypes = new ArrayList<>();
+        returnTypes.add("TYPE");
+
+        ContractConditionReq contractConditionReq = new ContractConditionReq(
+                "물품 이름", "물품 일련번호", "제조사 또는 공식 수입사의 AS 센터",
+                5, 2, 7, 7);
+
+        ProductAddReq productAddReq = new ProductAddReq("제목",
+                LocalDate.of(2024, 9, 30),
+                LocalDate.of(2024, 10, 24),
+                15000,
+                "고척스카이돔 중앙출입문C게이트앞",
+                37.50,
+                126.87,
+                returnTypes,
+                "서울특별시 강남구 테헤란로 212",
+                "본문내용본문내용용용",
+                "LIGHT_STICK",
+                contractConditionReq);
+
+        MockMultipartFile file1 = new MockMultipartFile("files", "sample1.jpg", "image/jpeg", "image/sample1.jpg".getBytes());
+        MockMultipartFile file2 = new MockMultipartFile("files", "sample2.jpg", "image/jpeg", "image/sample2.jpg".getBytes());
+
+        MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", objectMapper.writeValueAsBytes(productAddReq));
+
+        when(productService.addProduct(any(), anyList(), anyLong())).thenThrow(new CustomException(INVALID_RETURN_TYPE));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                multipart("/products")
+                        .file(file1)
+                        .file(file2)
+                        .file(dto)
+                        .header("Authorization", jwtToken)
+                        .contentType("multipart/form-data")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .with(csrf())
+        );
+
+        //then
+        actions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(INVALID_RETURN_TYPE.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(INVALID_RETURN_TYPE.getMessage()))
+                .andDo(document(
+                        "대여 물품 등록 실패 - 잘못된 날짜 범위(유효하지 않은 리턴타입)",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Product API")
+                                .summary("대여 물품 등록 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("본문 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("대여 물품 등록 Request"))
+                                .responseSchema(Schema.schema("대여 물품 등록 Response"))
+                                .build()
+                        ))
+                );
+
+    }
+
+    @Test
+    public void 대여_물품_등록_실패_택배반납_선택후_주소없음() throws Exception {
+        //given
+        List<String> returnTypes = new ArrayList<>();
+        returnTypes.add("DELIVERY");
+
+        ContractConditionReq contractConditionReq = new ContractConditionReq(
+                "물품 이름", "물품 일련번호", "제조사 또는 공식 수입사의 AS 센터",
+                5, 2, 7, 7);
+
+        ProductAddReq productAddReq = new ProductAddReq("제목",
+                LocalDate.of(2024, 9, 30),
+                LocalDate.of(2024, 10, 24),
+                15000,
+                "고척스카이돔 중앙출입문C게이트앞",
+                37.50,
+                126.87,
+                returnTypes,
+                null,
+                "본문내용본문내용용용",
+                "LIGHT_STICK",
+                contractConditionReq);
+
+        MockMultipartFile file1 = new MockMultipartFile("files", "sample1.jpg", "image/jpeg", "image/sample1.jpg".getBytes());
+        MockMultipartFile file2 = new MockMultipartFile("files", "sample2.jpg", "image/jpeg", "image/sample2.jpg".getBytes());
+
+        MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", objectMapper.writeValueAsBytes(productAddReq));
+
+        when(productService.addProduct(any(), anyList(), anyLong())).thenThrow(new CustomException(RETURN_ADDRESS_REQUIRED));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                multipart("/products")
+                        .file(file1)
+                        .file(file2)
+                        .file(dto)
+                        .header("Authorization", jwtToken)
+                        .contentType("multipart/form-data")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .with(csrf())
+        );
+
+        //then
+        actions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(RETURN_ADDRESS_REQUIRED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(RETURN_ADDRESS_REQUIRED.getMessage()))
+                .andDo(document(
+                        "대여 물품 등록 실패 - 잘못된 날짜 범위(택배반납 선택 후 반납 주소가 없는 경우)",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Product API")
+                                .summary("대여 물품 등록 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("본문 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("대여 물품 등록 Request"))
+                                .responseSchema(Schema.schema("대여 물품 등록 Response"))
+                                .build()
+                        ))
+                );
+
+    }
+
+    @Test
+    public void 대여_물품_등록_실패_유효하지_않은_카테고리() throws Exception {
+        //given
+        List<String> returnTypes = new ArrayList<>();
+        returnTypes.add("DIRECT");
+
+        ContractConditionReq contractConditionReq = new ContractConditionReq(
+                "물품 이름", "물품 일련번호", "제조사 또는 공식 수입사의 AS 센터",
+                5, 2, 7, 7);
+
+        ProductAddReq productAddReq = new ProductAddReq("제목",
+                LocalDate.of(2024, 9, 30),
+                LocalDate.of(2024, 10, 24),
+                15000,
+                "고척스카이돔 중앙출입문C게이트앞",
+                37.50,
+                126.87,
+                returnTypes,
+                "서울특별시 강남구 테헤란로 212",
+                "본문내용본문내용용용",
+                "STICK",
+                contractConditionReq);
+
+        MockMultipartFile file1 = new MockMultipartFile("files", "sample1.jpg", "image/jpeg", "image/sample1.jpg".getBytes());
+        MockMultipartFile file2 = new MockMultipartFile("files", "sample2.jpg", "image/jpeg", "image/sample2.jpg".getBytes());
+
+        MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", objectMapper.writeValueAsBytes(productAddReq));
+
+        when(productService.addProduct(any(), anyList(), anyLong())).thenThrow(new CustomException(CATEGORY_NOT_FOUND));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                multipart("/products")
+                        .file(file1)
+                        .file(file2)
+                        .file(dto)
+                        .header("Authorization", jwtToken)
+                        .contentType("multipart/form-data")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .with(csrf())
+        );
+
+        //then
+        actions
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CATEGORY_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CATEGORY_NOT_FOUND.getMessage()))
+                .andDo(document(
+                        "대여 물품 등록 실패 - 잘못된 날짜 범위(유효하지 않은 카테고리)",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Product API")
+                                .summary("대여 물품 등록 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("본문 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("대여 물품 등록 Request"))
+                                .responseSchema(Schema.schema("대여 물품 등록 Response"))
+                                .build()
+                        ))
+                );
+
+    }
+
+    @Test
+    public void 대여_물품_등록_실패_사진_개수_초과() throws Exception {
+        //given
+        List<String> returnTypes = new ArrayList<>();
+        returnTypes.add("DIRECT");
+
+        ContractConditionReq contractConditionReq = new ContractConditionReq(
+                "물품 이름", "물품 일련번호", "제조사 또는 공식 수입사의 AS 센터",
+                5, 2, 7, 7);
+
+        ProductAddReq productAddReq = new ProductAddReq("제목",
+                LocalDate.of(2024, 9, 30),
+                LocalDate.of(2024, 10, 24),
+                15000,
+                "고척스카이돔 중앙출입문C게이트앞",
+                37.50,
+                126.87,
+                returnTypes,
+                "서울특별시 강남구 테헤란로 212",
+                "본문내용본문내용용용",
+                "STICK",
+                contractConditionReq);
+
+        MockMultipartFile file1 = new MockMultipartFile("files", "sample1.jpg", "image/jpeg", "image/sample1.jpg".getBytes());
+        MockMultipartFile file2 = new MockMultipartFile("files", "sample2.jpg", "image/jpeg", "image/sample2.jpg".getBytes());
+        MockMultipartFile file3 = new MockMultipartFile("files", "sample3.jpg", "image/jpeg", "image/sample3.jpg".getBytes());
+        MockMultipartFile file4 = new MockMultipartFile("files", "sample4.jpg", "image/jpeg", "image/sample4.jpg".getBytes());
+        MockMultipartFile file5 = new MockMultipartFile("files", "sample5.jpg", "image/jpeg", "image/sample5.jpg".getBytes());
+        MockMultipartFile file6 = new MockMultipartFile("files", "sample6.jpg", "image/jpeg", "image/sample6.jpg".getBytes());
+
+        MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", objectMapper.writeValueAsBytes(productAddReq));
+
+        when(productService.addProduct(any(), anyList(), anyLong())).thenThrow(new CustomException(PRODUCT_PHOTO_LIMIT));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                multipart("/products")
+                        .file(file1)
+                        .file(file2)
+                        .file(dto)
+                        .header("Authorization", jwtToken)
+                        .contentType("multipart/form-data")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .with(csrf())
+        );
+
+        //then
+        actions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(PRODUCT_PHOTO_LIMIT.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(PRODUCT_PHOTO_LIMIT.getMessage()))
+                .andDo(document(
+                        "대여 물품 등록 실패 - 잘못된 날짜 범위(사진 5개 초과한 경우)",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Product API")
+                                .summary("대여 물품 등록 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("본문 없음")
                                         )
                                 )
                                 .requestSchema(Schema.schema("대여 물품 등록 Request"))
