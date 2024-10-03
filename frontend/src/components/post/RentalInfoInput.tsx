@@ -1,12 +1,11 @@
-import { useState } from 'react';
-import { DateRange } from 'react-day-picker';
+import { useForm } from 'react-hook-form';
 import RentalDurationInput from '@/components/post/RentalDurationInput';
 import RentalFeeInput from '@/components/post/RentalFeeInput';
-import ReturnAddressInput from '@/components/post/ReturnAddressInput';
-import ReturnPlaceInput from '@/components/post/ReturnPlaceInput';
 import ReturnTypeList from '@/components/post/ReturnTypeList';
 import Button from '@/components/shared/Button';
 import { RentalInfo } from '@/types/domains/product';
+import RentalAddressInput from '@/components/post/RentalAddressInput';
+import ReturnAddressInput from '@/components/post/ReturnAddressInput';
 
 type Props = {
   onPrev: () => void;
@@ -14,45 +13,57 @@ type Props = {
 };
 
 function RentalInfoInput({ onNext, onPrev }: Props) {
-  const [ways, setWays] = useState<string[]>([]);
-  const [fee, setFee] = useState('');
-  const [range, setRange] = useState<DateRange | undefined>(undefined);
-  const [place] = useState('');
-  const [latitude] = useState(0);
-  const [longitude] = useState(0);
-  const [address] = useState('');
+  // place: string;
+  // latitude: number;
+  // longitude: number;
+
+  const { control, setValue, getValues } = useForm<RentalInfo>({
+    defaultValues: {
+      rentalDuration: { from: new Date(), to: new Date() },
+      rentalFee: 0,
+      returnTypeList: [],
+      returnAddress: {
+        placeName: '',
+        latitude: '',
+        longitude: '',
+        addressName: '',
+      },
+    },
+  });
 
   return (
     <div className="flex flex-col gap-4">
-      <RentalDurationInput selected={range} onSelect={setRange} />
-      <RentalFeeInput value={fee} onChange={setFee} />
+      <RentalDurationInput
+        control={control}
+        onSelect={(value) => setValue('rentalDuration', value)}
+      />
+      <RentalFeeInput
+        control={control}
+        onChange={(value) => setValue('rentalFee', Number(value))}
+      />
 
-      <ReturnPlaceInput />
+      <RentalAddressInput
+        control={control}
+        onChange={(value) => setValue('returnAddress', value)}
+      />
 
-      <ReturnTypeList values={ways} onChange={setWays} />
-      {ways.includes('DELIVERY') && <ReturnAddressInput />}
+      <ReturnTypeList
+        control={control}
+        onChange={(values) => setValue('returnTypeList', values)}
+      />
+      {getValues('returnTypeList').includes('DELIVERY') && (
+        <ReturnAddressInput
+          control={control}
+          onChange={(value) => setValue('rentalAddress', value)}
+        />
+      )}
 
       <div className="flex  gap-6">
         <Button onClick={onPrev} width="100%" height="36px" color="gray">
           <p className="text-xs">이전</p>
         </Button>
 
-        <Button
-          onClick={() =>
-            onNext({
-              startDate: range?.from!,
-              endDate: range?.to!,
-              rentalFee: Number(fee),
-              place,
-              latitude,
-              longitude,
-              returnTypeList: ways,
-              returnAddress: address,
-            })
-          }
-          width="100%"
-          height="36px"
-        >
+        <Button onClick={() => onNext(getValues())} width="100%" height="36px">
           <p className="text-xs">다음</p>
         </Button>
       </div>

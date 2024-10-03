@@ -1,4 +1,6 @@
+import { DateRange } from 'react-day-picker';
 import { ContractConditionRequest } from '@/types/apis/productRequest';
+import { Location } from '@/types/domains/location';
 
 export type ProductStatus = 'AVAILABLE' | 'IN_PROGRESS' | 'FINISH';
 export type ProductCategory =
@@ -25,14 +27,11 @@ export type PostInfo = {
 };
 
 export type RentalInfo = {
-  startDate: Date;
-  endDate: Date;
+  rentalDuration: DateRange;
   rentalFee: number;
-  place: string;
-  latitude: number;
-  longitude: number;
   returnTypeList: string[];
-  returnAddress: string;
+  returnAddress: Location;
+  rentalAddress: Location;
 };
 
 // 기존 타입들을 PostInfo와 RentalInfo를 조합하여 재정의
