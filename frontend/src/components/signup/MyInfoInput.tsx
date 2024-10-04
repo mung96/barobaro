@@ -1,7 +1,6 @@
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import CameraBody from '@/components/(SVG_component)/CameraBody';
-import useProfileNicknameModel from '@/hooks/user/useProfileNicknameModel';
 import { MyInfo } from '@/types/domains/signup';
 import Button from '@/components/shared/Button';
 import useFileModel from '@/hooks/shared/useFileModel';
@@ -13,9 +12,8 @@ type Props = {
 
 function MyInfoInput({ onNext }: Props) {
   const { file, changeFile } = useFileModel();
-  const { inputNickname, valid, handleNicknameChange } =
-    useProfileNicknameModel();
-  const { getValues, control, setValue } = useForm();
+  const { getValues, control, setValue } = useForm<MyInfo>();
+
   return (
     <div className="flex flex-col gap-2">
       <h2 className="text-black-100 text-[15px] font-bold">
@@ -59,16 +57,9 @@ function MyInfoInput({ onNext }: Props) {
         control={control}
         onChange={(value) => setValue('nickname', value)}
       />
-
-      <div className="fixed bottom-10 w-[100%] justify-items-center flex p-4 bg-white">
-        <Button
-          onClick={() => onNext({ nickname: '', profile: '' })}
-          width="100%"
-          height="36px"
-        >
-          <p className="text-xs">다음</p>
-        </Button>
-      </div>
+      <Button onClick={() => onNext(getValues())} width="100%" height="36px">
+        <p className="text-xs">다음</p>
+      </Button>
     </div>
   );
 }
