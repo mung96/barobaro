@@ -48,13 +48,13 @@ public class MemberServiceImpl implements MemberService {
         }
 
         if(file != null || !file.isEmpty()) {
-            String newImageUrl = images3Service.upload(file, bucketUrl + "/profile");
+            String newImageUrl = images3Service.upload(file,  "profile");
 
             signupReq.setProfileImage(newImageUrl);
         }
 
         if(signupReq.getProfileImage() == null || signupReq.getProfileImage().isEmpty()) {
-            signupReq.setProfileImage(bucketUrl + "/profile/default.png");
+            signupReq.setProfileImage(bucketUrl + "profile/default.png");
         }
 
         Member member = signupReq.toEntity(uuid);
@@ -88,9 +88,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public SignUpInfoRes signupDetails(String key) {
-        log.info("signupDetails Service함수 " + key);
         SignUpInfoRes result = (SignUpInfoRes) redisUtils.getData(key + "_signin_key");
-        log.info("redis " + (SignUpInfoRes) redisUtils.getData(key + "_signin_key"));
         redisUtils.deleteData(key + "_signin_key");
 
         return result;
