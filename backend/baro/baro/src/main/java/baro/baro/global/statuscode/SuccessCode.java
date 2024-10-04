@@ -30,6 +30,7 @@ public enum SuccessCode {
     CHATROOM_CREATED(CREATED.value(), "채팅방 생성에 성공했습니다."),
     CHATROOM_LIST_OK(OK.value(), "채팅방 리스트 조회에 성공했습니다."),
     CHATROOM_DETAILS_OK(OK.value(), "채팅방과 채팅 상세 조회에 성공했습니다."),
+    CHAT_IMAGE_UPLOAD_OK(OK.value(), "채팅 사진 업로드에 성공했습니다."),
 
     //검색
     SEARCH_LOCATION_OK(OK.value(), "지역 조회에 성공했습니다."),
