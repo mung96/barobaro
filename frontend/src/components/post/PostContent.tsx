@@ -11,7 +11,7 @@ export default function PostContent() {
 
   return (
     <main>
-      <section className="flex items-center max-w-[450px] w-[100dvw] m-2">
+      <section className="flex items-center max-w-[450px] w-[100dvw]">
         <div className="w-[48px] h-[20px] bg-gray-400 text-[10px] text-gray-300 flex justify-center items-center mx-[10px]">
           {data.valid ? null : '대여완료'}
         </div>
