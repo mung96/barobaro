@@ -2,14 +2,20 @@
 
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import Baroping from '../../../public/assets/png/baroping.png';
 
 type Props = {
   hasEmail: boolean;
   hasEditBtn: boolean;
+  writerProfileImage: string;
+  writerNickname: string;
 };
 
-export default function Profile({ hasEmail, hasEditBtn }: Props) {
+export default function Profile({
+  hasEmail,
+  hasEditBtn,
+  writerProfileImage,
+  writerNickname,
+}: Props) {
   const router = useRouter();
   const goProfileSetting = () => {
     router.push('/mypage/profile');
@@ -19,10 +25,15 @@ export default function Profile({ hasEmail, hasEditBtn }: Props) {
     <section className="flex flex-row items-center max-w-[500px] my-3 mx-8">
       <div className="flex items-center">
         <div className="border border-gray-200 rounded-full w-12 h-12 items-center relative overflow-hidden">
-          <Image src={Baroping} alt="barorping" width={47} height={47} />
+          <Image
+            src={writerProfileImage}
+            alt="barorping"
+            width={47}
+            height={47}
+          />
         </div>
         <div className="ms-3.5 flex flex-col justify-center">
-          <p className="text-[14px] font-bold">바로핑</p>
+          <p className="text-[14px] font-bold">{writerNickname}</p>
           {hasEmail && <p className="text-[12px]">barobaroping@gmail.com</p>}
         </div>
         {hasEditBtn && (
