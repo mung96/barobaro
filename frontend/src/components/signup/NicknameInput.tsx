@@ -1,10 +1,14 @@
+import { Control, useWatch } from 'react-hook-form';
 import Input from '@/components/shared/Input';
+import { MyInfo } from '@/types/domains/signup';
 
 type Props = {
+  control: Control<MyInfo>;
   onChange: (title: string) => void;
 };
 
-const NicknameInput = ({ value, onChange }: Props) => {
+const NicknameInput = ({ control, onChange }: Props) => {
+  const nickname = useWatch({ control, name: 'nickname' });
   return (
     <div className="flex flex-col gap-1">
       <h3 className="text-xs">닉네임</h3>
@@ -12,25 +16,17 @@ const NicknameInput = ({ value, onChange }: Props) => {
         width="100%"
         height="32px"
         placeholder="닉네임을 입력해주세요"
-        value={value}
+        value={nickname}
         onChange={onChange}
       />
 
-      <div className="mb-4 text-[13px]">닉네임</div>
-      <div className="w-full h-[32px] rounded-[7px] flex flex-col justify-center items-center border-gray-500 border-[1px]">
-        <input
-          className="w-full max-w-[450px]"
-          onChange={(e) => handleNicknameChange(e.target.value)}
-          value={inputNickname}
-        />
-      </div>
-      {!valid && inputNickname !== '' && (
+      {/* {!valid && inputNickname !== '' && (
         <div className="flex flex-col items-end w-full max-w-[500px]">
           <p className="text-[10px]" style={{ color: '#F7385A' }}>
             영어, 숫자, 한글만 사용하여 10자 이내의 닉네임을 입력해주세요.
           </p>
         </div>
-      )}
+      )} */}
     </div>
   );
 };
