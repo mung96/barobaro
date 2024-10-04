@@ -27,8 +27,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static baro.baro.domain.chat.document.ChatType.SYSTEM;
-import static baro.baro.domain.chat.document.ChatType.USER;
+import static baro.baro.domain.chat.document.Chat.CHAT_MESSAGE_SEQUENCE;
 import static baro.baro.global.statuscode.ErrorCode.CHATROOM_NOT_ENROLLED;
 import static baro.baro.global.statuscode.ErrorCode.CHATROOM_NOT_FOUND;
 
@@ -67,7 +66,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public ChatProcessRes processChat(Long chatRoomId, ChatProcessReq chatProcessReq, Long memberId) {
-        Long chatId = createSequence(Chat.CHAT_MESSAGE_SEQUENCE);
+        Long chatId = createSequence(CHAT_MESSAGE_SEQUENCE);
         String uuid = memberRepository.findById(memberId).get().getUuid();
 
         Chat chat = chatProcessReq.toEntity(chatId, chatRoomId, uuid, LocalDateTime.now());
