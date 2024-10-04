@@ -52,7 +52,6 @@ public class MemberController {
 
     @GetMapping("/members/signup/info")
     public ResponseEntity<?> signupInfo(@RequestParam("key") String key) {
-        log.info("signupInfo가 들어왔어요!");
         SignUpInfoRes result = memberService.signupDetails(key);
 
         return new ResponseEntity<>(ResponseDto.success(MEMBER_SIGNUP_DETAILS_OK, result), OK);
