@@ -42,7 +42,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                         .requestMatchers(
-                                "/members/signup/**","/members/login/oauth2/**",
+                                "/members/signup/**", "/members/login/oauth2/**",
                                 "/members/oauth2/code/**", "/docs/**", "/h2-console/**").permitAll()
                         .anyRequest().authenticated()
                 )
@@ -78,7 +78,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:3001", "https://j11a401.p.ssafy.io"));
+        configuration.setAllowedOrigins(List.of("http://localhost:3000", "https://j11a401.p.ssafy.io"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
