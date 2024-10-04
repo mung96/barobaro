@@ -6,6 +6,8 @@ import baro.baro.domain.product.dto.ProductDetails;
 import baro.baro.domain.product.dto.ProductDto;
 import baro.baro.domain.product.dto.request.ProductAddReq;
 import baro.baro.domain.product.dto.request.ProductModifyReq;
+import baro.baro.domain.product.dto.response.RecentlyUploadedListRes;
+import baro.baro.domain.product.dto.response.RecentlyViewListRes;
 import baro.baro.domain.product.entity.ReturnType;
 import baro.baro.domain.product.service.ProductService;
 import baro.baro.global.exception.CustomException;
@@ -956,7 +958,7 @@ class ProductControllerTest {
     @Test
     public void 최근_본_대여_물품_리스트_조회_성공() throws Exception {
         //given
-        List<ProductDto> result = new ArrayList<>();
+        List<ProductDto> products = new ArrayList<>();
 
         for(int i = 0; i < 10; i++) {
             Long id = 1000L+i;
@@ -971,7 +973,7 @@ class ProductControllerTest {
                         .rentalFee(10000+1000*i)
                         .title("제목")
                         .build();
-                result.add(dto);
+                products.add(dto);
             } else {
                 ProductDto dto = ProductDto.builder()
                         .productId(id)
@@ -982,9 +984,11 @@ class ProductControllerTest {
                         .rentalFee(10000+1000*i)
                         .title("제목")
                         .build();
-                result.add(dto);
+                products.add(dto);
             }
         }
+
+        RecentlyViewListRes result = new RecentlyViewListRes(products);
 
         when(productService.recentlyViewedProducts(anyLong())).thenReturn(result);
 
@@ -1014,19 +1018,19 @@ class ProductControllerTest {
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
-                                                fieldWithPath("body.[].productId").type(NUMBER)
+                                                fieldWithPath("body.products[].productId").type(NUMBER)
                                                         .description("대여 물품 아이디"),
-                                                fieldWithPath("body.[].productMainImage").type(STRING)
+                                                fieldWithPath("body.products[].productMainImage").type(STRING)
                                                         .description("대여 물품 대표 이미지"),
-                                                fieldWithPath("body.[].isWished").type(BOOLEAN)
+                                                fieldWithPath("body.products[].isWished").type(BOOLEAN)
                                                         .description("찜한 여부"),
-                                                fieldWithPath("body.[].startDate").type(STRING)
+                                                fieldWithPath("body.products[].startDate").type(STRING)
                                                         .description("대여 시작일"),
-                                                fieldWithPath("body.[].endDate").type(STRING)
+                                                fieldWithPath("body.products[].endDate").type(STRING)
                                                         .description("대여 마감일"),
-                                                fieldWithPath("body.[].rentalFee").type(NUMBER)
+                                                fieldWithPath("body.products[].rentalFee").type(NUMBER)
                                                         .description("대여비"),
-                                                fieldWithPath("body.[].title").type(STRING)
+                                                fieldWithPath("body.products[].title").type(STRING)
                                                         .description("게시글 제목")
 
                                         )
@@ -1041,6 +1045,39 @@ class ProductControllerTest {
     @Test
     public void 최근_올라온_대여_물품_리스트_조회_성공() throws Exception {
         //given
+        List<ProductDto> products = new ArrayList<>();
+
+        for(int i = 0; i < 10; i++) {
+            Long id = 1000L+i;
+
+            if(i % 2 == 0) {
+                ProductDto dto = ProductDto.builder()
+                        .productId(id)
+                        .productMainImage("상품 대표 이미지 url")
+                        .isWished(true)
+                        .startDate(LocalDate.of(2024, 9, 30))
+                        .endDate(LocalDate.of(2024, 10, 30))
+                        .rentalFee(10000+1000*i)
+                        .title("제목")
+                        .build();
+                products.add(dto);
+            } else {
+                ProductDto dto = ProductDto.builder()
+                        .productId(id)
+                        .productMainImage("상품 대표 이미지 url")
+                        .isWished(false)
+                        .startDate(LocalDate.of(2024, 9, 26))
+                        .endDate(LocalDate.of(2024, 10, 26))
+                        .rentalFee(10000+1000*i)
+                        .title("제목")
+                        .build();
+                products.add(dto);
+            }
+        }
+
+        RecentlyUploadedListRes result = new RecentlyUploadedListRes(products);
+
+        when(productService.recentlyUpdatedProducts(anyLong())).thenReturn(result);
 
         //when
         ResultActions actions = mockMvc.perform(
@@ -1068,21 +1105,20 @@ class ProductControllerTest {
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
-                                                fieldWithPath("body.[].productId").type(NUMBER)
+                                                fieldWithPath("body.products[].productId").type(NUMBER)
                                                         .description("대여 물품 아이디"),
-                                                fieldWithPath("body.[].productMainImage").type(STRING)
+                                                fieldWithPath("body.products[].productMainImage").type(STRING)
                                                         .description("대여 물품 대표 이미지"),
-                                                fieldWithPath("body.[].isWished").type(BOOLEAN)
+                                                fieldWithPath("body.products[].isWished").type(BOOLEAN)
                                                         .description("찜한 여부"),
-                                                fieldWithPath("body.[].startDate").type(STRING)
+                                                fieldWithPath("body.products[].startDate").type(STRING)
                                                         .description("대여 시작일"),
-                                                fieldWithPath("body.[].endDate").type(STRING)
+                                                fieldWithPath("body.products[].endDate").type(STRING)
                                                         .description("대여 마감일"),
-                                                fieldWithPath("body.[].rentalFee").type(NUMBER)
+                                                fieldWithPath("body.products[].rentalFee").type(NUMBER)
                                                         .description("대여비"),
-                                                fieldWithPath("body.[].title").type(STRING)
+                                                fieldWithPath("body.products[].title").type(STRING)
                                                         .description("게시글 제목")
-
                                         )
                                 )
                                 .requestSchema(Schema.schema("최근 올라온 대여 물품 리스트 조회 Request"))
