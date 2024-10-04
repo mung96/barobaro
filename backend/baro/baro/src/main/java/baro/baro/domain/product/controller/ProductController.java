@@ -55,37 +55,10 @@ public class ProductController {
         return new ResponseEntity<>(ResponseDto.success(PRODUCT_DETAILS_OK, result), OK);
     }
 
-    @GetMapping("products/recently-viewed")
+    @GetMapping("/products/recently-viewed")
     public ResponseEntity<?> recentlyViewedList() {
-        List<ProductDto> result = new ArrayList<>();
-
-        for(int i = 0; i < 10; i++) {
-            Long id = 1000L+i;
-
-            if(i % 2 == 0) {
-                ProductDto dto = ProductDto.builder()
-                        .productId(id)
-                        .productMainImage("상품 대표 이미지 url")
-                        .isWished(true)
-                        .startDate(LocalDate.of(2024, 9, 30))
-                        .endDate(LocalDate.of(2024, 10, 30))
-                        .rentalFee(10000+1000*i)
-                        .title("제목")
-                        .build();
-                result.add(dto);
-            } else {
-                ProductDto dto = ProductDto.builder()
-                        .productId(id)
-                        .productMainImage("상품 대표 이미지 url")
-                        .isWished(false)
-                        .startDate(LocalDate.of(2024, 9, 26))
-                        .endDate(LocalDate.of(2024, 10, 26))
-                        .rentalFee(10000+1000*i)
-                        .title("제목")
-                        .build();
-                result.add(dto);
-            }
-        }
+        Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
+        List<ProductDto> result = productService.recentlyViewedProducts(memberId);
 
         return new ResponseEntity<>(ResponseDto.success(PRODUCT_RECENTLY_VIEWED_LIST_OK, result), OK);
     }
