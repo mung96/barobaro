@@ -13,4 +13,10 @@ public interface ProductImageRepository extends JpaRepository<ProductImage, Long
             "WHERE pi.product.id = :productId " +
             "ORDER BY pi.id")
     List<String> findSrcByProductId(@Param("productId") Long productId);
+
+    @Query("SELECT pi.src " +
+            "FROM ProductImage pi " +
+            "WHERE pi.product.id = :productId " +
+            "AND pi.isMain = true")
+    String findMainImageUrl(@Param("productId") Long productId);
 }

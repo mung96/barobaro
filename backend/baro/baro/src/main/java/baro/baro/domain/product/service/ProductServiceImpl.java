@@ -8,11 +8,13 @@ import baro.baro.domain.location.repository.LocationRepository;
 import baro.baro.domain.member.entity.Member;
 import baro.baro.domain.member.repository.MemberRepository;
 import baro.baro.domain.product.dto.ProductDetails;
+import baro.baro.domain.product.dto.ProductDto;
 import baro.baro.domain.product.dto.request.ProductAddReq;
 import baro.baro.domain.product.entity.Product;
 import baro.baro.domain.product.repository.ProductRepository;
 import baro.baro.domain.product_image.dto.request.ProductImageReq;
 import baro.baro.domain.product_image.repository.ProductImageRepository;
+import baro.baro.domain.wish_list.repository.WishListRepository;
 import baro.baro.global.exception.CustomException;
 import baro.baro.global.s3.Images3Service;
 import baro.baro.global.utils.RedisUtils;
@@ -44,6 +46,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final ProductImageRepository productImageRepository;
     private final ContractConditionRepository contractConditionRepository;
+    private final WishListRepository wishListRepository;
 
     @Override
     @Transactional
@@ -113,5 +116,21 @@ public class ProductServiceImpl implements ProductService {
         redisUtils.productRecentlySave(memberId, id);
 
         return ProductDetails.toDto(product, member, imageUrls, contractConditionDto, isMine);
+    }
+
+    @Override
+    public List<ProductDto> recentlyViewedProducts(Long memberId) {
+        List<Object> productViewedList = redisUtils.getListData("product_recently_" + memberId);
+
+        return productViewedList.stream()
+                .map(id -> (Long) id)
+                .map(productId -> {
+                    Product product = productRepository.findById(productId)
+                            .orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
+                    String mainUrl = productImageRepository.findMainImageUrl(productId);
+                    Boolean isWish = wishListRepository.existsByMemberIdAndProductId(memberId, productId);
+                    return ProductDto.toDto(product, mainUrl, isWish);
+                })
+                .toList();
     }
 }
