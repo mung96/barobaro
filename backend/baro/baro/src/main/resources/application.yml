@@ -77,9 +77,9 @@ spring:
 jwt:
   secret: ${JWT_SECRET_KEY}
   access:
-    expiration: 300
+    expiration: ${ACCESS_TOKEN_EXPIRED}
   refresh:
-    expiration: 7200
+    expiration: ${REFRESH_TOKEN_EXPIRED}
 
 cloud:
   aws:

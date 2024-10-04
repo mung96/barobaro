@@ -1,6 +1,7 @@
 package baro.baro.domain.product.dto;
 
 import baro.baro.domain.product.entity.Product;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
@@ -8,6 +9,7 @@ import java.time.LocalDate;
 
 @Data
 @Builder
+@AllArgsConstructor
 public class ProductDto {
     private Long productId;
 

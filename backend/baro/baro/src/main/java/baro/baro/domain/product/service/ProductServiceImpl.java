@@ -10,6 +10,8 @@ import baro.baro.domain.member.repository.MemberRepository;
 import baro.baro.domain.product.dto.ProductDetails;
 import baro.baro.domain.product.dto.ProductDto;
 import baro.baro.domain.product.dto.request.ProductAddReq;
+import baro.baro.domain.product.dto.response.RecentlyUploadedListRes;
+import baro.baro.domain.product.dto.response.RecentlyViewListRes;
 import baro.baro.domain.product.entity.Product;
 import baro.baro.domain.product.repository.ProductRepository;
 import baro.baro.domain.product_image.dto.request.ProductImageReq;
@@ -20,11 +22,14 @@ import baro.baro.global.s3.Images3Service;
 import baro.baro.global.utils.RedisUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.IntStream;
@@ -39,6 +44,7 @@ import static baro.baro.global.validator.GlobalValidator.validateFiles;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ProductServiceImpl implements ProductService {
+    private final static int PRODUCT_SIZE = 20;
     private final RedisUtils redisUtils;
     private final Images3Service images3Service;
     private final MemberRepository memberRepository;
@@ -119,10 +125,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDto> recentlyViewedProducts(Long memberId) {
+    public RecentlyViewListRes recentlyViewedProducts(Long memberId) {
         List<Object> productViewedList = redisUtils.getListData("product_recently_" + memberId);
 
-        return productViewedList.stream()
+        List<ProductDto> products = productViewedList.stream()
                 .map(id -> (Long) id)
                 .map(productId -> {
                     Product product = productRepository.findById(productId)
@@ -132,5 +138,16 @@ public class ProductServiceImpl implements ProductService {
                     return ProductDto.toDto(product, mainUrl, isWish);
                 })
                 .toList();
+
+        return new RecentlyViewListRes(products);
+    }
+
+    @Override
+    public RecentlyUploadedListRes recentlyUpdatedProducts(Long memberId) {
+        Pageable pageable = PageRequest.of(0, PRODUCT_SIZE);
+
+        List<ProductDto> products = productRepository.findRecentlyProducts(memberId, pageable);
+
+        return new RecentlyUploadedListRes(products);
     }
 }
