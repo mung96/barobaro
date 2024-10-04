@@ -14,8 +14,12 @@ export default function CameraBodyButton() {
 
   const handleClick = (delay: number) => {
     setIsClicked(!isClicked);
+    const queryParams = new URLSearchParams({
+      category: 'camerarbody',
+      product: '',
+    });
     setTimeout(() => {
-      router.push('/search/category/camerabody');
+      router.push(`/search?${queryParams.toString()}`);
     }, delay);
   };
 
