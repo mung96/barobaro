@@ -2,10 +2,12 @@ package baro.baro.domain.product.controller;
 
 import baro.baro.domain.contract.dto.ContractConditionDto;
 import baro.baro.domain.contract.dto.request.ContractConditionReq;
+import baro.baro.domain.product.dto.MyProductDto;
 import baro.baro.domain.product.dto.ProductDetails;
 import baro.baro.domain.product.dto.ProductDto;
 import baro.baro.domain.product.dto.request.ProductAddReq;
 import baro.baro.domain.product.dto.request.ProductModifyReq;
+import baro.baro.domain.product.dto.response.MyProductListRes;
 import baro.baro.domain.product.dto.response.RecentlyUploadedListRes;
 import baro.baro.domain.product.dto.response.RecentlyViewListRes;
 import baro.baro.domain.product.entity.ReturnType;
@@ -1294,7 +1296,19 @@ class ProductControllerTest {
     @Test
     public void 빌린_내역_리스트_조회_성공() throws Exception {
         // given
-
+        List<MyProductDto> res = List.of(
+                MyProductDto.builder()
+                        .productId(1L)
+                        .productMainImage("productMainImage")
+                        .title("title")
+                        .startDate(LocalDate.of(2024, 10, 4))
+                        .endDate(LocalDate.of(2024, 10, 14))
+                        .rentalFee(10000)
+                        .productStatus(IN_PROGRESS)
+                        .build()
+        );
+        when(productService.findRentalProducts(anyLong()))
+                .thenReturn(new MyProductListRes(res));
 
         // when
         ResultActions actions = mockMvc.perform(
