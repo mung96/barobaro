@@ -1,100 +1,27 @@
 'use client';
 
-import { faker } from '@faker-js/faker';
 import Image from 'next/image';
 import CalendarSVG from '@/components/(SVG_component)/Calendar';
 import ContractIcon from '@/components/(SVG_component)/(mypage)/Contract';
-import { ItemListType } from '@/types/products/products';
 import MeatBallsButton from '@/components/(SVG_component)/(mypage)/MeatBallsButton';
 import HeartIcon from '@/components/(SVG_component)/HeartIcon';
 import Link from 'next/link';
-// import { useRouter } from 'next/navigation';
+import useCurrentStore from '@/store/useCurrentStore';
 
 export default function ItemList({ data }: { data: string }) {
   // 주어진 data에 맞게 List를 받고, 이를 하단의 return 에 맞춰 들어가도록 해야함.
   // let 으로 정의한건 추후 수정예정.
-  const borrowList: ItemListType = [
-    {
-      productId: faker.number.int(9999),
-      productMainImage: faker.image.urlLoremFlickr(),
-      title: 'Example2',
-      startDate: faker.date.recent().toLocaleDateString('ko-KR'),
-      endDate: faker.date.recent().toLocaleDateString('ko-KR'),
-      rentalFee: Number(
-        faker.commerce.price({ min: 1000, max: 100000, dec: 0 }),
-      ),
-      productStatus: 'IN_PROGRESS',
-    },
-    {
-      productId: faker.number.int(9999),
-      productMainImage: faker.image.urlLoremFlickr(),
-      title: 'Example1',
-      startDate: faker.date.recent().toLocaleDateString('ko-KR'),
-      endDate: faker.date.recent().toLocaleDateString('ko-KR'),
-      rentalFee: Number(
-        faker.commerce.price({ min: 1000, max: 100000, dec: 0 }),
-      ),
-      productStatus: 'FINISH',
-    },
-  ];
-  const lentList: ItemListType = [
-    {
-      productId: faker.number.int(9999),
-      productMainImage: faker.image.urlLoremFlickr(),
-      title: 'Example1 - Lent',
-      startDate: faker.date.recent().toLocaleDateString('ko-KR'),
-      endDate: faker.date.recent().toLocaleDateString('ko-KR'),
-      rentalFee: Number(
-        faker.commerce.price({ min: 1000, max: 100000, dec: 0 }),
-      ),
-      productStatus: 'FINISH',
-    },
-  ];
-  const searchList: ItemListType = [
-    {
-      productId: faker.number.int(9999),
-      productMainImage: faker.image.urlLoremFlickr(),
-      title: 'Example1 - Search',
-      startDate: faker.date.recent().toLocaleDateString('ko-KR'),
-      endDate: faker.date.recent().toLocaleDateString('ko-KR'),
-      rentalFee: Number(
-        faker.commerce.price({ min: 1000, max: 100000, dec: 0 }),
-      ),
-      productStatus: 'FINISH',
-    },
-  ];
-  const likeList: ItemListType = [
-    {
-      productId: faker.number.int(9999),
-      productMainImage: faker.image.urlLoremFlickr(),
-      title: 'Example1 - Like!',
-      startDate: faker.date.recent().toLocaleDateString('ko-KR'),
-      endDate: faker.date.recent().toLocaleDateString('ko-KR'),
-      rentalFee: Number(
-        faker.commerce.price({ min: 1000, max: 100000, dec: 0 }),
-      ),
-      productStatus: 'FINISH',
-    },
-  ];
-  let result = null;
-  let title = null;
+  const { borrowProducts, lentProducts } = useCurrentStore();
+
+  let result;
+  let title;
   if (data === 'borrow') {
-    result = borrowList;
+    result = borrowProducts;
     title = '빌린 물품 내역';
   } else if (data === 'lent') {
-    result = lentList;
+    result = lentProducts;
     title = '빌려준 물품 내역';
-  } else if (data === 'search') {
-    result = searchList;
-    title = null;
-  } else if (data === 'like') {
-    result = likeList;
-    title = null;
   }
-  // const router = useRouter();
-  // const cardHandler = (value: number) => {
-  //   router.push(`post/${value.toString()}`);
-  // };
   return (
     <section>
       <header className="my-3">

@@ -1,18 +1,64 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import BorrowSVG from '@/components/(SVG_component)/(mypage)/Borrow';
 import LentSVG from '@/components/(SVG_component)/(mypage)/Lent';
 import ConnectAccountSVG from '@/components/(SVG_component)/(mypage)/ConnectAccount';
 import ChangePasswordSVG from '@/components/(SVG_component)/(mypage)/ChangePassword';
 import AlarmSVG from '@/components/(SVG_component)/(mypage)/Alarm';
 import AccountBottomSheet from '@/components/(bottomsheet)/AccountBottomSheet';
+import useCurrentStore from '@/store/useCurrentStore';
+import { ItemListType } from '@/types/products/products';
+import { faker } from '@faker-js/faker';
 
 export default function MyPageContent() {
   const [isBottomSheetOpen, SetIsBottomSheetOpen] = useState(false);
   const openBottomSheet = () => SetIsBottomSheetOpen(true);
   const closeBottomSheet = () => SetIsBottomSheetOpen(false);
+  const { setBorrowList, setLentList } = useCurrentStore();
+
+  useEffect(() => {
+    // 초기 데이터 생성 함수
+    const createInitialData = (): {
+      borrow: ItemListType;
+      lent: ItemListType;
+    } => ({
+      borrow: [
+        {
+          productId: faker.number.int(9999),
+          productMainImage: faker.image.urlLoremFlickr(),
+          title: 'Borrowed Item 1',
+          startDate: faker.date.recent().toLocaleDateString('ko-KR'),
+          endDate: faker.date.recent().toLocaleDateString('ko-KR'),
+          rentalFee: Number(
+            faker.commerce.price({ min: 1000, max: 100000, dec: 0 }),
+          ),
+          productStatus: 'IN_PROGRESS',
+        },
+        // 필요한 만큼 더 추가
+      ],
+      lent: [
+        {
+          productId: faker.number.int(9999),
+          productMainImage: faker.image.urlLoremFlickr(),
+          title: 'Lent Item 1',
+          startDate: faker.date.recent().toLocaleDateString('ko-KR'),
+          endDate: faker.date.recent().toLocaleDateString('ko-KR'),
+          rentalFee: Number(
+            faker.commerce.price({ min: 1000, max: 100000, dec: 0 }),
+          ),
+          productStatus: 'FINISH',
+        },
+        // 필요한 만큼 더 추가
+      ],
+    });
+
+    // 초기 데이터 생성 및 저장소에 설정
+    const initialData = createInitialData();
+    setBorrowList(initialData.borrow);
+    setLentList(initialData.lent);
+  }, []); // 빈 의존성 배열로 컴포넌트 마운트 시 한 번만 실행
 
   return (
     <>
