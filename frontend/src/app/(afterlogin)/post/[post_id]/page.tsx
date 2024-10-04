@@ -10,6 +10,8 @@ import PostCheckModal from '@/components/modal/PostCheckModal';
 import Header from '@/components/Header';
 import LikeButton from '@/components/(SVG_component)/LikeButton';
 import CalendarSVG from '@/components/(SVG_component)/Calendar';
+import { faker } from '@faker-js/faker';
+import { writer } from 'node:repl';
 
 export default function PostDetail() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -17,6 +19,20 @@ export default function PostDetail() {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
   // 해당 내용은 API  호출후 활용 가정
+  const writerData = {
+    writerId: 'asd',
+    writerProfileImage: faker.image.urlLoremFlickr(),
+    writerNickname: 'UserNicknameExample',
+  };
+  //
+  // const imageData = {
+  //   imageList: [
+  //     faker.image.urlLoremFlickr(),
+  //     faker.image.urlLoremFlickr(),
+  //     faker.image.urlLoremFlickr(),
+  //   ],
+  // };
+
   const layoutData = {
     startDate: '24.10.21',
     endDate: '24.10.22',
@@ -42,8 +58,7 @@ export default function PostDetail() {
     },
   };
   // 작성자와 유저 아이디 비교하고, 수정 삭제버튼 표시 OX
-  const userId: number = 1;
-  const writerId: number = 2;
+  const userId: string = 'asdas';
   return (
     <>
       <Header pageName="게시글 목록" hasPrevBtn hasSearchBtn hasAlertBtn />
@@ -56,9 +71,14 @@ export default function PostDetail() {
           />
         </div>
         <div className="flex w-full">
-          <Profile hasEmail={false} hasEditBtn={false} />
+          <Profile
+            hasEmail={false}
+            hasEditBtn={false}
+            writerProfileImage={writerData.writerProfileImage}
+            writerNickname={writerData.writerNickname}
+          />
           <div className="flex-1" />
-          {writerId === userId ? (
+          {writerData.writerId === userId ? (
             <div className="flex">
               <button
                 type="button"
