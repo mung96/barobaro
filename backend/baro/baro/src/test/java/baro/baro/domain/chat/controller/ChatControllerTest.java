@@ -126,11 +126,11 @@ public class ChatControllerTest {
                                         getCommonResponseFields(
                                                 fieldWithPath("body.chatRoomDto.chatRoomId").type(NUMBER)
                                                         .description("채팅방 아이디"),
-                                                fieldWithPath("body.chatRoomDto.uuid").type(STRING)
+                                                fieldWithPath("body.chatRoomDto.opponentUuid").type(STRING)
                                                         .description("상대방 UUID"),
-                                                fieldWithPath("body.chatRoomDto.nickname").type(STRING)
+                                                fieldWithPath("body.chatRoomDto.opponentNickname").type(STRING)
                                                         .description("상대방 닉네임"),
-                                                fieldWithPath("body.chatRoomDto.profileImage").type(STRING)
+                                                fieldWithPath("body.chatRoomDto.opponentProfileImage").type(STRING)
                                                         .description("상대방 프로필 이미지"),
                                                 fieldWithPath("body.chatRoomDto.rentalStatus").type(STRING)
                                                         .description("채팅방 상태"),
