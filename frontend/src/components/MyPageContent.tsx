@@ -8,7 +8,7 @@ import ConnectAccountSVG from '@/components/(SVG_component)/(mypage)/ConnectAcco
 import ChangePasswordSVG from '@/components/(SVG_component)/(mypage)/ChangePassword';
 import AlarmSVG from '@/components/(SVG_component)/(mypage)/Alarm';
 import AccountBottomSheet from '@/components/(bottomsheet)/AccountBottomSheet';
-import useCurrentStore from '@/store/useCurrentStore';
+import { useCurrentActions, useInitialized } from '@/store/useCurrentStore';
 import { ItemListType } from '@/types/products/products';
 import { faker } from '@faker-js/faker';
 
@@ -23,10 +23,9 @@ export default function MyPageContent() {
   const [isBottomSheetOpen, SetIsBottomSheetOpen] = useState(false);
   const openBottomSheet = () => SetIsBottomSheetOpen(true);
   const closeBottomSheet = () => SetIsBottomSheetOpen(false);
-  // API 호출을 시뮬레이션하는 함수
+  const isInitialized = useInitialized();
 
-  const { setBorrowList, setLentList, isInitialized, setInitialized } =
-    useCurrentStore();
+  // API 호출을 시뮬레이션하는 함수
   const createInitialData = useCallback(
     (): {
       borrow: ItemListType;
@@ -63,19 +62,18 @@ export default function MyPageContent() {
     }),
     [],
   );
+  const { setBorrowList, setLentList, setInitialized } = useCurrentActions();
 
   useEffect(() => {
     const initializeData = async () => {
       if (!isInitialized) {
         try {
-          // 실제 API 호출을 시뮬레이션합니다. 실제 구현시 이 부분을 API 호출로 대체하세요.
+          // 실제 API 호출을 시뮬레이션합니다.
           await CurrentAPI();
-
-          const initialData = createInitialData();
-          setBorrowList(initialData.borrow);
-          setLentList(initialData.lent);
+          const { borrow, lent } = createInitialData();
+          setBorrowList(borrow);
+          setLentList(lent);
           setInitialized(true);
-          console.log('Data initialized');
         } catch (error) {
           console.error('Failed to initialize data:', error);
           // 에러 처리 로직 추가 (예: 사용자에게 알림)
@@ -88,10 +86,10 @@ export default function MyPageContent() {
     initializeData();
   }, [
     isInitialized,
+    createInitialData,
     setBorrowList,
     setLentList,
     setInitialized,
-    createInitialData,
   ]);
 
   return (
