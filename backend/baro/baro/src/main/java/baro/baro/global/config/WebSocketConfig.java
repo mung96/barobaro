@@ -1,14 +1,25 @@
 package baro.baro.global.config;
 
+import baro.baro.global.interceptor.WebSocketAuthInterceptor;
+import baro.baro.global.oauth.jwt.service.JwtService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
+import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+import org.springframework.web.socket.config.annotation.WebSocketTransportRegistration;
 
 @Configuration
+@RequiredArgsConstructor
 @EnableWebSocketMessageBroker
+@Order(Ordered.HIGHEST_PRECEDENCE + 99) // 우선순위
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+    private final JwtService jwtService;
+
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         // 클라이언트가 서버로 보낼 메시지 경로를 정의
@@ -25,5 +36,18 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 .addEndpoint("/ws") // /ws 경로를 통해 클라이언트는 WebSocket 연결을 시도
                 .setAllowedOrigins("*") // 모든 도메인에서 이 WebSocket 엔드포인트로 접속할 수 있도록 허용
                 .withSockJS(); // SockJS를 사용하도록 설정
+    }
+
+    @Override
+    public void configureClientInboundChannel(ChannelRegistration registration) {
+        // 클라이언트에서 수신하는 메시지에 대해 인터셉터 적용
+        registration.interceptors(new WebSocketAuthInterceptor(jwtService));
+    }
+
+    @Override
+    public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
+        registration.setMessageSizeLimit(8192)
+                .setSendBufferSizeLimit(8192)
+                .setSendTimeLimit(10000);
     }
 }
