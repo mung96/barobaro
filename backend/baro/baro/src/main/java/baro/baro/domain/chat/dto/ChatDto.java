@@ -13,9 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 public class ChatDto {
-    private String nickname;
-
-    private String profileImage;
+    private String uuid;
 
     private String message;
 
@@ -27,8 +25,7 @@ public class ChatDto {
 
     public static ChatDto toDto(Chat chat, Member member) {
         return ChatDto.builder()
-                .nickname(member.getNickname())
-                .profileImage(member.getProfileImage())
+                .uuid(member.getUuid())
                 .message(chat.getMessage())
                 .image(chat.getImage())
                 .chatTime(chat.getChatTime())

@@ -88,9 +88,9 @@ public class ChatControllerTest {
     @Test
     public void 채팅방_채팅_상세_조회_성공() throws Exception {
         // given
-        ChatRoomDto chatRoomDto = new ChatRoomDto(1L, AVAILABLE);
+        ChatRoomDto chatRoomDto = new ChatRoomDto(1L, "uuid", "nickname", "profileImage", AVAILABLE);
         List<ChatDto> chatDtos = List.of(
-                new ChatDto("nickname", "profileImage", "message", "image", LocalDateTime.now(), USER));
+                new ChatDto("uuid", "message", "image", LocalDateTime.now(), USER));
         ChatRoomAndChatsDetailsRes res = new ChatRoomAndChatsDetailsRes(chatRoomDto, chatDtos);
 
         when(chatService.findChatRoomAndChats(anyLong(), anyLong()))
@@ -126,12 +126,16 @@ public class ChatControllerTest {
                                         getCommonResponseFields(
                                                 fieldWithPath("body.chatRoomDto.chatRoomId").type(NUMBER)
                                                         .description("채팅방 아이디"),
+                                                fieldWithPath("body.chatRoomDto.opponentUuid").type(STRING)
+                                                        .description("상대방 UUID"),
+                                                fieldWithPath("body.chatRoomDto.opponentNickname").type(STRING)
+                                                        .description("상대방 닉네임"),
+                                                fieldWithPath("body.chatRoomDto.opponentProfileImage").type(STRING)
+                                                        .description("상대방 프로필 이미지"),
                                                 fieldWithPath("body.chatRoomDto.rentalStatus").type(STRING)
                                                         .description("채팅방 상태"),
-                                                fieldWithPath("body.chatDtos[].nickname").type(STRING)
-                                                        .description("채팅 닉네임"),
-                                                fieldWithPath("body.chatDtos[].profileImage").type(STRING)
-                                                        .description("채팅 프로필 이미지"),
+                                                fieldWithPath("body.chatDtos[].uuid").type(STRING)
+                                                        .description("채팅 유저 UUID"),
                                                 fieldWithPath("body.chatDtos[].message").type(STRING)
                                                         .description("채팅 메시지"),
                                                 fieldWithPath("body.chatDtos[].image").type(STRING)
