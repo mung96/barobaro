@@ -13,20 +13,20 @@ import lombok.Data;
 public class ChatRoomDto {
     private Long chatRoomId;
 
-    private String uuid;
+    private String opponentUuid;
 
-    private String nickname;
+    private String opponentNickname;
 
-    private String profileImage;
+    private String opponentProfileImage;
 
     private RentalStatus rentalStatus;
 
     public static ChatRoomDto toDto(ChatRoom chatRoom, Member member) {
         return ChatRoomDto.builder()
                 .chatRoomId(chatRoom.getId())
-                .uuid(member.getUuid())
-                .nickname(member.getNickname())
-                .profileImage(member.getProfileImage())
+                .opponentUuid(member.getUuid())
+                .opponentNickname(member.getNickname())
+                .opponentProfileImage(member.getProfileImage())
                 .rentalStatus(chatRoom.getRentalStatus())
                 .build();
     }
