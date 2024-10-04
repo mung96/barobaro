@@ -1,5 +1,6 @@
 package baro.baro.domain.product.service;
 
+import baro.baro.domain.chat_room.repository.ChatRoomRepository;
 import baro.baro.domain.contract.dto.ContractConditionDto;
 import baro.baro.domain.contract.entity.ContractCondition;
 import baro.baro.domain.contract.repository.ContractConditionRepository;
@@ -7,9 +8,11 @@ import baro.baro.domain.location.entity.Location;
 import baro.baro.domain.location.repository.LocationRepository;
 import baro.baro.domain.member.entity.Member;
 import baro.baro.domain.member.repository.MemberRepository;
+import baro.baro.domain.product.dto.MyProductDto;
 import baro.baro.domain.product.dto.ProductDetails;
 import baro.baro.domain.product.dto.ProductDto;
 import baro.baro.domain.product.dto.request.ProductAddReq;
+import baro.baro.domain.product.dto.response.MyProductListRes;
 import baro.baro.domain.product.entity.Product;
 import baro.baro.domain.product.repository.ProductRepository;
 import baro.baro.domain.product_image.dto.request.ProductImageReq;
@@ -27,8 +30,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static baro.baro.domain.chat_room.entity.RentalStatus.AVAILABLE;
 import static baro.baro.domain.product.validator.ProductValidator.validateProductAddRequest;
 import static baro.baro.global.statuscode.ErrorCode.MEMBER_NOT_FOUND;
 import static baro.baro.global.statuscode.ErrorCode.PRODUCT_NOT_FOUND;
@@ -47,6 +53,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductImageRepository productImageRepository;
     private final ContractConditionRepository contractConditionRepository;
     private final WishListRepository wishListRepository;
+    private final ChatRoomRepository chatRoomRepository;
 
     @Override
     @Transactional
@@ -132,5 +139,27 @@ public class ProductServiceImpl implements ProductService {
                     return ProductDto.toDto(product, mainUrl, isWish);
                 })
                 .toList();
+    }
+
+    @Override
+    public MyProductListRes findRentalProducts(Long memberId) {
+        List<MyProductDto> products = chatRoomRepository.findByRentalIdAndRentalStatusNot(memberId, AVAILABLE)
+                .stream()
+                .map(chatRoom -> {
+                    Optional<Product> product = productRepository.findById(chatRoom.getProduct().getId());
+                    if(product.isEmpty()) {
+                        return null;
+                    }
+
+                    Product existedProduct = product.get();
+                    List<String> imageUrls = productImageRepository.findSrcByProductId(existedProduct.getId());
+                    String productMainImage = imageUrls.getFirst();
+
+                    return MyProductDto.toDto(existedProduct, productMainImage);
+                })
+                .filter(Objects::nonNull)
+                .toList();
+
+        return new MyProductListRes(products);
     }
 }
