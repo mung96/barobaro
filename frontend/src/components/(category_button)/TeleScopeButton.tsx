@@ -12,8 +12,12 @@ export default function TeleScopeButton() {
   const router = useRouter();
   const handleClick = (delay: number) => {
     setIsClicked(!isClicked);
+    const queryParams = new URLSearchParams({
+      category: 'telescope',
+      product: '',
+    });
     setTimeout(() => {
-      router.push('/search/category/telescope');
+      router.push(`/search?${queryParams.toString()}`);
     }, delay);
   };
   // console.log(backgroundColor);
