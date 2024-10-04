@@ -15,6 +15,7 @@ import baro.baro.domain.product_image.dto.request.ProductImageReq;
 import baro.baro.domain.product_image.repository.ProductImageRepository;
 import baro.baro.global.exception.CustomException;
 import baro.baro.global.s3.Images3Service;
+import baro.baro.global.utils.RedisUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,7 @@ import static baro.baro.global.validator.GlobalValidator.validateFiles;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ProductServiceImpl implements ProductService {
+    private final RedisUtils redisUtils;
     private final Images3Service images3Service;
     private final MemberRepository memberRepository;
     private final LocationRepository locationRepository;
@@ -101,9 +103,14 @@ public class ProductServiceImpl implements ProductService {
         List<String> imageUrls = productImageRepository.findSrcByProductId(product.getId());
         ContractCondition contractCondition = product.getContractCondition();
 
-        ContractConditionDto contractConditionDto = ContractConditionDto.toDto(contractCondition);
+        ContractConditionDto contractConditionDto = null;
+        if(contractCondition != null) {
+            contractConditionDto = ContractConditionDto.toDto(contractCondition);
+        }
 
         Boolean isMine = Objects.equals(member.getId(), product.getMember().getId());
+
+        redisUtils.productRecentlySave(memberId, id);
 
         return ProductDetails.toDto(product, member, imageUrls, contractConditionDto, isMine);
     }
