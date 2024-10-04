@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import BorrowSVG from '@/components/(SVG_component)/(mypage)/Borrow';
 import LentSVG from '@/components/(SVG_component)/(mypage)/Lent';
 import ConnectAccountSVG from '@/components/(SVG_component)/(mypage)/ConnectAccount';
@@ -12,15 +12,23 @@ import useCurrentStore from '@/store/useCurrentStore';
 import { ItemListType } from '@/types/products/products';
 import { faker } from '@faker-js/faker';
 
+const CurrentAPI = () =>
+  new Promise<void>((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, 1000);
+  });
+
 export default function MyPageContent() {
   const [isBottomSheetOpen, SetIsBottomSheetOpen] = useState(false);
   const openBottomSheet = () => SetIsBottomSheetOpen(true);
   const closeBottomSheet = () => SetIsBottomSheetOpen(false);
-  const { setBorrowList, setLentList } = useCurrentStore();
+  // API 호출을 시뮬레이션하는 함수
 
-  useEffect(() => {
-    // 초기 데이터 생성 함수
-    const createInitialData = (): {
+  const { setBorrowList, setLentList, isInitialized, setInitialized } =
+    useCurrentStore();
+  const createInitialData = useCallback(
+    (): {
       borrow: ItemListType;
       lent: ItemListType;
     } => ({
@@ -52,13 +60,39 @@ export default function MyPageContent() {
         },
         // 필요한 만큼 더 추가
       ],
-    });
+    }),
+    [],
+  );
 
-    // 초기 데이터 생성 및 저장소에 설정
-    const initialData = createInitialData();
-    setBorrowList(initialData.borrow);
-    setLentList(initialData.lent);
-  }, []); // 빈 의존성 배열로 컴포넌트 마운트 시 한 번만 실행
+  useEffect(() => {
+    const initializeData = async () => {
+      if (!isInitialized) {
+        try {
+          // 실제 API 호출을 시뮬레이션합니다. 실제 구현시 이 부분을 API 호출로 대체하세요.
+          await CurrentAPI();
+
+          const initialData = createInitialData();
+          setBorrowList(initialData.borrow);
+          setLentList(initialData.lent);
+          setInitialized(true);
+          console.log('Data initialized');
+        } catch (error) {
+          console.error('Failed to initialize data:', error);
+          // 에러 처리 로직 추가 (예: 사용자에게 알림)
+        }
+      } else {
+        console.log('Data already initialized, skipping fetch');
+      }
+    };
+
+    initializeData();
+  }, [
+    isInitialized,
+    setBorrowList,
+    setLentList,
+    setInitialized,
+    createInitialData,
+  ]);
 
   return (
     <>
