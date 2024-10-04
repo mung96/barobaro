@@ -14,7 +14,6 @@ import java.util.List;
 public interface ProductService {
     ProductDetails addProduct(ProductAddReq productAddReq, List<MultipartFile> files, Long memberId) throws IOException;
     ProductDetails findProduct(Long id, Long memberId);
-    List<ProductDto> recentlyViewedProducts(Long memberId);
     MyProductListRes findRentalProducts(Long memberId);
     RecentlyViewListRes recentlyViewedProducts(Long memberId);
     RecentlyUploadedListRes recentlyUpdatedProducts(Long memberId);
