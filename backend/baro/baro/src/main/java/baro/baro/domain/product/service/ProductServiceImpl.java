@@ -23,10 +23,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.IntStream;
 
 import static baro.baro.domain.product.validator.ProductValidator.validateProductAddRequest;
 import static baro.baro.global.statuscode.ErrorCode.MEMBER_NOT_FOUND;
+import static baro.baro.global.statuscode.ErrorCode.PRODUCT_NOT_FOUND;
 import static baro.baro.global.validator.GlobalValidator.validateFiles;
 
 @Slf4j
@@ -83,8 +85,26 @@ public class ProductServiceImpl implements ProductService {
                     productImageRepository.save(productImageReq.toEntity(product, member));
                 });
 
-
-
         return ProductDetails.toDto(product, member, imageUrls, contractConditionDto, true);
+    }
+
+    @Override
+    public ProductDetails findProduct(Long id, Long memberId) {
+        //조회 예외처리
+        //1. 게시글이 없는 경우
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
+
+        List<String> imageUrls = productImageRepository.findSrcByProductId(product.getId());
+        ContractCondition contractCondition = product.getContractCondition();
+
+        ContractConditionDto contractConditionDto = ContractConditionDto.toDto(contractCondition);
+
+        Boolean isMine = Objects.equals(member.getId(), product.getMember().getId());
+
+        return ProductDetails.toDto(product, member, imageUrls, contractConditionDto, isMine);
     }
 }
