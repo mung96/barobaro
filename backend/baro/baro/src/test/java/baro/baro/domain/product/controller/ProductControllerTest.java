@@ -5,8 +5,6 @@ import baro.baro.domain.contract.dto.request.ContractConditionReq;
 import baro.baro.domain.product.dto.ProductDetails;
 import baro.baro.domain.product.dto.request.ProductAddReq;
 import baro.baro.domain.product.dto.request.ProductModifyReq;
-import baro.baro.domain.product.dto.request.SearchProductsReq;
-import baro.baro.domain.product.entity.Category;
 import baro.baro.domain.product.entity.ReturnType;
 import baro.baro.domain.product.service.ProductService;
 import baro.baro.global.exception.CustomException;
@@ -781,6 +779,47 @@ class ProductControllerTest {
     @Test
     public void 대여_물품_상세_조회_성공() throws Exception {
         //given
+        List<String> images = new ArrayList<>();
+        images.add("이미지1");
+        images.add("이미지2");
+
+        ContractConditionDto contractConditionDto = ContractConditionDto.builder()
+                .repairVendor("제조사 또는 공식 수입사의 AS 센터")
+                .overdueCriteria(5)
+                .overdueFee(2)
+                .theftCriteria(7)
+                .refundDeadline(7)
+                .build();
+
+        List<ReturnType> returnTypeList = new ArrayList<>();
+        returnTypeList.add(DELIVERY);
+
+        ProductDetails result = ProductDetails.builder()
+                .productId(1L)
+                .writerId("ffefwsfd-sfewwertwet-3rrsefsedf")
+                .writerProfileImage("유저 image url")
+                .writerNickname("유저 닉네임")
+                .imageList(images)
+                .productStatus(IN_PROGRESS)
+                .title("제목")
+                .category(LIGHT_STICK)
+                .dong("봉천동")
+                .createdAt(calculateTime(LocalDateTime.now()))
+                .wishCount(0)
+                .content("본문내용본문내용용용")
+                .place("고척스카이돔 중앙출입문C게이트앞")
+                .latitude(37.50)
+                .longitude(126.87)
+                .isWriteContract(true)
+                .contractCondition(contractConditionDto)
+                .returnTypes(returnTypeList)
+                .startDate(LocalDate.of(2024, 9, 30))
+                .endDate(LocalDate.of(2024, 10, 24))
+                .rentalFee(10000)
+                .isMine(true)
+                .build();
+
+        when(productService.findProduct(anyLong(), anyLong())).thenReturn(result);
 
         //when
         ResultActions actions = mockMvc.perform(
@@ -867,6 +906,50 @@ class ProductControllerTest {
                                 .build()
                         ))
                 );
+    }
+
+    @Test
+    public void 대여_물품_상세_조회_실패_없는_상품_ID() throws Exception {
+        //given
+        when(productService.findProduct(anyLong(), anyLong()))
+                .thenThrow(new CustomException(PRODUCT_NOT_FOUND));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/products/{productId}", 123L)
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        //then
+        actions
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(PRODUCT_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(PRODUCT_NOT_FOUND.getMessage()))
+                .andDo(document(
+                        "대여 물품 상세 조회 실패 - 없는 상품 ID",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Product API")
+                                .summary("대여 물품 상세 조회 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("본문 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("대여 물품 상세 조회 Request"))
+                                .responseSchema(Schema.schema("대여 물품 상세 조회 Response"))
+                                .build()
+                        ))
+                );
+
     }
 
     @Test
