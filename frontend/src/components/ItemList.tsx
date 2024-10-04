@@ -7,6 +7,8 @@ import ContractIcon from '@/components/(SVG_component)/(mypage)/Contract';
 import { ItemListType } from '@/types/products/products';
 import MeatBallsButton from '@/components/(SVG_component)/(mypage)/MeatBallsButton';
 import HeartIcon from '@/components/(SVG_component)/HeartIcon';
+import Link from 'next/link';
+// import { useRouter } from 'next/navigation';
 
 export default function ItemList({ data }: { data: string }) {
   // 주어진 data에 맞게 List를 받고, 이를 하단의 return 에 맞춰 들어가도록 해야함.
@@ -89,7 +91,10 @@ export default function ItemList({ data }: { data: string }) {
     result = likeList;
     title = null;
   }
-
+  // const router = useRouter();
+  // const cardHandler = (value: number) => {
+  //   router.push(`post/${value.toString()}`);
+  // };
   return (
     <section>
       <header className="my-3">
@@ -100,7 +105,9 @@ export default function ItemList({ data }: { data: string }) {
           <div key={item.productId}>
             <div className="flex flex-row ml-3.5">
               <div className="w-[98px] h-[98px] rounded-[10px] overflow-hidden relative">
-                <Image src={item.productMainImage} alt="product_image" fill />
+                <Link href={`/post/${item.productId}`}>
+                  <Image src={item.productMainImage} alt="product_image" fill />
+                </Link>
                 <div
                   className={`bg-amber-200 w-[48px] h-[20px] flex justify-center items-center rounded-[3px] absolute left-[4px] top-[4px] ${item.boolean === true ? 'bg-gray-500' : 'bg-gray-300'}`}
                 >
@@ -110,18 +117,20 @@ export default function ItemList({ data }: { data: string }) {
                 </div>
               </div>
               <div className="flex flex-col justify-center items-start ms-3.5 relative w-[100%]">
-                <h1 className="text-[15px]">{item.title}</h1>
-                <div className="flex flex-row">
-                  <CalendarSVG />
-                  <p className="text-xs">
-                    {' '}
-                    {item.startDate} ~ {item.endDate}{' '}
+                <Link href={`/post/${item.productId}`}>
+                  <h1 className="text-[15px]">{item.title}</h1>
+                  <div className="flex flex-row">
+                    <CalendarSVG />
+                    <p className="text-xs">
+                      {' '}
+                      {item.startDate} ~ {item.endDate}{' '}
+                    </p>
+                  </div>
+                  <p className="text-[16px] font-bold">
+                    {item.rentalFee}
+                    원/일
                   </p>
-                </div>
-                <p className="text-[16px] font-bold">
-                  {item.rentalFee}
-                  원/일
-                </p>
+                </Link>
                 <div className="flex flex-row w-full">
                   <button
                     type="button"
