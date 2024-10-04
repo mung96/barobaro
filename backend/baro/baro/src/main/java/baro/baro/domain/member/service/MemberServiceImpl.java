@@ -90,6 +90,7 @@ public class MemberServiceImpl implements MemberService {
     public SignUpInfoRes signupDetails(String key) {
         log.info("signupDetails Service함수 " + key);
         SignUpInfoRes result = (SignUpInfoRes) redisUtils.getData(key + "_signin_key");
+        log.info("redis " + (SignUpInfoRes) redisUtils.getData(key + "_signin_key"));
         redisUtils.deleteData(key + "_signin_key");
 
         return result;
