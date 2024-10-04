@@ -74,12 +74,17 @@ dependencies {
 	implementation 'net.postgis:postgis-jdbc:2.5.0'
 	implementation 'org.locationtech.jts:jts-core:1.19.0'
 	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+	implementation 'com.itextpdf:itext7-core:7.1.16'
+	implementation 'com.itextpdf:sign:7.1.16'
+	implementation 'com.itextpdf:bouncy-castle-adapter:8.0.4'
+	implementation 'org.bouncycastle:bcprov-jdk15on:1.68'
 	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
 	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
 	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 	runtimeOnly 'org.postgresql:postgresql'
 	runtimeOnly 'com.h2database:h2'
 	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.bouncycastle:bcprov-jdk18on:1.78.1'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 	testImplementation 'com.epages:restdocs-api-spec-mockmvc:' + restdocsApiSpecVersion
