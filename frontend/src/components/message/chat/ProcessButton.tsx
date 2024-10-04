@@ -7,6 +7,7 @@ import UploadVideo from '@/components/(SVG_component)/(message)/(chat)/UploadVid
 
 import Money from '@/components/(SVG_component)/(message)/(chat)/Money';
 import useProcessButtonEventModal from '@/hooks/message/chat/useProcessButtonEventModal';
+import ContractRequestModal from '@/components/modal/ContractRequestModal';
 import PROCESSTYPES from './ProcessTypes';
 
 type ProcessButtonParam = {
@@ -23,18 +24,16 @@ const ProcessButton: FC<ProcessButtonParam> = ({
   isOwner,
   hasContract,
 }) => {
-  const { requestEvent, receivedEvent, paidEvent } =
+  const { modalOpen, modalClose, requestEvent, receivedEvent, paidEvent } =
     useProcessButtonEventModal();
 
   return (
     <>
       {/* 계약 프로세스와 사용자 역할(파라메터 값)에 따라 노출되는 버튼 결정 */}
-
       <button type="button" className={buttonStyle}>
         <Clipboard />
         <span>&nbsp;{hasContract ? '계약조건' : '반납방법'}</span>
       </button>
-
       {!isOwner &&
         process >= PROCESSTYPES.CONTACT &&
         process <= PROCESSTYPES.ACCEPTED_PACK && (
@@ -51,6 +50,13 @@ const ProcessButton: FC<ProcessButtonParam> = ({
             </span>
           </button>
         )}
+      {!isOwner && process === PROCESSTYPES.CONTACT && (
+        <ContractRequestModal
+          isOpen={modalOpen}
+          onRequestClose={modalClose}
+          isFromStatusMessage={false}
+        />
+      )}
       {((!isOwner && process === PROCESSTYPES.PAID_PACK) ||
         (isOwner && process === PROCESSTYPES.SIGNED_PACK)) && (
         <button type="button" className={buttonStyle}>
@@ -58,7 +64,6 @@ const ProcessButton: FC<ProcessButtonParam> = ({
           <span>&nbsp;영상제출</span>
         </button>
       )}
-
       {((!isOwner && process >= PROCESSTYPES.SIGNED_DIRECT) ||
         (isOwner && process >= PROCESSTYPES.PAID_DIRECT)) && (
         <>
@@ -89,7 +94,6 @@ const ProcessButton: FC<ProcessButtonParam> = ({
           )}
         </>
       )}
-
       {!isOwner && process >= PROCESSTYPES.RECEIVED_DIRECT && (
         <button
           type="button"
