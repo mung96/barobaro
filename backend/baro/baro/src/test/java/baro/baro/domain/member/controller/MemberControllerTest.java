@@ -3,6 +3,7 @@ package baro.baro.domain.member.controller;
 import baro.baro.domain.member.dto.request.PasswordModifyReq;
 import baro.baro.domain.member.dto.request.ProfileModifyReq;
 import baro.baro.domain.member.dto.request.SignupReq;
+import baro.baro.domain.member.dto.response.SignUpInfoRes;
 import baro.baro.domain.member.service.MemberService;
 import baro.baro.domain.member_location.dto.request.MemberLocationReq;
 import baro.baro.global.exception.CustomException;
@@ -37,6 +38,7 @@ import static baro.baro.global.statuscode.ErrorCode.INVALID_NICKNAME;
 import static baro.baro.global.statuscode.ErrorCode.LOCATION_NOT_FOUND;
 import static baro.baro.global.statuscode.SuccessCode.*;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
+import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -203,7 +205,7 @@ class MemberControllerTest {
 
     @Test
     public void 회원가입_실패_존재하지_않는_지역() throws Exception {
-        // given
+        //given
         SignupReq req = new SignupReq();
         req.setEmail("test@gmail.com");
         req.setProviderType("google");
@@ -261,15 +263,16 @@ class MemberControllerTest {
 
     @Test
     public void 로그아웃_성공() throws Exception {
-        // when
+        //given
+
+        //when
         ResultActions actions = mockMvc.perform(
                 get("/members/logout")
                         .header("Authorization", jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
         );
-        
+
         //then
-        // then
         actions
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(MEMBER_LOGOUT.getHttpStatusCode()))
@@ -293,6 +296,56 @@ class MemberControllerTest {
                                 )
                                 .requestSchema(Schema.schema("로그아웃 Request"))
                                 .responseSchema(Schema.schema("로그아웃 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 회원가입을_위한_회원_정보조회_성공()  throws Exception {
+        //given
+        SignUpInfoRes res = new SignUpInfoRes("KAKAO", "test@naver.com", "닉네임", "src");
+
+        when(memberService.signupDetails(any())).thenReturn(res);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                get("/members/signup/info")
+                        .param("key", "test@naver.com")
+                        .contentType("multipart/form-data")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+        );
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(MEMBER_SIGNUP_DETAILS_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(MEMBER_SIGNUP_DETAILS_OK.getMessage()))
+                .andDo(document(
+                        "회원가입을 위한 회원 정보조회 성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Member API")
+                                .summary("회원가입을 위한 회원 정보조회 API")
+                                .queryParameters(
+                                        parameterWithName("key").description("이메일주소")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body.providerType").type(STRING)
+                                                        .description("소셜 종류"),
+                                                fieldWithPath("body.email").type(STRING)
+                                                        .description("이메일"),
+                                                fieldWithPath("body.nickName").type(STRING)
+                                                        .description("닉네임"),
+                                                fieldWithPath("body.profileImage").type(STRING)
+                                                        .description("프로필 사진")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("회원가입을 위한 회원 정보조회 Request"))
+                                .responseSchema(Schema.schema("회원가입을 위한 회원 정보조회 Response"))
                                 .build()
                         ))
                 );
