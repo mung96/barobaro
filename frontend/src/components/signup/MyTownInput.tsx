@@ -8,6 +8,8 @@ type Props = {
 
 function MyTownInfo({ onPrev, onNext }: Props) {
   const valid = true;
+
+  console.log(onPrev, onNext);
   return (
     <>
       <h2 className="text-black-100 text-[15px] font-bold">
