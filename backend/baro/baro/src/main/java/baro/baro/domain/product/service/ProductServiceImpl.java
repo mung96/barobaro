@@ -59,12 +59,21 @@ public class ProductServiceImpl implements ProductService {
         Location location = locationRepository.findLocation(productAddReq.getLatitude(), productAddReq.getLongitude());
         Product product = productAddReq.toEntity(member, location);
 
-        ContractCondition contractCondition = productAddReq.getContractConditionReq().toEntity(product);
-        contractConditionRepository.save(contractCondition);
+        ContractCondition contractCondition = null;
+        ContractConditionDto contractConditionDto = null;
 
-        product.updateContractCondition(contractCondition);
+        if(productAddReq.getContractConditionReq() != null) {
+            contractCondition = productAddReq.getContractConditionReq().toEntity(product);
+            contractConditionRepository.save(contractCondition);
 
-        List<String> imageUrls = images3Service.uploadMultipleFiles(files, "/products/"+product.getId());
+            product.updateContractCondition(contractCondition);
+
+            contractConditionDto = ContractConditionDto.toDto(contractCondition);
+        }
+
+        productRepository.save(product);
+
+        List<String> imageUrls = images3Service.uploadMultipleFiles(files, "products/"+product.getId());
 
         IntStream.range(0, imageUrls.size())
                 .forEach(i -> {
@@ -74,9 +83,7 @@ public class ProductServiceImpl implements ProductService {
                     productImageRepository.save(productImageReq.toEntity(product, member));
                 });
 
-        ContractConditionDto contractConditionDto = ContractConditionDto.toDto(contractCondition);
 
-        productRepository.save(product);
 
         return ProductDetails.toDto(product, member, imageUrls, contractConditionDto, true);
     }
