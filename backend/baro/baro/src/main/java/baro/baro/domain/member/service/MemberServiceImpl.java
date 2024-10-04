@@ -48,13 +48,13 @@ public class MemberServiceImpl implements MemberService {
         }
 
         if(file != null || !file.isEmpty()) {
-            String newImageUrl = images3Service.upload(file, bucketUrl + "/profile");
+            String newImageUrl = images3Service.upload(file,  "profile");
 
             signupReq.setProfileImage(newImageUrl);
         }
 
         if(signupReq.getProfileImage() == null || signupReq.getProfileImage().isEmpty()) {
-            signupReq.setProfileImage(bucketUrl + "/profile/default.png");
+            signupReq.setProfileImage(bucketUrl + "profile/default.png");
         }
 
         Member member = signupReq.toEntity(uuid);
