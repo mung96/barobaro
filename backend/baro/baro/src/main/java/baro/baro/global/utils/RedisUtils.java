@@ -24,4 +24,6 @@ public interface RedisUtils {
     Boolean lock(String key, Object value, Long expireTime);
 
     void unlock(String key);
+
+    void productRecentlySave(Long memberId, Long productId);
 }

@@ -29,11 +29,8 @@ import java.util.List;
 @Profile({"local", "prod"})
 public class SecurityConfig {
     private final JwtBearerAuthenticationFilter jwtBearerAuthenticationFilter;
-
     private final PrincipalOauth2UserService oAuth2UserService;
-
     private final Oauth2SuccessHandler oauth2SuccessHandler;
-
     private final Oauth2FailureHandler oauth2FailureHandler;
 
     @Bean
@@ -43,11 +40,11 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                                .requestMatchers(
-                                        "/members/signup/**","/members/login/oauth2/**",
-                                        "/members/oauth2/code/**", "/docs/**", "/h2-console/**").permitAll()
-                                .anyRequest().authenticated()
+                        .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+                        .requestMatchers(
+                                "/members/signup/**","/members/login/oauth2/**",
+                                "/members/oauth2/code/**", "/docs/**", "/h2-console/**").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2Configurer -> oauth2Configurer
                         .authorizationEndpoint(authEndPoint -> authEndPoint
@@ -70,7 +67,7 @@ public class SecurityConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOriginPatterns("http://localhost:3000", "http://localhost:3001", "https://j11a401.p.ssafy.io")
+                        .allowedOrigins("http://localhost:3000", "http://localhost:3001", "https://j11a401.p.ssafy.io")
                         .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
@@ -81,7 +78,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(List.of("http://localhost:3000", "http://localhost:3001", "https://j11a401.p.ssafy.io"));
+        configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:3001", "https://j11a401.p.ssafy.io"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
@@ -91,4 +88,3 @@ public class SecurityConfig {
         return source;
     }
 }
-

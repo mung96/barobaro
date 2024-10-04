@@ -48,6 +48,13 @@ public class RedisUtilsImpl implements RedisUtils {
         return redisTemplate.keys(pattern);
     }
 
+    public void productRecentlySave(Long memberId, Long productId) {
+        String key = "product_recently_" + memberId;
+
+        redisTemplate.opsForList().leftPush(key, productId.toString());
+        redisTemplate.opsForList().trim(key, 0, 9);
+    }
+
     public Boolean lock(String key, Long timeout) {
         return this.lock(key, "", timeout);
     }
