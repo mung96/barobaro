@@ -1,22 +1,30 @@
 import { create } from 'zustand';
-import { ItemListType } from '@/types/products/products';
-
-type CurrentStoreState = {
-  borrowProducts: ItemListType;
-  lentProducts: ItemListType;
-  isInitialized: boolean;
-  setBorrowList: (borrowList: ItemListType) => void;
-  setLentList: (lentList: ItemListType) => void;
-  setInitialized: (value: boolean) => void;
-};
+import { CurrentStoreState } from '@/types/store/store';
 
 const useCurrentStore = create<CurrentStoreState>((set) => ({
   borrowProducts: [],
   lentProducts: [],
   isInitialized: false,
-  setBorrowList: (borrowList) => set({ borrowProducts: borrowList }),
-  setLentList: (lentList) => set({ lentProducts: lentList }),
-  setInitialized: (value: boolean) => set({ isInitialized: value }),
+  actions: {
+    setBorrowList: (borrowList) => set({ borrowProducts: borrowList }),
+    setLentList: (lentList) => set({ lentProducts: lentList }),
+    setInitialized: (value) => set({ isInitialized: value }),
+    addBorrowProduct: (product) =>
+      set((state) => ({
+        borrowProducts: [...state.borrowProducts, product],
+      })),
+    addLentProduct: (product) =>
+      set((state) => ({
+        lentProducts: [...state.lentProducts, product],
+      })),
+  },
 }));
 
-export default useCurrentStore;
+export const useCurrentActions = () =>
+  useCurrentStore((store) => store.actions);
+export const useBorrowProducts = () =>
+  useCurrentStore((store) => store.borrowProducts);
+export const useLentProducts = () =>
+  useCurrentStore((store) => store.lentProducts);
+export const useInitialized = () =>
+  useCurrentStore((store) => store.isInitialized);
