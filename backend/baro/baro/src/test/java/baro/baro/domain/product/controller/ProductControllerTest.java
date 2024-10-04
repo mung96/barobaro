@@ -3,6 +3,7 @@ package baro.baro.domain.product.controller;
 import baro.baro.domain.contract.dto.ContractConditionDto;
 import baro.baro.domain.contract.dto.request.ContractConditionReq;
 import baro.baro.domain.product.dto.ProductDetails;
+import baro.baro.domain.product.dto.ProductDto;
 import baro.baro.domain.product.dto.request.ProductAddReq;
 import baro.baro.domain.product.dto.request.ProductModifyReq;
 import baro.baro.domain.product.entity.ReturnType;
@@ -955,6 +956,37 @@ class ProductControllerTest {
     @Test
     public void 최근_본_대여_물품_리스트_조회_성공() throws Exception {
         //given
+        List<ProductDto> result = new ArrayList<>();
+
+        for(int i = 0; i < 10; i++) {
+            Long id = 1000L+i;
+
+            if(i % 2 == 0) {
+                ProductDto dto = ProductDto.builder()
+                        .productId(id)
+                        .productMainImage("상품 대표 이미지 url")
+                        .isWished(true)
+                        .startDate(LocalDate.of(2024, 9, 30))
+                        .endDate(LocalDate.of(2024, 10, 30))
+                        .rentalFee(10000+1000*i)
+                        .title("제목")
+                        .build();
+                result.add(dto);
+            } else {
+                ProductDto dto = ProductDto.builder()
+                        .productId(id)
+                        .productMainImage("상품 대표 이미지 url")
+                        .isWished(false)
+                        .startDate(LocalDate.of(2024, 9, 26))
+                        .endDate(LocalDate.of(2024, 10, 26))
+                        .rentalFee(10000+1000*i)
+                        .title("제목")
+                        .build();
+                result.add(dto);
+            }
+        }
+
+        when(productService.recentlyViewedProducts(anyLong())).thenReturn(result);
 
         //when
         ResultActions actions = mockMvc.perform(
