@@ -12,6 +12,7 @@ import baro.baro.global.utils.CookieUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,6 +24,7 @@ import static baro.baro.global.statuscode.SuccessCode.*;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class MemberController {
@@ -50,6 +52,7 @@ public class MemberController {
 
     @GetMapping("/members/signup/info")
     public ResponseEntity<?> signupInfo(@RequestParam("key") String key) {
+        log.info("signupInfo가 들어왔어요!");
         SignUpInfoRes result = memberService.signupDetails(key);
 
         return new ResponseEntity<>(ResponseDto.success(MEMBER_SIGNUP_DETAILS_OK, result), OK);
