@@ -3,6 +3,7 @@ package baro.baro.domain.product.service;
 import baro.baro.domain.product.dto.ProductDetails;
 import baro.baro.domain.product.dto.ProductDto;
 import baro.baro.domain.product.dto.request.ProductAddReq;
+import baro.baro.domain.product.dto.response.MyProductListRes;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -12,4 +13,5 @@ public interface ProductService {
     ProductDetails addProduct(ProductAddReq productAddReq, List<MultipartFile> files, Long memberId) throws IOException;
     ProductDetails findProduct(Long id, Long memberId);
     List<ProductDto> recentlyViewedProducts(Long memberId);
+    MyProductListRes findRentalProducts(Long memberId);
 }
