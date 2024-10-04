@@ -49,19 +49,21 @@ public class ChatServiceImpl implements ChatService {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() -> new CustomException(CHATROOM_NOT_FOUND));
 
-        if(!chatRoom.getOwner().getId().equals(memberId) || !chatRoom.getRental().getId().equals(memberId)) {
+        Member member = null;
+        if(chatRoom.getOwner().getId().equals(memberId)) {
+            member = chatRoom.getRental();
+        } else if(chatRoom.getRental().getId().equals(memberId)) {
+            member = chatRoom.getOwner();
+        } else {
             throw new CustomException(CHATROOM_NOT_ENROLLED);
         }
 
         List<ChatDto> chatDtos = chatRepository.findByChatRoomIdOrderByChatTimeDesc(chatRoomId)
                 .stream()
-                .map(chat -> {
-                    Member member = memberRepository.findByUuid(chat.getUuid());
-                    return ChatDto.toDto(chat, member);
-                })
+                .map(chat -> ChatDto.toDto(chat, memberRepository.findByUuid(chat.getUuid())))
                 .collect(Collectors.toList());
 
-        return new ChatRoomAndChatsDetailsRes(ChatRoomDto.toDto(chatRoom), chatDtos);
+        return new ChatRoomAndChatsDetailsRes(ChatRoomDto.toDto(chatRoom, member), chatDtos);
     }
 
     @Override
