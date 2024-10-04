@@ -12,6 +12,7 @@ import baro.baro.global.oauth.jwt.service.JwtService;
 import baro.baro.global.s3.Images3Service;
 import baro.baro.global.utils.RedisUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,7 @@ import java.util.UUID;
 
 import static baro.baro.global.statuscode.ErrorCode.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -86,7 +88,9 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public SignUpInfoRes signupDetails(String key) {
+        log.info("signupDetails Service함수 " + key);
         SignUpInfoRes result = (SignUpInfoRes) redisUtils.getData(key + "_signin_key");
+        log.info("redis " + (SignUpInfoRes) redisUtils.getData(key + "_signin_key"));
         redisUtils.deleteData(key + "_signin_key");
 
         return result;

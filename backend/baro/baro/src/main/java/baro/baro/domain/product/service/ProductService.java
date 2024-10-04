@@ -9,4 +9,5 @@ import java.util.List;
 
 public interface ProductService {
     ProductDetails addProduct(ProductAddReq productAddReq, List<MultipartFile> files, Long memberId) throws IOException;
+    ProductDetails findProduct(Long id, Long memberId);
 }
