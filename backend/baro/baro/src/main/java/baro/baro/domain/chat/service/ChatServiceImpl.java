@@ -5,6 +5,7 @@ import baro.baro.domain.chat.document.DatabaseSequence;
 import baro.baro.domain.chat.dto.ChatDto;
 import baro.baro.domain.chat.dto.ChatRoomDto;
 import baro.baro.domain.chat.dto.request.ChatProcessReq;
+import baro.baro.domain.chat.dto.response.ChatImageUploadRes;
 import baro.baro.domain.chat.dto.response.ChatProcessRes;
 import baro.baro.domain.chat.dto.response.ChatRoomAndChatsDetailsRes;
 import baro.baro.domain.chat.repository.ChatRepository;
@@ -13,6 +14,7 @@ import baro.baro.domain.chat_room.repository.ChatRoomRepository;
 import baro.baro.domain.member.entity.Member;
 import baro.baro.domain.member.repository.MemberRepository;
 import baro.baro.global.exception.CustomException;
+import baro.baro.global.s3.Images3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoOperations;
@@ -21,7 +23,9 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -39,6 +43,7 @@ public class ChatServiceImpl implements ChatService {
     private final ChatRoomRepository chatRoomRepository;
     private final MemberRepository memberRepository;
     private final MongoOperations mongoOperations;
+    private final Images3Service images3Service;
 
     @Override
     public ChatRoomAndChatsDetailsRes findChatRoomAndChats(Long chatRoomId, Long memberId) {
@@ -83,5 +88,15 @@ public class ChatServiceImpl implements ChatService {
                 DatabaseSequence.class);
 
         return !Objects.isNull(counter) ? counter.getSeq() : 1;
+    }
+
+    @Override
+    public ChatImageUploadRes uploadChatImage(MultipartFile file) throws IOException {
+        if(file != null && !file.isEmpty()) {
+            String image = images3Service.upload(file, "chat_image");
+            return new ChatImageUploadRes(image);
+        } else {
+            return new ChatImageUploadRes("");
+        }
     }
 }
