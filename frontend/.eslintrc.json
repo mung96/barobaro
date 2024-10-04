@@ -27,16 +27,12 @@
 
   "rules": {
     "prettier/prettier": "error",
-    "react/react-in-jsx-scope":"off",
+    "react/react-in-jsx-scope": "off",
     "import/extensions": "off",
     "react/require-default-props": "off",
     "react/function-component-definition": "off",
     "jsx-a11y/label-has-associated-control": "off",
-    "react/jsx-no-comment-textnodes" : "off"
-    // "react/react-in-jsx-scope": "off",
-    // "react/require-default-props": "off",
-    // "import/no-extraneous-dependencies": "off",
-    // "eslintobject-curly-newline": "off",
-    // "object-curly-newline": "off"
+    "react/jsx-no-comment-textnodes": "off",
+    "react/jsx-props-no-spreading": "off"
   }
 }
