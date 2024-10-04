@@ -48,8 +48,8 @@ public class MemberController {
         return new ResponseEntity<>(ResponseDto.success(MEMBER_LOGOUT, null), OK);
     }
 
-    @GetMapping("/members/signup/info/{key}")
-    public ResponseEntity<?> signupInfo(@PathVariable("key") String key) {
+    @GetMapping("/members/signup/info")
+    public ResponseEntity<?> signupInfo(@RequestParam("key") String key) {
         SignUpInfoRes result = memberService.signupDetails(key);
 
         return new ResponseEntity<>(ResponseDto.success(MEMBER_SIGNUP_DETAILS_OK, result), OK);
@@ -64,7 +64,7 @@ public class MemberController {
 
     @GetMapping("/members/me/profile")
     public ResponseEntity<?> profileDetails() {
-        ProfileDetailsRes result = new ProfileDetailsRes("아무개", "프로필 이미지", "닉네임", "010-1111-1111", "ssafy@ssafy.com");
+        ProfileDetailsRes result = new ProfileDetailsRes("프로필 이미지", "닉네임", "010-1111-1111", "ssafy@ssafy.com", "아무개");
 
         return new ResponseEntity<>(ResponseDto.success(PROFILE_DETAILS_OK, result), OK);
     }
@@ -72,7 +72,7 @@ public class MemberController {
     @PostMapping("/members/me/profile")
     public ResponseEntity<?> profileModify(@RequestPart(value = "dto") ProfileModifyReq profileModifyReq,
                                            @RequestPart(value = "file") MultipartFile file) {
-        ProfileDetailsRes result = new ProfileDetailsRes("아무개", "프로필 이미지", "닉네임", "010-1111-1111", "ssafy@ssafy.com");
+        ProfileDetailsRes result = new ProfileDetailsRes("프로필 이미지", "닉네임", "010-1111-1111", "ssafy@ssafy.com", "아무개");
 
         return new ResponseEntity<>(ResponseDto.success(PROFILE_MODIFIED, result), OK);
     }
