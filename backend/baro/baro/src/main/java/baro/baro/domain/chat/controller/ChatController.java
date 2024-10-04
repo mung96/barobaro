@@ -1,6 +1,7 @@
 package baro.baro.domain.chat.controller;
 
 import baro.baro.domain.chat.dto.request.ChatProcessReq;
+import baro.baro.domain.chat.dto.response.ChatImageUploadRes;
 import baro.baro.domain.chat.dto.response.ChatProcessRes;
 import baro.baro.domain.chat.dto.response.ChatRoomAndChatsDetailsRes;
 import baro.baro.domain.chat.service.ChatService;
@@ -15,11 +16,13 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 import static baro.baro.global.statuscode.SuccessCode.CHATROOM_DETAILS_OK;
+import static baro.baro.global.statuscode.SuccessCode.CHAT_IMAGE_UPLOAD_OK;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
@@ -37,8 +40,15 @@ public class ChatController {
         return new ResponseEntity<>(ResponseDto.success(CHATROOM_DETAILS_OK, result), OK);
     }
 
-    @MessageMapping("/{chatRoomId}")
-    @SendTo("/sub/{chatRoomId}")
+    @PostMapping("/chatrooms/image")
+    public ResponseEntity<?> chatImageUpload(@RequestPart(value = "file") MultipartFile file) throws IOException {
+        ChatImageUploadRes result = chatService.uploadChatImage(file);
+
+        return new ResponseEntity<>(ResponseDto.success(CHAT_IMAGE_UPLOAD_OK, result), OK);
+    }
+
+    @MessageMapping("/chatrooms/{chatRoomId}")
+    @SendTo("/sub/chatrooms/{chatRoomId}")
     public ChatProcessRes processChat(@DestinationVariable Long chatRoomId,
                                       @Payload @Valid ChatProcessReq chatProcessReq,
                                       SimpMessageHeaderAccessor headerAccessor // WebSocket 세션의 헤더 정보에 접근
