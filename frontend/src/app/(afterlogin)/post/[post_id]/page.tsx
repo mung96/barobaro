@@ -11,7 +11,6 @@ import Header from '@/components/Header';
 import LikeButton from '@/components/(SVG_component)/LikeButton';
 import CalendarSVG from '@/components/(SVG_component)/Calendar';
 import { faker } from '@faker-js/faker';
-import { writer } from 'node:repl';
 
 export default function PostDetail() {
   const [isModalOpen, setIsModalOpen] = useState(false);

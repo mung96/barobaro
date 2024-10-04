@@ -1,6 +1,6 @@
 import NavBarLayout from '@/layout/NavBarLayout';
-// import ItemList from '@/components/ItemList';
-import DynamicItemList from '@/app/(afterlogin)/mypage/current/(temp)/DynamicItemList';
+// import ItemList from '@/components/ItemList';import Header from '@/components/Header';
+import ItemList from '@/components/ItemList';
 import Header from '@/components/Header';
 
 export default function List() {
@@ -16,7 +16,7 @@ export default function List() {
         />
       </header>
       <main>
-        <DynamicItemList data="lent" />
+        <ItemList data="lent" />
       </main>
     </NavBarLayout>
   );
