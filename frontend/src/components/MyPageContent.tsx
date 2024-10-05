@@ -1,18 +1,96 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import BorrowSVG from '@/components/(SVG_component)/(mypage)/Borrow';
 import LentSVG from '@/components/(SVG_component)/(mypage)/Lent';
 import ConnectAccountSVG from '@/components/(SVG_component)/(mypage)/ConnectAccount';
 import ChangePasswordSVG from '@/components/(SVG_component)/(mypage)/ChangePassword';
 import AlarmSVG from '@/components/(SVG_component)/(mypage)/Alarm';
 import AccountBottomSheet from '@/components/(bottomsheet)/AccountBottomSheet';
+import { useCurrentActions, useInitialized } from '@/store/useCurrentStore';
+import { ItemListType } from '@/types/products/products';
+import { faker } from '@faker-js/faker';
+
+const CurrentAPI = () =>
+  new Promise<void>((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, 1000);
+  });
 
 export default function MyPageContent() {
   const [isBottomSheetOpen, SetIsBottomSheetOpen] = useState(false);
   const openBottomSheet = () => SetIsBottomSheetOpen(true);
   const closeBottomSheet = () => SetIsBottomSheetOpen(false);
+  const isInitialized = useInitialized();
+
+  // API 호출을 시뮬레이션하는 함수
+  const createInitialData = useCallback(
+    (): {
+      borrow: ItemListType;
+      lent: ItemListType;
+    } => ({
+      borrow: [
+        {
+          productId: faker.number.int(9999),
+          productMainImage: faker.image.urlLoremFlickr(),
+          title: 'Borrowed Item 1',
+          startDate: faker.date.recent().toLocaleDateString('ko-KR'),
+          endDate: faker.date.recent().toLocaleDateString('ko-KR'),
+          rentalFee: Number(
+            faker.commerce.price({ min: 1000, max: 100000, dec: 0 }),
+          ),
+          productStatus: 'IN_PROGRESS',
+        },
+        // 필요한 만큼 더 추가
+      ],
+      lent: [
+        {
+          productId: faker.number.int(9999),
+          productMainImage: faker.image.urlLoremFlickr(),
+          title: 'Lent Item 1',
+          startDate: faker.date.recent().toLocaleDateString('ko-KR'),
+          endDate: faker.date.recent().toLocaleDateString('ko-KR'),
+          rentalFee: Number(
+            faker.commerce.price({ min: 1000, max: 100000, dec: 0 }),
+          ),
+          productStatus: 'FINISH',
+        },
+        // 필요한 만큼 더 추가
+      ],
+    }),
+    [],
+  );
+  const { setBorrowList, setLentList, setInitialized } = useCurrentActions();
+
+  useEffect(() => {
+    const initializeData = async () => {
+      if (!isInitialized) {
+        try {
+          // 실제 API 호출을 시뮬레이션합니다.
+          await CurrentAPI();
+          const { borrow, lent } = createInitialData();
+          setBorrowList(borrow);
+          setLentList(lent);
+          setInitialized(true);
+        } catch (error) {
+          console.error('Failed to initialize data:', error);
+          // 에러 처리 로직 추가 (예: 사용자에게 알림)
+        }
+      } else {
+        console.log('Data already initialized, skipping fetch');
+      }
+    };
+
+    initializeData();
+  }, [
+    isInitialized,
+    createInitialData,
+    setBorrowList,
+    setLentList,
+    setInitialized,
+  ]);
 
   return (
     <>
