@@ -4,6 +4,7 @@ import baro.baro.domain.location.dto.LocationDto;
 import baro.baro.domain.location.dto.request.DefaultLocationReq;
 import baro.baro.domain.location.dto.request.LocationsAddReq;
 import baro.baro.domain.location.dto.response.LocationsAddRes;
+import baro.baro.domain.location.dto.response.MyLocationListRes;
 import baro.baro.domain.location.service.LocationService;
 import baro.baro.domain.member_location.dto.request.MemberLocationReq;
 import baro.baro.global.exception.CustomException;
@@ -527,6 +528,22 @@ public class LocationControllerTest {
     @Test
     public void 나의_지역_목록_조회_성공() throws Exception {
         // given
+        List<LocationDto> locations = new ArrayList<>();
+
+        for(int i = 0; i < 3; i++) {
+            LocationDto location = LocationDto.builder()
+                    .locationId(11010530L + (10*i))
+                    .name("서울특별시 종로구 사직동(시군동)")
+                    .dong("사직동(동만)")
+                    .isMain(i == 0)
+                    .build();
+
+            locations.add(location);
+        }
+
+        MyLocationListRes result = new MyLocationListRes(locations);
+
+        when(locationService.findLocations(anyLong())).thenReturn(result);
 
         //when
         ResultActions actions = mockMvc.perform(
