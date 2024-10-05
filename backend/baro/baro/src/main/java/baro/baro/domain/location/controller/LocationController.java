@@ -56,20 +56,8 @@ public class LocationController {
 
     @GetMapping("/members/me/locations")
     public ResponseEntity<?> LocationList() {
-        List<LocationDto> locations = new ArrayList<>();
-
-        for(int i = 0; i < 3; i++) {
-            LocationDto location = LocationDto.builder()
-                    .locationId(11010530L + (10*i))
-                    .name("서울특별시 종로구 사직동(시군동)")
-                    .dong("사직동(동만)")
-                    .isMain(i == 0)
-                    .build();
-
-            locations.add(location);
-        }
-
-        MyLocationListRes result = new MyLocationListRes(locations);
+        Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
+        MyLocationListRes result = locationService.findLocations(memberId);
 
         return new ResponseEntity<>(ResponseDto.success(LOCATION_LIST_OK, result), OK);
     }
