@@ -9,5 +9,5 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class DefaultLocationRes {
-    private List<LocationDto> locations;
+    private LocationDto location;
 }
