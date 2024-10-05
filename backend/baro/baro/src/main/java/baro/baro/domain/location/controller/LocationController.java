@@ -64,20 +64,8 @@ public class LocationController {
 
     @PostMapping("/members/me/default-location")
     public ResponseEntity<?> DefaultLocation(@RequestBody DefaultLocationReq defaultLocationReq) {
-        List<LocationDto> locations = new ArrayList<>();
-
-        for(int i = 0; i < 3; i++) {
-            LocationDto location = LocationDto.builder()
-                    .locationId(11010530L + (10*i))
-                    .name("서울특별시 종로구 사직동(시군동)")
-                    .dong("사직동(동만)")
-                    .isMain(i == 0)
-                    .build();
-
-            locations.add(location);
-        }
-
-        DefaultLocationRes result = new DefaultLocationRes(locations);
+        Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
+        DefaultLocationRes result = locationService.updateDefaultLocation(defaultLocationReq, memberId);
 
         return new ResponseEntity<>(ResponseDto.success(DEFAULT_LOCATION_UPDATE_OK, result), OK);
     }
