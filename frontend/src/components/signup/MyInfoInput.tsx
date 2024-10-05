@@ -16,23 +16,25 @@ function MyInfoInput({ onNext, member }: Props) {
   const { getValues, control, setValue } = useForm<MyInfo>();
 
   return (
-    <div className="flex flex-col gap-2">
-      <h2 className="text-black-100 text-[15px] font-bold">
-        프로필을 설정해주세요.
-      </h2>
-      <div>
-        <p className="text-base font-semibold">
-          <span className="text-blue-100">본인</span>
-          <span>을 잘 나타낼 수 있는</span>
-        </p>
-        <p className="text-base font-semibold">
-          <span className="text-blue-100">프로필 사진</span>
-          <span>과</span>
-          <span className="text-blue-100">닉네임</span>
-          <span>을 설정해주세요!</span>
-        </p>
+    <div className="flex flex-col gap-16 w-full">
+      <div className="flex flex-col gap-2 w-full">
+        <h2 className="text-black-100 text-[15px] font-bold">
+          프로필을 설정해주세요.
+        </h2>
+        <div>
+          <p className="text-base font-semibold">
+            <span className="text-blue-100">본인</span>
+            <span>을 잘 나타낼 수 있는</span>
+          </p>
+          <p className="text-base font-semibold">
+            <span className="text-blue-100">프로필 사진</span>
+            <span>과&nbsp; </span>
+            <span className="text-blue-100">닉네임</span>
+            <span>을 설정해주세요!</span>
+          </p>
+        </div>
       </div>
-      <section className="w-full justify-center items-center flex flex-col ">
+      <section className="w-full justify-center items-center flex flex-col gap-7">
         <label className="bg-gray-500 w-[89px] h-[89px] rounded-full relative">
           <img
             src={file ? (file as string) : member?.profileImage}
@@ -50,12 +52,12 @@ function MyInfoInput({ onNext, member }: Props) {
             <CameraBody fill="#747483" width="15.2" height="12.67" />
           </div>
         </label>
+        <NicknameInput
+          control={control}
+          defaultValue={member?.nickName}
+          onChange={(value) => setValue('nickname', value)}
+        />
       </section>
-      <NicknameInput
-        control={control}
-        defaultValue={member?.nickName}
-        onChange={(value) => setValue('nickname', value)}
-      />
       <Button onClick={() => onNext(getValues())} width="100%" height="36px">
         <p className="text-xs">다음</p>
       </Button>

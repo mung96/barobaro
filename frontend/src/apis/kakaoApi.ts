@@ -1,11 +1,24 @@
 import { kakaoInstance } from '@/apis/axiosInstance';
 import { END_POINT } from '@/constants/api';
-import { KakaoLocalSearchResponse } from '@/types/domains/location';
+import {
+  KakaoLocalDongResponse,
+  KakaoLocalSearchResponse,
+} from '@/types/domains/location';
 
 // eslint-disable-next-line import/prefer-default-export
 export const getLocationListByQuery = async (query: string) => {
   const response = await kakaoInstance.get<KakaoLocalSearchResponse>(
     END_POINT.LOCATION,
+    {
+      params: { query, size: 5 },
+    },
+  );
+  return response;
+};
+
+export const getDongListByQuery = async (query: string) => {
+  const response = await kakaoInstance.get<KakaoLocalDongResponse>(
+    END_POINT.ADDRESS,
     {
       params: { query, size: 5 },
     },
