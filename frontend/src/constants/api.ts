@@ -5,6 +5,7 @@ export const KAKAO_BASE_URL = 'https://dapi.kakao.com/v2/';
 
 export const END_POINT = {
   LOCATION: 'local/search/keyword.json',
+  ADDRESS: 'local/search/address.json',
   GOOGLE_LOGIN: 'members/signin/social/google',
   NAVER_LOGIN: 'members/signin/social/naver',
   KAKAO_LOGIN: 'members/signin/social/kakao',

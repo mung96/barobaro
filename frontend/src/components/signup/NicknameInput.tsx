@@ -15,7 +15,7 @@ const NicknameInput = ({ control, onChange, defaultValue }: Props) => {
     defaultValue,
   });
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-1 w-full">
       <h3 className="text-xs">닉네임</h3>
       <Input
         width="100%"
