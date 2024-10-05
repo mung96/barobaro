@@ -3,6 +3,7 @@ package baro.baro.domain.location.service;
 import baro.baro.domain.location.dto.LocationDto;
 import baro.baro.domain.location.dto.request.LocationsAddReq;
 import baro.baro.domain.location.dto.response.LocationsAddRes;
+import baro.baro.domain.location.dto.response.MyLocationListRes;
 import baro.baro.domain.location.entity.Location;
 import baro.baro.domain.location.repository.LocationRepository;
 import baro.baro.domain.member.entity.Member;
@@ -53,5 +54,15 @@ public class LocationServiceImpl implements LocationService {
                 .toList();
 
         return new LocationsAddRes(result);
+    }
+
+    @Override
+    public MyLocationListRes findLocations(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
+        List<LocationDto> result = locationRepository.findLocationsByMember(member.getId());
+
+        return new MyLocationListRes(result);
     }
 }
