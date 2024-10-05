@@ -5,10 +5,15 @@ import { MyInfo } from '@/types/domains/signup';
 type Props = {
   control: Control<MyInfo>;
   onChange: (title: string) => void;
+  defaultValue: string;
 };
 
-const NicknameInput = ({ control, onChange }: Props) => {
-  const nickname = useWatch({ control, name: 'nickname' });
+const NicknameInput = ({ control, onChange, defaultValue }: Props) => {
+  const nickname = useWatch({
+    control,
+    name: 'nickname',
+    defaultValue,
+  });
   return (
     <div className="flex flex-col gap-1">
       <h3 className="text-xs">닉네임</h3>

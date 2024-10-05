@@ -13,6 +13,5 @@ export const getSignUpInfo = async (email: string) => {
     },
   );
 
-  console.log(response);
   return response;
 };

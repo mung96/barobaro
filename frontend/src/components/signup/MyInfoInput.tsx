@@ -1,16 +1,17 @@
-import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import CameraBody from '@/components/(SVG_component)/CameraBody';
 import { MyInfo } from '@/types/domains/signup';
 import Button from '@/components/shared/Button';
 import useFileModel from '@/hooks/shared/useFileModel';
 import NicknameInput from '@/components/signup/NicknameInput';
+import { SocialMember } from '@/types/domains/member';
 
 type Props = {
   onNext: (myInfoData: MyInfo) => void;
+  member: SocialMember;
 };
 
-function MyInfoInput({ onNext }: Props) {
+function MyInfoInput({ onNext, member }: Props) {
   const { file, changeFile } = useFileModel();
   const { getValues, control, setValue } = useForm<MyInfo>();
 
@@ -33,15 +34,12 @@ function MyInfoInput({ onNext }: Props) {
       </div>
       <section className="w-full justify-center items-center flex flex-col ">
         <label className="bg-gray-500 w-[89px] h-[89px] rounded-full relative">
-          {file && (
-            <Image
-              src={file as string}
-              alt="Profile preview"
-              fill
-              style={{ objectFit: 'cover' }}
-              className="border rounded border-gray-500 w-full h-full"
-            />
-          )}
+          <img
+            src={file ? (file as string) : member?.profileImage}
+            alt="Profile preview"
+            style={{ objectFit: 'cover' }}
+            className="border rounded-full border-gray-500 w-full h-full"
+          />
           <input
             type="file"
             accept="image/*"
@@ -55,6 +53,7 @@ function MyInfoInput({ onNext }: Props) {
       </section>
       <NicknameInput
         control={control}
+        defaultValue={member?.nickName}
         onChange={(value) => setValue('nickname', value)}
       />
       <Button onClick={() => onNext(getValues())} width="100%" height="36px">
