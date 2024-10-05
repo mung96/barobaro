@@ -1,11 +1,13 @@
 package baro.baro.domain.location.dto;
 
 import baro.baro.domain.location.entity.Location;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
+@AllArgsConstructor
 public class LocationDto {
     private Long locationId;
 
