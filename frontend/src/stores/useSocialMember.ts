@@ -1,26 +1,26 @@
 import { create } from 'zustand';
-import { SocialName } from '@/types/social/social';
+import { createJSONStorage, persist } from 'zustand/middleware';
 
-type MemberState = {
-  socialMember:
-    | {
-        providerType: SocialName;
-        email: string;
-        nickName: string;
-        profileImage: string;
-      }
-    | undefined;
-  actions: {
-    setSocialMember: (socialMember: MemberState['socialMember']) => void;
-  };
+import { SocialMember } from '@/types/domains/member';
+
+type SocialMemberState = {
+  socialMember: SocialMember | undefined;
+
+  setSocialMember: (socialMember: SocialMemberState['socialMember']) => void;
 };
 
-const useSocialMemberStore = create<MemberState>((set) => ({
-  socialMember: undefined,
-  actions: {
-    setSocialMember: (socialMember: MemberState['socialMember']) =>
-      set({ socialMember }),
-  },
-}));
+const useSocialMemberStore = create(
+  persist<SocialMemberState>(
+    (set) => ({
+      socialMember: undefined,
+      setSocialMember: (socialMember: SocialMemberState['socialMember']) =>
+        set({ socialMember }),
+    }),
+    { name: 'socialMember', storage: createJSONStorage(() => localStorage) },
+  ),
+);
 
-export default useSocialMemberStore;
+export const useSocialMemberState = () =>
+  useSocialMemberStore((state) => state.socialMember);
+export const useSocialMemberAction = () =>
+  useSocialMemberStore((state) => state.setSocialMember);

@@ -1,4 +1,5 @@
-import { SocialName } from '@/types/social/social';
+import { Response } from '@/types/apis/shared';
+import { SocialMember } from '@/types/domains/member';
 
 export type MyProfileResponse = {
   profileImage: string;
@@ -8,9 +9,4 @@ export type MyProfileResponse = {
   name: string;
 };
 
-export type SocialMemberResponse = {
-  providerType: SocialName;
-  email: string;
-  nickName: string;
-  profileImage: string;
-};
+export type SocialMemberResponse = Response<SocialMember>;
