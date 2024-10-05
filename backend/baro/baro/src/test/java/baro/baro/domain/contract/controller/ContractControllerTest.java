@@ -3,6 +3,7 @@ package baro.baro.domain.contract.controller;
 import baro.baro.domain.contract.dto.ContractConditionDto;
 import baro.baro.domain.contract.dto.ContractRequestDto;
 import baro.baro.domain.contract.dto.request.*;
+import baro.baro.domain.contract.dto.response.ContractApproveRes;
 import baro.baro.domain.contract.dto.response.ContractOptionDetailRes;
 import baro.baro.domain.contract.service.ContractService;
 import baro.baro.domain.product.entity.ReturnType;
@@ -886,10 +887,12 @@ class ContractControllerTest {
 
         //given
         ContractApproveReq contractApproveReq = new ContractApproveReq(
-                10000L
+                1L
         );
-
+        ContractApproveRes result = new ContractApproveRes(1L,"http://s3.url/fileKeyname");
         String content = objectMapper.writeValueAsString(contractApproveReq);
+        when(contractService.approveRequestWithContract(any(),anyLong()))
+                .thenReturn(result);
 
         //when
         ResultActions actions = mockMvc.perform(

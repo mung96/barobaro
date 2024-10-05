@@ -4,7 +4,9 @@ import baro.baro.domain.contract.dto.ContractRequestDto;
 import baro.baro.domain.contract.dto.request.*;
 import baro.baro.domain.contract.dto.response.*;
 import baro.baro.domain.contract.service.ContractService;
+import baro.baro.global.dto.PdfCreateDto;
 import baro.baro.global.dto.ResponseDto;
+import baro.baro.global.exception.CustomException;
 import baro.baro.global.oauth.jwt.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,8 +15,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import static baro.baro.global.statuscode.ErrorCode.INVALID_APPROVE_TYPE;
 import static baro.baro.global.statuscode.SuccessCode.*;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
@@ -54,22 +58,16 @@ public class ContractController {
 
     @PostMapping("/approve")
     public ResponseEntity<?> approveContractRequest(@RequestBody ContractApproveReq contractApproveReq, @RequestParam(name = "type", defaultValue = "default") String type) {
-
+        Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
         ContractApproveRes result = switch (type) {
             case "default" ->
                 //거래 status 변경 및 물품 status 변경
-                    ContractApproveRes.builder()
-                            .chatRoomId(contractApproveReq.getChatRoomId())
-                            .build();
-
+                    contractService.approveRequestWithoutContract(contractApproveReq, memberId);
             case "contract" ->
                 //거래 status 변경 및 물품 status 변경
                 //계약서 Step1 진행 및 s3 업로드 후 url 반환
-                    ContractApproveRes.builder()
-                            .chatRoomId(contractApproveReq.getChatRoomId())
-                            .fileUrl("http://test.url/test.pdf")
-                            .build();
-            default -> null;
+                    contractService.approveRequestWithContract(contractApproveReq, memberId);
+            default -> throw new CustomException(INVALID_APPROVE_TYPE);
         };
         return new ResponseEntity<>(ResponseDto.success(CONTRACT_APPROVED_OK, result), OK);
     }
@@ -118,5 +116,30 @@ public class ContractController {
                 .videoUrl("https://test.url.com/saved.mp4")
                 .build();
         return new ResponseEntity<>(ResponseDto.success(PRODUCT_VIDEO_DETAILS_OK, result), OK);
+    }
+
+    @PostMapping("/test/generate-pdf")
+    public ResponseEntity<?> generatePdf(){
+        PdfCreateDto tmp = PdfCreateDto.builder()
+                .chatRoomId(1L)
+                .ownerName("주인")
+                .ownerTel("010-1234-1234")
+                .ownerEmail("owner@naver.com")
+                .rentalName("대여자")
+                .rentalTel("010-9876-9876")
+                .rentalEmail("rental@naver.com")
+                .productName("테스트물품")
+                .productSerialNumber("serialNo")
+                .totalRentalPrice(10000L)
+                .rentalStartDate(LocalDate.now())
+                .rentalEndDate(LocalDate.now().plusDays(2))
+                .overdueCriteria(5)
+                .overdueFee(3)
+                .theftCriteria(5)
+                .refundDeadline(4)
+                .build();
+        String url = contractService.generatePdf(tmp);
+        return new ResponseEntity<>(ResponseDto.success(PDF_GENERATE_OK,url),OK);
+
     }
 }
