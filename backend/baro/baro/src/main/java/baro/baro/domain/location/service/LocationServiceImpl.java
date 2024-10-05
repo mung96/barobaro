@@ -1,7 +1,9 @@
 package baro.baro.domain.location.service;
 
 import baro.baro.domain.location.dto.LocationDto;
+import baro.baro.domain.location.dto.request.DefaultLocationReq;
 import baro.baro.domain.location.dto.request.LocationsAddReq;
+import baro.baro.domain.location.dto.response.DefaultLocationRes;
 import baro.baro.domain.location.dto.response.LocationsAddRes;
 import baro.baro.domain.location.dto.response.MyLocationListRes;
 import baro.baro.domain.location.entity.Location;
@@ -16,8 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static baro.baro.domain.location.validator.LocationValidator.validateLocationAddRequest;
-import static baro.baro.global.statuscode.ErrorCode.LOCATION_NOT_FOUND;
-import static baro.baro.global.statuscode.ErrorCode.MEMBER_NOT_FOUND;
+import static baro.baro.global.statuscode.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -64,5 +65,25 @@ public class LocationServiceImpl implements LocationService {
         List<LocationDto> result = locationRepository.findLocationsByMember(member.getId());
 
         return new MyLocationListRes(result);
+    }
+
+    @Override
+    public DefaultLocationRes updateDefaultLocation(DefaultLocationReq defaultLocationReq, Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
+        Location location = locationRepository.findById(defaultLocationReq.getLocationId())
+                        .orElseThrow(() -> new CustomException(LOCATION_NOT_FOUND));
+
+        boolean isExist = memberLocationRepository.existsByMemberIdAndLocationId(member.getId(), location.getId());
+        if(!isExist) {
+            throw new CustomException(MEMBER_LOCATION_NOT_FOUND);
+        }
+
+        memberLocationRepository.updateIsMainForMemberLocation(member.getId(), location.getId());
+
+        LocationDto result = LocationDto.toDto(location, true);
+
+        return new DefaultLocationRes(result);
     }
 }
