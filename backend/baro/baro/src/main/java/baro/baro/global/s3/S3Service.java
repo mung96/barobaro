@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import static baro.baro.global.statuscode.ErrorCode.FILE_DELETE_FAIL;
 import static baro.baro.global.statuscode.ErrorCode.FILE_UPLOAD_FAIL;
@@ -51,8 +52,12 @@ public abstract class S3Service {
         return generateS3(s3FileName);
     }
 
+    protected InputStream downloadFile(String fileName) {
+        return amazonS3Client.getObject(bucket, fileName).getObjectContent();
+    }
+
     public void deleteFile(String fileUrl) throws CustomException {
-        try{
+        try {
             try {
                 String fileKey = fileUrl.replace(bucketUrl, "");
                 amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, fileKey));

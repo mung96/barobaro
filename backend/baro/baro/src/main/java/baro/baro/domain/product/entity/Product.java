@@ -79,6 +79,10 @@ public class Product {
 
     private Boolean isDeleted;
 
+    public void updateProductStatus(ProductStatus productStatus) {
+        this.productStatus = productStatus;
+    }
+
     public void updateContractCondition(ContractCondition contractCondition) {
         this.contractCondition = contractCondition;
     }

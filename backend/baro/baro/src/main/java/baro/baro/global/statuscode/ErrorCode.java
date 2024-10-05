@@ -31,7 +31,10 @@ public enum ErrorCode {
     INVALID_DATE_OPTION(BAD_REQUEST.value(),"유효하지 않은 날짜값이 있습니다."),
     INVALID_RETURN_TYPE(BAD_REQUEST.value(),"유효하지 않은 반납 유형입니다."),
     CONTRACT_IN_PROGRESS_BY_OTHERS(CONFLICT.value(),"해당 상품은 다른 사용자가 계약 진행 중입니다."),
+    CONFLICT_WITH_OTHER(CONFLICT.value(), "해당 상품에 다른 요청과 충돌이 발생했습니다. 잠시 후 다시 시도해주세요."),
+    INVALID_APPROVE_TYPE(BAD_REQUEST.value(), "승인 타입이 유효하지 않습니다."),
     CONTRACT_REQUEST_NOT_FOUND(NOT_FOUND.value(), "계약 요청 정보를 찾을 수 없습니다."),
+    PDF_GENERATE_FAILED(INTERNAL_SERVER_ERROR.value(), "PDF 생성 및 업로드 과정에서 오류가 발생했습니다."),
 
     //대여 물품
     PRODUCT_NOT_FOUND(NOT_FOUND.value(), "존재하지 않는 대여 물품입니다."),
