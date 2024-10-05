@@ -1,8 +1,12 @@
 package baro.baro.domain.location.controller;
 
-import baro.baro.domain.location.dto.LocationReqDto;
+import baro.baro.domain.location.dto.LocationDto;
 import baro.baro.domain.location.dto.request.DefaultLocationReq;
 import baro.baro.domain.location.dto.request.LocationsAddReq;
+import baro.baro.domain.location.dto.response.LocationsAddRes;
+import baro.baro.domain.location.service.LocationService;
+import baro.baro.domain.member_location.dto.request.MemberLocationReq;
+import baro.baro.global.exception.CustomException;
 import baro.baro.global.oauth.jwt.service.JwtService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
@@ -29,10 +33,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static baro.baro.global.ResponseFieldUtils.getCommonResponseFields;
+import static baro.baro.global.statuscode.ErrorCode.*;
 import static baro.baro.global.statuscode.SuccessCode.*;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
@@ -61,6 +68,9 @@ public class LocationControllerTest {
 
     @MockBean
     private JwtService jwtService;
+
+    @MockBean
+    private LocationService locationService;
 
     private String jwtToken;
 
@@ -131,14 +141,31 @@ public class LocationControllerTest {
     @Test
     public void 지역설정_성공() throws Exception {
         // given
-        List<LocationReqDto> locations = new ArrayList<>();
-        locations.add(new LocationReqDto(11010540L, true));
-        locations.add(new LocationReqDto(11010550L, false));
+        List<MemberLocationReq> locations = new ArrayList<>();
+        locations.add(new MemberLocationReq(11010540L, true));
+        locations.add(new MemberLocationReq(11010550L, false));
 
         LocationsAddReq req = new LocationsAddReq();
         req.setLocations(locations);
 
         String content = objectMapper.writeValueAsString(req);
+
+        List<LocationDto> locationList = new ArrayList<>();
+
+        for(int i = 0; i < 3; i++) {
+            LocationDto location = LocationDto.builder()
+                    .locationId(11010530L + (10*i))
+                    .name("서울특별시 종로구 사직동(시군동)")
+                    .dong("사직동(동만)")
+                    .isMain(i == 0)
+                    .build();
+
+            locationList.add(location);
+        }
+
+        LocationsAddRes result = new LocationsAddRes(locationList);
+
+        when(locationService.addLocations(any(), anyLong())).thenReturn(result);
 
         //when
         ResultActions actions = mockMvc.perform(
@@ -184,6 +211,310 @@ public class LocationControllerTest {
                                                         .description("동 이름"),
                                                 fieldWithPath("body.locations[].isMain").type(BOOLEAN)
                                                         .description("대표 지역 여부")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("지역 설정 Request"))
+                                .responseSchema(Schema.schema("지역 설정 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 지역설정_실패_없는_지역() throws Exception {
+        // given
+        List<MemberLocationReq> locations = new ArrayList<>();
+        locations.add(new MemberLocationReq(11010541L, true));
+        locations.add(new MemberLocationReq(11010550L, false));
+
+        LocationsAddReq req = new LocationsAddReq();
+        req.setLocations(locations);
+
+        String content = objectMapper.writeValueAsString(req);
+
+        when(locationService.addLocations(any(), anyLong())).thenThrow(new CustomException(LOCATION_NOT_FOUND));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/members/me/locations")
+                        .header("Authorization", jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(csrf())
+        );
+
+        //then
+        actions
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(LOCATION_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(LOCATION_NOT_FOUND.getMessage()))
+                .andDo(document(
+                        "지역 설정 실패 - 없는 지역 PK",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Location API")
+                                .summary("지역 설정 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("locations[].locationId").type(NUMBER)
+                                                        .description("지역 ID"),
+                                                fieldWithPath("locations[].isMain").type(BOOLEAN)
+                                                        .description("대표 지역 여부")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("본문 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("지역 설정 Request"))
+                                .responseSchema(Schema.schema("지역 설정 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 지역설정_실패_중복된_지역값() throws Exception {
+        // given
+        List<MemberLocationReq> locations = new ArrayList<>();
+        locations.add(new MemberLocationReq(11010540L, true));
+        locations.add(new MemberLocationReq(11010540L, false));
+
+        LocationsAddReq req = new LocationsAddReq();
+        req.setLocations(locations);
+
+        String content = objectMapper.writeValueAsString(req);
+
+        when(locationService.addLocations(any(), anyLong())).thenThrow(new CustomException(DUPLICATED_LOCATION));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/members/me/locations")
+                        .header("Authorization", jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(csrf())
+        );
+
+        //then
+        actions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(DUPLICATED_LOCATION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(DUPLICATED_LOCATION.getMessage()))
+                .andDo(document(
+                        "지역 설정 실패 - 중복된 지역 PK",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Location API")
+                                .summary("지역 설정 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("locations[].locationId").type(NUMBER)
+                                                        .description("지역 ID"),
+                                                fieldWithPath("locations[].isMain").type(BOOLEAN)
+                                                        .description("대표 지역 여부")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("본문 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("지역 설정 Request"))
+                                .responseSchema(Schema.schema("지역 설정 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 지역설정_실패_입력값_없음() throws Exception {
+        // given
+        List<MemberLocationReq> locations = new ArrayList<>();
+
+        LocationsAddReq req = new LocationsAddReq();
+        req.setLocations(locations);
+
+        String content = objectMapper.writeValueAsString(req);
+
+        when(locationService.addLocations(any(), anyLong())).thenThrow(new CustomException(LOCATION_IS_EMPTY));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/members/me/locations")
+                        .header("Authorization", jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(csrf())
+        );
+
+        //then
+        actions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(LOCATION_IS_EMPTY.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(LOCATION_IS_EMPTY.getMessage()))
+                .andDo(document(
+                        "지역 설정 실패 - 입력값이 없는 경우",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Location API")
+                                .summary("지역 설정 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("locations[]").type(ARRAY)
+                                                        .description("입력값 없음")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("본문 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("지역 설정 Request"))
+                                .responseSchema(Schema.schema("지역 설정 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 지역설정_실패_개수_초과() throws Exception {
+        // given
+        List<MemberLocationReq> locations = new ArrayList<>();
+        locations.add(new MemberLocationReq(11010540L, true));
+        locations.add(new MemberLocationReq(11010550L, false));
+        locations.add(new MemberLocationReq(11010560L, false));
+        locations.add(new MemberLocationReq(11010570L, false));
+
+        LocationsAddReq req = new LocationsAddReq();
+        req.setLocations(locations);
+
+        String content = objectMapper.writeValueAsString(req);
+
+        when(locationService.addLocations(any(), anyLong())).thenThrow(new CustomException(DUPLICATED_LOCATION));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/members/me/locations")
+                        .header("Authorization", jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(csrf())
+        );
+
+        //then
+        actions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(DUPLICATED_LOCATION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(DUPLICATED_LOCATION.getMessage()))
+                .andDo(document(
+                        "지역 설정 실패 - 지역 최대 개수 초과",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Location API")
+                                .summary("지역 설정 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("locations[].locationId").type(NUMBER)
+                                                        .description("지역 ID"),
+                                                fieldWithPath("locations[].isMain").type(BOOLEAN)
+                                                        .description("대표 지역 여부")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("본문 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("지역 설정 Request"))
+                                .responseSchema(Schema.schema("지역 설정 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 지역설정_실패_대표_지역이_없음() throws Exception {
+        // given
+        List<MemberLocationReq> locations = new ArrayList<>();
+        locations.add(new MemberLocationReq(11010540L, false));
+        locations.add(new MemberLocationReq(11010550L, false));
+        locations.add(new MemberLocationReq(11010560L, false));
+
+        LocationsAddReq req = new LocationsAddReq();
+        req.setLocations(locations);
+
+        String content = objectMapper.writeValueAsString(req);
+
+        when(locationService.addLocations(any(), anyLong())).thenThrow(new CustomException(INVALID_LOCATION));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/members/me/locations")
+                        .header("Authorization", jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(csrf())
+        );
+
+        //then
+        actions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(INVALID_LOCATION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(INVALID_LOCATION.getMessage()))
+                .andDo(document(
+                        "지역 설정 실패 - 지역 최대 개수 초과",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Location API")
+                                .summary("지역 설정 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("locations[].locationId").type(NUMBER)
+                                                        .description("지역 ID"),
+                                                fieldWithPath("locations[].isMain").type(BOOLEAN)
+                                                        .description("대표 지역 여부")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("본문 없음")
                                         )
                                 )
                                 .requestSchema(Schema.schema("지역 설정 Request"))
