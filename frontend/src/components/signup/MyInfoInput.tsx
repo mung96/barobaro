@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form';
+import { useController, useForm } from 'react-hook-form';
 import CameraBody from '@/components/(SVG_component)/CameraBody';
 import { MyInfo } from '@/types/domains/signup';
 import Button from '@/components/shared/Button';
@@ -13,7 +13,22 @@ type Props = {
 
 function MyInfoInput({ onNext, member }: Props) {
   const { file, changeFile } = useFileModel();
-  const { getValues, control, setValue } = useForm<MyInfo>();
+  const {
+    getValues,
+    control,
+    formState: { errors, isValid },
+  } = useForm<MyInfo>({ mode: 'onChange' });
+
+  const { field: nickname, fieldState: nicknameState } = useController<MyInfo>({
+    control,
+    name: 'nickname',
+    defaultValue: member?.nickName,
+    rules: {
+      required: '닉네임을 입력해주세요',
+      minLength: { value: 2, message: '닉네임은 2자 이상 입력해주세요' },
+      maxLength: { value: 10, message: '닉네임은 10자 이하 입력해주세요' },
+    },
+  });
 
   return (
     <div className="flex flex-col gap-16 w-full">
@@ -53,12 +68,18 @@ function MyInfoInput({ onNext, member }: Props) {
           </div>
         </label>
         <NicknameInput
-          control={control}
-          defaultValue={member?.nickName}
-          onChange={(value) => setValue('nickname', value)}
+          value={nickname.value}
+          onChange={nickname.onChange}
+          isInvalid={nicknameState.invalid}
+          message={errors.nickname?.message!}
         />
       </section>
-      <Button onClick={() => onNext(getValues())} width="100%" height="36px">
+      <Button
+        disabled={!isValid}
+        onClick={() => onNext(getValues())}
+        width="100%"
+        height="36px"
+      >
         <p className="text-xs">다음</p>
       </Button>
     </div>
