@@ -1,17 +1,18 @@
-import { Control, useWatch } from 'react-hook-form';
 import { useState } from 'react';
 import DropDownAnimation from '@/components/shared/DropDownAnimation';
 import SearchLocationBar from '@/components/post/SearchLocationBar';
 import Input from '@/components/shared/Input';
-import { RentalInfo } from '@/types/domains/product';
 import { Location } from '@/types/domains/location';
+import ErrorMessage from '@/components/shared/ErrorMessage';
 
 type Props = {
   value: Location;
   onChange: (address: Location) => void;
+  isInvalid:boolean;
+  message:string;
 };
 
-function ReturnAddressInput({ value, onChange }: Props) {
+function ReturnAddressInput({ value, onChange,isInvalid,message }: Props) {
   const [isOpenSearch, setIsOpenSearch] = useState(false);
   return (
     <div className="flex flex-col gap-1">
@@ -28,6 +29,7 @@ function ReturnAddressInput({ value, onChange }: Props) {
       <DropDownAnimation isOpen={isOpenSearch}>
         <SearchLocationBar open={setIsOpenSearch} onSelect={onChange} />
       </DropDownAnimation>
+      <ErrorMessage isInvalid={isInvalid}>{message}</ErrorMessage>
     </div>
   );
 }
