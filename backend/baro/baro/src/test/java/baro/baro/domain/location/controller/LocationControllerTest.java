@@ -1,11 +1,13 @@
 package baro.baro.domain.location.controller;
 
 import baro.baro.domain.location.dto.LocationDto;
+import baro.baro.domain.location.dto.SearchLocationDto;
 import baro.baro.domain.location.dto.request.DefaultLocationReq;
 import baro.baro.domain.location.dto.request.LocationsAddReq;
 import baro.baro.domain.location.dto.response.DefaultLocationRes;
 import baro.baro.domain.location.dto.response.LocationsAddRes;
 import baro.baro.domain.location.dto.response.MyLocationListRes;
+import baro.baro.domain.location.dto.response.SearchLocationRes;
 import baro.baro.domain.location.service.LocationService;
 import baro.baro.domain.member_location.dto.request.MemberLocationReq;
 import baro.baro.global.exception.CustomException;
@@ -93,14 +95,29 @@ public class LocationControllerTest {
     @Test
     public void 지역검색_성공() throws Exception {
         // given
-        String name = "역삼";
+        String keyword = "역삼";
+
+        List<SearchLocationDto> locations = new ArrayList<>();
+
+        for(int i = 0; i < 10; i++) {
+            locations.add(SearchLocationDto
+                    .builder()
+                    .locationId(11010530L + (10*i))
+                    .name("서울특별시 종로구 사직동(시군동)")
+                    .dong("사직동(동만)")
+                    .build());
+        }
+
+        SearchLocationRes result = new SearchLocationRes(locations);
+
+        when(locationService.searchLocation(any(), anyLong())).thenReturn(result);
 
         //when
         ResultActions actions = mockMvc.perform(
                 get("/search/locations")
                         .header("Authorization", jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .param("name", name)
+                        .param("keyword", keyword)
                         .accept(MediaType.APPLICATION_JSON)
         );
 
@@ -121,7 +138,7 @@ public class LocationControllerTest {
                                                 .description("JWT 토큰")
                                 )
                                 .queryParameters(
-                                        parameterWithName("name").description("검색어")
+                                        parameterWithName("keyword").description("검색어")
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
