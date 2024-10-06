@@ -45,6 +45,8 @@ public enum ErrorCode {
     RETURN_ADDRESS_REQUIRED(BAD_REQUEST.value(), "반납 주소가 필요합니다."),
     PRODUCT_PHOTO_REQUIRED(BAD_REQUEST.value(), "사진 파일은 1장 이상을 등록해야합니다."),
     PRODUCT_PHOTO_LIMIT(BAD_REQUEST.value(),"사진 파일은 최대 3장까지 가능합니다."),
+    PRODUCT_NOT_MODIFIABLE(FORBIDDEN.value(), "거래가 진행중이거나 끝난 물품은 수정할 수 없습니다."),
+    PRODUCT_MODIFY_FORBIDDEN(FORBIDDEN.value(), "본인의 게시글이 아닌 경우에 수정할 수 없습니다."),
 
     //카테고리
     CATEGORY_NOT_FOUND(NOT_FOUND.value(), "존재하지 않는 카테고리입니다."),
