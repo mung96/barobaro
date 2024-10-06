@@ -20,7 +20,3 @@ export type CurrentStoreState = {
     addLentProduct: (product: Product) => void;
   };
 };
-
-export type AccountList = {
-
-}

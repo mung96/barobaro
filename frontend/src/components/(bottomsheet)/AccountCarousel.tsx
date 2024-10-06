@@ -10,7 +10,7 @@ import 'swiper/css/pagination';
 import { Account } from '@/types/apis/accountResquest';
 import AccountCard from '@/components/(bottomsheet)/AccountCard';
 import AddAccountSVG from '@/components/(SVG_component)/(mypage)/AddAccountSVG';
-import accountSort from '@/services/account/accountsort'
+import accountSort from '@/services/account/accountsort';
 // TODO : main == true 인 경우 맨 앞에 표시되도록
 export default function AccountCarousel() {
   const accountsInfo: Account[] = [
