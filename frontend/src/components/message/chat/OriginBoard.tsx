@@ -29,7 +29,7 @@ export default function OriginBoard() {
         </div>
         <div className="h-1/4 flex flex-row justify-start space-x-1 pt-[1.4vh] overflow-x-auto whitespace-nowrap">
           <ProcessButton
-            process={ProcessTypes.CONTACT}
+            process={ProcessTypes.RECEIVED_DIRECT}
             isOwner={false}
             hasContract
           />

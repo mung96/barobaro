@@ -9,6 +9,8 @@ import Money from '@/components/(SVG_component)/(message)/(chat)/Money';
 import useProcessButtonEventModal from '@/hooks/message/chat/useProcessButtonEventModal';
 import ContractRequestModal from '@/components/modal/ContractRequestModal';
 import ContractConditionModal from '@/components/modal/ContractConditionModal';
+import ChatAlertModal from '@/components/modal/ChatAlertModal';
+import ChatPayModal from '@/components/modal/ChatPayModal';
 import PROCESSTYPES from './ProcessTypes';
 
 type ProcessButtonParam = {
@@ -98,6 +100,13 @@ const ProcessButton: FC<ProcessButtonParam> = ({
                 : '완료'}
             </span>
           </button>
+          {modalType === 'received' && (
+            <ChatAlertModal
+              isOpen={modalOpen}
+              onRequestClose={modalClose}
+              type={modalType}
+            />
+          )}
           {((!isOwner && process === PROCESSTYPES.SIGNED_PACK) ||
             (isOwner && process === PROCESSTYPES.PAID_PACK)) && (
             <button type="button" className={buttonStyle}>
@@ -117,6 +126,9 @@ const ProcessButton: FC<ProcessButtonParam> = ({
           <Money />
           <span>&nbsp;송금{process >= PROCESSTYPES.PAID_DIRECT && '완료'}</span>
         </button>
+      )}
+      {modalType === 'paid' && (
+        <ChatPayModal isOpen={modalOpen} onRequestClose={modalClose} />
       )}
     </>
   );
