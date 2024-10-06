@@ -44,24 +44,41 @@ const useAccountStore = create<AccountStoreState>((set) => ({
       }),
     setMainAccount: (accountId) =>
       set((state) => {
-        const newList = state.accountsList.map((acc) => ({
+        const updatedAccounts = state.accountsList.map((acc) => ({
           ...acc,
           main: acc.accountId === accountId,
         }));
+
+        const newMainAccount = updatedAccounts.find(
+          (acc) => acc.accountId === accountId,
+        );
+
+        if (!newMainAccount) {
+          return state;
+        }
+
+        const sortedAccounts = [
+          newMainAccount,
+          ...updatedAccounts.filter((acc) => acc.accountId !== accountId),
+        ];
+
         return {
-          accountsList: accountSort(newList),
-          mainAccount:
-            newList.find((acc) => acc.accountId === accountId) || null,
+          accountsList: sortedAccounts,
+          mainAccount: newMainAccount,
         };
       }),
   },
 }));
 
-export const useAccountActions = () =>
-  useAccountStore((store) => store.actions);
 export const useAddAccount = () =>
   useAccountStore((store) => store.actions.addAccount);
 export const useRemoveAccount = () =>
   useAccountStore((store) => store.actions.removeAccount);
 export const useSetMainAccount = () =>
   useAccountStore((store) => store.actions.setMainAccount);
+export const useAccountList = () =>
+  useAccountStore((store) => store.accountsList);
+export const useMainAccount = () =>
+  useAccountStore((store) => store.mainAccount);
+export const useInitAccounts = () =>
+  useAccountStore((store) => store.actions.initializeAccounts);
