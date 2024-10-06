@@ -1,7 +1,7 @@
+import { useState } from 'react';
 import DropDownAnimation from '@/components/shared/DropDownAnimation';
 import SearchLocationBar from '@/components/post/SearchLocationBar';
 import Input from '@/components/shared/Input';
-import { useState } from 'react';
 
 function ReturnAddressInput() {
   const [isOpenSearch, setIsOpenSearch] = useState(false);
