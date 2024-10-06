@@ -1,19 +1,20 @@
 import { ReactNode } from 'react';
-import Header from '@/components/Header';
+// import Header from '@/components/Header';
 
-export default function SignUpLayout({ children }: { children: ReactNode }) {
+type Props = {
+  children: ReactNode;
+};
+
+export default function SignUpLayout({ children }: Props) {
   return (
     <>
-      <Header
+      {/* <Header
         pageName="로그인"
         hasPrevBtn
         hasSearchBtn={false}
         hasAlertBtn={false}
-      />
-      <div className="flex justify-center items-center text-black-100 font-bold text-[16px] mb-3">
-        <h1>회원가입</h1>
-      </div>
-      {children}
+      /> */}
+      <main className="w-full max-w-[500px] mx-auto px-6 py-3">{children}</main>
     </>
   );
 }

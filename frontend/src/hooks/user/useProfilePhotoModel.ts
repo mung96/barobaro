@@ -1,5 +1,5 @@
-import useFileModel from '@/hooks/shared/useFileModel';
 import React, { useCallback, useRef } from 'react';
+import useFileModel from '@/hooks/shared/useFileModel';
 
 export default function useProfilePhotoModel() {
   const { file, changeFile } = useFileModel();

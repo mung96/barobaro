@@ -14,8 +14,12 @@ export default function EtcButton() {
 
   const handleClick = (delay: number) => {
     setIsClicked(!isClicked);
+    const queryParams = new URLSearchParams({
+      category: 'etc',
+      product: '',
+    });
     setTimeout(() => {
-      router.push('/search/category/etc');
+      router.push(`/search?${queryParams.toString()}`);
     }, delay);
   };
   // console.log(backgroundColor);
