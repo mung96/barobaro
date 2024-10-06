@@ -1,11 +1,13 @@
 package baro.baro.domain.location.service;
 
 import baro.baro.domain.location.dto.LocationDto;
+import baro.baro.domain.location.dto.SearchLocationDto;
 import baro.baro.domain.location.dto.request.DefaultLocationReq;
 import baro.baro.domain.location.dto.request.LocationsAddReq;
 import baro.baro.domain.location.dto.response.DefaultLocationRes;
 import baro.baro.domain.location.dto.response.LocationsAddRes;
 import baro.baro.domain.location.dto.response.MyLocationListRes;
+import baro.baro.domain.location.dto.response.SearchLocationRes;
 import baro.baro.domain.location.entity.Location;
 import baro.baro.domain.location.repository.LocationRepository;
 import baro.baro.domain.member.entity.Member;
@@ -85,5 +87,15 @@ public class LocationServiceImpl implements LocationService {
         LocationDto result = LocationDto.toDto(location, true);
 
         return new DefaultLocationRes(result);
+    }
+
+    @Override
+    public SearchLocationRes searchLocation(String keyword, Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
+        List<SearchLocationDto> result = locationRepository.findLocationsByKeyword(keyword);
+
+        return new SearchLocationRes(result);
     }
 }
