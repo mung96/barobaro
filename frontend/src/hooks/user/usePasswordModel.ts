@@ -6,7 +6,7 @@ enum PasswordChangeStep {
   NEW,
   CONFIRMNEW,
 }
-
+// TODO : 기존 유저의 경우 비밀번호를 받아오는 로직을 구현해야합니다.
 export default function usePasswordChange(
   needNewPassword: boolean,
   realPassword?: string,
