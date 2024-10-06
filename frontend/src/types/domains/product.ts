@@ -8,7 +8,7 @@ export type ProductCategory =
   | 'SMART_PHONE'
   | 'TELESCOPE'
   | 'CAMERA_BODY'
-  | 'CAMERA_LENDS'
+  | 'CAMERA_LENS'
   | 'ETC';
 
 export type ReturnType = 'DIRECT' | 'DELIVERY';

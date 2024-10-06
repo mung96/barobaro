@@ -1,5 +1,4 @@
 import { ChangeEvent } from 'react';
-import { Control, useWatch } from 'react-hook-form';
 import CameraBody from '@/components/(SVG_component)/CameraBody';
 import CameraLens from '@/components/(SVG_component)/CameraLens';
 import Etc from '@/components/(SVG_component)/Etc';
@@ -8,65 +7,69 @@ import SmartPhone from '@/components/(SVG_component)/SmartPhone';
 import TeleScope from '@/components/(SVG_component)/TeleScope';
 import colors from '@/components/colors';
 import Radio from '@/components/shared/Radio';
-import { PostInfo } from '@/types/domains/product';
+import { ProductCategory } from '@/types/domains/product';
+import ErrorMessage from '@/components/shared/ErrorMessage';
 
 export const productCategory = [
   {
     id: 0,
-    value: 'telescope',
+    value: 'TELESCOPE',
     label: '망원경',
     icon: <TeleScope fill={colors.gray[200]} />,
   },
   {
     id: 1,
-    value: 'smartphone',
+    value: 'SMART_PHONE',
     label: '스마트폰',
     icon: <SmartPhone fill={colors.gray[200]} />,
   },
   {
     id: 2,
-    value: 'lightstick',
+    value: 'LIGHT_STICK',
     label: '응원봉',
     icon: <LightStick fill={colors.gray[200]} />,
   },
   {
     id: 3,
-    value: 'cameralens',
+    value: 'CAMERA_LENS',
     label: '카메라 렌즈',
     icon: <CameraLens fill={colors.gray[200]} />,
   },
   {
     id: 4,
-    value: 'camerabody',
+    value: 'CAMERA_BODY',
     label: '카메라 바디',
     icon: <CameraBody fill={colors.gray[200]} />,
   },
   {
     id: 5,
-    value: 'etc',
+    value: 'ETC',
     label: '기타',
     icon: <Etc fill={colors.gray[200]} />,
   },
 ];
 
-type CategoryTagListProps = {
-  control: Control<PostInfo>;
+type Props = {
+  value:ProductCategory;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   disabled?: boolean;
+  isInvalid: boolean;
+  message: string;
 };
 
 function CategoryTagList({
   onChange,
-  control,
+  value,
   disabled,
-}: CategoryTagListProps) {
-  const category = useWatch({ control, name: 'category' });
+  isInvalid,
+  message
+}: Props) {
   return (
-    <div className="flex gap-1 flex-col">
-      <p className="text-xs text-black">반납 희망 방법</p>
+    <div className="flex gap-1 flex-col relative">
+      <p className="text-base text-black">반납 희망 방법</p>
       <Radio.Group
         className="gap-1 flex flex-wrap"
-        value={category}
+        value={value}
         fieldSetName="category"
         onChange={onChange}
       >
@@ -84,6 +87,7 @@ function CategoryTagList({
           </Radio.Item>
         ))}
       </Radio.Group>
+      <ErrorMessage isInvalid={isInvalid}>{message}</ErrorMessage>
     </div>
   );
 }

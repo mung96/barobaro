@@ -1,23 +1,26 @@
-import { Control, useWatch } from 'react-hook-form';
 import TextArea from '@/components/shared/TextArea';
-import { PostInfo } from '@/types/domains/product';
+import ErrorMessage from '@/components/shared/ErrorMessage';
 
-type PostBodyProps = {
-  control: Control<PostInfo>;
+type Props = {
+  value: string;
   onChange: (value: string) => void;
+  isInvalid: boolean;
+  message: string;
 };
 
-const PostBody = ({ control, onChange }: PostBodyProps) => {
-  const body = useWatch({ control, name: 'body' });
+const PostBody = ({ value, onChange ,isInvalid,message}: Props) => {
+  console.log(message);
+
   return (
-    <div className="flex flex-col gap-1">
-      <h3 className="text-xs">내용</h3>
+    <div className="flex flex-col gap-1 relative">
+      <h3 className="text-base">내용</h3>
       <TextArea
         rows={6}
         placeholder="가격을 입력해주세요."
-        value={body}
+        value={value}
         onChange={onChange}
       />
+      <ErrorMessage isInvalid={isInvalid}>{message}</ErrorMessage>
     </div>
   );
 };
