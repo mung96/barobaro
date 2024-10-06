@@ -1,3 +1,4 @@
+import ErrorMessage from '@/components/shared/ErrorMessage';
 import Input from '@/components/shared/Input';
 
 type Props = {
@@ -19,11 +20,7 @@ const NicknameInput = ({ value, onChange, isInvalid, message }: Props) => {
         onChange={onChange}
       />
 
-      <p
-        className={`text-2xs absolute -bottom-[2px] translate-y-full ${isInvalid ? 'text-red-500' : 'text-green-400'}`}
-      >
-        {message}
-      </p>
+      <ErrorMessage isInvalid={isInvalid}>{message}</ErrorMessage>
     </div>
   );
 };

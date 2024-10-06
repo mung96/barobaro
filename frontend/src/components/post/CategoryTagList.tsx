@@ -7,76 +7,87 @@ import SmartPhone from '@/components/(SVG_component)/SmartPhone';
 import TeleScope from '@/components/(SVG_component)/TeleScope';
 import colors from '@/components/colors';
 import Radio from '@/components/shared/Radio';
+import { ProductCategory } from '@/types/domains/product';
+import ErrorMessage from '@/components/shared/ErrorMessage';
 
 export const productCategory = [
   {
     id: 0,
-    value: 'telescope',
+    value: 'TELESCOPE',
     label: '망원경',
     icon: <TeleScope fill={colors.gray[200]} />,
   },
   {
     id: 1,
-    value: 'smartphone',
+    value: 'SMART_PHONE',
     label: '스마트폰',
     icon: <SmartPhone fill={colors.gray[200]} />,
   },
   {
     id: 2,
-    value: 'lightstick',
+    value: 'LIGHT_STICK',
     label: '응원봉',
     icon: <LightStick fill={colors.gray[200]} />,
   },
   {
     id: 3,
-    value: 'cameralens',
+    value: 'CAMERA_LENS',
     label: '카메라 렌즈',
     icon: <CameraLens fill={colors.gray[200]} />,
   },
   {
     id: 4,
-    value: 'camerabody',
+    value: 'CAMERA_BODY',
     label: '카메라 바디',
     icon: <CameraBody fill={colors.gray[200]} />,
   },
   {
     id: 5,
-    value: 'etc',
+    value: 'ETC',
     label: '기타',
     icon: <Etc fill={colors.gray[200]} />,
   },
 ];
 
-type CategoryTagListProps = {
-  value: string;
+type Props = {
+  value:ProductCategory;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   disabled?: boolean;
+  isInvalid: boolean;
+  message: string;
 };
 
-function CategoryTagList({ onChange, value, disabled }: CategoryTagListProps) {
+function CategoryTagList({
+  onChange,
+  value,
+  disabled,
+  isInvalid,
+  message
+}: Props) {
   return (
-    <div className="flex gap-1 flex-col">
-      <p className="text-xs text-black">반납 희망 방법</p>
+    <div className="flex gap-1 flex-col relative">
+      <p className="text-base text-black">반납 희망 방법</p>
       <Radio.Group
         className="gap-1 flex flex-wrap"
         value={value}
         fieldSetName="category"
         onChange={onChange}
       >
-        {productCategory.map((category) => (
+        {productCategory.map((categoryItem) => (
           <Radio.Item
-            value={category.value}
+            value={categoryItem.value}
             disabled={disabled}
             className="flex items-center gap-1 rounded-2xl bg-gray-100 text-gray-100 py-1 px-4 has-[:checked]:outline has-[:checked]:outline-[2px] has-[:checked]:outline-blue-100 "
-            key={category.id}
+            key={categoryItem.id}
           >
             {/* <div className="w-3 h-3">{category.icon}</div> */}
             <p className="text-xs text-gray-200 peer-checked:text-blue-100 ">
-              {category.label}
+              {categoryItem.label}
             </p>
           </Radio.Item>
         ))}
       </Radio.Group>
+      <ErrorMessage isInvalid={isInvalid}>{message}</ErrorMessage>
     </div>
   );
 }

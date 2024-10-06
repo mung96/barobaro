@@ -12,3 +12,4 @@ export const REPAIR_VENDOR = [
   { value: '1', label: '제조사 또는 공식 수입사의 AS 센터' },
   { value: '2', label: '사설 수리 업체' },
 ];
+

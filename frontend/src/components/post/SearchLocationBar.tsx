@@ -2,10 +2,11 @@ import { Dispatch, SetStateAction, useState } from 'react';
 import Button from '@/components/shared/Button';
 import Input from '@/components/shared/Input';
 import useLocationModel from '@/hooks/shared/useLocationModel';
+import { Location } from '@/types/domains/location';
 
 type SearchLocationBarProps = {
   open: Dispatch<SetStateAction<boolean>>;
-  onSelect: Dispatch<SetStateAction<string>>;
+  onSelect: (value: Location) => void;
 };
 
 function SearchLocationBar({ open, onSelect }: SearchLocationBarProps) {
@@ -41,7 +42,14 @@ function SearchLocationBar({ open, onSelect }: SearchLocationBarProps) {
           <div
             role="none"
             className="border-2 rounded-sm flex flex-col gap-1 px-3 py-2"
-            onClick={() => onSelect(location.addressName)}
+            onClick={() =>
+              onSelect({
+                longitude: location.longitude,
+                latitude: location.latitude,
+                addressName: location.addressName,
+                placeName: location.placeName,
+              })
+            }
           >
             <p className="text-base">{location.addressName}</p>
             <p className="text-xs text-gray-200">{location.placeName}</p>
