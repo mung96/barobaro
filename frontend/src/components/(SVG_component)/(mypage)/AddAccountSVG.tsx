@@ -3,7 +3,7 @@ type Props = {
   color: string;
 };
 
-export default function AddAccountSVG({size, color}: Props) {
+export default function AddAccountSVG({ size, color }: Props) {
   return (
     <svg
       width={size}
