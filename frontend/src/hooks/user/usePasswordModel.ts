@@ -29,7 +29,7 @@ export default function usePasswordChange(
       case PasswordChangeStep.CURRENT:
         if (inputPassword === realPassword) {
           setStep(PasswordChangeStep.NEW);
-          setPasswordMessage('현재 비밀번호를 입력해주세요');
+          setPasswordMessage('새로운 비밀번호를 입력해주세요');
         } else {
           setPasswordMessage('비밀번호가 일치하지 않습니다. 다시 입력해주세요');
         }
