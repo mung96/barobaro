@@ -35,3 +35,24 @@ export type ProductResponse = {
   rentalFee: number;
   isMine: boolean;
 };
+
+export type ProductContent = {
+  title: string;
+  productStatus: string;
+  wishCount: number;
+  content: string;
+  place: string;
+  latitude: number;
+  longitude: number;
+};
+
+export type ContractContent = {
+  isWriteContract: boolean;
+  contractCondition: {
+    repairVendor: string;
+    overdueCriteria: number;
+    overdueFee: number;
+    theftCriteria: number;
+    refundDeadline: number;
+  };
+};
