@@ -10,6 +10,11 @@ export const END_POINT = {
   NAVER_LOGIN: 'members/signin/social/naver',
   KAKAO_LOGIN: 'members/signin/social/kakao',
 
+  //Location
+  MY_LOCATIONS:'members/me/locations',
+  SEARCH_LOCATION: 'search/locations',
+  DEFAULT_LOCATION:'members/me/default-location',
+
   LOGOUT: 'members/logout',
   SIGN_UP: 'members/signup',
   MY_PASSWORD: 'members/me/password',
