@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form';
+import { useController, useForm } from 'react-hook-form';
 import RentalDurationInput from '@/components/post/RentalDurationInput';
 import RentalFeeInput from '@/components/post/RentalFeeInput';
 import ReturnTypeList from '@/components/post/ReturnTypeList';
@@ -6,6 +6,8 @@ import Button from '@/components/shared/Button';
 import { RentalInfo } from '@/types/domains/product';
 import RentalAddressInput from '@/components/post/RentalAddressInput';
 import ReturnAddressInput from '@/components/post/ReturnAddressInput';
+import { DateRange } from 'react-day-picker';
+import { Location } from '@/types/domains/location';
 
 type Props = {
   onPrev: () => void;
@@ -13,48 +15,71 @@ type Props = {
 };
 
 function RentalInfoInput({ onNext, onPrev }: Props) {
-  // place: string;
-  // latitude: number;
-  // longitude: number;
-
-  const { control, setValue, getValues } = useForm<RentalInfo>({
-    defaultValues: {
-      rentalDuration: { from: new Date(), to: new Date() },
-      rentalFee: 0,
-      returnTypeList: [],
-      returnAddress: {
-        placeName: '',
-        latitude: '',
-        longitude: '',
-        addressName: '',
-      },
+  const { control, getValues, formState:{isValid,errors} } = useForm<RentalInfo>({mode: 'onChange'});
+  const { field: rentalDuration, fieldState: rentalDurationState } = useController<RentalInfo>({
+    control,
+    name: 'rentalDuration',
+    defaultValue:'',
+    rules: {
+      required: '대여 날짜를 골라주세요.',
     },
   });
-
+  const { field: rentalFee, fieldState: rentalFeeState } = useController<RentalInfo>({
+    control,
+    name: 'rentalFee',
+    defaultValue:'',
+    rules: {
+      required: '대여 금액을 입력해주세요.',
+    },
+  });
+  const { field: rentalAddress, fieldState: rentalAddressState } = useController<RentalInfo>({
+    control,
+    name: 'rentalAddress',
+    defaultValue:'',
+    rules: {
+      required: '대여 장소를 입력해주세요.',
+    },
+  });
+  const { field: returnTypeList, fieldState: returnTypeListState } = useController<RentalInfo>({
+    control,
+    name: 'returnTypeList',
+    defaultValue:'',
+    rules: {
+      required: '반납 방법을 정해주세요.',
+    },
+  });
+  const { field: returnAddress, fieldState: returnAddressState } = useController<RentalInfo>({
+    control,
+    name: 'returnAddress',
+    defaultValue:'',
+    rules: {
+      required: '반납 장소를 입력해주세요.',
+    },
+  });
   return (
     <div className="flex flex-col gap-4">
       <RentalDurationInput
-        control={control}
-        onSelect={(value) => setValue('rentalDuration', value)}
+        value={rentalDuration.value as DateRange}
+        onSelect={rentalDuration.onChange}
       />
       <RentalFeeInput
-        control={control}
-        onChange={(value) => setValue('rentalFee', Number(value))}
+        value={rentalFee.value as number}
+        onChange={rentalFee.onChange}
       />
 
       <RentalAddressInput
-        control={control}
-        onChange={(value) => setValue('returnAddress', value)}
+        value={rentalAddress.value as Location}
+        onChange={rentalAddress.onChange}
       />
 
       <ReturnTypeList
-        control={control}
-        onChange={(values) => setValue('returnTypeList', values)}
+        value={returnTypeList.value as string[]}
+        onChange={returnTypeList.onChange}
       />
-      {getValues('returnTypeList').includes('DELIVERY') && (
+      {(returnTypeList.value as string[])?.includes('DELIVERY') && (
         <ReturnAddressInput
-          control={control}
-          onChange={(value) => setValue('rentalAddress', value)}
+        value={returnAddress.value as Location}
+          onChange={returnAddress.onChange}
         />
       )}
 
@@ -63,7 +88,7 @@ function RentalInfoInput({ onNext, onPrev }: Props) {
           <p className="text-xs">이전</p>
         </Button>
 
-        <Button onClick={() => onNext(getValues())} width="100%" height="36px">
+        <Button disabled={!isValid} onClick={() => onNext(getValues())} width="100%" height="36px">
           <p className="text-xs">다음</p>
         </Button>
       </div>
