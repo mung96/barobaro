@@ -1133,8 +1133,8 @@ class ProductControllerTest {
     @Test
     public void 대여_물품_수정_성공() throws Exception {
         //given
-        List<ReturnType> returnTypes = new ArrayList<>();
-        returnTypes.add(DIRECT);
+        List<String> returnType = new ArrayList<>();
+        returnType.add("DIRECT");
 
         ContractConditionReq contractConditionReq = new ContractConditionReq(
                 "물품 이름", "물품 일련번호", "제조사 또는 공식 수입사의 AS 센터",
@@ -1147,16 +1147,58 @@ class ProductControllerTest {
                 "고척스카이돔 중앙출입문C게이트앞",
                 37.50,
                 126.87,
-                returnTypes,
+                returnType,
                 "서울특별시 강남구 테헤란로 212",
                 "본문내용본문내용용용",
-                LIGHT_STICK,
+                "LIGHT_STICK",
                 contractConditionReq);
 
         MockMultipartFile file1 = new MockMultipartFile("files", "sample1.jpg", "image/jpeg", "image/sample1.jpg".getBytes());
         MockMultipartFile file2 = new MockMultipartFile("files", "sample2.jpg", "image/jpeg", "image/sample2.jpg".getBytes());
 
         MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", objectMapper.writeValueAsBytes(productModifyReq));
+
+        List<String> images = new ArrayList<>();
+        images.add("이미지1");
+        images.add("이미지2");
+
+        ContractConditionDto contractConditionDto = ContractConditionDto.builder()
+                .repairVendor("제조사 또는 공식 수입사의 AS 센터")
+                .overdueCriteria(5)
+                .overdueFee(2)
+                .theftCriteria(7)
+                .refundDeadline(7)
+                .build();
+
+        List<ReturnType> returnTypes = new ArrayList<>();
+        returnTypes.add(DELIVERY);
+
+        ProductDetails result = ProductDetails.builder()
+                .productId(1L)
+                .writerId("ffefwsfd-sfewwertwet-3rrsefsedf")
+                .writerProfileImage("유저 image url")
+                .writerNickname("유저 닉네임")
+                .imageList(images)
+                .productStatus(IN_PROGRESS)
+                .title("제목")
+                .category(LIGHT_STICK)
+                .dong("봉천동")
+                .createdAt(calculateTime(LocalDateTime.now()))
+                .wishCount(0)
+                .content("본문내용본문내용용용")
+                .place("고척스카이돔 중앙출입문C게이트앞")
+                .latitude(37.50)
+                .longitude(126.87)
+                .isWriteContract(true)
+                .contractCondition(contractConditionDto)
+                .returnTypes(returnTypes)
+                .startDate(LocalDate.of(2024, 9, 30))
+                .endDate(LocalDate.of(2024, 10, 24))
+                .rentalFee(10000)
+                .isMine(true)
+                .build();
+
+        when(productService.modifyProduct(any(), any(), anyLong(), anyLong())).thenReturn(result);
 
         //when
         ResultActions actions = mockMvc.perform(
