@@ -9,4 +9,5 @@ export type SocialBarInfo = {
   imageUrl: StaticImageData;
   fontColor: string;
   korean: string;
+  link: string;
 };

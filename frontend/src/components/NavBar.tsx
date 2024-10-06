@@ -35,7 +35,7 @@ export default function NavBar({ current }: { current: string }) {
         </Link>
         <Link
           className="flex flex-1 flex-col items-center justify-center"
-          href="/post"
+          href="/post/regist"
         >
           <PostButton fill={current === 'post' ? '#1A1E27' : '#B6BDC8'} />
           <p

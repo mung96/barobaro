@@ -61,16 +61,7 @@ function PostFunnel() {
               setDirection('backward');
             }}
             onNext={(data: RentalInfo) => {
-              history.push('ContractInfoStep', {
-                startDate: data.startDate || '',
-                endDate: data.endDate || '',
-                rentalFee: data.rentalFee || 0,
-                place: data.place || '',
-                latitude: data.latitude || 0,
-                longitude: data.longitude || 0,
-                returnTypeList: data.returnTypeList || [],
-                returnAddress: data.returnAddress || '',
-              });
+              history.push('ContractInfoStep', data);
               setDirection('forward');
             }}
           />
@@ -83,15 +74,7 @@ function PostFunnel() {
               setDirection('backward');
             }}
             onNext={(data: ContractConditionRequest) => {
-              history.push('ContractPreviewStep', {
-                productName: data.productName,
-                serialNumber: data.serialNumber,
-                repairVendor: data.repairVendor,
-                overdueCriteria: data.overdueCriteria,
-                overdueFee: data.overdueFee,
-                theftCriteria: data.theftCriteria,
-                refundDeadline: data.refundDeadline,
-              });
+              history.push('ContractPreviewStep', data);
               setDirection('forward');
             }}
           />

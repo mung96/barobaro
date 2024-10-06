@@ -6,17 +6,17 @@ import { Location } from '@/types/domains/location';
 import ErrorMessage from '@/components/shared/ErrorMessage';
 
 type Props = {
-  value: Location;
-  onChange: (address: Location) => void;
+  value:Location;
+  onChange: (value: Location) => void;
   isInvalid:boolean;
   message:string;
 };
 
-function ReturnAddressInput({ value, onChange,isInvalid,message }: Props) {
+function RentalAddressInput({ value, onChange,isInvalid,message }: Props) {
   const [isOpenSearch, setIsOpenSearch] = useState(false);
   return (
-    <div className="flex flex-col gap-1">
-      <p className="text-xs">반납 희망 장소</p>
+    <div className="flex flex-col gap-1 relative">
+      <p className="text-base">거래 희망 장소</p>
       <Input
         placeholder="위치 추가"
         width="100%"
@@ -33,4 +33,4 @@ function ReturnAddressInput({ value, onChange,isInvalid,message }: Props) {
     </div>
   );
 }
-export default ReturnAddressInput;
+export default RentalAddressInput;
