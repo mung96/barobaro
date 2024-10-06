@@ -17,7 +17,7 @@ import { NEXT_BASE_URL } from '@/constants/api';
 import {
   useSocialMemberAction,
   useSocialMemberState,
-} from '@/stores/useSocialMember';
+} from '@/store/useSocialMember';
 import { SocialMemberResponse } from '@/types/apis/memberResponse';
 
 function SignUpFunnel() {
