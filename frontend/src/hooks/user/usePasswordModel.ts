@@ -49,7 +49,7 @@ export default function usePasswordChange(
           );
           setTimeout(() => router.replace('/mypage'), 1000);
         } else {
-          setStep(PasswordChangeStep.CONFIRMNEW);
+          setStep(PasswordChangeStep.NEW);
           setPasswordMessage('일치하지 않습니다. 비밀번호를 다시 입력해주세요');
         }
         break;
