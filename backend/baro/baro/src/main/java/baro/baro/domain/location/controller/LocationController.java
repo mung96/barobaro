@@ -29,19 +29,9 @@ public class LocationController {
     private final LocationService locationService;
 
     @GetMapping("/search/locations")
-    public ResponseEntity<?> searchLocation(@RequestParam("name") String name) {
-        List<SearchLocationDto> searchLocationDtoList = new ArrayList<>();
-
-        for(int i = 0; i < 10; i++) {
-            searchLocationDtoList.add(SearchLocationDto
-                    .builder()
-                    .locationId(11010530L + (10*i))
-                    .name("서울특별시 종로구 사직동(시군동)")
-                    .dong("사직동(동만)")
-                    .build());
-        }
-
-        SearchLocationRes result = new SearchLocationRes(searchLocationDtoList);
+    public ResponseEntity<?> searchLocation(@RequestParam("keyword") String keyword) {
+        Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
+        SearchLocationRes result = locationService.searchLocation(keyword, memberId);
 
         return new ResponseEntity<>(ResponseDto.success(SEARCH_LOCATION_OK, result), OK);
     }
