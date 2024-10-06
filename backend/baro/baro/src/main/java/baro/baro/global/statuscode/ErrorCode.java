@@ -28,6 +28,7 @@ public enum ErrorCode {
     LOCATION_NOT_FOUND(NOT_FOUND.value(), "지역을 찾을 수 없습니다."),
     DUPLICATED_LOCATION(BAD_REQUEST.value(), "중복된 지역을 등록할 수 없습니다."),
     INVALID_LOCATION(BAD_REQUEST.value(), "대표 지역을 설정해야합니다."),
+    MEMBER_LOCATION_NOT_FOUND(NOT_FOUND.value(), "등록된 지역만 대표으로 설정할 수 있습니다."),
 
     //계약
     INVALID_DATE_OPTION(BAD_REQUEST.value(),"유효하지 않은 날짜값이 있습니다."),

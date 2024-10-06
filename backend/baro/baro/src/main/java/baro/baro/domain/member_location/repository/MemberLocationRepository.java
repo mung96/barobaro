@@ -21,4 +21,15 @@ public interface MemberLocationRepository extends JpaRepository<MemberLocation, 
     @Query(value = "DELETE FROM member_location WHERE member_id = :memberId", nativeQuery = true)
     void deleteMemberLocations(@Param("memberId") Long memberId);
 
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE member_location " +
+            "SET is_main = CASE " +
+            "WHEN location_id = :locationId THEN true " +
+            "ELSE false END " +
+            "WHERE member_id = :memberId", nativeQuery = true)
+    void updateIsMainForMemberLocation(@org.springframework.data.repository.query.Param("memberId") Long memberId, @org.springframework.data.repository.query.Param("locationId") Long locationId);
+
+    @Query("SELECT COUNT(ml) > 0 FROM MemberLocation ml WHERE ml.member.id = :memberId AND ml.location.id = :locationId")
+    boolean existsByMemberIdAndLocationId(@org.springframework.data.repository.query.Param("memberId") Long memberId, @org.springframework.data.repository.query.Param("locationId") Long locationId);
 }
