@@ -1363,7 +1363,19 @@ class ProductControllerTest {
     @Test
     public void 빌려준_내역_리스트_조회_성공() throws Exception {
         // given
-
+        List<MyProductDto> res = List.of(
+                MyProductDto.builder()
+                        .productId(1L)
+                        .productMainImage("productMainImage")
+                        .title("title")
+                        .startDate(LocalDate.of(2024, 10, 4))
+                        .endDate(LocalDate.of(2024, 10, 14))
+                        .rentalFee(10000)
+                        .productStatus(IN_PROGRESS)
+                        .build()
+        );
+        when(productService.findOwnerProducts(anyLong()))
+                .thenReturn(new MyProductListRes(res));
 
         // when
         ResultActions actions = mockMvc.perform(
