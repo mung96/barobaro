@@ -26,13 +26,13 @@ public class ProductModifyReq {
 
     private Double longitude;
 
-    private List<ReturnType> returnTypeList;
+    private List<String> returnTypeList;
 
     private String returnAddress;
 
     private String content;
 
-    private Category category;
+    private String category;
 
     private ContractConditionReq contractConditionReq;
 }
