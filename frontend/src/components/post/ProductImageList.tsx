@@ -28,8 +28,8 @@ function ProductImageList({
   images,
 }: ProductImageListProps) {
   return (
-    <div className="flex gap-1 flex-col">
-      <p className="text-xs text-black">게시글 사진</p>
+    <div className="flex gap-1 flex-col relative">
+      <p className="text-base text-black">게시글 사진</p>
       <div className="flex gap-2">
         {images.length < 5 && (
           <label

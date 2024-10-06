@@ -7,3 +7,18 @@ export type ContractConditionRequest = {
   theftCriteria: number;
   refundDeadline: number;
 };
+
+export type ProductAddRequest = {
+  title: string;
+  startDate: Date;
+  endDate: Date;
+  rentalFee: number;
+  place: string;
+  latitude: number;
+  longitude: number;
+  returnTypeList: string[];
+  returnAddress: string;
+  content: string;
+  category: string;
+  contractConditionReq: ContractConditionRequest;
+};
