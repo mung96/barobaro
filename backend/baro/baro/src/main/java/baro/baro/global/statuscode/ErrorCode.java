@@ -26,6 +26,8 @@ public enum ErrorCode {
     LOCATION_IS_EMPTY(BAD_REQUEST.value(), "지역은 최소 1개 이상을 선택해야합니다."),
     INVALID_LOCATION_SIZE(BAD_REQUEST.value(), "지역은 최대 3개까지 선택가능합니다."),
     LOCATION_NOT_FOUND(NOT_FOUND.value(), "지역을 찾을 수 없습니다."),
+    DUPLICATED_LOCATION(BAD_REQUEST.value(), "중복된 지역을 등록할 수 없습니다."),
+    INVALID_LOCATION(BAD_REQUEST.value(), "대표 지역을 설정해야합니다."),
 
     //계약
     INVALID_DATE_OPTION(BAD_REQUEST.value(),"유효하지 않은 날짜값이 있습니다."),

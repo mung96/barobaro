@@ -3,6 +3,7 @@ package baro.baro.global.config;
 import baro.baro.global.utils.CertificateGeneratorUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -11,6 +12,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.security.KeyPair;
 import java.security.KeyStore;
+import java.security.Security;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 
@@ -24,6 +26,8 @@ public class KeyStoreConfig {
 
     @Bean
     public KeyStore keyStore() throws Exception {
+        Security.addProvider(new BouncyCastleProvider());
+
         File keyStoreFile = new File(KEYSTORE_PATH);
         KeyStore keyStore;
         if (keyStoreFile.exists()) {

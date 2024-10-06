@@ -8,9 +8,12 @@ import baro.baro.domain.location.dto.response.DefaultLocationRes;
 import baro.baro.domain.location.dto.response.MyLocationListRes;
 import baro.baro.domain.location.dto.response.LocationsAddRes;
 import baro.baro.domain.location.dto.response.SearchLocationRes;
+import baro.baro.domain.location.service.LocationService;
 import baro.baro.global.dto.ResponseDto;
+import baro.baro.global.oauth.jwt.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -22,6 +25,9 @@ import static org.springframework.http.HttpStatus.OK;
 @RestController
 @RequiredArgsConstructor
 public class LocationController {
+    private final JwtService jwtService;
+    private final LocationService locationService;
+
     @GetMapping("/search/locations")
     public ResponseEntity<?> searchLocation(@RequestParam("name") String name) {
         List<SearchLocationDto> searchLocationDtoList = new ArrayList<>();
@@ -42,40 +48,16 @@ public class LocationController {
 
     @PostMapping("/members/me/locations")
     public ResponseEntity<?> LocationsAdd(@RequestBody LocationsAddReq locationsAddReq) {
-        List<LocationDto> locations = new ArrayList<>();
-
-        for(int i = 0; i < 3; i++) {
-            LocationDto location = LocationDto.builder()
-                    .locationId(11010530L + (10*i))
-                    .name("서울특별시 종로구 사직동(시군동)")
-                    .dong("사직동(동만)")
-                    .isMain(i == 0)
-                    .build();
-
-            locations.add(location);
-        }
-
-        LocationsAddRes result = new LocationsAddRes(locations);
+        Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
+        LocationsAddRes result = locationService.addLocations(locationsAddReq, memberId);
 
         return new ResponseEntity<>(ResponseDto.success(LOCATION_SETTING_OK, result), OK);
     }
 
     @GetMapping("/members/me/locations")
     public ResponseEntity<?> LocationList() {
-        List<LocationDto> locations = new ArrayList<>();
-
-        for(int i = 0; i < 3; i++) {
-            LocationDto location = LocationDto.builder()
-                    .locationId(11010530L + (10*i))
-                    .name("서울특별시 종로구 사직동(시군동)")
-                    .dong("사직동(동만)")
-                    .isMain(i == 0)
-                    .build();
-
-            locations.add(location);
-        }
-
-        MyLocationListRes result = new MyLocationListRes(locations);
+        Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
+        MyLocationListRes result = locationService.findLocations(memberId);
 
         return new ResponseEntity<>(ResponseDto.success(LOCATION_LIST_OK, result), OK);
     }

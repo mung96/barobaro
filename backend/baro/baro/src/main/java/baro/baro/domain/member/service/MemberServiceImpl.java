@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.UUID;
 
+import static baro.baro.domain.location.validator.LocationValidator.validateLocationAddRequest;
 import static baro.baro.global.statuscode.ErrorCode.*;
 
 @Slf4j
@@ -59,13 +60,7 @@ public class MemberServiceImpl implements MemberService {
 
         Member member = signupReq.toEntity(uuid);
 
-        if(signupReq.getLocations() == null || signupReq.getLocations().isEmpty()) {
-            throw new CustomException(LOCATION_IS_EMPTY);
-        }
-
-        if(signupReq.getLocations().size() > 3) {
-            throw new CustomException(INVALID_LOCATION_SIZE);
-        }
+        validateLocationAddRequest(signupReq.getLocations());
 
         memberRepository.save(member);
 
