@@ -1,9 +1,6 @@
 import { kakaoInstance } from '@/apis/axiosInstance';
 import { END_POINT } from '@/constants/api';
-import {
-  KakaoLocalDongResponse,
-  KakaoLocalSearchResponse,
-} from '@/types/domains/location';
+import { KakaoLocalSearchResponse } from '@/types/domains/location';
 
 // eslint-disable-next-line import/prefer-default-export
 export const getLocationListByQuery = async (query: string) => {
