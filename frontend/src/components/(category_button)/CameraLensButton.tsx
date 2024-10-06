@@ -14,8 +14,12 @@ export default function CameraLensButton() {
 
   const handleClick = (delay: number) => {
     setIsClicked(!isClicked);
+    const queryParams = new URLSearchParams({
+      category: 'cameralens',
+      product: '',
+    });
     setTimeout(() => {
-      router.push('/search/category/cameralens');
+      router.push(`/search?${queryParams.toString()}`);
     }, delay);
   };
 
