@@ -179,4 +179,26 @@ public class ProductServiceImpl implements ProductService {
 
         return new MyProductListRes(products);
     }
+
+    @Override
+    public MyProductListRes findOwnerProducts(Long memberId) {
+        List<MyProductDto> products = chatRoomRepository.findByOwnerIdAndRentalStatusNot(memberId, AVAILABLE)
+                .stream()
+                .map(chatRoom -> {
+                    Optional<Product> product = productRepository.findById(chatRoom.getProduct().getId());
+                    if(product.isEmpty()) {
+                        return null;
+                    }
+
+                    Product existedProduct = product.get();
+                    List<String> imageUrls = productImageRepository.findSrcByProductId(existedProduct.getId());
+                    String productMainImage = imageUrls.getFirst();
+
+                    return MyProductDto.toDto(existedProduct, productMainImage);
+                })
+                .filter(Objects::nonNull)
+                .toList();
+
+        return new MyProductListRes(products);
+    }
 }

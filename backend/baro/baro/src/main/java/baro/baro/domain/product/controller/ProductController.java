@@ -131,41 +131,9 @@ public class ProductController {
 
     @GetMapping("/members/me/owner")
     public ResponseEntity<?> ownerProductList() {
-        List<MyProductDto> products = new ArrayList<>();
+        Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
 
-        for(int i = 0; i < 5; i++) {
-            Long id = 10000L + i;
-
-            MyProductDto dto = MyProductDto.builder()
-                    .productId(id)
-                    .productMainImage("대표 이미지 " + id)
-                    .title("제목 " + id)
-                    .startDate(LocalDate.of(2024, 1, 2))
-                    .endDate(LocalDate.of(2024, 5, 24))
-                    .rentalFee(100000)
-                    .productStatus(IN_PROGRESS)
-                    .build();
-
-            products.add(dto);
-        }
-
-        for(int i = 5; i < 10; i++) {
-            Long id = 10000L + i;
-
-            MyProductDto dto = MyProductDto.builder()
-                    .productId(id)
-                    .productMainImage("대표 이미지 " + id)
-                    .title("제목 " + id)
-                    .startDate(LocalDate.of(2024, 1, 2))
-                    .endDate(LocalDate.of(2024, 5, 24))
-                    .rentalFee(100000)
-                    .productStatus(FINISH)
-                    .build();
-
-            products.add(dto);
-        }
-
-        MyProductListRes result = new MyProductListRes(products);
+        MyProductListRes result = productService.findOwnerProducts(memberId);
 
         return new ResponseEntity<>(ResponseDto.success(OWNER_PRODUCT_LIST_OK, result), OK);
     }

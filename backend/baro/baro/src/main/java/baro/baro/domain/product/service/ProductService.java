@@ -1,7 +1,6 @@
 package baro.baro.domain.product.service;
 
 import baro.baro.domain.product.dto.ProductDetails;
-import baro.baro.domain.product.dto.ProductDto;
 import baro.baro.domain.product.dto.request.ProductAddReq;
 import baro.baro.domain.product.dto.response.MyProductListRes;
 import baro.baro.domain.product.dto.response.RecentlyUploadedListRes;
@@ -17,4 +16,5 @@ public interface ProductService {
     MyProductListRes findRentalProducts(Long memberId);
     RecentlyViewListRes recentlyViewedProducts(Long memberId);
     RecentlyUploadedListRes recentlyUpdatedProducts(Long memberId);
+    MyProductListRes findOwnerProducts(Long memberId);
 }
