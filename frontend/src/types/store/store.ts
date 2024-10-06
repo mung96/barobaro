@@ -21,3 +21,6 @@ export type CurrentStoreState = {
   };
 };
 
+export type AccountList = {
+
+}
