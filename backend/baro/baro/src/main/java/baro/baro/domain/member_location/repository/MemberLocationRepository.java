@@ -16,4 +16,9 @@ public interface MemberLocationRepository extends JpaRepository<MemberLocation, 
     void insertMemberLocations(@Param("memberId") Long memberId,
                                @Param("locationId") Long locationId,
                                @Param("isMain") boolean isMain);
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM member_location WHERE member_id = :memberId", nativeQuery = true)
+    void deleteMemberLocations(@Param("memberId") Long memberId);
+
 }
