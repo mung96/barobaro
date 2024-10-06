@@ -6,6 +6,8 @@ import { Location } from '@/types/domains/location';
 const useLocationModel = () => {
   const [locationList, setLocationList] = useState<Location[]>([]);
 
+  // TODO: 동 불러오는 API, 동만 할 수 있도록
+
   const searchLocationListByQuery = async (query: string) => {
     try {
       const locationListData = await getLocationListByQuery(query);
