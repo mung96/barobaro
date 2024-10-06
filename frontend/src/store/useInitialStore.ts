@@ -14,4 +14,7 @@ const useInitialStore = create<InitState>((set) => ({
   },
 }));
 
-export default useInitialStore;
+export const useSetInitialized = () =>
+  useInitialStore((store) => store.actions.setInitialized);
+export const useInitialized = () =>
+  useInitialStore((store) => store.isInitialized);
