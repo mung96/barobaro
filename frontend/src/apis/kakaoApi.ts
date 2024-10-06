@@ -15,13 +15,3 @@ export const getLocationListByQuery = async (query: string) => {
   );
   return response;
 };
-
-export const getDongListByQuery = async (query: string) => {
-  const response = await kakaoInstance.get<KakaoLocalDongResponse>(
-    END_POINT.ADDRESS,
-    {
-      params: { query, size: 5 },
-    },
-  );
-  return response;
-};
