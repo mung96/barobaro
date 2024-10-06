@@ -61,25 +61,35 @@ function RentalInfoInput({ onNext, onPrev }: Props) {
       <RentalDurationInput
         value={rentalDuration.value as DateRange}
         onSelect={rentalDuration.onChange}
+        isInvalid={rentalDurationState.invalid}
+        message={errors.rentalDuration?.message!}
       />
       <RentalFeeInput
         value={rentalFee.value as number}
         onChange={rentalFee.onChange}
+        isInvalid={rentalFeeState.invalid}
+        message={errors.rentalFee?.message!}
       />
 
       <RentalAddressInput
         value={rentalAddress.value as Location}
-        onChange={rentalAddress.onChange}
+        onChange={rentalAddress.onChange}  
+        isInvalid={rentalAddressState.invalid}
+        message={errors.rentalAddress?.message!}
       />
 
       <ReturnTypeList
         value={returnTypeList.value as string[]}
         onChange={returnTypeList.onChange}
+        isInvalid={returnTypeListState.invalid}
+        message={errors.returnTypeList?.message!}
       />
       {(returnTypeList.value as string[])?.includes('DELIVERY') && (
         <ReturnAddressInput
         value={returnAddress.value as Location}
           onChange={returnAddress.onChange}
+          isInvalid={returnAddressState.invalid}
+          message={errors.returnAddress?.message!}
         />
       )}
 
