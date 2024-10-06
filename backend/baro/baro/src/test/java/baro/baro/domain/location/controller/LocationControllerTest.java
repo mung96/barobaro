@@ -3,6 +3,7 @@ package baro.baro.domain.location.controller;
 import baro.baro.domain.location.dto.LocationDto;
 import baro.baro.domain.location.dto.request.DefaultLocationReq;
 import baro.baro.domain.location.dto.request.LocationsAddReq;
+import baro.baro.domain.location.dto.response.DefaultLocationRes;
 import baro.baro.domain.location.dto.response.LocationsAddRes;
 import baro.baro.domain.location.dto.response.MyLocationListRes;
 import baro.baro.domain.location.service.LocationService;
@@ -596,6 +597,12 @@ public class LocationControllerTest {
 
         String content = objectMapper.writeValueAsString(req);
 
+        LocationDto location = new LocationDto(110105340L,"서울특별시 종로구 사직동(시군동)", "사직동(동만)", true);
+
+        DefaultLocationRes result = new DefaultLocationRes(location);
+
+        when(locationService.updateDefaultLocation(any(), anyLong())).thenReturn(result);
+
         //when
         ResultActions actions = mockMvc.perform(
                 post("/members/me/default-location")
@@ -627,14 +634,118 @@ public class LocationControllerTest {
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
-                                                fieldWithPath("body.locations[].locationId").type(NUMBER)
+                                                fieldWithPath("body.location.locationId").type(NUMBER)
                                                         .description("지역 아이디"),
-                                                fieldWithPath("body.locations[].name").type(STRING)
+                                                fieldWithPath("body.location.name").type(STRING)
                                                         .description("시군동 이름"),
-                                                fieldWithPath("body.locations[].dong").type(STRING)
+                                                fieldWithPath("body.location.dong").type(STRING)
                                                         .description("동 이름"),
-                                                fieldWithPath("body.locations[].isMain").type(BOOLEAN)
+                                                fieldWithPath("body.location.isMain").type(BOOLEAN)
                                                         .description("대표 지역 여부")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("대표 지역 변경 Request"))
+                                .responseSchema(Schema.schema("대표 지역 변경 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 대표_지역_변경_실패_없는_지역() throws Exception {
+        // given
+        DefaultLocationReq req = new DefaultLocationReq();
+        req.setLocationId(11010541L);
+
+        String content = objectMapper.writeValueAsString(req);
+
+        when(locationService.updateDefaultLocation(any(), anyLong())).thenThrow(new CustomException(LOCATION_NOT_FOUND));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/members/me/default-location")
+                        .header("Authorization", jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(csrf())
+        );
+
+        //then
+        actions
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(LOCATION_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(LOCATION_NOT_FOUND.getMessage()))
+                .andDo(document(
+                        "대표 지역 변경 실패 - 없는 지역 PK",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Location API")
+                                .summary("대표 지역 변경 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        fieldWithPath("locationId").description("변경할 지역 ID")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("본문 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("대표 지역 변경 Request"))
+                                .responseSchema(Schema.schema("대표 지역 변경 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 대표_지역_변경_실패_내가_설정한_지역이_아닌_경우() throws Exception {
+        // given
+        DefaultLocationReq req = new DefaultLocationReq();
+        req.setLocationId(11010580L);
+
+        String content = objectMapper.writeValueAsString(req);
+
+        when(locationService.updateDefaultLocation(any(), anyLong())).thenThrow(new CustomException(MEMBER_LOCATION_NOT_FOUND));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/members/me/default-location")
+                        .header("Authorization", jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(csrf())
+        );
+
+        //then
+        actions
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(MEMBER_LOCATION_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(MEMBER_LOCATION_NOT_FOUND.getMessage()))
+                .andDo(document(
+                        "대표 지역 변경 실패 - 내가 설정한 지역이 아닌 경우",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Location API")
+                                .summary("대표 지역 변경 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        fieldWithPath("locationId").description("변경할 지역 ID")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("본문 없음")
                                         )
                                 )
                                 .requestSchema(Schema.schema("대표 지역 변경 Request"))
