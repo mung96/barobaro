@@ -1,10 +1,7 @@
 package baro.baro.domain.product.validator;
 
 import baro.baro.domain.product.dto.request.ProductAddReq;
-import baro.baro.global.exception.CustomException;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
+import baro.baro.domain.product.dto.request.ProductModifyReq;
 
 import static baro.baro.global.validator.GlobalValidator.*;
 
@@ -15,5 +12,9 @@ public class ProductValidator {
         validateCategory(productAddReq.getCategory());
     }
 
-
+    public static void validateProductModifyRequest(final ProductModifyReq productModifyReq) {
+        validateDateRangeOption(productModifyReq.getStartDate(), productModifyReq.getEndDate());
+        validateReturnTypes(productModifyReq.getReturnTypeList(), productModifyReq.getReturnAddress());
+        validateCategory(productModifyReq.getCategory());
+    }
 }
