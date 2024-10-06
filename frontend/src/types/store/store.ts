@@ -20,3 +20,4 @@ export type CurrentStoreState = {
     addLentProduct: (product: Product) => void;
   };
 };
+

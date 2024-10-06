@@ -7,22 +7,24 @@ import { useState } from 'react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import { AccountListRequest } from '@/types/apis/accountResquest';
+import { Account } from '@/types/apis/accountResquest';
 import AccountCard from '@/components/(bottomsheet)/AccountCard';
+import AddAccountSVG from '@/components/(SVG_component)/(mypage)/AddAccountSVG';
 
+// TODO : main == true 인 경우 맨 앞에 표시되도록
 export default function AccountCarousel() {
-  const accounts: AccountListRequest = [
+  const accounts: Account[] = [
     {
       bank: '국민은행',
       accountNumber: '3333-05-681789',
       accountId: 10000,
-      main: true,
+      main: false,
     },
     {
       bank: '신한은행',
       accountNumber: '3333-05-681789',
       accountId: 10001,
-      main: false,
+      main: true,
     },
     {
       bank: '국민은행',
@@ -32,9 +34,10 @@ export default function AccountCarousel() {
     },
   ];
   const [selectedAccount, setSelectedAccount] = useState<number | null>(null);
-  const handleAccountSelect = (accountId: number) => {
-    if (accountId === selectedAccount) setSelectedAccount(null);
-    else setSelectedAccount(accountId);
+  const handleAccountSelect = (accountInfo: Account) => {
+    if (accountInfo.accountId === selectedAccount) setSelectedAccount(null);
+    else if (accountInfo.main === false)
+      setSelectedAccount(accountInfo.accountId);
   };
 
   return (
@@ -51,10 +54,7 @@ export default function AccountCarousel() {
     >
       {accounts.map((account) => (
         <SwiperSlide key={account.accountId}>
-          <div
-            role="none"
-            onClick={() => handleAccountSelect(account.accountId)}
-          >
+          <div role="none" onClick={() => handleAccountSelect(account)}>
             <AccountCard
               bank={account.bank}
               accountNumber={account.accountNumber}
@@ -65,8 +65,8 @@ export default function AccountCarousel() {
         </SwiperSlide>
       ))}
       <SwiperSlide>
-        <div className="w-[300px] h-[200px] mx-auto rounded-[8px] bg-gray-100">
-          추가하기(설정)
+        <div className="w-[300px] h-[200px] mx-auto rounded-[8px] bg-gray-100 flex justify-center items-center">
+          <AddAccountSVG size={30} color="#D9D9D9" />
         </div>
       </SwiperSlide>
     </Swiper>

@@ -10,3 +10,10 @@ export type UserProfile = {
   email: string;
   name: string;
 };
+
+export type UserAccount = {
+  bank: string;
+  accountNumber: string;
+  accountId: number;
+  main: boolean;
+};
