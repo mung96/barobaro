@@ -6,10 +6,10 @@ enum PasswordChangeStep {
   NEW,
   CONFIRMNEW,
 }
-
+// TODO : 기존 유저의 경우 비밀번호를 받아오는 로직을 구현해야합니다.
 export default function usePasswordChange(
   needNewPassword: boolean,
-  realPassword: string,
+  realPassword?: string,
 ) {
   const router = useRouter();
   const [inputPassword, setInputPassword] = useState('');
@@ -19,7 +19,7 @@ export default function usePasswordChange(
   );
   const [passwordMessage, setPasswordMessage] = useState<string>(
     needNewPassword
-      ? '새로운 비밀번호를 입력해주세요'
+      ? '사용하실 비밀번호를 입력해주세요'
       : '현재 비밀번호를 입력해주세요',
   );
   const [isFinished, setIsFinished] = useState<boolean>(false);
@@ -37,7 +37,7 @@ export default function usePasswordChange(
       case PasswordChangeStep.NEW:
         setNewPassword(inputPassword);
         setStep(PasswordChangeStep.CONFIRMNEW);
-        setPasswordMessage('새로운 비밀번호를 다시 한 번 입력해주세요');
+        setPasswordMessage('사용하실 비밀번호를 다시 한 번 입력해주세요');
         break;
       case PasswordChangeStep.CONFIRMNEW:
         if (inputPassword === newPassword) {
@@ -50,9 +50,7 @@ export default function usePasswordChange(
           setTimeout(() => router.replace('/mypage'), 1000);
         } else {
           setStep(PasswordChangeStep.NEW);
-          setPasswordMessage(
-            '일치하지 않습니다. 새로운 비밀번호를 다시 입력해주세요',
-          );
+          setPasswordMessage('일치하지 않습니다. 비밀번호를 다시 입력해주세요');
         }
         break;
       default:
