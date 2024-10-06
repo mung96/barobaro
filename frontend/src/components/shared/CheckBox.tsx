@@ -86,10 +86,11 @@ function CheckBoxGroup({
     checked: boolean;
     value: string;
   }) => {
+    const currentValues = Array.isArray(values) ? values : [];
     if (checked) {
-      onChange(values.concat(value));
+      onChange(currentValues.concat(value));
     } else {
-      onChange(values.filter((v) => v !== value));
+      onChange(currentValues.filter((v) =>{return v !== value}));
     }
   };
 

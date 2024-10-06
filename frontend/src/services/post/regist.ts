@@ -1,10 +1,10 @@
 import { PostProcess } from '@/types/domains/product';
 
-export default function convertRegistStepToStepNumber(registStep: PostProcess) {
-  if (registStep === 'PostInfoStep') return 1;
-  if (registStep === 'RentalInfoStep') return 2;
-  if (registStep === 'ContractInfoStep') return 3;
-  if (registStep === 'ContractPreviewStep') return 4;
+export default function convertRegistStepToStepNumber(step: PostProcess) {
+  if (step === 'PostInfoStep') return 1;
+  if (step === 'RentalInfoStep') return 2;
+  if (step === 'ContractInfoStep') return 3;
+  if (step === 'ContractPreviewStep') return 4;
   return 0;
 }
 
