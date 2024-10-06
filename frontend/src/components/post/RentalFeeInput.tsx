@@ -1,14 +1,11 @@
-import { Control, useWatch } from 'react-hook-form';
 import Input from '@/components/shared/Input';
-import { RentalInfo } from '@/types/domains/product';
 
 type RentalFeeInputProps = {
-  control: Control<RentalInfo>;
+  value:number;
   onChange: (fee: string) => void;
 };
 
-const RentalFeeInput = ({ control, onChange }: RentalFeeInputProps) => {
-  const rentalFee = useWatch({ control, name: 'rentalFee' });
+const RentalFeeInput = ({ value, onChange }: RentalFeeInputProps) => {
   return (
     <div className="flex flex-col gap-1">
       <h3 className="text-xs">
@@ -18,7 +15,7 @@ const RentalFeeInput = ({ control, onChange }: RentalFeeInputProps) => {
         width="100%"
         height="32px"
         placeholder="가격을 입력해주세요."
-        value={rentalFee.toString()}
+        value={value.toString()}
         onChange={onChange}
         type="number"
       />

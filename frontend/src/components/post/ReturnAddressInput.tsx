@@ -7,14 +7,12 @@ import { RentalInfo } from '@/types/domains/product';
 import { Location } from '@/types/domains/location';
 
 type Props = {
-  control: Control<RentalInfo>;
+  value: Location;
   onChange: (address: Location) => void;
 };
 
-function ReturnAddressInput({ control, onChange }: Props) {
+function ReturnAddressInput({ value, onChange }: Props) {
   const [isOpenSearch, setIsOpenSearch] = useState(false);
-
-  const returnAddress = useWatch({ control, name: 'returnAddress' });
   return (
     <div className="flex flex-col gap-1">
       <p className="text-xs">반납 희망 장소</p>
@@ -22,7 +20,7 @@ function ReturnAddressInput({ control, onChange }: Props) {
         placeholder="위치 추가"
         width="100%"
         height="32px"
-        value={returnAddress.addressName}
+        value={value.addressName}
         onFocus={() => setIsOpenSearch(true)}
         readOnly
       />
