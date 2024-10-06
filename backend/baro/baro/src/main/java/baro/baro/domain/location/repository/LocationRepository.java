@@ -1,6 +1,7 @@
 package baro.baro.domain.location.repository;
 
 import baro.baro.domain.location.dto.LocationDto;
+import baro.baro.domain.location.dto.SearchLocationDto;
 import baro.baro.domain.location.entity.Location;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,4 +19,9 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
             "JOIN MemberLocation ml ON l.id = ml.location.id " +
             "WHERE ml.member.id = :memberId")
     List<LocationDto> findLocationsByMember(@Param("memberId") Long memberId);
+
+    @Query("SELECT new baro.baro.domain.location.dto.SearchLocationDto(l.id, l.name, l.dong) " +
+            "FROM Location l " +
+            "WHERE l.name LIKE %:keyword%")
+    List<SearchLocationDto> findLocationsByKeyword(@Param("keyword") String keyword);
 }
