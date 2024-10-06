@@ -10,7 +10,7 @@ type Props = {
 };
 
 function MyTownInfo({ onPrev, onNext }: Props) {
-  const { getValues, control, setValue } = useForm<MyTown>();
+  const { getValues } = useForm<MyTown>();
   return (
     <div className="flex flex-col gap-16 w-full">
       <div className="flex flex-col gap-2 w-full">
@@ -30,10 +30,7 @@ function MyTownInfo({ onPrev, onNext }: Props) {
           </p>
         </div>
       </div>
-      <MyTownSearch
-        control={control}
-        onChange={(value) => setValue('town', value)}
-      />
+      <MyTownSearch />
 
       <div className="flex  gap-6">
         <Button onClick={onPrev} width="100%" height="36px" color="gray">

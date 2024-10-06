@@ -1,24 +1,12 @@
-import { useEffect, useState } from 'react';
-import { Control, useWatch } from 'react-hook-form';
+import { useState } from 'react';
 import Input from '@/components/shared/Input';
 import Button from '@/components/shared/Button';
 import useLocationModel from '@/hooks/shared/useLocationModel';
-import { MyTown } from '@/types/domains/signup';
-import { Location } from '@/types/domains/location';
 
-type Props = {
-  control: Control<MyTown>;
-  onChange: (value: Location[]) => void;
-};
-
-function MyTownSearch({ control, onChange }: Props) {
+function MyTownSearch() {
   const { locationList, searchLocationListByQuery } = useLocationModel();
   const [keyWord, setKeyWord] = useState('');
-  const town = useWatch({ control, name: 'town' });
 
-  useEffect(() => {
-    console.log(town);
-  }, [town]);
   return (
     <section className="w-full justify-center items-center flex flex-col gap-7">
       <div className="mt-2 flex flex-col gap-3 w-full">
