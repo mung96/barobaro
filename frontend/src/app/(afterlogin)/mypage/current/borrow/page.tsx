@@ -5,7 +5,7 @@ import ItemList from '@/components/ItemList';
 
 export default function List() {
   return (
-    <NavBarLayout current="mypage">
+    <>
       <header>
         <Header
           pageName="마이페이지"
@@ -17,6 +17,6 @@ export default function List() {
       <main>
         <ItemList data="borrow" />
       </main>
-    </NavBarLayout>
+    </>
   );
 }

@@ -10,7 +10,7 @@ export default function AlarmSetting() {
   const [chatAlarm, setChatAlarm] = useState(false);
 
   return (
-    <NavBarLayout current="mypage">
+    <>
       <header className="flex flex-col items-center font-bold text-[15px] text-black-100">
         <Header pageName="" hasPrevBtn hasSearchBtn={false} hasAlertBtn />
         알람 수신 설정
@@ -51,6 +51,6 @@ export default function AlarmSetting() {
           </section>
         </section>
       </main>
-    </NavBarLayout>
+    </>
   );
 }

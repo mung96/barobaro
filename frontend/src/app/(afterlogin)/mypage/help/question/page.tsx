@@ -3,7 +3,7 @@ import Header from '@/components/Header';
 
 export default function FAQ() {
   return (
-    <NavBarLayout current="mypage">
+    <>
       <header>
         <Header
           pageName="마이페이지"
@@ -14,6 +14,6 @@ export default function FAQ() {
         <h1 className="text-[15px] font-bold text-center">자주 묻는 질문</h1>
       </header>
       <main>뭐야질문하지마요</main>
-    </NavBarLayout>
+    </>
   );
 }

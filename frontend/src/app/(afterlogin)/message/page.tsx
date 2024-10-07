@@ -5,7 +5,7 @@ import NavBarLayout from '@/layout/NavBarLayout';
 
 export default function Message() {
   return (
-    <NavBarLayout current="message">
+    <>
       <Header pageName="" hasPrevBtn={false} hasSearchBtn={false} hasAlertBtn />
       {/* axios 받아와서 map으로
         roomList.map((each) => (
@@ -13,6 +13,6 @@ export default function Message() {
         ))
       */}
       <Contents />
-    </NavBarLayout>
+    </>
   );
 }

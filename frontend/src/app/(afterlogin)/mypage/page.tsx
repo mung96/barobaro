@@ -6,7 +6,7 @@ import { faker } from '@faker-js/faker';
 
 export default function MyPage() {
   return (
-    <NavBarLayout current="mypage">
+    <>
       <Header pageName="" hasPrevBtn={false} hasSearchBtn={false} hasAlertBtn />
       <div className="flex flex-col justify-center">
         <Profile
@@ -19,6 +19,6 @@ export default function MyPage() {
           <MyPageContent />
         </div>
       </div>
-    </NavBarLayout>
+    </>
   );
 }
