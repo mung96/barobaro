@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -19,31 +19,13 @@ public class Contract {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "contract_id")
-    private int id;
+    private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Product product;
 
-    private String productName;
-
-    private String serialNumber;
-
-    private LocalDate startDate;
-
-    private LocalDate endDate;
-
-    private Integer rentalFee;
-
-    private String repairVendor;
-
-    private Integer overdueCriteria;
-
-    private Integer overdueFee;
-
-    private Integer theftCriteria;
-
-    private Integer refundDeadline;
+    private LocalDateTime createdAt;
 
     private String contractKeyName;
 }
