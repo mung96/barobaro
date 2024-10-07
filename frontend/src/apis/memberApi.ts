@@ -17,26 +17,6 @@ export const getSignUpInfo = async (email: string) => {
     return response;
 };
 
-export const postSignUp = async (data: SignUpMemberRequest, image: File) => {
-    const formData = new FormData();
-
-    // data를 Blob 타입으로 변환하여 dto 키로 추가
-    const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
-    formData.append('dto', blob);
-
-    // image를 file 키로 추가
-    formData.append('file', image);
-
-    console.dir(formData.get('dto'));
-    console.dir(formData.get('file'));
-
-    return await axiosInstance.post(END_POINT.SIGN_UP, formData, {
-        headers: {
-            'Content-Type': 'multipart/form-data',
-        },
-    });
-};
-
 export const postSignUp = async (data: SignUpMemberRequest, image: File|string) => {
   const formData = new FormData();
   const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
