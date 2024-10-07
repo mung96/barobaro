@@ -1,7 +1,9 @@
-import { useForm } from 'react-hook-form';
+import { useController, useForm } from 'react-hook-form';
 import Button from '@/components/shared/Button';
 import { MyTown } from '@/types/domains/signup';
 import MyTownSearch from '@/components/signup/MyTownSearch';
+import { Dong } from '@/types/apis/location';
+import { useEffect } from 'react';
 
 // type Props = {};
 type Props = {
@@ -10,7 +12,24 @@ type Props = {
 };
 
 function MyTownInfo({ onPrev, onNext }: Props) {
-  const { getValues } = useForm<MyTown>();
+  const {
+    getValues,
+    control,
+    formState: { errors, isValid },
+  } = useForm<MyTown>({ mode: 'onChange' });
+
+  const { field: town, fieldState: townState } = useController<MyTown>({
+    control,
+    name: 'town',
+    rules: {
+      required: '지역을 정해주세요.',
+      maxLength: { value: 3, message: '지역은 3개까지 설정 가능해요.' },
+    },
+  });
+
+  useEffect(()=>{
+    console.log(town.value)
+  },[town.value])
   return (
     <div className="flex flex-col gap-16 w-full">
       <div className="flex flex-col gap-2 w-full">
@@ -30,7 +49,7 @@ function MyTownInfo({ onPrev, onNext }: Props) {
           </p>
         </div>
       </div>
-      <MyTownSearch />
+      <MyTownSearch values={town.value as Dong[]} onChange={town.onChange}/>
 
       <div className="flex  gap-6">
         <Button onClick={onPrev} width="100%" height="36px" color="gray">
