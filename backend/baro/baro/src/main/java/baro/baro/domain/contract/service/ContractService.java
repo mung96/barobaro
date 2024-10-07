@@ -25,4 +25,6 @@ public interface ContractService {
     String generatePdf(PdfCreateDto pdfCreateDto);
 
     ContractSignedRes addOwnerSignature(SignatureAddReq signatureAddReq, Long ownerId);
+
+    ContractSignedRes addRentalSignature(SignatureAddReq signatureAddReq, Long rentalId);
 }
