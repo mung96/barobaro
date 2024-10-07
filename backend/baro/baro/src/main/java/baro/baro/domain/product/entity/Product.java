@@ -86,4 +86,51 @@ public class Product {
     public void updateContractCondition(ContractCondition contractCondition) {
         this.contractCondition = contractCondition;
     }
+
+    public void updateTitle(String title) {
+        this.title = title;
+    }
+
+    public void updateContent(String content) {
+        this.content = content;
+    }
+
+    public void updateStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public void updateEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public void updateRentalFee(Integer rentalFee) {
+        this.rentalFee = rentalFee;
+    }
+
+    public void updateCategory(Category category) {
+        this.category = category;
+    }
+
+    public void UpdateReturnTypes(List<ReturnType> returnTypes) {
+        this.returnTypes = returnTypes;
+    }
+
+    public void updatePlace(String place) {
+        this.place = place;
+    }
+
+    public void updateLocation(Double latitude, Double longitude, Long locationId, String dong) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.locationId = locationId;
+        this.dong = dong;
+    }
+
+    public void updateReturnAddress(String returnAddress) {
+        this.returnAddress = returnAddress;
+    }
+
+    public void updateLastModifiedAt() {
+        this.lastModifiedAt = LocalDateTime.now();
+    }
 }

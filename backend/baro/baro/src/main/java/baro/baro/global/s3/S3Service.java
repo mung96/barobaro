@@ -56,20 +56,6 @@ public abstract class S3Service {
         return amazonS3Client.getObject(bucket, fileName).getObjectContent();
     }
 
-    public void deleteFile(String fileUrl) throws CustomException {
-        try {
-            try {
-                String fileKey = fileUrl.replace(bucketUrl, "");
-                amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, fileKey));
-            } catch (AmazonServiceException e) {
-                log.info(e.getErrorMessage());
-                throw new CustomException(FILE_DELETE_FAIL);
-            }
-        } catch (Exception exception) {
-            throw new CustomException(FILE_DELETE_FAIL);
-        }
-    }
-
     protected String generateS3(String s3FileName) {
         if (!bucketUrl.endsWith("/")) {
             bucketUrl += "/";

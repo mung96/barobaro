@@ -2,6 +2,7 @@ package baro.baro.domain.product.service;
 
 import baro.baro.domain.product.dto.ProductDetails;
 import baro.baro.domain.product.dto.request.ProductAddReq;
+import baro.baro.domain.product.dto.request.ProductModifyReq;
 import baro.baro.domain.product.dto.response.MyProductListRes;
 import baro.baro.domain.product.dto.response.RecentlyUploadedListRes;
 import baro.baro.domain.product.dto.response.RecentlyViewListRes;
@@ -17,4 +18,5 @@ public interface ProductService {
     RecentlyViewListRes recentlyViewedProducts(Long memberId);
     RecentlyUploadedListRes recentlyUpdatedProducts(Long memberId);
     MyProductListRes findOwnerProducts(Long memberId);
+    ProductDetails modifyProduct(ProductModifyReq productModifyReq, List<MultipartFile> files, Long productId, Long memberId) throws IOException;
 }
