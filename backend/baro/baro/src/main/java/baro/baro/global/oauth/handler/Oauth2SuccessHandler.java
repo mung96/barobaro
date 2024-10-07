@@ -94,7 +94,7 @@ public class Oauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
             log.info("쿠키쿠키 넣었음");
 
-            response.sendRedirect(frontUrl);
+            response.sendRedirect(frontUrl+"home");
         }
     }
 }
