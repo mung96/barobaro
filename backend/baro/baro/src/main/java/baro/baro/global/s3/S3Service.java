@@ -1,9 +1,7 @@
 package baro.baro.global.s3;
 
 import baro.baro.global.exception.CustomException;
-import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
@@ -13,8 +11,8 @@ import org.springframework.beans.factory.annotation.Value;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 
-import static baro.baro.global.statuscode.ErrorCode.FILE_DELETE_FAIL;
 import static baro.baro.global.statuscode.ErrorCode.FILE_UPLOAD_FAIL;
 
 @Slf4j
@@ -54,6 +52,11 @@ public abstract class S3Service {
 
     protected InputStream downloadFile(String fileName) {
         return amazonS3Client.getObject(bucket, fileName).getObjectContent();
+    }
+
+    protected Date getlastModified(String fileName){
+        ObjectMetadata objectMetadata = amazonS3Client.getObjectMetadata(bucket, fileName);
+        return objectMetadata.getLastModified();
     }
 
     protected String generateS3(String s3FileName) {
