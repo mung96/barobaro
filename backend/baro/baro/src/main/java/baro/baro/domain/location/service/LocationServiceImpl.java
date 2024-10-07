@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static baro.baro.domain.location.validator.LocationValidator.validateLocationAddRequest;
 import static baro.baro.global.statuscode.ErrorCode.*;
@@ -39,20 +40,22 @@ public class LocationServiceImpl implements LocationService {
                         .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
         validateLocationAddRequest(locationsAddReq.getLocations());
-
         memberLocationRepository.deleteMemberLocations(memberId);
 
-        List<LocationDto> result = locationsAddReq.getLocations()
-                .stream()
-                .map(locationReq -> {
-                    Location location = locationRepository.findById(locationReq.getLocationId())
+        List<LocationDto> result = IntStream.range(0, locationsAddReq.getLocations().size())
+                .mapToObj(index -> {
+                    Long locationId = locationsAddReq.getLocations().get(index);
+
+                    Location location = locationRepository.findById(locationId)
                             .orElseThrow(() -> new CustomException(LOCATION_NOT_FOUND));
 
-                    memberLocationRepository.insertMemberLocations(member.getId(),
-                            location.getId(),
-                            locationReq.getIsMain());
-
-                    return LocationDto.toDto(location, locationReq.getIsMain());
+                    if (index == 0) {
+                        memberLocationRepository.insertMemberLocations(member.getId(), locationId, true);
+                        return LocationDto.toDto(location, true);
+                    } else {
+                        memberLocationRepository.insertMemberLocations(member.getId(), locationId, false);
+                        return LocationDto.toDto(location, false);
+                    }
                 })
                 .toList();
 

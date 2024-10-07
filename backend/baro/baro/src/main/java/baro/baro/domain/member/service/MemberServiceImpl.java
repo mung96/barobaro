@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.UUID;
+import java.util.stream.IntStream;
 
 import static baro.baro.domain.location.validator.LocationValidator.validateLocationAddRequest;
 import static baro.baro.global.statuscode.ErrorCode.ALREADY_EXIST_MEMBER;
@@ -74,15 +75,21 @@ public class MemberServiceImpl implements MemberService {
 
         log.info("지역 멤버DB에저장~");
 
-        signupReq.getLocations()
-                .forEach(location -> {
-                    locationRepository.findById(location.getLocationId())
+        IntStream.range(0, signupReq.getLocations().size())
+                        .forEach(index -> {
+                            Long locationId = signupReq.getLocations().get(index);
+
+                            locationRepository.findById(locationId)
                                     .orElseThrow(() -> new CustomException(LOCATION_NOT_FOUND));
 
-                    memberLocationRepository.insertMemberLocations(member.getId(),
-                            location.getLocationId(),
-                            location.getIsMain());
-                });
+                            if(index == 0) {
+                                memberLocationRepository.insertMemberLocations(member.getId(),
+                                        locationId, true);
+                            } else {
+                                memberLocationRepository.insertMemberLocations(member.getId(),
+                                        locationId, true);
+                            }
+                        });
 
         JwtRedis jwtRedis = signupReq.toRedis(uuid, member.getId(), jwtService.createRefreshToken(uuid));
         redisUtils.setData(uuid, jwtRedis);
