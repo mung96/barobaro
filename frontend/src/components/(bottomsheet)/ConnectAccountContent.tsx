@@ -1,11 +1,14 @@
+'use client';
+
 import AccountCarousel from '@/components/(bottomsheet)/AccountCarousel';
+
 
 type Props = {
   BottomSheetTitle: string;
 };
 
 export default function ConnectAccountContent({ BottomSheetTitle }: Props) {
-  return (
+    return (
     <section className="flex flex-col h-[360px]">
       <section className="mb-3">
         <div className="flex flex-row justify-center">

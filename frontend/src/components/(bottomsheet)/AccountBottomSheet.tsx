@@ -7,6 +7,7 @@ export default function AccountBottomSheet({
   closeBottomSheet,
   BottomSheetType,
 }: BottomSheetProps) {
+
   return (
     <section>
       <ConnectAccountBottomSheet
