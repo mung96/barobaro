@@ -90,10 +90,7 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public SearchLocationRes searchLocation(String keyword, Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
-
+    public SearchLocationRes searchLocation(String keyword) {
         List<SearchLocationDto> result = locationRepository.findLocationsByKeyword(keyword);
 
         return new SearchLocationRes(result);
