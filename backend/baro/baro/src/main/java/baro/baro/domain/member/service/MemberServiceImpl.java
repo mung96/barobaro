@@ -22,7 +22,8 @@ import java.io.IOException;
 import java.util.UUID;
 
 import static baro.baro.domain.location.validator.LocationValidator.validateLocationAddRequest;
-import static baro.baro.global.statuscode.ErrorCode.*;
+import static baro.baro.global.statuscode.ErrorCode.ALREADY_EXIST_MEMBER;
+import static baro.baro.global.statuscode.ErrorCode.LOCATION_NOT_FOUND;
 
 @Slf4j
 @Service
@@ -52,10 +53,14 @@ public class MemberServiceImpl implements MemberService {
             String newImageUrl = images3Service.upload(file,  "profile");
 
             signupReq.setProfileImage(newImageUrl);
+
+            log.info("이미지 파일 성공!");
         }
+        
 
         if(signupReq.getProfileImage() == null || signupReq.getProfileImage().isEmpty()) {
             signupReq.setProfileImage(bucketUrl + "profile/default.png");
+            log.info("없으니까 디폴트값!");
         }
 
         Member member = signupReq.toEntity(uuid);
