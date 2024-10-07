@@ -224,19 +224,6 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Transactional
-    public String generatePdf(PdfCreateDto pdfCreateDto) {
-        String generatedS3PdfUrl;
-        try{
-            generatedS3PdfUrl = pdfUtils.createPdf(pdfCreateDto);
-        }catch (Exception e){
-            log.info(Arrays.toString(e.getStackTrace()));
-            log.info("에러에러" + e.getMessage());
-            throw new CustomException(PDF_GENERATE_FAILED);
-        }
-        return generatedS3PdfUrl;
-    }
-
-    @Transactional
     public ContractApproveRes approveRequestWithoutContract(ContractApproveReq contractApproveReq, Long ownerId) {
         //존재하지 않는 채팅방
         ChatRoom chatRoom = chatRoomRepository.findById(contractApproveReq.getChatRoomId())
@@ -259,10 +246,7 @@ public class ContractServiceImpl implements ContractService {
             throw new CustomException(CONFLICT_WITH_OTHER);
         }
 
-        //이미 해당 상품에 진행중인 계약이 있음
-        Contract contract = product.getContract();
-
-        if (contract != null || !product.getProductStatus().equals(ProductStatus.AVAILABLE)) {
+        if (!product.getProductStatus().equals(ProductStatus.AVAILABLE)) {
             throw new CustomException(CONTRACT_IN_PROGRESS_BY_OTHERS);
         }
 
@@ -285,10 +269,25 @@ public class ContractServiceImpl implements ContractService {
         chatRoom.updateRentalStatus(RentalStatus.APPROVED);
 
         redisUtils.deleteData("contract_" + product.getId());
+
+        eventPublisher.publishEvent(new UnlockEvent(this, "contract_" + product.getId()));
         return ContractApproveRes.builder()
                 .chatRoomId(contractApproveReq.getChatRoomId())
                 .fileUrl(null)
                 .build();
+    }
+
+    @Transactional
+    public String generatePdf(PdfCreateDto pdfCreateDto) {
+        String generatedS3PdfUrl;
+        try {
+            generatedS3PdfUrl = pdfUtils.createPdf(pdfCreateDto);
+        } catch (Exception e) {
+            log.info(Arrays.toString(e.getStackTrace()));
+            log.info("에러에러" + e.getMessage());
+            throw new CustomException(PDF_GENERATE_FAILED);
+        }
+        return generatedS3PdfUrl;
     }
 
 }
