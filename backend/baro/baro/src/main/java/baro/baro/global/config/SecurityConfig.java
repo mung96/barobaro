@@ -23,7 +23,6 @@ import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.security.Security;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -58,7 +57,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                         configuration.setAllowedHeaders(Collections.singletonList("*"));
                         configuration.setMaxAge(3600L);
 
-                        configuration.setExposedHeaders(Arrays.asList("Authorization", "Set-Cookie"));
+                        configuration.setExposedHeaders(List.of("Authorization"));
 
                         return configuration;
                     }
