@@ -91,8 +91,6 @@ public class Oauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
             //accessToken
             CookieUtil.addCookie(response, "token", accessToken, 3600);
 
-            response.flushBuffer();
-
             log.info("쿠키쿠키 넣었음" + response);
 
             response.sendRedirect(frontUrl);
