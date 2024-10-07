@@ -6,7 +6,7 @@ type Props = {
   current: string;
 };
 
-export default function NavBarLayout({ children, current }: Props) {
+export default function NavBarLayout({ children }: Props) {
   return (
     <>
       {children}
