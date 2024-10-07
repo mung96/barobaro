@@ -1,14 +1,35 @@
 import { useState } from 'react';
 import Input from '@/components/shared/Input';
 import Button from '@/components/shared/Button';
-import useLocationModel from '@/hooks/shared/useLocationModel';
+import { getDongList } from '@/apis/locationApi';
+import { Dong } from '@/types/apis/location';
 
-function MyTownSearch() {
-  const { locationList, searchLocationListByQuery } = useLocationModel();
+type Props={
+  values:Dong[],
+  onChange:(values:Dong[])=>void
+}
+
+function MyTownSearch({values,onChange}:Props) {
   const [keyWord, setKeyWord] = useState('');
+  const [searchResult, setSearchResult] = useState<Dong[]>([]);
 
+  const searchDongList = async (keyword:string) =>{
+    const response = await getDongList({keyword:keyword});
+    setSearchResult(response.data.body.result)
+  }
+  const valuesArray = Array.isArray(values) ? values : [];
   return (
     <section className="w-full justify-center items-center flex flex-col gap-7">
+      <div className='flex w-1/2 gap-5 items-start justify-start'>
+      {valuesArray.map((location) => (
+          <div
+            role="none"
+            className="border-2 rounded-sm flex flex-col gap-[1px] px-3 py-2"
+          >
+            <p className="text-base">{location?.dong}</p>
+          </div>
+        ))}
+      </div>
       <div className="mt-2 flex flex-col gap-3 w-full">
         <div className="flex gap-2 w-full">
           <Input
@@ -21,19 +42,18 @@ function MyTownSearch() {
           <Button
             width="72px"
             height="32px"
-            onClick={() => searchLocationListByQuery(keyWord)}
+            onClick={() => searchDongList(keyWord)}
           >
             검색
           </Button>
         </div>
-
-        {locationList.map((location) => (
+        {searchResult.map((location) => (
           <div
             role="none"
-            className="border-2 rounded-sm flex flex-col gap-[2px] px-3 py-2"
-            // onClick={() => onChange(location.addressName)}
+            className="border-2 rounded-sm flex flex-col gap-[1px] px-3 py-2"
+            onClick={()=>onChange([...valuesArray,location])}
           >
-            <p className="text-base">{location.addressName}</p>
+            <p className="text-base">{location.name}</p>
           </div>
         ))}
       </div>

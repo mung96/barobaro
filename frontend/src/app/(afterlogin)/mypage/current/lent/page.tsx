@@ -1,4 +1,3 @@
-import NavBarLayout from '@/layout/NavBarLayout';
 // import ItemList from '@/components/ItemList';import Header from '@/components/Header';
 import ItemList from '@/components/ItemList';
 import Header from '@/components/Header';
@@ -6,7 +5,7 @@ import Header from '@/components/Header';
 export default function List() {
 
   return (
-    <NavBarLayout current="mypage">
+    <>
       <header>
         <Header
           pageName="마이페이지"
@@ -18,6 +17,6 @@ export default function List() {
       <main>
         <ItemList data="lent" />
       </main>
-    </NavBarLayout>
+    </>
   );
 }

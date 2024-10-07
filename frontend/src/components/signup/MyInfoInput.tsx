@@ -5,6 +5,9 @@ import Button from '@/components/shared/Button';
 import useFileModel from '@/hooks/shared/useFileModel';
 import NicknameInput from '@/components/signup/NicknameInput';
 import { SocialMember } from '@/types/domains/member';
+import { useEffect } from 'react';
+import { useSocialMemberAction, useSocialMemberState } from '@/store/useSocialMember';
+import { SocialName } from '@/types/social/social';
 
 type Props = {
   onNext: (myInfoData: MyInfo) => void;
@@ -29,6 +32,8 @@ function MyInfoInput({ onNext, member }: Props) {
       maxLength: { value: 10, message: '닉네임은 10자 이하 입력해주세요' },
     },
   });
+  const socialMember = useSocialMemberState();
+  const setSocialMember = useSocialMemberAction();
 
   return (
     <div className="flex flex-col gap-16 w-full">
@@ -52,7 +57,7 @@ function MyInfoInput({ onNext, member }: Props) {
       <section className="w-full justify-center items-center flex flex-col gap-7">
         <label className="bg-gray-500 w-[89px] h-[89px] rounded-full relative">
           <img
-            src={file ? (file as string) : member?.profileImage}
+            src={file ? (file as string ) : member?.profileImage as string}
             alt="Profile preview"
             style={{ objectFit: 'cover' }}
             className="border rounded-full border-gray-500 w-full h-full"
@@ -61,7 +66,15 @@ function MyInfoInput({ onNext, member }: Props) {
             type="file"
             accept="image/*"
             className="hidden"
-            onChange={(event) => changeFile(Array.from(event.target.files!))}
+            onChange={(event) => {
+              changeFile(Array.from(event.target.files!))
+              setSocialMember({
+                ...socialMember,
+                nickName: nickname.value,
+                email: member.email,
+                providerType: member.providerType as SocialName,
+                profileImage: event.target.files![0] ,
+              })}}
           />
           <div className="bg-gray-400 w-[25px] h-[25px] rounded-full absolute bottom-0 right-0 flex items-center justify-center">
             <CameraBody fill="#747483" width="15.2" height="12.67" />
