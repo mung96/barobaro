@@ -13,12 +13,13 @@ import { MyInfo, MyInfoStep, MyTownStep } from '@/types/domains/signup';
 import convertSignUpStepToStepNumber from '@/services/signup/convert';
 import MyInfoInput from '@/components/signup/MyInfoInput';
 import MyTownInfo from '@/components/signup/MyTownInput';
-import { NEXT_BASE_URL } from '@/constants/api';
+import { END_POINT, NEXT_BASE_URL } from '@/constants/api';
 import {
   useSocialMemberAction,
   useSocialMemberState,
 } from '@/store/useSocialMember';
 import { SocialMemberResponse } from '@/types/apis/memberResponse';
+import { axiosInstance } from '@/apis/axiosInstance';
 
 function SignUpFunnel() {
   const [direction, setDirection] = useState<DirectionType>('forward');
@@ -57,6 +58,19 @@ function SignUpFunnel() {
     getResponse();
   }, []);
 
+  // useEffect(() => {
+  //   const getResponse = async () => {
+  //     try {
+  //       const response = await axiosInstance.get(
+  //         END_POINT.MY_PROFILE,
+  //       );
+  //      console.log(response);
+  //     } catch (err) {
+  //       console.error('API 요청 중 오류 발생:', err);
+  //     }
+  //   };
+  //   getResponse();
+  // }, []);
 
 
   return (
