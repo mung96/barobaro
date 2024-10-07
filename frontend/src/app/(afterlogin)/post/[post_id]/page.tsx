@@ -23,15 +23,6 @@ export default function PostDetail() {
     writerProfileImage: faker.image.urlLoremFlickr(),
     writerNickname: 'UserNicknameExample',
   };
-  //
-  // const imageData = {
-  //   imageList: [
-  //     faker.image.urlLoremFlickr(),
-  //     faker.image.urlLoremFlickr(),
-  //     faker.image.urlLoremFlickr(),
-  //   ],
-  // };
-
   const layoutData = {
     startDate: '24.10.21',
     endDate: '24.10.22',
@@ -73,8 +64,9 @@ export default function PostDetail() {
           <Profile
             hasEmail={false}
             hasEditBtn={false}
-            writerProfileImage={writerData.writerProfileImage}
-            writerNickname={writerData.writerNickname}
+            url={writerData.writerProfileImage}
+            nickname={writerData.writerNickname}
+            email=""
           />
           <div className="flex-1" />
           {writerData.writerId === userId ? (
