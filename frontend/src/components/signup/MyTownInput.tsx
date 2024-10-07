@@ -10,7 +10,7 @@ import {  useSocialMemberState } from '@/store/useSocialMember';
 import { SocialMember } from '@/types/domains/member';
 import { SignUpMemberRequest } from '@/types/apis/memberRequest';
 import { useRouter } from 'next/navigation';
-import useAxios from '@/hooks/shared/useAxios';
+import { convertSignUpDateToRequest } from '@/services/signup/convert';
 
 type Props = {
   onPrev: () => void;
@@ -31,15 +31,7 @@ function MyTownInfo({ onPrev }: Props) {
     },
   });
   const socialMember = useSocialMemberState();
-  const convertSignUpDateToRequest = (member:SocialMember,data:MyTown):SignUpMemberRequest=>{
-    const request ={
-      email: member.email,
-      providerType: member.providerType,
-      nickname: member.nickName,
-      locations: data.town?.map(location=>(location.locationId))
-    }
-    return request;
-  }
+
   const signUp = async () =>{
     try{
       const response =  await postSignUp(convertSignUpDateToRequest(socialMember!,getValues()),socialMember?.profileImage! as File)
