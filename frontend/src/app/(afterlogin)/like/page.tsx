@@ -1,12 +1,28 @@
+'use client';
+
 import Header from '@/components/Header';
 import ItemList from '@/components/ItemList';
+import { getFavoriteProducts } from "@/apis/productApi";
+import { useEffect} from "react";
+import { useCurrentActions } from "@/store/useCurrentStore";
 
 export default function Like() {
-    // TODO : API로 좋아요 누른 것들의 목록을 불러와야 한다.
-  return (
+    const currentStoreState = useCurrentActions()
+    const setLikeProducts = currentStoreState.setLikeList
+    useEffect(() => {
+        const getFav = async () => {
+            const res = await getFavoriteProducts()
+            console.log(res)
+            setLikeProducts(res)
+        }
+        getFav()
+    })
+
+    return (
     <>
       <Header pageName="관심내역" hasPrevBtn hasSearchBtn={false} hasAlertBtn />
       <ItemList data="like" />
+        sss
     </>
   );
 }

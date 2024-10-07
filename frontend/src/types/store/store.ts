@@ -11,11 +11,14 @@ type Product = {
 export type CurrentStoreState = {
   borrowProducts: Product[];
   lentProducts: Product[];
+  likeProducts: Product[];
   actions: {
     setBorrowList: (borrowList: Product[]) => void;
     setLentList: (lentList: Product[]) => void;
+    setLikeList: (likeList: Product[]) => void;
     addBorrowProduct: (product: Product) => void;
     addLentProduct: (product: Product) => void;
+    addLikeProduct: (product: Product) => void;
   };
 };
 
