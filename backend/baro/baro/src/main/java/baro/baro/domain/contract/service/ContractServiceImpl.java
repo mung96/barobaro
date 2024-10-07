@@ -14,7 +14,9 @@ import baro.baro.domain.contract.dto.response.ContractApproveRes;
 import baro.baro.domain.contract.dto.response.ContractOptionDetailRes;
 import baro.baro.domain.contract.dto.response.ContractSignedRes;
 import baro.baro.domain.contract.entity.Contract;
+import baro.baro.domain.contract.entity.SignatureInformation;
 import baro.baro.domain.contract.repository.ContractRepository;
+import baro.baro.domain.contract.repository.SignatureInformationRepository;
 import baro.baro.domain.member.entity.Member;
 import baro.baro.domain.member.entity.Pin;
 import baro.baro.domain.member.repository.MemberRepository;
@@ -59,6 +61,7 @@ public class ContractServiceImpl implements ContractService {
     private final CertificateUtils certificateUtils;
     private final MemberRepository memberRepository;
     private final PdfS3Service pdfS3Service;
+    private final SignatureInformationRepository signatureInformationRepository;
 
     @Transactional
     public void addContractRequest(ContractRequestDto contractRequestDto, Long rentalId) {
@@ -358,6 +361,7 @@ public class ContractServiceImpl implements ContractService {
         //pin이 설정되지 않거나 유효하지 않은 경우
         Pin pin = pinRepository.findByMemberId(ownerId)
                 .orElseThrow(() -> new CustomException(PIN_NOT_FOUND));
+
         if (!pin.getPinNumber().equals(signatureAddReq.getPinNumber())) {
             throw new CustomException(NOT_VALID_PIN_NUMBER);
         }
@@ -370,7 +374,7 @@ public class ContractServiceImpl implements ContractService {
         //이미 해당 상품에 진행중인 계약이 없음
         Contract contract = product.getContract();
 
-        if (contract == null || !product.getProductStatus().equals(ProductStatus.IN_PROGRESS)) {
+        if (contract == null || !chatRoom.getRentalStatus().equals(RentalStatus.NEED_OWNER_SIGN) || !product.getProductStatus().equals(ProductStatus.IN_PROGRESS)) {
             throw new CustomException(CONTRACT_NOT_FOUND);
         }
 
@@ -398,6 +402,97 @@ public class ContractServiceImpl implements ContractService {
         LocalDateTime signedAt = pdfS3Service.lastModified(signedPdfUrl.substring(signedPdfUrl.lastIndexOf("/") + 1));
         //채팅방의 거래 상태 업데이트. 상품 상태의 경우, 소유자의 서명과 함께 업데이트됨.
         chatRoom.updateRentalStatus(RentalStatus.OWNER_SIGNED);
+
+        //signature_information테이블에 서명정보 추가
+        SignatureInformation signatureInformation = SignatureInformation.builder()
+                .contract(contract)
+                .memberId(ownerId)
+                .signedAt(signedAt)
+                .build();
+        signatureInformationRepository.save(signatureInformation);
+
+        //redis 에서 계약 요청들 삭제
+        redisUtils.deleteData("contract_" + product.getId());
+
+        //분산락 해제
+        eventPublisher.publishEvent(new UnlockEvent(this, "contract_" + product.getId()));
+        return ContractSignedRes.builder()
+                .chatRoomId(signatureAddReq.getChatRoomId())
+                .fileUrl(signedPdfUrl)
+                .signedAt(signedAt)
+                .build();
+    }
+
+    public ContractSignedRes addRentalSignature(final SignatureAddReq signatureAddReq, final Long rentalId) {
+        //존재하지 않는 채팅방
+        ChatRoom chatRoom = chatRoomRepository.findById(signatureAddReq.getChatRoomId())
+                .orElseThrow(() -> new CustomException(CHATROOM_NOT_FOUND));
+
+        //채팅 참여자가 아님
+        if (!Objects.equals(chatRoom.getRental().getId(), rentalId)) {
+            throw new CustomException(CHATROOM_NOT_ENROLLED);
+        }
+
+        Product product = chatRoom.getProduct();
+
+        //상품이 존재하지 않음
+        if (product == null) {
+            throw new CustomException(PRODUCT_NOT_FOUND);
+        }
+
+        //pin이 설정되지 않거나 유효하지 않은 경우
+        Pin pin = pinRepository.findByMemberId(rentalId)
+                .orElseThrow(() -> new CustomException(PIN_NOT_FOUND));
+        if (!pin.getPinNumber().equals(signatureAddReq.getPinNumber())) {
+            throw new CustomException(NOT_VALID_PIN_NUMBER);
+        }
+
+        //분산락 획득
+        if (!redisUtils.lock("contract_" + product.getId(), 3000L)) {
+            throw new CustomException(CONFLICT_WITH_OTHER);
+        }
+
+        //이미 해당 상품에 진행중인 계약이 없음
+        Contract contract = product.getContract();
+
+        if (contract == null || !chatRoom.getRentalStatus().equals(RentalStatus.OWNER_SIGNED) || !product.getProductStatus().equals(ProductStatus.IN_PROGRESS)) {
+            throw new CustomException(CONTRACT_NOT_FOUND);
+        }
+
+        PrivateKey rentalPk;
+
+        try {
+            rentalPk = certificateUtils.getPrivateKey(Long.toString(rentalId), pin.getKeystorePassword());
+        } catch (UnrecoverableKeyException | KeyStoreException | NoSuchAlgorithmException e) {
+            throw new CustomException(PRIVATE_KEY_EXCEPTION);
+        }
+
+        X509Certificate rentalCert;
+        try {
+            rentalCert = certificateUtils.getCertificate(Long.toString(rentalId));
+        } catch (KeyStoreException e) {
+            throw new CustomException(CERTIFICATE_EXCEPTION);
+        }
+
+        String signedPdfUrl;
+        try {
+            signedPdfUrl = pdfUtils.signPdfAndSaveUsingBase64Signature(signatureAddReq.getS3FileUrl(), "rentalSignature", rentalPk, rentalCert, signatureAddReq.getSignatureData());
+        } catch (IOException | GeneralSecurityException e) {
+            throw new CustomException(EXCEPTION_DURING_SIGNING);
+        }
+        LocalDateTime signedAt = pdfS3Service.lastModified(signedPdfUrl.substring(signedPdfUrl.lastIndexOf("/") + 1));
+        //채팅방의 거래 상태 업데이트. 상품 상태의 경우, 소유자의 서명과 함께 업데이트됨.
+        chatRoom.updateRentalStatus(RentalStatus.APPROVED);
+        product.updateProductStatus(ProductStatus.APPROVED);
+
+        //signature_information테이블에 서명정보 추가
+        SignatureInformation signatureInformation = SignatureInformation.builder()
+                .contract(contract)
+                .memberId(rentalId)
+                .signedAt(signedAt)
+                .build();
+        signatureInformationRepository.save(signatureInformation);
+
         //redis 에서 계약 요청들 삭제
         redisUtils.deleteData("contract_" + product.getId());
 

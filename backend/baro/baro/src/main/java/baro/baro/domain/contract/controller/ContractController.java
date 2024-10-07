@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import static baro.baro.global.statuscode.ErrorCode.INVALID_APPROVE_TYPE;
 import static baro.baro.global.statuscode.SuccessCode.*;
@@ -75,18 +74,16 @@ public class ContractController {
     @PostMapping("/sign/owner")
     public ResponseEntity<?> addOwnerSignature(@RequestBody SignatureAddReq signatureAddReq) {
         Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
-        ContractSignedRes result = contractService.addOwnerSignature(signatureAddReq,memberId);
+        ContractSignedRes result = contractService.addOwnerSignature(signatureAddReq, memberId);
 
         return new ResponseEntity<>(ResponseDto.success(CONTRACT_SIGNED_OK, result), OK);
     }
 
     @PostMapping("/sign/rental")
     public ResponseEntity<?> addRentalSignature(@RequestBody SignatureAddReq signatureAddReq) {
-        ContractSignedRes result = ContractSignedRes.builder()
-                .chatRoomId(signatureAddReq.getChatRoomId())
-                .fileUrl("http://test.url/test_B_signed.pdf")
-                .signedAt(LocalDateTime.now())
-                .build();
+        Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
+        ContractSignedRes result = contractService.addRentalSignature(signatureAddReq, memberId);
+
         return new ResponseEntity<>(ResponseDto.success(CONTRACT_SIGNED_OK, result), OK);
     }
 
