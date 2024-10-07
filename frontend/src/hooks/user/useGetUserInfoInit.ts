@@ -4,7 +4,6 @@ import { useSetInitialized, useInitialized } from '@/store/useInitialStore';
 import { useInitAccounts } from '@/store/useAccountStore';
 import {getLentProducts, getBorrowProducts} from "@/apis/productApi";
 import {getUserAccounts} from "@/apis/accountApi";
-import {getProfile} from "@/apis/profileApi";
 import accountSort from "@/services/account/accountsort";
 
 const useInitializeData = () => {
@@ -19,7 +18,6 @@ const useInitializeData = () => {
         try {
           // 실제 API 호출을 시뮬레이션합니다.
           // await CurrentAPI()
-          const userProfile = await getProfile();
           const userLentProducts = await getLentProducts()
           const userBorrowProducts = await getBorrowProducts()
           const userAccountList = await getUserAccounts()
