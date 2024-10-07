@@ -119,7 +119,7 @@ public class ContractController {
     }
 
     @PostMapping("/test/generate-pdf")
-    public ResponseEntity<?> generatePdf(){
+    public ResponseEntity<?> generatePdf() {
         PdfCreateDto tmp = PdfCreateDto.builder()
                 .chatRoomId(1L)
                 .ownerName("주인")
@@ -139,7 +139,7 @@ public class ContractController {
                 .refundDeadline(4)
                 .build();
         String url = contractService.generatePdf(tmp);
-        return new ResponseEntity<>(ResponseDto.success(PDF_GENERATE_OK,url),OK);
+        return new ResponseEntity<>(ResponseDto.success(PDF_GENERATE_OK, url), OK);
 
     }
 }
