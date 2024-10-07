@@ -1,4 +1,3 @@
-import NavBarLayout from '@/layout/NavBarLayout';
 import Header from '@/components/Header';
 import ItemList from '@/components/ItemList';
 

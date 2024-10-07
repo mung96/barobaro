@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import NavBarLayout from '@/layout/NavBarLayout';
 import BlueToggle from '@/components/(toggle)/BlueToggle';
 import Header from '@/components/Header';
 

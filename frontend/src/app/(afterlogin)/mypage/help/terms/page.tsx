@@ -1,4 +1,3 @@
-import NavBarLayout from '@/layout/NavBarLayout';
 import Header from '@/components/Header';
 
 export default function TermsPage() {
