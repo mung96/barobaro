@@ -34,6 +34,9 @@ public class MemberController {
     public ResponseEntity<?> signUp(@RequestPart(value = "dto") SignupReq signupReq,
                                     @RequestPart(value = "file") MultipartFile file,
                                     HttpServletResponse response) throws IOException {
+
+        log.info("회원가입들어왔슴니다!");
+        
         isInvalidNickname(signupReq.getNickname());
 
         String accessToken = memberService.signup(signupReq, file);
