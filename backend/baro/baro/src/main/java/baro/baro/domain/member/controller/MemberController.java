@@ -41,7 +41,7 @@ public class MemberController {
 
         String accessToken = memberService.signup(signupReq, file);
 
-        CookieUtil.addCookie(response, "token", accessToken, 300);
+        CookieUtil.addCookie(response, "token", accessToken, 3600);
 
         return new ResponseEntity<>(ResponseDto.success(MEMBER_CREATED, null), CREATED);
     }
