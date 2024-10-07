@@ -7,6 +7,10 @@ import UploadVideo from '@/components/(SVG_component)/(message)/(chat)/UploadVid
 
 import Money from '@/components/(SVG_component)/(message)/(chat)/Money';
 import useProcessButtonEventModal from '@/hooks/message/chat/useProcessButtonEventModal';
+import ContractRequestModal from '@/components/modal/ContractRequestModal';
+import ContractConditionModal from '@/components/modal/ContractConditionModal';
+import ChatAlertModal from '@/components/modal/ChatAlertModal';
+import ChatPayModal from '@/components/modal/ChatPayModal';
 import PROCESSTYPES from './ProcessTypes';
 
 type ProcessButtonParam = {
@@ -23,18 +27,26 @@ const ProcessButton: FC<ProcessButtonParam> = ({
   isOwner,
   hasContract,
 }) => {
-  const { requestEvent, receivedEvent, paidEvent } =
+  const { modalType, modalOpen, modalClose, modalTrigger } =
     useProcessButtonEventModal();
 
   return (
     <>
       {/* 계약 프로세스와 사용자 역할(파라메터 값)에 따라 노출되는 버튼 결정 */}
-
-      <button type="button" className={buttonStyle}>
+      <button
+        type="button"
+        className={buttonStyle}
+        onClick={() => modalTrigger('condition')}
+      >
         <Clipboard />
         <span>&nbsp;{hasContract ? '계약조건' : '반납방법'}</span>
       </button>
-
+      {modalType === 'condition' && (
+        <ContractConditionModal
+          isOpen={modalOpen}
+          onRequestClose={modalClose}
+        />
+      )}
       {!isOwner &&
         process >= PROCESSTYPES.CONTACT &&
         process <= PROCESSTYPES.ACCEPTED_PACK && (
@@ -42,7 +54,7 @@ const ProcessButton: FC<ProcessButtonParam> = ({
             type="button"
             className={buttonStyle}
             disabled={process >= PROCESSTYPES.REQUESTED}
-            onClick={requestEvent}
+            onClick={() => modalTrigger('request')}
           >
             <AddMessage />
             <span>
@@ -51,6 +63,15 @@ const ProcessButton: FC<ProcessButtonParam> = ({
             </span>
           </button>
         )}
+      {!isOwner &&
+        process === PROCESSTYPES.CONTACT &&
+        modalType === 'request' && (
+          <ContractRequestModal
+            isOpen={modalOpen}
+            onRequestClose={modalClose}
+            isFromStatusMessage={false}
+          />
+        )}
       {((!isOwner && process === PROCESSTYPES.PAID_PACK) ||
         (isOwner && process === PROCESSTYPES.SIGNED_PACK)) && (
         <button type="button" className={buttonStyle}>
@@ -58,7 +79,6 @@ const ProcessButton: FC<ProcessButtonParam> = ({
           <span>&nbsp;영상제출</span>
         </button>
       )}
-
       {((!isOwner && process >= PROCESSTYPES.SIGNED_DIRECT) ||
         (isOwner && process >= PROCESSTYPES.PAID_DIRECT)) && (
         <>
@@ -69,7 +89,7 @@ const ProcessButton: FC<ProcessButtonParam> = ({
               (!isOwner && process > PROCESSTYPES.SIGNED_PACK) ||
               (isOwner && process > PROCESSTYPES.PAID_PACK)
             }
-            onClick={receivedEvent}
+            onClick={() => modalTrigger('received')}
           >
             <Checked />
             <span>
@@ -80,6 +100,13 @@ const ProcessButton: FC<ProcessButtonParam> = ({
                 : '완료'}
             </span>
           </button>
+          {modalType === 'received' && (
+            <ChatAlertModal
+              isOpen={modalOpen}
+              onRequestClose={modalClose}
+              type={modalType}
+            />
+          )}
           {((!isOwner && process === PROCESSTYPES.SIGNED_PACK) ||
             (isOwner && process === PROCESSTYPES.PAID_PACK)) && (
             <button type="button" className={buttonStyle}>
@@ -89,17 +116,19 @@ const ProcessButton: FC<ProcessButtonParam> = ({
           )}
         </>
       )}
-
       {!isOwner && process >= PROCESSTYPES.RECEIVED_DIRECT && (
         <button
           type="button"
           className={buttonStyle}
           disabled={process >= PROCESSTYPES.PAID_DIRECT}
-          onClick={paidEvent}
+          onClick={() => modalTrigger('paid')}
         >
           <Money />
           <span>&nbsp;송금{process >= PROCESSTYPES.PAID_DIRECT && '완료'}</span>
         </button>
+      )}
+      {modalType === 'paid' && (
+        <ChatPayModal isOpen={modalOpen} onRequestClose={modalClose} />
       )}
     </>
   );
