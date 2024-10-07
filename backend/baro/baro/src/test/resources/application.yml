@@ -33,6 +33,11 @@ spring:
       mode: always
       data-locations: classpath:sql/data.sql
 
+  elasticsearch:
+    username: ${ELASTIC_USER}
+    password: ${ELASTIC_PASSWORD}
+    uris: ${ELASTIC_URI}
+
   web:
     resources:
       add-mappings: false
@@ -68,3 +73,15 @@ cloud:
 server:
   tomcat:
     max-http-form-post-size: 20MB
+
+index:
+  analysis:
+    analyzer:
+      nori_analyzer:
+        type: custom
+        tokenizer: nori_tokenizer
+        filter: [nori_readingform, nori_part_of_speech]
+    tokenizer:
+      nori_tokenizer:
+        type: nori_tokenizer
+        decompound_mode: discard  # 복합어 분석 옵션 (discard, none, mixed)

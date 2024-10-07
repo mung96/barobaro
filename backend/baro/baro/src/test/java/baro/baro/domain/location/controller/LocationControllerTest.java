@@ -9,7 +9,6 @@ import baro.baro.domain.location.dto.response.LocationsAddRes;
 import baro.baro.domain.location.dto.response.MyLocationListRes;
 import baro.baro.domain.location.dto.response.SearchLocationRes;
 import baro.baro.domain.location.service.LocationService;
-import baro.baro.domain.member_location.dto.request.MemberLocationReq;
 import baro.baro.global.exception.CustomException;
 import baro.baro.global.oauth.jwt.service.JwtService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
@@ -156,9 +155,9 @@ public class LocationControllerTest {
     @Test
     public void 지역설정_성공() throws Exception {
         // given
-        List<MemberLocationReq> locations = new ArrayList<>();
-        locations.add(new MemberLocationReq(11010540L, true));
-        locations.add(new MemberLocationReq(11010550L, false));
+        List<Long> locations = new ArrayList<>();
+        locations.add(11010540L);
+        locations.add(11010550L);
 
         LocationsAddReq req = new LocationsAddReq();
         req.setLocations(locations);
@@ -210,10 +209,8 @@ public class LocationControllerTest {
                                 )
                                 .requestFields(
                                         List.of(
-                                            fieldWithPath("locations[].locationId").type(NUMBER)
-                                                    .description("지역 ID"),
-                                            fieldWithPath("locations[].isMain").type(BOOLEAN)
-                                                    .description("대표 지역 여부")
+                                                fieldWithPath("locations[]").type(ARRAY)
+                                                        .description("지역 ID")
                                             )
                                 )
                                 .responseFields(
@@ -238,9 +235,10 @@ public class LocationControllerTest {
     @Test
     public void 지역설정_실패_없는_지역() throws Exception {
         // given
-        List<MemberLocationReq> locations = new ArrayList<>();
-        locations.add(new MemberLocationReq(11010541L, true));
-        locations.add(new MemberLocationReq(11010550L, false));
+        List<Long> locations = new ArrayList<>();
+        locations.add(11010541L);
+        locations.add(11010550L);
+        locations.add(11010560L);
 
         LocationsAddReq req = new LocationsAddReq();
         req.setLocations(locations);
@@ -277,10 +275,8 @@ public class LocationControllerTest {
                                 )
                                 .requestFields(
                                         List.of(
-                                                fieldWithPath("locations[].locationId").type(NUMBER)
-                                                        .description("지역 ID"),
-                                                fieldWithPath("locations[].isMain").type(BOOLEAN)
-                                                        .description("대표 지역 여부")
+                                                fieldWithPath("locations[]").type(ARRAY)
+                                                        .description("지역 ID")
                                         )
                                 )
                                 .responseFields(
@@ -299,9 +295,9 @@ public class LocationControllerTest {
     @Test
     public void 지역설정_실패_중복된_지역값() throws Exception {
         // given
-        List<MemberLocationReq> locations = new ArrayList<>();
-        locations.add(new MemberLocationReq(11010540L, true));
-        locations.add(new MemberLocationReq(11010540L, false));
+        List<Long> locations = new ArrayList<>();
+        locations.add(11010540L);
+        locations.add(11010540L);
 
         LocationsAddReq req = new LocationsAddReq();
         req.setLocations(locations);
@@ -338,10 +334,8 @@ public class LocationControllerTest {
                                 )
                                 .requestFields(
                                         List.of(
-                                                fieldWithPath("locations[].locationId").type(NUMBER)
-                                                        .description("지역 ID"),
-                                                fieldWithPath("locations[].isMain").type(BOOLEAN)
-                                                        .description("대표 지역 여부")
+                                                fieldWithPath("locations[]").type(ARRAY)
+                                                        .description("지역 ID")
                                         )
                                 )
                                 .responseFields(
@@ -360,7 +354,7 @@ public class LocationControllerTest {
     @Test
     public void 지역설정_실패_입력값_없음() throws Exception {
         // given
-        List<MemberLocationReq> locations = new ArrayList<>();
+        List<Long> locations = new ArrayList<>();
 
         LocationsAddReq req = new LocationsAddReq();
         req.setLocations(locations);
@@ -417,11 +411,11 @@ public class LocationControllerTest {
     @Test
     public void 지역설정_실패_개수_초과() throws Exception {
         // given
-        List<MemberLocationReq> locations = new ArrayList<>();
-        locations.add(new MemberLocationReq(11010540L, true));
-        locations.add(new MemberLocationReq(11010550L, false));
-        locations.add(new MemberLocationReq(11010560L, false));
-        locations.add(new MemberLocationReq(11010570L, false));
+        List<Long> locations = new ArrayList<>();
+        locations.add(11010540L);
+        locations.add(11010550L);
+        locations.add(11010560L);
+        locations.add(11010570L);
 
         LocationsAddReq req = new LocationsAddReq();
         req.setLocations(locations);
@@ -458,72 +452,8 @@ public class LocationControllerTest {
                                 )
                                 .requestFields(
                                         List.of(
-                                                fieldWithPath("locations[].locationId").type(NUMBER)
-                                                        .description("지역 ID"),
-                                                fieldWithPath("locations[].isMain").type(BOOLEAN)
-                                                        .description("대표 지역 여부")
-                                        )
-                                )
-                                .responseFields(
-                                        getCommonResponseFields(
-                                                fieldWithPath("body").type(NULL)
-                                                        .description("본문 없음")
-                                        )
-                                )
-                                .requestSchema(Schema.schema("지역 설정 Request"))
-                                .responseSchema(Schema.schema("지역 설정 Response"))
-                                .build()
-                        ))
-                );
-    }
-
-    @Test
-    public void 지역설정_실패_대표_지역이_없음() throws Exception {
-        // given
-        List<MemberLocationReq> locations = new ArrayList<>();
-        locations.add(new MemberLocationReq(11010540L, false));
-        locations.add(new MemberLocationReq(11010550L, false));
-        locations.add(new MemberLocationReq(11010560L, false));
-
-        LocationsAddReq req = new LocationsAddReq();
-        req.setLocations(locations);
-
-        String content = objectMapper.writeValueAsString(req);
-
-        when(locationService.addLocations(any(), anyLong())).thenThrow(new CustomException(INVALID_LOCATION));
-
-        //when
-        ResultActions actions = mockMvc.perform(
-                post("/members/me/locations")
-                        .header("Authorization", jwtToken)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(content)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .with(csrf())
-        );
-
-        //then
-        actions
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.header.httpStatusCode").value(INVALID_LOCATION.getHttpStatusCode()))
-                .andExpect(jsonPath("$.header.message").value(INVALID_LOCATION.getMessage()))
-                .andDo(document(
-                        "지역 설정 실패 - 지역 최대 개수 초과",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        resource(ResourceSnippetParameters.builder()
-                                .tag("Location API")
-                                .summary("지역 설정 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization")
-                                                .description("JWT 토큰")
-                                )
-                                .requestFields(
-                                        List.of(
-                                                fieldWithPath("locations[].locationId").type(NUMBER)
-                                                        .description("지역 ID"),
-                                                fieldWithPath("locations[].isMain").type(BOOLEAN)
-                                                        .description("대표 지역 여부")
+                                                fieldWithPath("locations[]").type(ARRAY)
+                                                        .description("지역 ID")
                                         )
                                 )
                                 .responseFields(

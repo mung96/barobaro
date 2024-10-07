@@ -4,7 +4,6 @@ import baro.baro.global.dto.ResponseDto;
 import baro.baro.global.oauth.jwt.entity.JwtRedis;
 import baro.baro.global.oauth.jwt.service.JwtService;
 import baro.baro.global.statuscode.ErrorCode;
-import baro.baro.global.utils.CookieUtil;
 import baro.baro.global.utils.RedisUtils;
 import com.auth0.jwt.JWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,6 +24,7 @@ import java.io.IOException;
 
 import static baro.baro.global.statuscode.ErrorCode.EXPIRED_TOKEN;
 import static baro.baro.global.statuscode.ErrorCode.NOT_VALID_TOKEN;
+import static baro.baro.global.statuscode.SuccessCode.REISSUED_ACCESS_TOKEN;
 
 @Component
 @RequiredArgsConstructor
@@ -89,7 +89,10 @@ public class JwtBearerAuthenticationFilter extends GenericFilterBean {
 
             String token = jwtService.createAccessToken(uuid, isCertificated);
 
-            CookieUtil.addCookie(response, "token", token, 300);
+            ResponseDto<?> res = ResponseDto.success(REISSUED_ACCESS_TOKEN, token);
+            ObjectMapper mapper = new ObjectMapper();
+            response.getWriter().write(mapper.writeValueAsString(res));
+
         }
     }
 
