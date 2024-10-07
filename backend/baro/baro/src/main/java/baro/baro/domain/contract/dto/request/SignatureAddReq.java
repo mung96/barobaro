@@ -19,4 +19,6 @@ public class SignatureAddReq {
 
     @Lob
     private String signatureData;
+
+    private String s3FileUrl;
 }
