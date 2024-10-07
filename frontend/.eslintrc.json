@@ -3,7 +3,8 @@
   // "extends": "next/core-web-vitals"
   "env": {
     "browser": true,
-    "node": true
+    "node": true,
+    "jest": true
   },
   "plugins": ["@typescript-eslint", "prettier"], //eslint는 js를 prettier는 기타 파일을 검사하는 용도로 쓰기 위함.
   "extends": [
@@ -27,7 +28,7 @@
 
   "rules": {
     "prettier/prettier": "error",
-    "react/react-in-jsx-scope":"off",
+    "react/react-in-jsx-scope": "off",
     "import/extensions": "off",
     "react/require-default-props": "off",
     "react/function-component-definition": "off",

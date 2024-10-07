@@ -3,24 +3,16 @@ import { neverExpected } from '@/utils/typeGuard';
 
 import useStatusMessageModel from '@/hooks/message/chat/useStatusMessageModel';
 import SignatureModal from '@/components/modal/SignatureModal';
+import ContractRequestModal from '@/components/modal/ContractRequestModal';
 import MessageFormType from './MessageFormType';
 import MessageCommonStyles from './MessageStyles';
 
 type BodyType = 'contract' | 'signature' | 'finished';
 
 const StatusMessage: FC<MessageFormType> = ({ body, timestamp, isMine }) => {
-  const {
-    isModalOpen,
-    openSignatureModal,
-    closeSignatureModal,
-    openContractModal,
-  } = useStatusMessageModel();
-  const buttonClickHandler = (content: string) => {
-    if (content === 'signature') {
-      openSignatureModal();
-    } else if (content === 'contract') {
-      openContractModal();
-    }
+  const { isModalOpen, openModal, closeModal } = useStatusMessageModel();
+  const buttonClickHandler = () => {
+    openModal();
   };
 
   const messageBody = (bodyProp: BodyType) => {
@@ -104,15 +96,26 @@ const StatusMessage: FC<MessageFormType> = ({ body, timestamp, isMine }) => {
               <button
                 type="button"
                 className="bg-blue-100 text-white text-center rounded-md pt-[1vh] pb-[1vh] mt-[1vh] active:bg-blue-500"
-                onClick={() => buttonClickHandler(body)}
+                onClick={buttonClickHandler}
               >
                 {body === 'signature' && '서명하기'}
                 {body === 'contract' && '상세보기'}
               </button>
-              <SignatureModal
-                isOpen={isModalOpen}
-                onRequestClose={closeSignatureModal}
-              />
+
+              {body === 'signature' && ( // '서명하기' 모달
+                <SignatureModal
+                  isOpen={isModalOpen}
+                  onRequestClose={closeModal}
+                />
+              )}
+
+              {body === 'contract' && ( // '상세보기' 모달 (대여자가 요청한 계약 요청서를 봄)
+                <ContractRequestModal
+                  isOpen={isModalOpen}
+                  onRequestClose={closeModal}
+                  isFromStatusMessage
+                />
+              )}
             </>
           )}
         </div>
