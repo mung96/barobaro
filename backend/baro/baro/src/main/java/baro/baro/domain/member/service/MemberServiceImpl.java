@@ -58,7 +58,7 @@ public class MemberServiceImpl implements MemberService {
             log.info("이미지 파일 성공!");
         } else {
             if(signupReq.getProfileImage() == null || signupReq.getProfileImage().isEmpty()) {
-                signupReq.setProfileImage(bucketUrl + "profile/default.png");
+                signupReq.setProfileImage(bucketUrl + "/profile/default.png");
                 log.info("없으니까 디폴트값!");
             }
         }
