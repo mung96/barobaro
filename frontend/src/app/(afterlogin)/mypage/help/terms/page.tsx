@@ -1,9 +1,8 @@
-import NavBarLayout from '@/layout/NavBarLayout';
 import Header from '@/components/Header';
 
 export default function TermsPage() {
   return (
-    <NavBarLayout current="mypage">
+    <>
       <header>
         <Header
           pageName="마이페이지"
@@ -14,6 +13,6 @@ export default function TermsPage() {
         <h1 className="text-[15px] font-bold text-center">약관 및 정책</h1>
       </header>
       <main>사기치지마시오</main>
-    </NavBarLayout>
+    </>
   );
 }
