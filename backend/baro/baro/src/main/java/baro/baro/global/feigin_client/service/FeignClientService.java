@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class FeignClientService {
-    private final FeignClientCustom feignClientCustom;
+    private final BankFeignClientCustom bankFeignClientCustom;
 
-    public void callExternalApi() {
+    public void callBankApi() {
         // 초기 데이터 세팅 예정
     }
 }
