@@ -13,11 +13,14 @@ import baro.baro.domain.contract.dto.response.ContractApproveRes;
 import baro.baro.domain.contract.dto.response.ContractOptionDetailRes;
 import baro.baro.domain.contract.entity.Contract;
 import baro.baro.domain.contract.repository.ContractRepository;
+import baro.baro.domain.member.entity.Member;
+import baro.baro.domain.member.repository.MemberRepository;
 import baro.baro.domain.product.entity.Product;
 import baro.baro.domain.product.entity.ProductStatus;
 import baro.baro.global.dto.PdfCreateDto;
 import baro.baro.global.event.UnlockEvent;
 import baro.baro.global.exception.CustomException;
+import baro.baro.global.s3.PdfS3Service;
 import baro.baro.global.utils.PdfUtils;
 import baro.baro.global.utils.RedisUtils;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +29,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -43,6 +47,8 @@ public class ContractServiceImpl implements ContractService {
     private final ChatRoomRepository chatRoomRepository;
     private final ContractRepository contractRepository;
     private final PdfUtils pdfUtils;
+    private final MemberRepository memberRepository;
+    private final PdfS3Service pdfS3Service;
 
     @Transactional
     public void addContractRequest(ContractRequestDto contractRequestDto, Long rentalId) {
@@ -203,7 +209,7 @@ public class ContractServiceImpl implements ContractService {
         }
 
         //계약 요청을 찾을 수 없는 경우 처리
-        ContractApplicationDto contractApplicationDtoList = redisUtils.getListData("contract_" + product.getId())
+        ContractApplicationDto contractApplicationDto = redisUtils.getListData("contract_" + product.getId())
                 .stream()
                 .map(item -> (ContractApplicationDto) item)
                 .filter(contractRequest ->
@@ -213,14 +219,44 @@ public class ContractServiceImpl implements ContractService {
                 .findFirst()
                 .orElseThrow(() -> new CustomException(CONTRACT_REQUEST_NOT_FOUND));
 
-        //채팅방의 거래 상태 업데이트. 상품 상태의 경우, 소유자의 서명과 함께 업데이트됨.
-        chatRoom.updateRentalStatus(RentalStatus.NEED_OWNER_SIGN);
+        //상품 대여 상태 업데이트
+        product.updateProductStatus(ProductStatus.IN_PROGRESS);
 
+        //채팅방의 거래 상태 업데이트
+        chatRoom.updateRentalStatus(RentalStatus.APPROVED);
 
-        //서명하지 않으면 롤백해야하므로 아직 redis에서 해당 상품에 대한 요청들 지우지 않음
+        //내 정보 불러오기
+        Member me = chatRoom.getOwner();
+
+        //상대 정보 불러오기
+        Member opponent = chatRoom.getRental();
+
+        String generatedS3PdfUrl;
+        try {
+            PdfCreateDto pdfCreateDto = PdfCreateDto.toDto(contractApproveReq.getChatRoomId(),
+                    me, opponent, product, contractApplicationDto, product.getContractCondition());
+            generatedS3PdfUrl = pdfUtils.createPdf(pdfCreateDto);
+        } catch (Exception e) {
+            log.info(Arrays.toString(e.getStackTrace()));
+            log.info("에러에러" + e.getMessage());
+            throw new CustomException(PDF_GENERATE_FAILED);
+        }
+
+        LocalDateTime lastModified = pdfS3Service.lastModified(generatedS3PdfUrl);
+
+        Contract newContract = Contract.builder()
+                .product(product)
+                .createdAt(lastModified)
+                .build();
+
+        contractRepository.save(newContract);
+
         //분산락 해제
-        redisUtils.unlock("contract_" + product.getId());
-        return null;
+        eventPublisher.publishEvent(new UnlockEvent(this, "contract_" + product.getId()));
+        return ContractApproveRes.builder()
+                .chatRoomId(contractApproveReq.getChatRoomId())
+                .fileUrl(generatedS3PdfUrl)
+                .build();
     }
 
     @Transactional
@@ -251,7 +287,7 @@ public class ContractServiceImpl implements ContractService {
         }
 
         //계약 요청을 찾을 수 없는 경우 처리
-        ContractApplicationDto contractApplicationDtoList = redisUtils.getListData("contract_" + product.getId())
+        ContractApplicationDto contractApplicationDto = redisUtils.getListData("contract_" + product.getId())
                 .stream()
                 .map(item -> (ContractApplicationDto) item)
                 .filter(contractRequest ->
