@@ -13,5 +13,5 @@ export const postMyLocation = async (data:MyLocationRequest) => {
     return await axiosInstance.post<MyLocationsResponse>(END_POINT.MY_LOCATIONS,{data})
 }
 export const getDongList = async (data:SearchLocationRequest) => {
-    return await axiosInstance.post<SearchResultDongResponse>(END_POINT.SEARCH_LOCATION,{params:{data}})
+    return await axiosInstance.get<SearchResultDongResponse>(END_POINT.SEARCH_LOCATION,{params:{...data}})
 }

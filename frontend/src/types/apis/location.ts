@@ -20,16 +20,17 @@ export type SearchLocationRequest={
 }
 
 //response
-type MyDong={
-    locationId: number,
-    name: string,
-    dong: string,
+export type MyDong={
+   
+        locationId: number,
+        name: string,
+        dong: string,
 };
 
-type Dong= MyDong & { isMain: boolean};
+export type Dong= MyDong & { isMain: boolean};
 
 export type DefaultLocationResponse= Response<MyDong>
 export type MyLocationsResponse= Response<MyDong[]>
-export type SearchResultDongResponse= Response<Dong[]>
+export type SearchResultDongResponse= Response<{result: Dong[]}>
 
 
