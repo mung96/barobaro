@@ -70,47 +70,11 @@ public class ProductController {
     }
 
     @PostMapping("/products/{productId}")
-    public ResponseEntity<?> productModify(@RequestPart(value = "dto") ProductModifyReq productModifyReq,
-                                           @RequestPart(value = "files") List<MultipartFile> files) {
-        List<String> images = new ArrayList<>();
-        images.add("이미지1");
-        images.add("이미지2");
-
-        ContractConditionDto contractConditionDto = ContractConditionDto.builder()
-                .repairVendor("제조사 또는 공식 수입사의 AS 센터")
-                .overdueCriteria(5)
-                .overdueFee(2)
-                .theftCriteria(7)
-                .refundDeadline(7)
-                .build();
-
-        List<ReturnType> returnTypes = new ArrayList<>();
-        returnTypes.add(DELIVERY);
-
-        ProductDetails result = ProductDetails.builder()
-                .productId(1L)
-                .writerId("ffefwsfd-sfewwertwet-3rrsefsedf")
-                .writerProfileImage("유저 image url")
-                .writerNickname("유저 닉네임")
-                .imageList(images)
-                .productStatus(IN_PROGRESS)
-                .title("제목")
-                .category(LIGHT_STICK)
-                .dong("봉천동")
-                .createdAt(calculateTime(LocalDateTime.now()))
-                .wishCount(0)
-                .content("본문내용본문내용용용")
-                .place("고척스카이돔 중앙출입문C게이트앞")
-                .latitude(37.50)
-                .longitude(126.87)
-                .isWriteContract(true)
-                .contractCondition(contractConditionDto)
-                .returnTypes(returnTypes)
-                .startDate(LocalDate.of(2024, 9, 30))
-                .endDate(LocalDate.of(2024, 10, 24))
-                .rentalFee(10000)
-                .isMine(true)
-                .build();
+    public ResponseEntity<?> productModify(@PathVariable Long productId,
+                                           @RequestPart(value = "dto") ProductModifyReq productModifyReq,
+                                           @RequestPart(value = "files") List<MultipartFile> files) throws IOException {
+        Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
+        ProductDetails result = productService.modifyProduct(productModifyReq, files, productId, memberId);
 
         return new ResponseEntity<>(ResponseDto.success(PRODUCT_MODIFIED, result), OK);
     }

@@ -35,4 +35,32 @@ public class ContractCondition {
     private Integer theftCriteria;
 
     private Integer refundDeadline;
+
+    public void updateProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public void updateSerialNumber(String serialNumber) {
+        this.serialNumber = serialNumber;
+    }
+
+    public void updateRepairVendor(String repairVendor) {
+        this.repairVendor = repairVendor;
+    }
+
+    public void updateOverdueCriteria(Integer overdueCriteria) {
+        this.overdueCriteria = overdueCriteria;
+    }
+
+    public void updateOverdueFee(Integer overdueFee) {
+        this.overdueFee = overdueFee;
+    }
+
+    public void updateTheftCriteria(Integer theftCriteria) {
+        this.theftCriteria = theftCriteria;
+    }
+
+    public void updateRefundDeadline(Integer refundDeadline) {
+        this.refundDeadline = refundDeadline;
+    }
 }
