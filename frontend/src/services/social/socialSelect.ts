@@ -29,9 +29,9 @@ const img = {
 } as const;
 
 const link = {
-  Naver: SERVER_BASE_URL + END_POINT.GOOGLE_LOGIN,
+  Naver: SERVER_BASE_URL + END_POINT.NAVER_LOGIN,
   Kakao: SERVER_BASE_URL + END_POINT.KAKAO_LOGIN,
-  Google: SERVER_BASE_URL + END_POINT.NAVER_LOGIN,
+  Google: SERVER_BASE_URL + END_POINT.GOOGLE_LOGIN,
 };
 
 // eslint-disable-next-line import/prefer-default-export
