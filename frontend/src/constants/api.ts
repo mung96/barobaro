@@ -20,6 +20,12 @@ export const END_POINT = {
   MY_PASSWORD: 'members/me/password',
   MY_PROFILE: 'members/me/profile',
   SIGN_UP_INFO: 'members/signup/info',
+  BORROW: 'members/me/rental',
+  LENT: 'members/me/owner',
+  ACCOUNT: 'members/me/accounts',
+  RECENTLY_UPLOADED: 'products/recently-uploaded',
+  RECENTLY_VIEWED: 'products/recently-viewed',
+
 } as const;
 
 export const HTTP_STATUS_CODE = {
