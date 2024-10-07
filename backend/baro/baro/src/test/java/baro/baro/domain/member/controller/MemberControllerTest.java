@@ -5,7 +5,6 @@ import baro.baro.domain.member.dto.request.ProfileModifyReq;
 import baro.baro.domain.member.dto.request.SignupReq;
 import baro.baro.domain.member.dto.response.SignUpInfoRes;
 import baro.baro.domain.member.service.MemberService;
-import baro.baro.domain.member_location.dto.request.MemberLocationReq;
 import baro.baro.global.exception.CustomException;
 import baro.baro.global.oauth.jwt.service.JwtService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
@@ -98,9 +97,9 @@ class MemberControllerTest {
         req.setNickname("Member123");
         req.setProfileImage("s3 url");
 
-        List<MemberLocationReq> memberLocationReq = new ArrayList<>();
-        memberLocationReq.add(new MemberLocationReq(11010530L, true));
-        memberLocationReq.add(new MemberLocationReq(11010531L, false));
+        List<Long> memberLocationReq = new ArrayList<>();
+        memberLocationReq.add(11010530L);
+        memberLocationReq.add(11010540L);
 
         req.setLocations(memberLocationReq);
 
@@ -154,9 +153,9 @@ class MemberControllerTest {
         req.setNickname("Member1234535");
         req.setProfileImage("s3 url");
 
-        List<MemberLocationReq> memberLocationReq = new ArrayList<>();
-        memberLocationReq.add(new MemberLocationReq(11010530L, true));
-        memberLocationReq.add(new MemberLocationReq(11010540L, false));
+        List<Long> memberLocationReq = new ArrayList<>();
+        memberLocationReq.add(11010530L);
+        memberLocationReq.add(11010531L);
 
         req.setLocations(memberLocationReq);
 
@@ -212,9 +211,9 @@ class MemberControllerTest {
         req.setNickname("Member12");
         req.setProfileImage("s3 url");
 
-        List<MemberLocationReq> memberLocationReq = new ArrayList<>();
-        memberLocationReq.add(new MemberLocationReq(11010530L, true));
-        memberLocationReq.add(new MemberLocationReq(11010531L, false));
+        List<Long> memberLocationReq = new ArrayList<>();
+        memberLocationReq.add(11010530L);
+        memberLocationReq.add(11010531L);
 
         req.setLocations(memberLocationReq);
 
