@@ -65,9 +65,14 @@ public class MemberServiceImpl implements MemberService {
 
         Member member = signupReq.toEntity(uuid);
 
+        log.info("멤버 Entity 성공");
         validateLocationAddRequest(signupReq.getLocations());
 
+        log.info("지역 예외처리 통과");
+
         memberRepository.save(member);
+
+        log.info("지역 멤버DB에저장~");
 
         signupReq.getLocations()
                 .forEach(location -> {
