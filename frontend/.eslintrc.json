@@ -3,7 +3,8 @@
   // "extends": "next/core-web-vitals"
   "env": {
     "browser": true,
-    "node": true
+    "node": true,
+    "jest": true
   },
   "plugins": ["@typescript-eslint", "prettier"], //eslint는 js를 prettier는 기타 파일을 검사하는 용도로 쓰기 위함.
   "extends": [
@@ -32,7 +33,15 @@
     "react/require-default-props": "off",
     "react/function-component-definition": "off",
     "jsx-a11y/label-has-associated-control": "off",
-    "react/jsx-no-comment-textnodes": "off",
-    "react/jsx-props-no-spreading": "off"
+    "react/jsx-no-comment-textnodes" : "off",
+    "import/no-extraneous-dependencies": "off",
+    "react/jsx-props-no-spreading":"off",
+
+    
+    // "react/react-in-jsx-scope": "off",
+    // "react/require-default-props": "off",
+    // "import/no-extraneous-dependencies": "off",
+    // "eslintobject-curly-newline": "off",
+    // "object-curly-newline": "off"
   }
 }

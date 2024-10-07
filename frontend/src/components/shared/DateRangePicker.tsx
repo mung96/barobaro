@@ -1,4 +1,3 @@
-import { Dispatch, SetStateAction } from 'react';
 import { DateRange, DayPicker } from 'react-day-picker';
 import 'react-day-picker/style.css';
 import './calendar.css';
@@ -7,7 +6,7 @@ import Button from '@/components/shared/Button';
 
 type DateRangePickerProps = {
   selected: DateRange | undefined;
-  onSelect: Dispatch<SetStateAction<DateRange | undefined>>;
+  onSelect: (dateRange: DateRange) => void;
 
   onClose: () => void;
 };
@@ -50,7 +49,7 @@ function DateRangePicker({
         <button
           type="button"
           className="flex items-center"
-          onClick={() => onSelect(undefined)}
+          onClick={() => onSelect({ from: new Date(), to: new Date() })}
         >
           <p className="text-xs underline">재설정</p>
         </button>
