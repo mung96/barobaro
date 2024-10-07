@@ -18,6 +18,8 @@ export const END_POINT = {
   BORROW: 'members/me/rental',
   LENT: 'members/me/owner',
   ACCOUNT: 'members/me/accounts',
+  RECENTLY_UPLOADED: 'products/recently-uploaded',
+  RECENTLY_VIEWED: 'products/recently-viewed',
 
 } as const;
 
