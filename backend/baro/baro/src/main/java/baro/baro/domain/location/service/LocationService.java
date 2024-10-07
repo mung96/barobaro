@@ -11,5 +11,5 @@ public interface LocationService {
     LocationsAddRes addLocations(LocationsAddReq locationsAddReq, Long memberId);
     MyLocationListRes findLocations(Long memberId);
     DefaultLocationRes updateDefaultLocation(DefaultLocationReq defaultLocationReq, Long memberId);
-    SearchLocationRes searchLocation(String keyword, Long memberId);
+    SearchLocationRes searchLocation(String keyword);
 }
