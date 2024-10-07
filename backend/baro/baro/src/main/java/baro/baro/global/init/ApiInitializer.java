@@ -12,6 +12,6 @@ public class ApiInitializer {
 
     @PostConstruct
     public void init() {
-        feignClientService.callExternalApi();
+        feignClientService.callBankApi();
     }
 }
