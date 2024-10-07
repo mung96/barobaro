@@ -46,7 +46,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.JsonFieldType.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -110,12 +111,11 @@ public class LocationControllerTest {
 
         SearchLocationRes result = new SearchLocationRes(locations);
 
-        when(locationService.searchLocation(any(), anyLong())).thenReturn(result);
+        when(locationService.searchLocation(any())).thenReturn(result);
 
         //when
         ResultActions actions = mockMvc.perform(
                 get("/search/locations")
-                        .header("Authorization", jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("keyword", keyword)
                         .accept(MediaType.APPLICATION_JSON)
@@ -133,10 +133,6 @@ public class LocationControllerTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Location API")
                                 .summary("지역 검색 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization")
-                                                .description("JWT 토큰")
-                                )
                                 .queryParameters(
                                         parameterWithName("keyword").description("검색어")
                                 )
