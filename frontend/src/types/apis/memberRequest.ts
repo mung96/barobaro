@@ -4,7 +4,7 @@ export type SignUpMemberRequest = {
   email: string;
   providerType: SocialName;
   nickname: string;
-  locations: MemberLocationReq[];
+  locations: number[];
 };
 
 type MemberLocationReq = {
