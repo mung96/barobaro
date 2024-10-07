@@ -39,38 +39,38 @@ function SignUpFunnel() {
   const socialMember = useSocialMemberState();
   const setSocialMember = useSocialMemberAction();
 
-  useEffect(() => {
-    const getResponse = async () => {
-      try {
-        const response = await axios.get<SocialMemberResponse>(
-          `${NEXT_BASE_URL}/signup/info`,
-          {
-            params: { key: searchParams.get('key') },
-          },
-        );
-        if (response.data.body) {
-          setSocialMember(response.data.body);
-        }
-      } catch (err) {
-        console.error('API 요청 중 오류 발생:', err);
-      }
-    };
-    getResponse();
-  }, []);
-
   // useEffect(() => {
   //   const getResponse = async () => {
   //     try {
-  //       const response = await axiosInstance.get(
-  //         END_POINT.MY_PROFILE,
+  //       const response = await axios.get<SocialMemberResponse>(
+  //         `${NEXT_BASE_URL}/signup/info`,
+  //         {
+  //           params: { key: searchParams.get('key') },
+  //         },
   //       );
-  //      console.log(response);
+  //       if (response.data.body) {
+  //         setSocialMember(response.data.body);
+  //       }
   //     } catch (err) {
   //       console.error('API 요청 중 오류 발생:', err);
   //     }
   //   };
   //   getResponse();
   // }, []);
+
+  useEffect(() => {
+    const getResponse = async () => {
+      try {
+        const response = await axiosInstance.get(
+          END_POINT.MY_PROFILE,
+        );
+       console.log(response);
+      } catch (err) {
+        console.error('API 요청 중 오류 발생:', err);
+      }
+    };
+    getResponse();
+  }, []);
 
 
   return (
