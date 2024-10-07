@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import ReactModal from 'react-modal';
 
 import ModalWarningSVG from '@/components/(SVG_component)/ModalWarning';
+import { ProcessContext } from '@/contexts/ChatProcessContext';
+import { ProcessTypes } from '../message/chat/ProcessTypes';
 
 type ChatAlertModalParams = {
   isOpen: boolean;
@@ -40,9 +42,22 @@ const ChatAlertModal = ({
   onRequestClose,
   type,
 }: ChatAlertModalParams) => {
+  const context = useContext(ProcessContext);
+  if (!context) return null;
+  const { process, processSetter } = context;
+
   const onReceived = () => {
     // 수령확인 버튼 누른 후의 로직 작성
     // 프로세스 바뀌어야 함
+
+    // 수령확인 ?
+    // 6(signed_direct) 이후 대여자 수령확인
+    // 8(paid_direct) 이후 소유자 수령확인
+    if (process == ProcessTypes.SIGNED_DIRECT) {
+      processSetter(ProcessTypes.RECEIVED_DIRECT);
+    } else if (process == ProcessTypes.PAID_DIRECT) {
+      processSetter(ProcessTypes.FINISHED);
+    }
     onRequestClose();
   };
   return (

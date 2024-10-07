@@ -9,26 +9,29 @@ type MessageRoomListParam = {
 };
 
 export default function MessageRoomList({ selectValue }: MessageRoomListParam) {
-  useMessageRoomListModel();
+  const { chatList } = useMessageRoomListModel();
 
-  const chatList: ChatRoomType[] = [
+  const chatList_demo: ChatRoomType[] = [
     {
+      chatRoomId: 1,
       profileImage: 'https://loremflickr.com/320/240',
       nickname: '뗀석기팔아요',
       lastChat: '전자계약서 서명을 요청하였습니다.',
       productMainImage: 'https://loremflickr.com/320/240',
       lastChatTime: new Date(), // 현재 시간으로 설정
-      chatRoomStatus: 'owner', // own이 true일 때
+      chatRoomStatus: 'OWNER', // own이 true일 때
     },
     {
+      chatRoomId: 2,
       profileImage: 'https://loremflickr.com/320/240',
       nickname: '랄나날라',
       lastChat: '저 오후 5시에 시간이 되는데 그때쯤 발송할게요',
       productMainImage: 'https://loremflickr.com/320/240',
       lastChatTime: new Date(), // 현재 시간으로 설정
-      chatRoomStatus: 'owner', // own이 true일 때
+      chatRoomStatus: 'OWNER', // own이 true일 때
     },
     {
+      chatRoomId: 3,
       profileImage: 'https://loremflickr.com/320/240',
       nickname: '몽이언니',
       lastChat: '흠 ... 진행 중인 분 예약 취소되면 다시 말씀드릴게요',
@@ -37,22 +40,25 @@ export default function MessageRoomList({ selectValue }: MessageRoomListParam) {
       chatRoomStatus: 'guest', // own이 false일 때
     },
     {
+      chatRoomId: 4,
       profileImage: 'https://loremflickr.com/320/240',
       nickname: '역삼동망치',
       lastChat: '오후 4시쯤 삼성전자스토어 앞에서 만나실래요?',
       productMainImage: 'https://loremflickr.com/320/240',
       lastChatTime: new Date(), // 현재 시간으로 설정
-      chatRoomStatus: 'owner', // own이 true일 때
+      chatRoomStatus: 'OWNER', // own이 true일 때
     },
     {
+      chatRoomId: 5,
       profileImage: 'https://loremflickr.com/320/240',
       nickname: '줄무늬양말',
       lastChat: '분실 시에 3만원 별도 청구되시구요 이 항목 계약서에 넣을게요',
       productMainImage: 'https://loremflickr.com/320/240',
       lastChatTime: new Date(), // 현재 시간으로 설정
-      chatRoomStatus: 'owner', // own이 true일 때
+      chatRoomStatus: 'OWNER', // own이 true일 때
     },
     {
+      chatRoomId: 6,
       profileImage: 'https://loremflickr.com/320/240',
       nickname: '새발자',
       lastChat: '500원만 깎아주세요 제발요',
@@ -61,6 +67,7 @@ export default function MessageRoomList({ selectValue }: MessageRoomListParam) {
       chatRoomStatus: 'guest', // own이 false일 때
     },
     {
+      chatRoomId: 7,
       profileImage: 'https://loremflickr.com/320/240',
       nickname: '배고파',
       lastChat: '실례가 안 된다면 아이스크림 하나만 사주십시오',
@@ -76,20 +83,21 @@ export default function MessageRoomList({ selectValue }: MessageRoomListParam) {
       case 'entire':
         return true; // 모든 채팅방을 보여줌
       case 'own':
-        return chatRoom.chatRoomStatus === 'owner'; // 소유한 채팅방만 보여줌
+        return chatRoom.chatRoomStatus === 'OWNER'; // 소유한 채팅방만 보여줌
       case 'lent':
-        return chatRoom.chatRoomStatus === 'guest'; // 대여한 채팅방만 보여줌
+        return chatRoom.chatRoomStatus !== 'OWNER'; // 대여한 채팅방만 보여줌
       default:
         return false; // 해당하지 않는 경우
     }
   };
 
-  const chatRooms = chatList.filter(messageFilter);
+  const chatRooms = chatList_demo.filter(messageFilter);
 
   return (
     <div className="mt-[2vh] flex-1 overflow-auto">
       {chatRooms.map((each) => (
         <ChatRoomEach
+          chatRoomId={each.chatRoomId}
           nickname={each.nickname}
           profileImage={each.profileImage}
           productMainImage={each.productMainImage}
