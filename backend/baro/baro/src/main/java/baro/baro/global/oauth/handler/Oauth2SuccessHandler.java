@@ -87,8 +87,10 @@ public class Oauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
             String accessToken = jwtService.createAccessToken(uuid, member.getIsCertificated());
 
+            log.info("쿠키쿠키");
+            //accessToken
             CookieUtil.addCookie(response, "token", accessToken, 300);
-
+            log.info("쿠키쿠키 넣었음" + response);
             response.sendRedirect(frontUrl);
         }
     }
