@@ -51,6 +51,11 @@ openapi3 {
 	format = "yaml"
 }
 
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:2023.0.2"
+	}
+}
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
@@ -78,6 +83,7 @@ dependencies {
 	implementation 'com.itextpdf:sign:7.1.16'
 	implementation 'com.itextpdf:bouncy-castle-adapter:8.0.4'
 	implementation 'org.bouncycastle:bcprov-jdk15on:1.68'
+	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
 	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
 	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
