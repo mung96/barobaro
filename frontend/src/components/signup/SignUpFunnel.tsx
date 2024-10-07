@@ -9,7 +9,7 @@ import PageTransition, {
 } from '@/components/shared/PageTransition';
 import StepBar from '@/components/shared/StepBar';
 import { MyInfo, MyInfoStep, MyTownStep } from '@/types/domains/signup';
-import convertSignUpStepToStepNumber from '@/services/signup/convert';
+import {convertSignUpStepToStepNumber} from '@/services/signup/convert';
 import MyInfoInput from '@/components/signup/MyInfoInput';
 import MyTownInfo from '@/components/signup/MyTownInput';
 import {

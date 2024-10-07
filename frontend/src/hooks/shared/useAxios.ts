@@ -1,7 +1,7 @@
 import { AxiosError, AxiosResponse, isAxiosError } from "axios";
 
 type Props={
-    apiFunc:()=>AxiosResponse<any>,
+    apiFunc:()=>Promise<any>,
     onSuccess:(data:any)=>void,
     onError:(error:AxiosError)=>void
 }
