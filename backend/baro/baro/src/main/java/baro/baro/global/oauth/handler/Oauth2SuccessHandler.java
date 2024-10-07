@@ -6,7 +6,6 @@ import baro.baro.domain.member.repository.MemberRepository;
 import baro.baro.global.oauth.PrincipalDetails;
 import baro.baro.global.oauth.jwt.entity.JwtRedis;
 import baro.baro.global.oauth.jwt.service.JwtService;
-import baro.baro.global.utils.CookieUtil;
 import baro.baro.global.utils.RedisUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -91,7 +90,6 @@ public class Oauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
             log.info("쿠키쿠키");
             //accessToken
-            CookieUtil.addCookie(response, "token", accessToken, 3600);
 
             ResponseCookie cookie = ResponseCookie.from("token", accessToken)
                     .httpOnly(true)
