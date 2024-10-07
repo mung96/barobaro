@@ -4,10 +4,11 @@ import { CurrentStoreState } from '@/types/store/store';
 const useCurrentStore = create<CurrentStoreState>((set) => ({
   borrowProducts: [],
   lentProducts: [],
-  isInitialized: false,
+  likeProducts: [],
   actions: {
     setBorrowList: (borrowList) => set({ borrowProducts: borrowList }),
     setLentList: (lentList) => set({ lentProducts: lentList }),
+    // setLikeList: (likeList) => set({ likeProducts: likeList }),
     addBorrowProduct: (product) =>
       set((state) => ({
         borrowProducts: [...state.borrowProducts, product],

@@ -18,3 +18,28 @@ export type CurrentStoreState = {
     addLentProduct: (product: Product) => void;
   };
 };
+
+export type RecentlyStoreState = {
+  recentlyViewedProducts: Product[];
+  recentlyUploadedProducts: Product[];
+  actions: {
+    setRecentlyViewedProducts: (recentlyViewedProducts: Product[]) => void;
+    setRecentlyUploadedProducts: (recentlyUploadedProducts: Product[]) => void;
+  }
+}
+
+type Profile = {
+  profileImage: string;
+  nickname: string;
+  phoneNumber: string;
+  email: string;
+  name: string;
+}
+
+export type ProfileStoreState = {
+  profileObject : Profile;
+  isInit: boolean;
+  actions: {
+    setProfileObject: (profileObject: Profile) => void;
+  }
+}
