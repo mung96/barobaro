@@ -18,7 +18,10 @@ export const axiosInstance = axios.create({
   timeout: NETWORK.TIMEOUT, // TimeOut 시간이 지나도 응답이 안오면 에러처리됨
   headers: {
     Authorization:
-        `Bearer ${process.env.NEXT_PUBLIC_AUTH_TOKEN}`
+        // `Bearer ${process.env.NEXT_PUBLIC_AUTH_TOKEN}`
+        `Bearer ${localStorage.getItem('token')}`,
   },
 });
+
+//TODO: 인터셉터, 요청 후 토큰오면 담자.
 
