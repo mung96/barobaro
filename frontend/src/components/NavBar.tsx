@@ -8,6 +8,7 @@ import MessageButton from './(SVG_component)/MessageButton';
 import MyPageButton from './(SVG_component)/MyPageButton';
 import { usePathname } from 'next/navigation';
 import { usePathStore, useSetPathStore } from '@/store/usePath';
+import { useEffect } from 'react';
 
 
 
@@ -19,22 +20,28 @@ const NavBarItemList=[
   {id:4,icon: (currentPath:string)=>{return  <MyPageButton  width='32' height='32' fill={currentPath === '/mypage' ? '#1A1E27' : '#B6BDC8'} />},label:'마이페이지',path:'/mypage'}
 
 ]
+const excludePathList =[
+  '/post/regist',
+]
 
 export default function NavBar() {
   const pathname = usePathname();
   const pathState = usePathStore();
   const setPath = useSetPathStore();
 
-  setPath(pathname);
-  console.log(pathname);
+  useEffect(()=>{
+    setPath(pathname);
+  },[pathname])
 
-  return (
+
+  return !excludePathList.includes(pathname) &&
     <nav className="fixed flex bottom-0 bg-gray-400 h-[60px] w-full max-w-[500px] z-10 justify-center">
       {NavBarItemList.map((item)=>
          <Link
          className="flex flex-1 flex-col items-center justify-center h-full gap-1"
          href={item.path}
          onClick={() => setPath(item.path)}
+         key={item.id}
        >
          {item.icon(pathState)}
          <p
@@ -45,5 +52,4 @@ export default function NavBar() {
        </Link>
       )}
     </nav>
-  );
 }

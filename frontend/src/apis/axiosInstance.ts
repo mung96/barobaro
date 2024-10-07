@@ -10,8 +10,7 @@ import {
 export const kakaoInstance = axios.create({
   baseURL: KAKAO_BASE_URL,
   headers: { Authorization: `KakaoAK ${KAKAO_REST_API_KEY}` },
-});
-
+}); 
 export const nonLoginInstance = axios.create({
   baseURL: SERVER_BASE_URL, // 기본 URL
   withCredentials: true, // 도메인이 다른 서버에 쿠키 요청시 필요
