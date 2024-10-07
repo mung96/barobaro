@@ -94,7 +94,7 @@ public class ChatControllerTest {
     @Test
     public void 채팅방_채팅_상세_조회_성공() throws Exception {
         // given
-        ChatRoomDto chatRoomDto = new ChatRoomDto(1L, "uuid", "nickname", "profileImage", AVAILABLE);
+        ChatRoomDto chatRoomDto = new ChatRoomDto(1L, 1L, "ownerUuid", "opponentUuid", "nickname", "profileImage", AVAILABLE);
         List<ChatDto> chatDtos = List.of(
                 new ChatDto("uuid", "message", "image", LocalDateTime.now(), USER));
         ChatRoomAndChatsDetailsRes res = new ChatRoomAndChatsDetailsRes(chatRoomDto, chatDtos);
@@ -132,6 +132,10 @@ public class ChatControllerTest {
                                         getCommonResponseFields(
                                                 fieldWithPath("body.chatRoomDto.chatRoomId").type(NUMBER)
                                                         .description("채팅방 아이디"),
+                                                fieldWithPath("body.chatRoomDto.productId").type(NUMBER)
+                                                        .description("상품 아이디"),
+                                                fieldWithPath("body.chatRoomDto.ownerUuid").type(STRING)
+                                                        .description("상품 올린 사람 UUID"),
                                                 fieldWithPath("body.chatRoomDto.opponentUuid").type(STRING)
                                                         .description("상대방 UUID"),
                                                 fieldWithPath("body.chatRoomDto.opponentNickname").type(STRING)

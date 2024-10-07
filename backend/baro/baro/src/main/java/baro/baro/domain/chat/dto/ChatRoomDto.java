@@ -13,6 +13,10 @@ import lombok.Data;
 public class ChatRoomDto {
     private Long chatRoomId;
 
+    private Long productId;
+
+    private String ownerUuid;
+
     private String opponentUuid;
 
     private String opponentNickname;
@@ -24,6 +28,8 @@ public class ChatRoomDto {
     public static ChatRoomDto toDto(ChatRoom chatRoom, Member member) {
         return ChatRoomDto.builder()
                 .chatRoomId(chatRoom.getId())
+                .productId(chatRoom.getProduct().getId())
+                .ownerUuid(chatRoom.getOwner().getUuid())
                 .opponentUuid(member.getUuid())
                 .opponentNickname(member.getNickname())
                 .opponentProfileImage(member.getProfileImage())
