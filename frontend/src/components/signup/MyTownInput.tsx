@@ -15,10 +15,9 @@ function MyTownInfo({ onPrev, onNext }: Props) {
   const {
     getValues,
     control,
-    formState: { errors, isValid },
   } = useForm<MyTown>({ mode: 'onChange' });
 
-  const { field: town, fieldState: townState } = useController<MyTown>({
+  const { field: town } = useController<MyTown>({
     control,
     name: 'town',
     rules: {
@@ -34,7 +33,7 @@ function MyTownInfo({ onPrev, onNext }: Props) {
     <div className="flex flex-col gap-16 w-full">
       <div className="flex flex-col gap-2 w-full">
         <h2 className="text-black-100 text-[15px] font-bold">
-          거래를 진행하고 싶은 \r\n 동네를 선택해주세요
+          거래를 진행하고 싶은 동네를 선택해주세요
         </h2>
 
         <div>

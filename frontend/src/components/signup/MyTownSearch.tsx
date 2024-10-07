@@ -17,11 +17,20 @@ function MyTownSearch({values,onChange}:Props) {
     const response = await getDongList({keyword:keyword});
     setSearchResult(response.data.body.result)
   }
-  const valuesArray = Array.isArray(values) ? values : [values];
+  const valuesArray = Array.isArray(values) ? values : [];
   return (
     <section className="w-full justify-center items-center flex flex-col gap-7">
+      <div className='flex w-1/2 gap-5 items-start justify-start'>
+      {valuesArray.map((location) => (
+          <div
+            role="none"
+            className="border-2 rounded-sm flex flex-col gap-[1px] px-3 py-2"
+          >
+            <p className="text-base">{location?.dong}</p>
+          </div>
+        ))}
+      </div>
       <div className="mt-2 flex flex-col gap-3 w-full">
-
         <div className="flex gap-2 w-full">
           <Input
             placeholder="동명(읍,면)으로 검색 (ex.역삼동)"
@@ -47,7 +56,6 @@ function MyTownSearch({values,onChange}:Props) {
             <p className="text-base">{location.name}</p>
           </div>
         ))}
- 
       </div>
     </section>
   );
