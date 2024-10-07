@@ -32,6 +32,12 @@ export default function AccountCarousel() {
       accountId: 10002,
       main: false,
     },
+    {
+      bank: '싸피은행',
+      accountNumber: '3333-05-681789',
+      accountId: 10003,
+      main: false,
+    },
   ];
   const accounts = accountSort(accountsInfo);
   const [selectedAccount, setSelectedAccount] = useState<number | null>(null);

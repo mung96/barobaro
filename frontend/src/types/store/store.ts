@@ -27,3 +27,19 @@ export type RecentlyStoreState = {
     setRecentlyUploadedProducts: (recentlyUploadedProducts: Product[]) => void;
   }
 }
+
+type Profile = {
+  profileImage: string;
+  nickname: string;
+  phoneNumber: string;
+  email: string;
+  name: string;
+}
+
+export type ProfileStoreState = {
+  profileObject : Profile;
+  isInit: boolean;
+  actions: {
+    setProfileObject: (profileObject: Profile) => void;
+  }
+}

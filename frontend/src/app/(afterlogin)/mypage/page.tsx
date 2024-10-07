@@ -3,6 +3,7 @@ import MyPageContent from '@/components/MyPageContent';
 import NavBarLayout from '@/layout/NavBarLayout';
 import Header from '@/components/Header';
 import { faker } from '@faker-js/faker';
+import ProfileContainer from "@/components/user/ProfileContainer";
 
 export default function MyPage() {
     // MyPageContent - useInitializeData() : 실행시 유저의 정보를 가져오는 hook
@@ -11,12 +12,13 @@ export default function MyPage() {
     <NavBarLayout current="mypage">
       <Header pageName="" hasPrevBtn={false} hasSearchBtn={false} hasAlertBtn />
       <div className="flex flex-col justify-center">
-        <Profile
-          hasEmail
-          hasEditBtn
-          writerNickname="MyPageUserNameSector"
-          writerProfileImage={faker.image.urlLoremFlickr()}
-        />
+        {/*<Profile*/}
+        {/*  hasEmail*/}
+        {/*  hasEditBtn*/}
+        {/*  writerNickname="MyPageUserNameSector"*/}
+        {/*  writerProfileImage={faker.image.urlLoremFlickr()}*/}
+        {/*/>*/}
+          <ProfileContainer/>
         <div>
           <MyPageContent />
         </div>

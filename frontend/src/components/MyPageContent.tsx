@@ -8,7 +8,6 @@ import ConnectAccountSVG from '@/components/(SVG_component)/(mypage)/ConnectAcco
 import ChangePasswordSVG from '@/components/(SVG_component)/(mypage)/ChangePassword';
 import AlarmSVG from '@/components/(SVG_component)/(mypage)/Alarm';
 import AccountBottomSheet from '@/components/(bottomsheet)/AccountBottomSheet';
-import useInitializeData from '@/hooks/user/useGetUserInfoInit';
 import useGetUserInfoInit from "@/hooks/user/useGetUserInfoInit";
 
 export default function MyPageContent() {
