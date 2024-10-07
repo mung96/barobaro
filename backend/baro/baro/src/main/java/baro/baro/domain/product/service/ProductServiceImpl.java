@@ -28,7 +28,6 @@ import baro.baro.domain.wish_list.repository.WishListRepository;
 import baro.baro.global.event.UnlockEvent;
 import baro.baro.global.exception.CustomException;
 import baro.baro.global.s3.Images3Service;
-import baro.baro.global.s3.S3Service;
 import baro.baro.global.utils.RedisUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,11 +39,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static baro.baro.domain.chat_room.entity.RentalStatus.AVAILABLE;
@@ -250,6 +247,7 @@ public class ProductServiceImpl implements ProductService {
         List<String> imageUrls;
 
         if(files != null || !files.isEmpty()) {
+            validateFiles(files);
             imageUrls = updateProductImages(files, product, member);
         } else {
             imageUrls = productImageRepository.findSrcByProductId(product.getId());
