@@ -2363,11 +2363,13 @@ class ContractControllerTest {
 
         //given
         SignatureAddReq signatureAddReq = new SignatureAddReq(
-                10000L, "123456", "data:image/png;base64,imgData==", "signatureData"
+                1L, "123456", "data:image/png;base64,imgData==", "signatureData"
         );
 
         String content = objectMapper.writeValueAsString(signatureAddReq);
-
+        ContractSignedRes result = new ContractSignedRes(1L, "http://s3.url.com/contract/rentalSignedfileName", LocalDateTime.now());
+        when(contractService.addRentalSignature(any(), anyLong()))
+                .thenReturn(result);
         //when
         ResultActions actions = mockMvc.perform(
                 post("/contracts/sign/rental")
@@ -2410,6 +2412,576 @@ class ContractControllerTest {
                                                 fieldWithPath("body.signedAt").type(STRING)
                                                         .description("서명 시간")
 
+                                        )
+                                )
+                                .requestSchema(Schema.schema("빌리는 측 계약 서명 Request"))
+                                .responseSchema(Schema.schema("빌리는 측 계약 서명 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 빌리는_측_계약_서명_실패_존재하지_않는_채팅방() throws Exception {
+
+        //given
+        SignatureAddReq signatureAddReq = new SignatureAddReq(
+                1L, "123456", "data:image/png;base64,imgData==", "signatureData"
+        );
+
+        String content = objectMapper.writeValueAsString(signatureAddReq);
+        when(contractService.addRentalSignature(any(), anyLong()))
+                .thenThrow(new CustomException(CHATROOM_NOT_FOUND));
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/contracts/sign/rental")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+        // then
+        actions
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CHATROOM_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CHATROOM_NOT_FOUND.getMessage()))
+                .andDo(document(
+                        "빌리는 측 계약 서명 실패 - 존재하지 않는 채팅창",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("빌리는 측 계약 서명 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id"),
+                                                fieldWithPath("pinNumber").type(STRING).description("본인의 PIN 6자리"),
+                                                fieldWithPath("signatureData").type(STRING).description("서명 이미지 BASE64 인코딩된 값"),
+                                                fieldWithPath("s3FileUrl").type(STRING).description("서명할 문서의 s3 주소")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("정보 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("빌리는 측 계약 서명 Request"))
+                                .responseSchema(Schema.schema("빌리는 측 계약 서명 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 빌리는_측_계약_서명_실패_채팅_참여자가_아님() throws Exception {
+
+        //given
+        SignatureAddReq signatureAddReq = new SignatureAddReq(
+                1L, "123456", "data:image/png;base64,imgData==", "signatureData"
+        );
+
+        String content = objectMapper.writeValueAsString(signatureAddReq);
+        when(contractService.addRentalSignature(any(), anyLong()))
+                .thenThrow(new CustomException(CHATROOM_NOT_ENROLLED));
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/contracts/sign/rental")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+        // then
+        actions
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CHATROOM_NOT_ENROLLED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CHATROOM_NOT_ENROLLED.getMessage()))
+                .andDo(document(
+                        "빌리는 측 계약 서명 실패 - 참여하지 않는 채팅창",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("빌리는 측 계약 서명 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id"),
+                                                fieldWithPath("pinNumber").type(STRING).description("본인의 PIN 6자리"),
+                                                fieldWithPath("signatureData").type(STRING).description("서명 이미지 BASE64 인코딩된 값"),
+                                                fieldWithPath("s3FileUrl").type(STRING).description("서명할 문서의 s3 주소")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("정보 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("빌리는 측 계약 서명 Request"))
+                                .responseSchema(Schema.schema("빌리는 측 계약 서명 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 빌리는_측_계약_서명_실패_존재하지_않는_상품() throws Exception {
+
+        //given
+        SignatureAddReq signatureAddReq = new SignatureAddReq(
+                1L, "123456", "data:image/png;base64,imgData==", "signatureData"
+        );
+
+        String content = objectMapper.writeValueAsString(signatureAddReq);
+        when(contractService.addRentalSignature(any(), anyLong()))
+                .thenThrow(new CustomException(PRODUCT_NOT_FOUND));
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/contracts/sign/rental")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+        // then
+        actions
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(PRODUCT_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(PRODUCT_NOT_FOUND.getMessage()))
+                .andDo(document(
+                        "빌리는 측 계약 서명 실패 - 존재하지 않는 상품",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("빌리는 측 계약 서명 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id"),
+                                                fieldWithPath("pinNumber").type(STRING).description("본인의 PIN 6자리"),
+                                                fieldWithPath("signatureData").type(STRING).description("서명 이미지 BASE64 인코딩된 값"),
+                                                fieldWithPath("s3FileUrl").type(STRING).description("서명할 문서의 s3 주소")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("정보 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("빌리는 측 계약 서명 Request"))
+                                .responseSchema(Schema.schema("빌리는 측 계약 서명 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 빌리는_측_계약_서명_실패_설정된_PIN_없음() throws Exception {
+
+        //given
+        SignatureAddReq signatureAddReq = new SignatureAddReq(
+                1L, "123456", "data:image/png;base64,imgData==", "signatureData"
+        );
+
+        String content = objectMapper.writeValueAsString(signatureAddReq);
+        when(contractService.addRentalSignature(any(), anyLong()))
+                .thenThrow(new CustomException(PIN_NOT_FOUND));
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/contracts/sign/rental")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+        // then
+        actions
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(PIN_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(PIN_NOT_FOUND.getMessage()))
+                .andDo(document(
+                        "빌리는 측 계약 서명 실패 - 설정된 PIN 없음",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("빌리는 측 계약 서명 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id"),
+                                                fieldWithPath("pinNumber").type(STRING).description("본인의 PIN 6자리"),
+                                                fieldWithPath("signatureData").type(STRING).description("서명 이미지 BASE64 인코딩된 값"),
+                                                fieldWithPath("s3FileUrl").type(STRING).description("서명할 문서의 s3 주소")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("정보 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("빌리는 측 계약 서명 Request"))
+                                .responseSchema(Schema.schema("빌리는 측 계약 서명 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 빌리는_측_계약_서명_실패_유효하지_않은_PIN() throws Exception {
+
+        //given
+        SignatureAddReq signatureAddReq = new SignatureAddReq(
+                1L, "123456", "data:image/png;base64,imgData==", "signatureData"
+        );
+
+        String content = objectMapper.writeValueAsString(signatureAddReq);
+        when(contractService.addRentalSignature(any(), anyLong()))
+                .thenThrow(new CustomException(NOT_VALID_PIN_NUMBER));
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/contracts/sign/rental")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+        // then
+        actions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(NOT_VALID_PIN_NUMBER.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(NOT_VALID_PIN_NUMBER.getMessage()))
+                .andDo(document(
+                        "빌리는 측 계약 서명 실패 - 유효하지 않은 PIN",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("빌리는 측 계약 서명 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id"),
+                                                fieldWithPath("pinNumber").type(STRING).description("본인의 PIN 6자리"),
+                                                fieldWithPath("signatureData").type(STRING).description("서명 이미지 BASE64 인코딩된 값"),
+                                                fieldWithPath("s3FileUrl").type(STRING).description("서명할 문서의 s3 주소")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("정보 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("빌리는 측 계약 서명 Request"))
+                                .responseSchema(Schema.schema("빌리는 측 계약 서명 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 빌리는_측_계약_서명_실패_다른_사람이_계약중() throws Exception {
+
+        //given
+        SignatureAddReq signatureAddReq = new SignatureAddReq(
+                1L, "123456", "data:image/png;base64,imgData==", "signatureData"
+        );
+
+        String content = objectMapper.writeValueAsString(signatureAddReq);
+        when(contractService.addRentalSignature(any(), anyLong()))
+                .thenThrow(new CustomException(CONFLICT_WITH_OTHER));
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/contracts/sign/rental")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+        // then
+        actions
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CONFLICT_WITH_OTHER.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CONFLICT_WITH_OTHER.getMessage()))
+                .andDo(document(
+                        "빌리는 측 계약 서명 실패 - 다른 사람이 계약 중인 경우",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("빌리는 측 계약 서명 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id"),
+                                                fieldWithPath("pinNumber").type(STRING).description("본인의 PIN 6자리"),
+                                                fieldWithPath("signatureData").type(STRING).description("서명 이미지 BASE64 인코딩된 값"),
+                                                fieldWithPath("s3FileUrl").type(STRING).description("서명할 문서의 s3 주소")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("정보 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("빌리는 측 계약 서명 Request"))
+                                .responseSchema(Schema.schema("빌리는 측 계약 서명 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 빌리는_측_계약_서명_실패_계약_정보_없음() throws Exception {
+
+        //given
+        SignatureAddReq signatureAddReq = new SignatureAddReq(
+                1L, "123456", "data:image/png;base64,imgData==", "signatureData"
+        );
+
+        String content = objectMapper.writeValueAsString(signatureAddReq);
+        when(contractService.addRentalSignature(any(), anyLong()))
+                .thenThrow(new CustomException(CONTRACT_NOT_FOUND));
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/contracts/sign/rental")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+        // then
+        actions
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CONTRACT_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CONTRACT_NOT_FOUND.getMessage()))
+                .andDo(document(
+                        "빌리는 측 계약 서명 실패 - 계약 정보가 없는 경우",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("빌리는 측 계약 서명 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id"),
+                                                fieldWithPath("pinNumber").type(STRING).description("본인의 PIN 6자리"),
+                                                fieldWithPath("signatureData").type(STRING).description("서명 이미지 BASE64 인코딩된 값"),
+                                                fieldWithPath("s3FileUrl").type(STRING).description("서명할 문서의 s3 주소")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("정보 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("빌리는 측 계약 서명 Request"))
+                                .responseSchema(Schema.schema("빌리는 측 계약 서명 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 빌리는_측_계약_서명_실패_비밀키_에러() throws Exception {
+
+        //given
+        SignatureAddReq signatureAddReq = new SignatureAddReq(
+                1L, "123456", "data:image/png;base64,imgData==", "signatureData"
+        );
+
+        String content = objectMapper.writeValueAsString(signatureAddReq);
+        when(contractService.addRentalSignature(any(), anyLong()))
+                .thenThrow(new CustomException(PRIVATE_KEY_EXCEPTION));
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/contracts/sign/rental")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+        // then
+        actions
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(PRIVATE_KEY_EXCEPTION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(PRIVATE_KEY_EXCEPTION.getMessage()))
+                .andDo(document(
+                        "빌리는 측 계약 서명 실패 - 비밀키 에러",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("빌리는 측 계약 서명 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id"),
+                                                fieldWithPath("pinNumber").type(STRING).description("본인의 PIN 6자리"),
+                                                fieldWithPath("signatureData").type(STRING).description("서명 이미지 BASE64 인코딩된 값"),
+                                                fieldWithPath("s3FileUrl").type(STRING).description("서명할 문서의 s3 주소")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("정보 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("빌리는 측 계약 서명 Request"))
+                                .responseSchema(Schema.schema("빌리는 측 계약 서명 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 빌리는_측_계약_서명_실패_인증서_에러() throws Exception {
+
+        //given
+        SignatureAddReq signatureAddReq = new SignatureAddReq(
+                1L, "123456", "data:image/png;base64,imgData==", "signatureData"
+        );
+
+        String content = objectMapper.writeValueAsString(signatureAddReq);
+        when(contractService.addRentalSignature(any(), anyLong()))
+                .thenThrow(new CustomException(CERTIFICATE_EXCEPTION));
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/contracts/sign/rental")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+        // then
+        actions
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CERTIFICATE_EXCEPTION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CERTIFICATE_EXCEPTION.getMessage()))
+                .andDo(document(
+                        "빌리는 측 계약 서명 실패 - 인증서 에러",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("빌리는 측 계약 서명 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id"),
+                                                fieldWithPath("pinNumber").type(STRING).description("본인의 PIN 6자리"),
+                                                fieldWithPath("signatureData").type(STRING).description("서명 이미지 BASE64 인코딩된 값"),
+                                                fieldWithPath("s3FileUrl").type(STRING).description("서명할 문서의 s3 주소")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("정보 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("빌리는 측 계약 서명 Request"))
+                                .responseSchema(Schema.schema("빌리는 측 계약 서명 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 빌리는_측_계약_서명_실패_서명_에러() throws Exception {
+
+        //given
+        SignatureAddReq signatureAddReq = new SignatureAddReq(
+                1L, "123456", "data:image/png;base64,imgData==", "signatureData"
+        );
+
+        String content = objectMapper.writeValueAsString(signatureAddReq);
+        when(contractService.addRentalSignature(any(), anyLong()))
+                .thenThrow(new CustomException(EXCEPTION_DURING_SIGNING));
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/contracts/sign/rental")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+        // then
+        actions
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(EXCEPTION_DURING_SIGNING.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(EXCEPTION_DURING_SIGNING.getMessage()))
+                .andDo(document(
+                        "빌리는 측 계약 서명 실패 - 서명 에러",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("빌리는 측 계약 서명 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id"),
+                                                fieldWithPath("pinNumber").type(STRING).description("본인의 PIN 6자리"),
+                                                fieldWithPath("signatureData").type(STRING).description("서명 이미지 BASE64 인코딩된 값"),
+                                                fieldWithPath("s3FileUrl").type(STRING).description("서명할 문서의 s3 주소")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("정보 없음")
                                         )
                                 )
                                 .requestSchema(Schema.schema("빌리는 측 계약 서명 Request"))
