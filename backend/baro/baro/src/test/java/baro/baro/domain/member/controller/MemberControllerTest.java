@@ -44,7 +44,8 @@ import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.JsonFieldType.*;
+import static org.springframework.restdocs.payload.JsonFieldType.OBJECT;
+import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -106,7 +107,7 @@ class MemberControllerTest {
         MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", objectMapper.writeValueAsBytes(req));
         MockMultipartFile file = new MockMultipartFile("file", "sample.jpg", "image/jpeg", "image/sample.jpg".getBytes());
 
-        when(memberService.signup(any(), any())).thenReturn(MEMBER_CREATED.getMessage());
+        when(memberService.signup(any(), any())).thenReturn(jwtToken);
 
         //when
         ResultActions actions = mockMvc.perform(
@@ -133,8 +134,8 @@ class MemberControllerTest {
                                 .summary("회원가입 API")
                                 .responseFields(
                                         getCommonResponseFields(
-                                                fieldWithPath("body").type(NULL)
-                                                        .description("본문 없음")
+                                                fieldWithPath("body").type(STRING)
+                                                        .description("토큰")
                                         )
                                 )
                                 .requestSchema(Schema.schema("회원 가입 Request"))
