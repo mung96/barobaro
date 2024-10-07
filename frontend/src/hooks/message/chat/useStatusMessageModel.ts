@@ -3,20 +3,17 @@ import { useState } from 'react';
 const useStatusMessageModel = () => {
   const [isModalOpen, setIsModalOpen] = useState(false); // 기본적으로 모달 닫힘
 
-  const openSignatureModal = () => {
+  const openModal = () => {
     setIsModalOpen(true);
   };
 
-  const closeSignatureModal = () => {
+  const closeModal = () => {
     setIsModalOpen(false);
   };
-
-  const openContractModal = () => {};
   return {
     isModalOpen,
-    closeSignatureModal,
-    openSignatureModal,
-    openContractModal,
+    openModal,
+    closeModal,
   };
 };
 
