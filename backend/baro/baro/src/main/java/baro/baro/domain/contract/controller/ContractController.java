@@ -74,12 +74,9 @@ public class ContractController {
 
     @PostMapping("/sign/owner")
     public ResponseEntity<?> addOwnerSignature(@RequestBody SignatureAddReq signatureAddReq) {
+        Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
+        ContractSignedRes result = contractService.addOwnerSignature(signatureAddReq,memberId);
 
-        ContractSignedRes result = ContractSignedRes.builder()
-                .chatRoomId(signatureAddReq.getChatRoomId())
-                .fileUrl("http://test.url/test_A_signed.pdf")
-                .signedAt(LocalDateTime.now())
-                .build();
         return new ResponseEntity<>(ResponseDto.success(CONTRACT_SIGNED_OK, result), OK);
     }
 
