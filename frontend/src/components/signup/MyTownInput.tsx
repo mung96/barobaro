@@ -10,6 +10,7 @@ import {  useSocialMemberState } from '@/store/useSocialMember';
 import { SocialMember } from '@/types/domains/member';
 import { SignUpMemberRequest } from '@/types/apis/memberRequest';
 import { useRouter } from 'next/navigation';
+import useAxios from '@/hooks/shared/useAxios';
 
 type Props = {
   onPrev: () => void;
@@ -18,7 +19,7 @@ type Props = {
 function MyTownInfo({ onPrev }: Props) {
   const {
     getValues,
-    control,handleSubmit
+    control,formState:{isSubmitting}
   } = useForm<MyTown>({ mode: 'onChange' ,});
   const router = useRouter();
   const { field: town } = useController<MyTown>({
@@ -39,7 +40,6 @@ function MyTownInfo({ onPrev }: Props) {
     }
     return request;
   }
-
   const signUp = async () =>{
     try{
       const response =  await postSignUp(convertSignUpDateToRequest(socialMember!,getValues()),socialMember?.profileImage! as File)
@@ -51,7 +51,10 @@ function MyTownInfo({ onPrev }: Props) {
   }
 
   return (
-    <div className="flex flex-col gap-16 w-full" >
+    <form className="flex flex-col gap-16 w-full" onSubmit={(e)=>{
+      e.preventDefault();
+      signUp();
+    }}>
       <div className="flex flex-col gap-2 w-full">
         <h2 className="text-black-100 text-[15px] font-bold">
           거래를 진행하고 싶은 동네를 선택해주세요
@@ -76,11 +79,11 @@ function MyTownInfo({ onPrev }: Props) {
           <p className="text-xs">이전</p>
         </Button>
 
-        <Button onClick={signUp} width="100%" height="36px">
+        <Button type='submit' disabled={isSubmitting}  width="100%" height="36px">
           <p className="text-xs">회원가입 하기</p>
         </Button>
       </div>
-    </div>
+    </form>
   );
 }
 
