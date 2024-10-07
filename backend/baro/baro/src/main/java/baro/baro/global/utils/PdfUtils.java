@@ -289,15 +289,15 @@ public class PdfUtils {
 
 
     /**
-     * @param s3FileName         기존 s3에 저장된 keyName
+     * @param s3FileUrl          pdf 가 저장된 s3주소
      * @param signatureFieldName 서명할 필드 이름. ownerSignature / rentalSignature 로 구분
      * @param privateKey         서명하는 사람의 privateKey 값
      * @param certificate        서명하는 사람의 인증서.
      * @param imageData          서명 이미지데이터(ImageData 포맷)
      * @return 서명된 pdf 파일을 접근 가능한 s3 url
      */
-    public String signPdfAndSave(String s3FileName, String signatureFieldName, PrivateKey privateKey, X509Certificate certificate, ImageData imageData) throws IOException, GeneralSecurityException {
-
+    public String signPdfAndSave(String s3FileUrl, String signatureFieldName, PrivateKey privateKey, X509Certificate certificate, ImageData imageData) throws IOException, GeneralSecurityException {
+        String s3FileName = s3FileUrl.substring(s3FileUrl.lastIndexOf("/") + 1);
         InputStream pdfInputStream = pdfS3Service.download(s3FileName);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         PdfSigner signer = new PdfSigner(new PdfReader(pdfInputStream), new PdfWriter(byteArrayOutputStream), new StampingProperties());
