@@ -16,7 +16,7 @@ export default function CategoryDetailContent() {
   const searchData = useGetSearchData('product') || '';
 
   return (
-    <NavBarLayout current="home">
+    <>
       <div className="flex flex-col min-h-screen">
         <div className="fixed top-0 left-0 right-0 z-10 bg-white">
           <Header pageName="홈" hasPrevBtn hasSearchBtn hasAlertBtn />
@@ -25,6 +25,6 @@ export default function CategoryDetailContent() {
           <ItemList data="search" />
         </div>
       </div>
-    </NavBarLayout>
+    </>
   );
 }
