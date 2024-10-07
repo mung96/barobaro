@@ -1274,13 +1274,13 @@ class ContractControllerTest {
     }
 
     @Test
-    public void 계약_요청_승인_성공() throws Exception {
+    public void 전자계약_있는_계약_요청_승인_성공() throws Exception {
 
         //given
         ContractApproveReq contractApproveReq = new ContractApproveReq(
                 1L
         );
-        ContractApproveRes result = new ContractApproveRes(1L, "http://s3.url/fileKeyname");
+        ContractApproveRes result = new ContractApproveRes(1L, "https://barobaro.s3.ap-northeast-2.amazonaws.com/contract/151ef683-a504-4a8d-9843-639d8fddeaf0_2024-10-04_22_21_39.pdf");
         String content = objectMapper.writeValueAsString(contractApproveReq);
         when(contractService.approveRequestWithContract(any(), anyLong()))
                 .thenReturn(result);
@@ -1322,6 +1322,383 @@ class ContractControllerTest {
                                                 fieldWithPath("body.fileUrl").type(STRING)
                                                         .description("Pdf가 저장된 Url")
 
+                                        )
+                                )
+                                .requestSchema(Schema.schema("계약 요청 승인 Request"))
+                                .responseSchema(Schema.schema("계약 요청 승인 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 전자계약_있는_계약_요청_승인_실패_존재하지_않는_채팅방() throws Exception {
+
+        //given
+        ContractApproveReq contractApproveReq = new ContractApproveReq(
+                1L
+        );
+        String content = objectMapper.writeValueAsString(contractApproveReq);
+        when(contractService.approveRequestWithContract(any(), anyLong()))
+                .thenThrow(new CustomException(CHATROOM_NOT_FOUND));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/contracts/approve?type=contract")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+        // then
+        actions
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CHATROOM_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CHATROOM_NOT_FOUND.getMessage()))
+                .andDo(document(
+                        "전자계약 있는 계약 요청 승인 실패 - 존재하지 않는 채팅방",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("계약 요청 승인 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("정보 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("계약 요청 승인 Request"))
+                                .responseSchema(Schema.schema("계약 요청 승인 Response"))
+                                .build()
+                        ))
+                );
+    }
+    @Test
+    public void 전자계약_있는_계약_요청_승인_실패_물품_소유자가_아님() throws Exception {
+
+        //given
+        ContractApproveReq contractApproveReq = new ContractApproveReq(
+                1L
+        );
+        String content = objectMapper.writeValueAsString(contractApproveReq);
+        when(contractService.approveRequestWithContract(any(), anyLong()))
+                .thenThrow(new CustomException(CHATROOM_NOT_ENROLLED));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/contracts/approve?type=contract")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+        // then
+        actions
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CHATROOM_NOT_ENROLLED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CHATROOM_NOT_ENROLLED.getMessage()))
+                .andDo(document(
+                        "전자계약 있는 계약 요청 승인 실패 - 물품 소유자가 아님",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("계약 요청 승인 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("정보 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("계약 요청 승인 Request"))
+                                .responseSchema(Schema.schema("계약 요청 승인 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 전자계약_있는_계약_요청_승인_실패_존재하지_않는_상품() throws Exception {
+
+        //given
+        ContractApproveReq contractApproveReq = new ContractApproveReq(
+                1L
+        );
+        String content = objectMapper.writeValueAsString(contractApproveReq);
+        when(contractService.approveRequestWithContract(any(), anyLong()))
+                .thenThrow(new CustomException(PRODUCT_NOT_FOUND));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/contracts/approve?type=contract")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+        // then
+        actions
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(PRODUCT_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(PRODUCT_NOT_FOUND.getMessage()))
+                .andDo(document(
+                        "전자계약 있는 계약 요청 승인 실패 - 존재하지 않는 상품",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("계약 요청 승인 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("정보 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("계약 요청 승인 Request"))
+                                .responseSchema(Schema.schema("계약 요청 승인 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 전자계약_있는_계약_요청_승인_실패_분산락_획득_실패() throws Exception {
+
+        //given
+        ContractApproveReq contractApproveReq = new ContractApproveReq(
+                1L
+        );
+        String content = objectMapper.writeValueAsString(contractApproveReq);
+        when(contractService.approveRequestWithContract(any(), anyLong()))
+                .thenThrow(new CustomException(CONFLICT_WITH_OTHER));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/contracts/approve?type=contract")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+        // then
+        actions
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CONFLICT_WITH_OTHER.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CONFLICT_WITH_OTHER.getMessage()))
+                .andDo(document(
+                        "전자계약 있는 계약 요청 승인 실패 - 분산락 획득 실패",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("계약 요청 승인 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("정보 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("계약 요청 승인 Request"))
+                                .responseSchema(Schema.schema("계약 요청 승인 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 전자계약_있는_계약_요청_승인_실패_다른_사람이_대여중() throws Exception {
+
+        //given
+        ContractApproveReq contractApproveReq = new ContractApproveReq(
+                1L
+        );
+        String content = objectMapper.writeValueAsString(contractApproveReq);
+        when(contractService.approveRequestWithContract(any(), anyLong()))
+                .thenThrow(new CustomException(CONTRACT_IN_PROGRESS_BY_OTHERS));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/contracts/approve?type=contract")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+        // then
+        actions
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CONTRACT_IN_PROGRESS_BY_OTHERS.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CONTRACT_IN_PROGRESS_BY_OTHERS.getMessage()))
+                .andDo(document(
+                        "전자계약 있는 계약 요청 승인 실패 - 다른 사람이 계약 진행중인 물품",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("계약 요청 승인 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("정보 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("계약 요청 승인 Request"))
+                                .responseSchema(Schema.schema("계약 요청 승인 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 전자계약_있는_계약_요청_승인_실패_존재하지_않는_계약요청() throws Exception {
+
+        //given
+        ContractApproveReq contractApproveReq = new ContractApproveReq(
+                1L
+        );
+        String content = objectMapper.writeValueAsString(contractApproveReq);
+        when(contractService.approveRequestWithContract(any(), anyLong()))
+                .thenThrow(new CustomException(CONTRACT_REQUEST_NOT_FOUND));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/contracts/approve?type=contract")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+        // then
+        actions
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CONTRACT_REQUEST_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CONTRACT_REQUEST_NOT_FOUND.getMessage()))
+                .andDo(document(
+                        "전자계약 있는 계약 요청 승인 실패 - 존재하지 않는 계약 요청",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("계약 요청 승인 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("정보 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("계약 요청 승인 Request"))
+                                .responseSchema(Schema.schema("계약 요청 승인 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 전자계약_있는_계약_요청_승인_실패_문서_생성중_에러발생() throws Exception {
+
+        //given
+        ContractApproveReq contractApproveReq = new ContractApproveReq(
+                1L
+        );
+        String content = objectMapper.writeValueAsString(contractApproveReq);
+        when(contractService.approveRequestWithContract(any(), anyLong()))
+                .thenThrow(new CustomException(PDF_GENERATE_FAILED));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/contracts/approve?type=contract")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+        // then
+        actions
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(PDF_GENERATE_FAILED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(PDF_GENERATE_FAILED.getMessage()))
+                .andDo(document(
+                        "전자계약 있는 계약 요청 승인 실패 - 존재하지 않는 계약 요청",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("계약 요청 승인 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("정보 없음")
                                         )
                                 )
                                 .requestSchema(Schema.schema("계약 요청 승인 Request"))
