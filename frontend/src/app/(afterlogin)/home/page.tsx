@@ -7,7 +7,7 @@ import Logo from '@/../public/assets/png/barobaro_logo.png';
 
 export default function Home() {
   return (
-    <NavBarLayout current="home">
+    <>
       <br />
       <br />
       <div className="flex justify-center">
@@ -22,6 +22,6 @@ export default function Home() {
       <h1 className="text-xs font-bold ml-4">최근 본 목록</h1>
       <Cards CardsData="recentlyView" />
       <div className="h-12" />
-    </NavBarLayout>
+    </>
   );
 }

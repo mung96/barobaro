@@ -1,4 +1,3 @@
-import NavBarLayout from '@/layout/NavBarLayout';
 // import ItemList from '@/components/ItemList';import Header from '@/components/Header';
 import ItemList from '@/components/ItemList';
 import Header from '@/components/Header';
@@ -6,7 +5,7 @@ import Header from '@/components/Header';
 export default function List() {
   // 나중에 진짜 데이터가 들어오면 (temp) - DynamicItemList 를 삭제하고 DynamicItemList를 ItemList로 변경합니다.
   return (
-    <NavBarLayout current="mypage">
+    <>
       <header>
         <Header
           pageName="마이페이지"
@@ -18,6 +17,6 @@ export default function List() {
       <main>
         <ItemList data="lent" />
       </main>
-    </NavBarLayout>
+    </>
   );
 }
