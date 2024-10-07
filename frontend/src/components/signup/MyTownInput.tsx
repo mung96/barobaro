@@ -1,24 +1,35 @@
+'use client'
+
 import { useController, useForm } from 'react-hook-form';
 import Button from '@/components/shared/Button';
 import { MyTown } from '@/types/domains/signup';
 import MyTownSearch from '@/components/signup/MyTownSearch';
 import { Dong } from '@/types/apis/location';
-import { useEffect } from 'react';
 import { postSignUp } from '@/apis/memberApi';
-import { useSocialMemberAction, useSocialMemberState } from '@/store/useSocialMember';
-import { SocialMember } from '@/types/domains/member';
-import { SignUpMemberRequest } from '@/types/apis/memberRequest';
+import {  useSocialMemberState } from '@/store/useSocialMember';
+import { useRouter } from 'next/navigation';
+import { convertSignUpDateToRequest } from '@/services/signup/convert';
 
 type Props = {
   onPrev: () => void;
 };
 
 function MyTownInfo({ onPrev }: Props) {
-  const {
-    getValues,
-    control,handleSubmit
-  } = useForm<MyTown>({ mode: 'onChange' ,});
+  const router = useRouter();
 
+  const signUp = async () =>{
+    try{
+      const response =  await postSignUp(convertSignUpDateToRequest(socialMember!,getValues()),socialMember?.profileImage! as File)
+      router.push('/home');
+    }catch(error){
+      console.error('API 요청 중 오류 발생:', error);
+    }
+  }
+
+  const {
+    getValues,handleSubmit ,
+    control,formState:{isSubmitting}
+  } = useForm<MyTown>({ mode: 'onChange' ,});
   const { field: town } = useController<MyTown>({
     control,
     name: 'town',
@@ -28,21 +39,10 @@ function MyTownInfo({ onPrev }: Props) {
     },
   });
   const socialMember = useSocialMemberState();
-  const convertSignUpDateToRequest = (member:SocialMember,data:MyTown):SignUpMemberRequest=>{
-    const request ={
-      email: member.email,
-      providerType: member.providerType,
-      nickname: member.nickName,
-      locations: data.town?.map(location=>({
-        locationId: location.locationId,
-        isMain: location.isMain
-      }))
-    }
-    return request;
-  }
+
 
   return (
-    <div className="flex flex-col gap-16 w-full" >
+    <form className="flex flex-col gap-16 w-full" onSubmit={handleSubmit(signUp)}>
       <div className="flex flex-col gap-2 w-full">
         <h2 className="text-black-100 text-[15px] font-bold">
           거래를 진행하고 싶은 동네를 선택해주세요
@@ -67,11 +67,11 @@ function MyTownInfo({ onPrev }: Props) {
           <p className="text-xs">이전</p>
         </Button>
 
-        <Button onClick={()=>postSignUp(convertSignUpDateToRequest(socialMember!,getValues()),socialMember?.profileImage! as File)} width="100%" height="36px">
+        <Button type='submit' disabled={isSubmitting}  width="100%" height="36px">
           <p className="text-xs">회원가입 하기</p>
         </Button>
       </div>
-    </div>
+    </form>
   );
 }
 
