@@ -1,13 +1,15 @@
+'use client'
+
 import { useController, useForm } from 'react-hook-form';
 import Button from '@/components/shared/Button';
 import { MyTown } from '@/types/domains/signup';
 import MyTownSearch from '@/components/signup/MyTownSearch';
 import { Dong } from '@/types/apis/location';
-import { useEffect } from 'react';
 import { postSignUp } from '@/apis/memberApi';
-import { useSocialMemberAction, useSocialMemberState } from '@/store/useSocialMember';
+import {  useSocialMemberState } from '@/store/useSocialMember';
 import { SocialMember } from '@/types/domains/member';
 import { SignUpMemberRequest } from '@/types/apis/memberRequest';
+import { useRouter } from 'next/navigation';
 
 type Props = {
   onPrev: () => void;
@@ -18,7 +20,7 @@ function MyTownInfo({ onPrev }: Props) {
     getValues,
     control,handleSubmit
   } = useForm<MyTown>({ mode: 'onChange' ,});
-
+  const router = useRouter();
   const { field: town } = useController<MyTown>({
     control,
     name: 'town',
@@ -28,18 +30,24 @@ function MyTownInfo({ onPrev }: Props) {
     },
   });
   const socialMember = useSocialMemberState();
-  console.log(socialMember);
   const convertSignUpDateToRequest = (member:SocialMember,data:MyTown):SignUpMemberRequest=>{
     const request ={
       email: member.email,
       providerType: member.providerType,
       nickname: member.nickName,
-      locations: data.town?.map(location=>({
-        locationId: location.locationId,
-        isMain: location.isMain
-      }))
+      locations: data.town?.map(location=>(location.locationId))
     }
     return request;
+  }
+
+  const signUp = async () =>{
+    try{
+      const response =  await postSignUp(convertSignUpDateToRequest(socialMember!,getValues()),socialMember?.profileImage! as File)
+      console.log(response);
+      router.push('/home');
+    }catch(error){
+      console.error('API 요청 중 오류 발생:', error);
+    }
   }
 
   return (
@@ -68,7 +76,7 @@ function MyTownInfo({ onPrev }: Props) {
           <p className="text-xs">이전</p>
         </Button>
 
-        <Button onClick={()=>postSignUp(convertSignUpDateToRequest(socialMember!,getValues()),socialMember?.profileImage! as File)} width="100%" height="36px">
+        <Button onClick={signUp} width="100%" height="36px">
           <p className="text-xs">회원가입 하기</p>
         </Button>
       </div>
