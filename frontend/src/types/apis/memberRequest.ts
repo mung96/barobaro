@@ -9,7 +9,6 @@ export type SignUpMemberRequest = {
 
 type MemberLocationReq = {
   locationId: number;
-  isMain: boolean;
 };
 
 

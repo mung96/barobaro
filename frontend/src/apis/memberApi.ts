@@ -19,6 +19,8 @@ export const getSignUpInfo = async (email: string) => {
 
 export const postSignUp = async (data: SignUpMemberRequest, image: File) => {
   const formData = new FormData();
+  console.dir(data);
+
 
   // data를 Blob 타입으로 변환하여 dto 키로 추가
   const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });

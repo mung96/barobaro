@@ -3,7 +3,6 @@
 import { useFunnel } from '@use-funnel/browser';
 import { useEffect, useState } from 'react';
 
-import axios from 'axios';
 import { useSearchParams } from 'next/navigation';
 import PageTransition, {
   DirectionType,
@@ -13,13 +12,11 @@ import { MyInfo, MyInfoStep, MyTownStep } from '@/types/domains/signup';
 import convertSignUpStepToStepNumber from '@/services/signup/convert';
 import MyInfoInput from '@/components/signup/MyInfoInput';
 import MyTownInfo from '@/components/signup/MyTownInput';
-import { END_POINT, NEXT_BASE_URL } from '@/constants/api';
 import {
   useSocialMemberAction,
   useSocialMemberState,
 } from '@/store/useSocialMember';
-import { SocialMemberResponse } from '@/types/apis/memberResponse';
-import { axiosInstance } from '@/apis/axiosInstance';
+import { getSignUpInfo } from '@/apis/memberApi';
 
 function SignUpFunnel() {
   const [direction, setDirection] = useState<DirectionType>('forward');
@@ -42,13 +39,9 @@ function SignUpFunnel() {
   useEffect(() => {
     const getResponse = async () => {
       try {
-        const response = await axios.get<SocialMemberResponse>(
-          `${NEXT_BASE_URL}/signup/info`,
-          {
-            params: { key: searchParams.get('key') },
-          },
-        );
+        const response = await getSignUpInfo(searchParams.get('key')!)
         if (response.data.body) {
+          console.log(response.data.body);
           setSocialMember(response.data.body);
         }
       } catch (err) {
@@ -57,21 +50,6 @@ function SignUpFunnel() {
     };
     getResponse();
   }, []);
-
-  useEffect(() => {
-    const getResponse = async () => {
-      try {
-        const response = await axiosInstance.get(
-          END_POINT.MY_PROFILE,
-        );
-       console.log(response);
-      } catch (err) {
-        console.error('API 요청 중 오류 발생:', err);
-      }
-    };
-    getResponse();
-  }, []);
-
 
   return (
     <div className="ms-[30px] mb-3">
@@ -85,6 +63,7 @@ function SignUpFunnel() {
           <MyInfoInput
             member={socialMember!}
             onNext={(data: MyInfo) => {
+              setSocialMember({ ...socialMember!, ...data });
               history.push('MyTownStep', data);
               setDirection('forward');
             }}
