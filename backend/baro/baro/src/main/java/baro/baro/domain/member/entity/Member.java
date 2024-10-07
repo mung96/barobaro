@@ -45,4 +45,7 @@ public class Member {
     private Boolean isCertificated;
 
     private LocalDateTime createdAt;
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "member")
+    private Pin pin;
 }
