@@ -11,9 +11,9 @@ type IsMain = {
 
 
 //request
-export type LocationRequest=LocationId
+export type DefaultLocationRequest=LocationId
 
-export type MyLocationRequest=LocationId & IsMain
+export type MyLocationRequest=(LocationId & IsMain)[]
 
 export type SearchLocationRequest={
     keyword:string,
