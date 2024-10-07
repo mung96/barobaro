@@ -28,6 +28,7 @@ function MyTownInfo({ onPrev }: Props) {
     },
   });
   const socialMember = useSocialMemberState();
+  console.log(socialMember);
   const convertSignUpDateToRequest = (member:SocialMember,data:MyTown):SignUpMemberRequest=>{
     const request ={
       email: member.email,
