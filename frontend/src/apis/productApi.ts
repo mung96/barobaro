@@ -24,3 +24,10 @@ export const getRecentlyViewed = async () => {
     console.log('RECENTLY VIEWED', response.data.body['products'])
     return response.data.body['products'];
 }
+
+export const getFavoriteProducts = async () => {
+    console.log('GET FAVORITEPRODUCTS')
+    const response = await axiosInstance.get(END_POINT.WISH_LIST);
+    console.log('Favorite RES', response.data.body['products'])
+    return response.data.body['products'];
+}
