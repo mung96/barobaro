@@ -4,6 +4,7 @@ const bankData: { [key: string]: string } = {
   국민은행: '#ffbc00',
   신한은행: '#0046ff',
   싸피은행: '#6DCEF5',
+  카카오뱅크: '#ffbc00',
 };
 
 // eslint-disable-next-line import/prefer-default-export

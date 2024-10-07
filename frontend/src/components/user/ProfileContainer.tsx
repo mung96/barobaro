@@ -21,7 +21,6 @@ export default function ProfileContainer() {
             } catch (err) {
                 console.log(err);
             }
-
         }
         setProfile();
     })
