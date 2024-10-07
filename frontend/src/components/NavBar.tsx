@@ -9,78 +9,36 @@ import MyPageButton from './(SVG_component)/MyPageButton';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 
+
+
+const NavBarItemList=[
+  {id:0,icon: (currentPath:string)=>{return  <HomeButton width='32' height='32' fill={currentPath === '/home' ? '#1A1E27' : '#B6BDC8'} />},label:'홈',path:'/home'},
+  {id:1,icon: (currentPath:string)=>{return  <FavoriteButton  width='28' height='28'  fill={currentPath === '/like' ? '#1A1E27' : '#B6BDC8'} />},label:'관심내역',path:'/like'},
+  {id:2,icon: (currentPath:string)=>{return  <PostButton  width='28' height='28'  fill={currentPath === '/post/regist' ? '#1A1E27' : '#B6BDC8'} />},label:'등록',path:'/post/regist'},
+  {id:3,icon: (currentPath:string)=>{return  <MessageButton  width='30' height='30'   fill={currentPath === '/message' ? '#1A1E27' : '#B6BDC8'} />},label:'채팅',path:'/message'},
+  {id:4,icon: (currentPath:string)=>{return  <MyPageButton  width='32' height='32' fill={currentPath === '/mypage' ? '#1A1E27' : '#B6BDC8'} />},label:'마이페이지',path:'/mypage'}
+
+]
+
 export default function NavBar() {
   const pathname = usePathname();
   const [currentPath, setCurrentPath] = useState(pathname);
   return (
-    <nav className="fixed bottom-0 bg-gray-400 h-12 w-full max-w-[500px] z-10 flex flex-col justify-center">
-      <div className="flex">
-        <Link
-          className="flex flex-1 flex-col items-center justify-center"
-          href="/home"
-          onClick={() => setCurrentPath('/home')}
-        >
-          <HomeButton fill={currentPath === '/home' ? '#1A1E27' : '#B6BDC8'} />
-          <p
-            className="text-xs text-nav_btn"
-            style={{ color: currentPath === '/home' ? '#1A1E27' : '#B6BDC8' }}
-          >
-            홈
-          </p>
-        </Link>
-        <Link
-          className="flex flex-1 flex-col items-center justify-center"
-          href="/like"
-          onClick={() => setCurrentPath('/like')}
-        >
-          <FavoriteButton fill={currentPath === '/like' ? '#1A1E27' : '#B6BDC8'} />
-          <p
-            className="text-xs text-nav_btn"
-            style={{ color: currentPath === '/like' ? '#1A1E27' : '#B6BDC8' }}
-          >
-            관심내역
-          </p>
-        </Link>
-        <Link
-          className="flex flex-1 flex-col items-center justify-center"
-          href="/post/regist"
-          onClick={() => setCurrentPath('/post')}
-        >
-          <PostButton fill={currentPath === '/post' ? '#1A1E27' : '#B6BDC8'} />
-          <p
-            className="text-xs text-nav_btn"
-            style={{ color: currentPath === '/post' ? '#1A1E27' : '#B6BDC8' }}
-          >
-            등록
-          </p>
-        </Link>
-        <Link
-          className="flex flex-1 flex-col items-center justify-center"
-          href="/message"
-          onClick={() => setCurrentPath('/message')}
-        >
-          <MessageButton fill={currentPath === '/message' ? '#1A1E27' : '#B6BDC8'} />
-          <p
-            className="text-xs text-nav_btn"
-            style={{ color: currentPath === '/message' ? '#1A1E27' : '#B6BDC8' }}
-          >
-            채팅
-          </p>
-        </Link>
-        <Link
-          className="flex flex-.1 flex-col items-center justify-center"
-          href="/mypage"
-          onClick={() => setCurrentPath('/mypage')}
-        >
-          <MyPageButton fill={currentPath === '/mypage' ? '#1A1E27' : '#B6BDC8'} />
-          <p
-            className="text-xs text-nav_btn"
-            style={{ color: currentPath === '/mypage' ? '#1A1E27' : '#B6BDC8' }}
-          >
-            마이페이지
-          </p>
-        </Link>
-      </div>
+    <nav className="fixed flex bottom-0 bg-gray-400 h-[60px] w-full max-w-[500px] z-10 justify-center">
+      {NavBarItemList.map((item)=>
+         <Link
+         className="flex flex-1 flex-col items-center justify-center h-full gap-1"
+         href={item.path}
+         onClick={() => setCurrentPath(item.path)}
+       >
+         {item.icon(currentPath)}
+         <p
+           className={`text-xs ${currentPath === item.path ? 'text-[#1A1E27] font-bold' : 'text-[#B6BDC8]'}`}
+         >
+           {item.label}
+         </p>
+       </Link>
+      )}
     </nav>
   );
 }
