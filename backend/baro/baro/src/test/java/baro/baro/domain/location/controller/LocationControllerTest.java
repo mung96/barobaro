@@ -209,10 +209,8 @@ public class LocationControllerTest {
                                 )
                                 .requestFields(
                                         List.of(
-                                            fieldWithPath("locations[].locationId").type(NUMBER)
-                                                    .description("지역 ID"),
-                                            fieldWithPath("locations[].isMain").type(BOOLEAN)
-                                                    .description("대표 지역 여부")
+                                                fieldWithPath("locations[]").type(ARRAY)
+                                                        .description("지역 ID")
                                             )
                                 )
                                 .responseFields(
@@ -277,10 +275,8 @@ public class LocationControllerTest {
                                 )
                                 .requestFields(
                                         List.of(
-                                                fieldWithPath("locations[].locationId").type(NUMBER)
-                                                        .description("지역 ID"),
-                                                fieldWithPath("locations[].isMain").type(BOOLEAN)
-                                                        .description("대표 지역 여부")
+                                                fieldWithPath("locations[]").type(ARRAY)
+                                                        .description("지역 ID")
                                         )
                                 )
                                 .responseFields(
@@ -338,10 +334,8 @@ public class LocationControllerTest {
                                 )
                                 .requestFields(
                                         List.of(
-                                                fieldWithPath("locations[].locationId").type(NUMBER)
-                                                        .description("지역 ID"),
-                                                fieldWithPath("locations[].isMain").type(BOOLEAN)
-                                                        .description("대표 지역 여부")
+                                                fieldWithPath("locations[]").type(ARRAY)
+                                                        .description("지역 ID")
                                         )
                                 )
                                 .responseFields(
@@ -458,10 +452,8 @@ public class LocationControllerTest {
                                 )
                                 .requestFields(
                                         List.of(
-                                                fieldWithPath("locations[].locationId").type(NUMBER)
-                                                        .description("지역 ID"),
-                                                fieldWithPath("locations[].isMain").type(BOOLEAN)
-                                                        .description("대표 지역 여부")
+                                                fieldWithPath("locations[]").type(ARRAY)
+                                                        .description("지역 ID")
                                         )
                                 )
                                 .responseFields(
