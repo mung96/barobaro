@@ -5,6 +5,7 @@ import baro.baro.domain.contract.dto.ContractRequestDto;
 import baro.baro.domain.contract.dto.request.*;
 import baro.baro.domain.contract.dto.response.ContractApproveRes;
 import baro.baro.domain.contract.dto.response.ContractOptionDetailRes;
+import baro.baro.domain.contract.dto.response.ContractSignedRes;
 import baro.baro.domain.contract.service.ContractService;
 import baro.baro.domain.product.entity.ReturnType;
 import baro.baro.global.exception.CustomException;
@@ -32,6 +33,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -1384,6 +1386,7 @@ class ContractControllerTest {
                         ))
                 );
     }
+
     @Test
     public void 전자계약_있는_계약_요청_승인_실패_물품_소유자가_아님() throws Exception {
 
@@ -1713,10 +1716,15 @@ class ContractControllerTest {
 
         //given
         SignatureAddReq signatureAddReq = new SignatureAddReq(
-                10000L, "123456", "signatureData"
+                1L, "123456", "data:image/png;base64,imgData==", "signatureData"
         );
 
         String content = objectMapper.writeValueAsString(signatureAddReq);
+        ContractSignedRes result = new ContractSignedRes(
+                1L, "http://s3.url.com/contract/fileName", LocalDateTime.now()
+        );
+        when(contractService.addOwnerSignature(any(), anyLong()))
+                .thenReturn(result);
 
         //when
         ResultActions actions = mockMvc.perform(
@@ -1747,7 +1755,8 @@ class ContractControllerTest {
                                         List.of(
                                                 fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id"),
                                                 fieldWithPath("pinNumber").type(STRING).description("본인의 PIN 6자리"),
-                                                fieldWithPath("signatureData").type(STRING).description("서명 이미지 BASE64 인코딩된 값")
+                                                fieldWithPath("signatureData").type(STRING).description("서명 이미지 BASE64 인코딩된 값"),
+                                                fieldWithPath("s3FileUrl").type(STRING).description("승인 API 로 받아온 s3 전체 주소")
                                         )
                                 )
                                 .responseFields(
@@ -1769,11 +1778,592 @@ class ContractControllerTest {
     }
 
     @Test
+    public void 소유자_계약_서명_실패_존재하지_않는_채팅방() throws Exception {
+
+        //given
+        SignatureAddReq signatureAddReq = new SignatureAddReq(
+                1L, "123456", "data:image/png;base64,imgData==", "signatureData"
+        );
+
+        String content = objectMapper.writeValueAsString(signatureAddReq);
+        when(contractService.addOwnerSignature(any(), anyLong()))
+                .thenThrow(new CustomException(CHATROOM_NOT_FOUND));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/contracts/sign/owner")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+        // then
+        actions
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CHATROOM_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CHATROOM_NOT_FOUND.getMessage()))
+                .andDo(document(
+                        "소유자 계약 서명 실패 - 존재하지 않는 채팅방",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("소유자 계약 서명 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id"),
+                                                fieldWithPath("pinNumber").type(STRING).description("본인의 PIN 6자리"),
+                                                fieldWithPath("signatureData").type(STRING).description("서명 이미지 BASE64 인코딩된 값"),
+                                                fieldWithPath("s3FileUrl").type(STRING).description("승인 API 로 받아온 s3 전체 주소")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("정보 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("소유자 계약 서명 Request"))
+                                .responseSchema(Schema.schema("소유자 계약 서명 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+
+    @Test
+    public void 소유자_계약_서명_실패_물품_소유자가_아님() throws Exception {
+
+        //given
+        SignatureAddReq signatureAddReq = new SignatureAddReq(
+                1L, "123456", "data:image/png;base64,imgData==", "signatureData"
+        );
+
+        String content = objectMapper.writeValueAsString(signatureAddReq);
+        when(contractService.addOwnerSignature(any(), anyLong()))
+                .thenThrow(new CustomException(CHATROOM_NOT_ENROLLED));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/contracts/sign/owner")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+        // then
+        actions
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CHATROOM_NOT_ENROLLED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CHATROOM_NOT_ENROLLED.getMessage()))
+                .andDo(document(
+                        "소유자 계약 서명 실패 - 물품 소유자가 아님",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("소유자 계약 서명 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id"),
+                                                fieldWithPath("pinNumber").type(STRING).description("본인의 PIN 6자리"),
+                                                fieldWithPath("signatureData").type(STRING).description("서명 이미지 BASE64 인코딩된 값"),
+                                                fieldWithPath("s3FileUrl").type(STRING).description("승인 API 로 받아온 s3 전체 주소")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("정보 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("소유자 계약 서명 Request"))
+                                .responseSchema(Schema.schema("소유자 계약 서명 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 소유자_계약_서명_실패_존재하지_않는_상품() throws Exception {
+
+        //given
+        SignatureAddReq signatureAddReq = new SignatureAddReq(
+                1L, "123456", "data:image/png;base64,imgData==", "signatureData"
+        );
+
+        String content = objectMapper.writeValueAsString(signatureAddReq);
+        when(contractService.addOwnerSignature(any(), anyLong()))
+                .thenThrow(new CustomException(PRODUCT_NOT_FOUND));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/contracts/sign/owner")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+        // then
+        actions
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(PRODUCT_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(PRODUCT_NOT_FOUND.getMessage()))
+                .andDo(document(
+                        "소유자 계약 서명 실패 - 존재하지 않는 상품",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("소유자 계약 서명 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id"),
+                                                fieldWithPath("pinNumber").type(STRING).description("본인의 PIN 6자리"),
+                                                fieldWithPath("signatureData").type(STRING).description("서명 이미지 BASE64 인코딩된 값"),
+                                                fieldWithPath("s3FileUrl").type(STRING).description("승인 API 로 받아온 s3 전체 주소")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("정보 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("소유자 계약 서명 Request"))
+                                .responseSchema(Schema.schema("소유자 계약 서명 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 소유자_계약_서명_실패_등록된_PIN_없음() throws Exception {
+
+        //given
+        SignatureAddReq signatureAddReq = new SignatureAddReq(
+                1L, "123456", "data:image/png;base64,imgData==", "signatureData"
+        );
+
+        String content = objectMapper.writeValueAsString(signatureAddReq);
+        when(contractService.addOwnerSignature(any(), anyLong()))
+                .thenThrow(new CustomException(PIN_NOT_FOUND));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/contracts/sign/owner")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+        // then
+        actions
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(PIN_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(PIN_NOT_FOUND.getMessage()))
+                .andDo(document(
+                        "소유자 계약 서명 실패 - 등록된 PIN 없음",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("소유자 계약 서명 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id"),
+                                                fieldWithPath("pinNumber").type(STRING).description("본인의 PIN 6자리"),
+                                                fieldWithPath("signatureData").type(STRING).description("서명 이미지 BASE64 인코딩된 값"),
+                                                fieldWithPath("s3FileUrl").type(STRING).description("승인 API 로 받아온 s3 전체 주소")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("정보 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("소유자 계약 서명 Request"))
+                                .responseSchema(Schema.schema("소유자 계약 서명 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 소유자_계약_서명_실패_유효하지_않은_PIN() throws Exception {
+
+        //given
+        SignatureAddReq signatureAddReq = new SignatureAddReq(
+                1L, "123456", "data:image/png;base64,imgData==", "signatureData"
+        );
+
+        String content = objectMapper.writeValueAsString(signatureAddReq);
+        when(contractService.addOwnerSignature(any(), anyLong()))
+                .thenThrow(new CustomException(NOT_VALID_PIN_NUMBER));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/contracts/sign/owner")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+        // then
+        actions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(NOT_VALID_PIN_NUMBER.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(NOT_VALID_PIN_NUMBER.getMessage()))
+                .andDo(document(
+                        "소유자 계약 서명 실패 - 유효하지 않은 PIN 번호",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("소유자 계약 서명 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id"),
+                                                fieldWithPath("pinNumber").type(STRING).description("본인의 PIN 6자리"),
+                                                fieldWithPath("signatureData").type(STRING).description("서명 이미지 BASE64 인코딩된 값"),
+                                                fieldWithPath("s3FileUrl").type(STRING).description("승인 API 로 받아온 s3 전체 주소")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("정보 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("소유자 계약 서명 Request"))
+                                .responseSchema(Schema.schema("소유자 계약 서명 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 소유자_계약_서명_실패_분산락_획득_실패() throws Exception {
+
+        //given
+        SignatureAddReq signatureAddReq = new SignatureAddReq(
+                1L, "123456", "data:image/png;base64,imgData==", "signatureData"
+        );
+
+        String content = objectMapper.writeValueAsString(signatureAddReq);
+        when(contractService.addOwnerSignature(any(), anyLong()))
+                .thenThrow(new CustomException(CONFLICT_WITH_OTHER));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/contracts/sign/owner")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+        // then
+        actions
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CONFLICT_WITH_OTHER.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CONFLICT_WITH_OTHER.getMessage()))
+                .andDo(document(
+                        "소유자 계약 서명 실패 - 다른 사람이 거래중",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("소유자 계약 서명 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id"),
+                                                fieldWithPath("pinNumber").type(STRING).description("본인의 PIN 6자리"),
+                                                fieldWithPath("signatureData").type(STRING).description("서명 이미지 BASE64 인코딩된 값"),
+                                                fieldWithPath("s3FileUrl").type(STRING).description("승인 API 로 받아온 s3 전체 주소")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("정보 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("소유자 계약 서명 Request"))
+                                .responseSchema(Schema.schema("소유자 계약 서명 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 소유자_계약_서명_실패_진행중인_계약_없음() throws Exception {
+
+        //given
+        SignatureAddReq signatureAddReq = new SignatureAddReq(
+                1L, "123456", "data:image/png;base64,imgData==", "signatureData"
+        );
+
+        String content = objectMapper.writeValueAsString(signatureAddReq);
+        when(contractService.addOwnerSignature(any(), anyLong()))
+                .thenThrow(new CustomException(CONTRACT_NOT_FOUND));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/contracts/sign/owner")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+        // then
+        actions
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CONTRACT_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CONTRACT_NOT_FOUND.getMessage()))
+                .andDo(document(
+                        "소유자 계약 서명 실패 - 진행 중인 계약 없음",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("소유자 계약 서명 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id"),
+                                                fieldWithPath("pinNumber").type(STRING).description("본인의 PIN 6자리"),
+                                                fieldWithPath("signatureData").type(STRING).description("서명 이미지 BASE64 인코딩된 값"),
+                                                fieldWithPath("s3FileUrl").type(STRING).description("승인 API 로 받아온 s3 전체 주소")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("정보 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("소유자 계약 서명 Request"))
+                                .responseSchema(Schema.schema("소유자 계약 서명 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 소유자_계약_서명_실패_개인키_에러() throws Exception {
+
+        //given
+        SignatureAddReq signatureAddReq = new SignatureAddReq(
+                1L, "123456", "data:image/png;base64,imgData==", "signatureData"
+        );
+
+        String content = objectMapper.writeValueAsString(signatureAddReq);
+        when(contractService.addOwnerSignature(any(), anyLong()))
+                .thenThrow(new CustomException(PRIVATE_KEY_EXCEPTION));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/contracts/sign/owner")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+        // then
+        actions
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(PRIVATE_KEY_EXCEPTION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(PRIVATE_KEY_EXCEPTION.getMessage()))
+                .andDo(document(
+                        "소유자 계약 서명 실패 - 개인 키 에러",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("소유자 계약 서명 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id"),
+                                                fieldWithPath("pinNumber").type(STRING).description("본인의 PIN 6자리"),
+                                                fieldWithPath("signatureData").type(STRING).description("서명 이미지 BASE64 인코딩된 값"),
+                                                fieldWithPath("s3FileUrl").type(STRING).description("승인 API 로 받아온 s3 전체 주소")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("정보 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("소유자 계약 서명 Request"))
+                                .responseSchema(Schema.schema("소유자 계약 서명 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 소유자_계약_서명_실패_인증서_에러() throws Exception {
+
+        //given
+        SignatureAddReq signatureAddReq = new SignatureAddReq(
+                1L, "123456", "data:image/png;base64,imgData==", "signatureData"
+        );
+
+        String content = objectMapper.writeValueAsString(signatureAddReq);
+        when(contractService.addOwnerSignature(any(), anyLong()))
+                .thenThrow(new CustomException(CERTIFICATE_EXCEPTION));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/contracts/sign/owner")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+        // then
+        actions
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CERTIFICATE_EXCEPTION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CERTIFICATE_EXCEPTION.getMessage()))
+                .andDo(document(
+                        "소유자 계약 서명 실패 - 인증서 에러",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("소유자 계약 서명 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id"),
+                                                fieldWithPath("pinNumber").type(STRING).description("본인의 PIN 6자리"),
+                                                fieldWithPath("signatureData").type(STRING).description("서명 이미지 BASE64 인코딩된 값"),
+                                                fieldWithPath("s3FileUrl").type(STRING).description("승인 API 로 받아온 s3 전체 주소")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("정보 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("소유자 계약 서명 Request"))
+                                .responseSchema(Schema.schema("소유자 계약 서명 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 소유자_계약_서명_실패_서명_에러() throws Exception {
+
+        //given
+        SignatureAddReq signatureAddReq = new SignatureAddReq(
+                1L, "123456", "data:image/png;base64,imgData==", "signatureData"
+        );
+
+        String content = objectMapper.writeValueAsString(signatureAddReq);
+        when(contractService.addOwnerSignature(any(), anyLong()))
+                .thenThrow(new CustomException(EXCEPTION_DURING_SIGNING));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/contracts/sign/owner")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+        // then
+        actions
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(EXCEPTION_DURING_SIGNING.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(EXCEPTION_DURING_SIGNING.getMessage()))
+                .andDo(document(
+                        "소유자 계약 서명 실패 - 서명 에러",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("소유자 계약 서명 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id"),
+                                                fieldWithPath("pinNumber").type(STRING).description("본인의 PIN 6자리"),
+                                                fieldWithPath("signatureData").type(STRING).description("서명 이미지 BASE64 인코딩된 값"),
+                                                fieldWithPath("s3FileUrl").type(STRING).description("승인 API 로 받아온 s3 전체 주소")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("정보 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("소유자 계약 서명 Request"))
+                                .responseSchema(Schema.schema("소유자 계약 서명 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
     public void 빌리는_측_계약_서명_성공() throws Exception {
 
         //given
         SignatureAddReq signatureAddReq = new SignatureAddReq(
-                10000L, "123456", "signatureData"
+                10000L, "123456", "data:image/png;base64,imgData==", "signatureData"
         );
 
         String content = objectMapper.writeValueAsString(signatureAddReq);
@@ -1807,7 +2397,8 @@ class ContractControllerTest {
                                         List.of(
                                                 fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id"),
                                                 fieldWithPath("pinNumber").type(STRING).description("본인의 PIN 6자리"),
-                                                fieldWithPath("signatureData").type(STRING).description("서명 이미지 BASE64 인코딩된 값")
+                                                fieldWithPath("signatureData").type(STRING).description("서명 이미지 BASE64 인코딩된 값"),
+                                                fieldWithPath("s3FileUrl").type(STRING).description("서명할 문서의 s3 주소")
                                         )
                                 )
                                 .responseFields(
