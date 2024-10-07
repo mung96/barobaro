@@ -1,7 +1,12 @@
 package baro.baro.global.s3;
 
 import baro.baro.global.exception.CustomException;
+import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
+import com.amazonaws.services.s3.model.ListObjectsV2Request;
+import com.amazonaws.services.s3.model.ListObjectsV2Result;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,8 +18,8 @@ import java.util.List;
 import java.util.Objects;
 
 import static baro.baro.global.formatter.DateFormatter.convertToDateFormat;
-import static baro.baro.global.statuscode.ErrorCode.FILE_EXTENSION_FAIL;
-import static baro.baro.global.statuscode.ErrorCode.FILE_UPLOAD_FAIL;
+import static baro.baro.global.statuscode.ErrorCode.*;
+import static baro.baro.global.statuscode.ErrorCode.FILE_DELETE_FAIL;
 
 @Slf4j
 @Service
@@ -58,6 +63,43 @@ public class Images3Service extends S3Service {
     private void validateImageFileExtension(String extension) {
         if (!Arrays.asList("jpg", "jpeg", "png", "webp").contains(extension)) {
             throw new CustomException(FILE_EXTENSION_FAIL);
+        }
+    }
+
+    public void deleteFolder(String folderPath) throws CustomException {
+        try {
+            ListObjectsV2Request listObjectsRequest = new ListObjectsV2Request().withBucketName(bucket).withPrefix(folderPath);
+            ListObjectsV2Result result;
+
+            do {
+                result = amazonS3Client.listObjectsV2(listObjectsRequest);
+                List<S3ObjectSummary> objects = result.getObjectSummaries();
+
+                for (S3ObjectSummary objectSummary : objects) {
+                    amazonS3Client.deleteObject(bucket, objectSummary.getKey());
+                }
+
+                listObjectsRequest.setContinuationToken(result.getNextContinuationToken());
+            } while (result.isTruncated());
+
+        } catch (AmazonServiceException e) {
+            log.info(e.getErrorMessage());
+            throw new CustomException(FILE_DELETE_FAIL);
+        } catch (Exception exception) {
+            throw new CustomException(FILE_DELETE_FAIL);
+        }
+    }
+
+    public void deleteFile(String fileUrl) throws CustomException {
+        try {
+            try {
+                String fileKey = fileUrl.replace(bucketUrl, "");
+                amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, fileKey));
+            } catch (AmazonServiceException e) {
+                throw new CustomException(FILE_DELETE_FAIL);
+            }
+        } catch (Exception exception) {
+            throw new CustomException(FILE_DELETE_FAIL);
         }
     }
 }
