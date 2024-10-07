@@ -58,19 +58,19 @@ function SignUpFunnel() {
     getResponse();
   }, []);
 
-  // useEffect(() => {
-  //   const getResponse = async () => {
-  //     try {
-  //       const response = await axiosInstance.get(
-  //         END_POINT.MY_PROFILE,
-  //       );
-  //      console.log(response);
-  //     } catch (err) {
-  //       console.error('API 요청 중 오류 발생:', err);
-  //     }
-  //   };
-  //   getResponse();
-  // }, []);
+  useEffect(() => {
+    const getResponse = async () => {
+      try {
+        const response = await axiosInstance.get(
+          END_POINT.MY_PROFILE,
+        );
+       console.log(response);
+      } catch (err) {
+        console.error('API 요청 중 오류 발생:', err);
+      }
+    };
+    getResponse();
+  }, []);
 
 
   return (
