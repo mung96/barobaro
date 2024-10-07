@@ -13,6 +13,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -91,7 +93,18 @@ public class Oauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
             //accessToken
             CookieUtil.addCookie(response, "token", accessToken, 3600);
 
-            log.info("쿠키쿠키 넣었음" + response);
+            ResponseCookie cookie = ResponseCookie.from("token", accessToken)
+                    .httpOnly(true)
+                    .secure(true)
+                    .sameSite("None")
+                    .path("/")
+                    .maxAge(3600)
+                    .domain(frontUrl)
+                    .build();
+
+            response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+
+            log.info("쿠키쿠키 넣었음" + cookie);
 
             response.sendRedirect(frontUrl);
         }
