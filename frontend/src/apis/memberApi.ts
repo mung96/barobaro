@@ -23,7 +23,7 @@ export const postSignUp = async (data: SignUpMemberRequest, image: File|string) 
   console.dir(image);
   console.log(image);
   formData.append('dto', blob);
-  formData.append('file', image);
+  formData.append('file',image);
 
   return await axiosInstance.post(END_POINT.SIGN_UP, formData, {
     headers: {
