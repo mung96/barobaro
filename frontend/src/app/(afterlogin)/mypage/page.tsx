@@ -5,6 +5,8 @@ import Header from '@/components/Header';
 import { faker } from '@faker-js/faker';
 
 export default function MyPage() {
+    // MyPageContent - useInitializeData() : 실행시 유저의 정보를 가져오는 hook
+    // API연결은 해당 함수를 수정해서 진행할 것
   return (
     <NavBarLayout current="mypage">
       <Header pageName="" hasPrevBtn={false} hasSearchBtn={false} hasAlertBtn />
