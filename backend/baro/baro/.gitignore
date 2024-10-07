@@ -41,4 +41,8 @@ application.properties
 
 gradle.properties
 
+### QueryDSL ###
 src/main/generated/
+
+### Keystore ###
+src/main/resources/keystore.p12
