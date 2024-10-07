@@ -21,3 +21,4 @@ export const axiosInstance = axios.create({
         `Bearer ${process.env.NEXT_PUBLIC_AUTH_TOKEN}`
   },
 });
+
