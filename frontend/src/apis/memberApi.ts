@@ -1,6 +1,7 @@
 import { axiosInstance } from '@/apis/axiosInstance';
 import { END_POINT } from '@/constants/api';
-import {SocialMemberResponse} from '@/types/apis/memberResponse';
+import { SignUpMember, SignUpMemberRequest } from '@/types/apis/memberRequest';
+import { SocialMemberResponse } from '@/types/apis/memberResponse';
 
 // eslint-disable-next-line import/prefer-default-export
 export const getSignUpInfo = async (email: string) => {
