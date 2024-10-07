@@ -50,7 +50,7 @@ public class MemberServiceImpl implements MemberService {
             throw new CustomException(ALREADY_EXIST_MEMBER);
         }
 
-        if(file != null || !file.isEmpty()) {
+        if(file != null && !file.isEmpty()) {
             String newImageUrl = images3Service.upload(file,  "profile");
 
             signupReq.setProfileImage(newImageUrl);
