@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import ReactModal from 'react-modal';
 // import ModalWarningSVG from '@/components/(SVG_component)/ModalWarning';
 
@@ -7,6 +7,8 @@ import { DateRange } from 'react-day-picker';
 import Radio from '@/components/shared/Radio';
 import SelectableItem from '@/components/shared/SelectableItem';
 import ContractDurationInput from '../message/chat/ContractDurationInput';
+import { ProcessContext } from '@/contexts/ChatProcessContext';
+import { ProcessTypes } from '../message/chat/ProcessTypes';
 
 type ContractRequestParams = {
   isOpen: boolean;
@@ -48,11 +50,19 @@ const ContractRequestModal = ({
   const [range, setRange] = useState<DateRange | undefined>(undefined);
   const [ways, setWays] = useState<string>('');
 
+  const context = useContext(ProcessContext);
+  if (!context) return null;
+  const { processSetter } = context;
+
   const approveLogic = (isApproved: boolean) => {
     // 대여자의 계약 요청서를 거절할 때
     // 프로세스 contact로 바꾸고 / 시스템메시지 찍고 /
-    if (isApproved) console.log('whoa!');
-    else console.log('nooo');
+    if (isApproved) {
+      // 비밀번호 모달 띄우기
+      // 서명 모달 띄우기
+    } else {
+      processSetter(ProcessTypes.CONTACT);
+    }
     onRequestClose();
   };
 
@@ -61,6 +71,10 @@ const ContractRequestModal = ({
       // 대여자가 계약 요청 창을 열었다가 취소한 경우
       setRange(undefined);
       setWays('');
+    } else {
+      // axios로 데이터 보내고
+      // 상태메시지 보내고
+      processSetter(ProcessTypes.REQUESTED);
     }
     // 대여자가 요청 submit을 했을 경우
     // axios로 데이터 보내고 / 상태메시지 찍고 / 프로세스 requested로 바꾸고

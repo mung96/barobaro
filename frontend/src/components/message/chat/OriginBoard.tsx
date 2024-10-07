@@ -3,10 +3,18 @@
 import Image from 'next/image';
 import React from 'react';
 import ProcessButton from './ProcessButton';
-import ProcessTypes from './ProcessTypes';
+import { ProcessType, ProcessTypes } from './ProcessTypes';
+
+type OriginBoardParams = {
+  process: ProcessType;
+  processSetter: (param: ProcessType) => void;
+};
 
 // 채팅창 상단에 뜨는 원본 글 미리보기 영역
-export default function OriginBoard() {
+export default function OriginBoard({
+  process,
+  processSetter,
+}: OriginBoardParams) {
   return (
     <div className="bg-white">
       <div className="flex flex-col p-[2vh]">
@@ -29,8 +37,7 @@ export default function OriginBoard() {
         </div>
         <div className="h-1/4 flex flex-row justify-start space-x-1 pt-[1.4vh] overflow-x-auto whitespace-nowrap">
           <ProcessButton
-            process={ProcessTypes.RECEIVED_DIRECT}
-            isOwner={false}
+            isOwner={false} // 여기도 api response로 받아서 끼워넣기
             hasContract
           />
         </div>

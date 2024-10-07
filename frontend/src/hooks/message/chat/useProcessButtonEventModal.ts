@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { ChatModalType } from '@/types/message/chat/chatModalType';
+import { ProcessContext } from '@/contexts/ChatProcessContext';
 
 const useProcessButtonEventModal = () => {
   const [modalOpen, setModalOpen] = useState(false);

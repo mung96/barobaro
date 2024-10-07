@@ -14,6 +14,14 @@ const nextConfig = {
   images: {
     domains: ['loremflickr.com', 'loremflickr.com'],
   },
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: 'https://j11a401.p.ssafy.io/api/:path*',
+      },
+    ];
+  },
 };
 
 const pwaConfig = withPWA({

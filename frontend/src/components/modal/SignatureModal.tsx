@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import ReactModal from 'react-modal';
 import ModalClose from '../(SVG_component)/ModalClose';
 import ContractContent from '../message/chat/ContractContent';
 import SignatureArea from '../message/chat/SignatureArea';
+import { ProcessType, ProcessTypes } from '../message/chat/ProcessTypes';
+import { ProcessContext } from '@/contexts/ChatProcessContext';
 
 type SignatureModalParam = {
   onRequestClose: () => void;
@@ -32,6 +34,11 @@ const modalStyle: ReactModal.Styles = {
 };
 
 const SignatureModal = ({ isOpen, onRequestClose }: SignatureModalParam) => {
+  const context = useContext(ProcessContext);
+  if (!context) return null;
+
+  const { process, processSetter } = context;
+
   const [pressed, setPressed] = useState(false); // '확인' 버튼이 눌렸는지
 
   const handlePressed = () => {
@@ -49,10 +56,21 @@ const SignatureModal = ({ isOpen, onRequestClose }: SignatureModalParam) => {
     // 비동기 -> 서명 그래픽 정보 서버로 보내기
     // 응답 오면 -> 모달 닫기, 프로세스 상태 업데이트하기
     // 프로세스 상태 넘어가면? -> 서명하기 버튼 disabled 되어야 함
-    onRequestClose(); // 모달 닫기
-    setPressed(false);
+    if (pressed) {
+      // 서명 모달이 뜰 때
+      // 1 ) 소유자가 계약 받을 때 (2, REQUESTED)
+      // 2 ) 대여자가 서명할 차례일 때 (4, ACCEPTED_DIRECT)
+      // -> +2 해 주면 됨
+      if (process === 2) {
+        processSetter(4);
+      } else if (process === 4) {
+        processSetter(6);
+      }
+      onRequestClose(); // 모달 닫기
+      setPressed(false);
 
-    console.log(dataUrl);
+      console.log(dataUrl);
+    }
   }, [pressed]);
 
   return (

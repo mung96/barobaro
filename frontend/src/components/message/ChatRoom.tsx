@@ -5,7 +5,11 @@ import { MouseEvent } from 'react';
 import ChatRoomType from './ChatRoomType';
 
 export default function ChatRoomEach({
-profileImage, nickname, lastChat, productMainImage
+  chatRoomId,
+  profileImage,
+  nickname,
+  lastChat,
+  productMainImage,
 }: ChatRoomType) {
   const isClicked = (e: MouseEvent<HTMLElement>) => {
     e.currentTarget.classList.add('bg-gray-200');
@@ -13,8 +17,8 @@ profileImage, nickname, lastChat, productMainImage
 
   return (
     <Link
-      className='flex gap-0 p-4'
-      href={encodeURI(`message/chat/${nickname}`)}
+      className="flex gap-0 p-4"
+      href={encodeURI(`message/chat/${chatRoomId}`)}
       onMouseDown={isClicked}
     >
       <div className="w-2/12 flex items-center justify-center">
@@ -33,7 +37,6 @@ profileImage, nickname, lastChat, productMainImage
       <div className="w-8/12 flex flex-col justify-start p-2">
         <div className="flex items-center">
           <span className="font-bold inline-block">{nickname}</span>
-         
         </div>
         <p className="text-xs overflow-hidden text-ellipsis whitespace-nowrap">
           {lastChat}
