@@ -45,7 +45,8 @@ public class SecurityConfig {
                         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                         .requestMatchers(
                                 "/members/signup/**", "/members/login/oauth2/**",
-                                "/members/oauth2/code/**", "/docs/**", "/h2-console/**").permitAll()
+                                "/members/oauth2/code/**", "/docs/**", "/h2-console/**",
+                                "/search/locations/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2Configurer -> oauth2Configurer

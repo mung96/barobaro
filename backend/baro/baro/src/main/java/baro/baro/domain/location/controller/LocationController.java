@@ -1,12 +1,10 @@
 package baro.baro.domain.location.controller;
 
-import baro.baro.domain.location.dto.LocationDto;
-import baro.baro.domain.location.dto.SearchLocationDto;
 import baro.baro.domain.location.dto.request.DefaultLocationReq;
 import baro.baro.domain.location.dto.request.LocationsAddReq;
 import baro.baro.domain.location.dto.response.DefaultLocationRes;
-import baro.baro.domain.location.dto.response.MyLocationListRes;
 import baro.baro.domain.location.dto.response.LocationsAddRes;
+import baro.baro.domain.location.dto.response.MyLocationListRes;
 import baro.baro.domain.location.dto.response.SearchLocationRes;
 import baro.baro.domain.location.service.LocationService;
 import baro.baro.global.dto.ResponseDto;
@@ -15,9 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static baro.baro.global.statuscode.SuccessCode.*;
 import static org.springframework.http.HttpStatus.OK;
@@ -30,8 +25,7 @@ public class LocationController {
 
     @GetMapping("/search/locations")
     public ResponseEntity<?> searchLocation(@RequestParam("keyword") String keyword) {
-        Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
-        SearchLocationRes result = locationService.searchLocation(keyword, memberId);
+        SearchLocationRes result = locationService.searchLocation(keyword);
 
         return new ResponseEntity<>(ResponseDto.success(SEARCH_LOCATION_OK, result), OK);
     }
