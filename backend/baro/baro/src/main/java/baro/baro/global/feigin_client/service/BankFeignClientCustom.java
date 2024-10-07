@@ -3,9 +3,11 @@ package baro.baro.global.feigin_client.service;
 import baro.baro.global.feigin_client.dto.request.BankMemberAddReq;
 import baro.baro.global.feigin_client.dto.request.BankMemberDetailsReq;
 import baro.baro.global.feigin_client.dto.request.BankProductAddReq;
+import baro.baro.global.feigin_client.dto.request.BankProductDetailsReq;
 import baro.baro.global.feigin_client.dto.response.BankMemberAddRes;
 import baro.baro.global.feigin_client.dto.response.BankMemberDetailsRes;
 import baro.baro.global.feigin_client.dto.response.BankProductAddRes;
+import baro.baro.global.feigin_client.dto.response.BankProductDetailsRes;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -19,4 +21,7 @@ public interface BankFeignClientCustom {
 
     @PostMapping("/edu/demandDeposit/createDemandDeposit")
     BankProductAddRes addBankProduct(BankProductAddReq req);
+
+    @PostMapping("/edu/demandDeposit/inquireDemandDepositList")
+    BankProductDetailsRes findBankProducts(BankProductDetailsReq req);
 }
