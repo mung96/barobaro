@@ -10,7 +10,7 @@ export default function NavBarLayout({ children, current }: Props) {
   return (
     <>
       {children}
-      <NavBar current={current} />
+      <NavBar/>
     </>
   );
 }

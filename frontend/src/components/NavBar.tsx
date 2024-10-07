@@ -9,7 +9,7 @@ import MyPageButton from './(SVG_component)/MyPageButton';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 
-export default function NavBar({ current }: { current?: string }) {
+export default function NavBar() {
   const pathname = usePathname();
   const [currentPath, setCurrentPath] = useState(pathname);
   return (

@@ -1,6 +1,5 @@
 'use client';
 
-import NavBarLayout from '@/layout/NavBarLayout';
 import Header from '@/components/Header';
 import CategorySearch from '@/components/(category_button)/searchbar/CategorySearch';
 import { useSearchParams } from 'next/navigation';

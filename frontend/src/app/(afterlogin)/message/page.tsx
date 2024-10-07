@@ -1,7 +1,6 @@
 // import components
 import Header from '@/components/Header';
 import Contents from '@/components/message/Contents';
-import NavBarLayout from '@/layout/NavBarLayout';
 
 export default function Message() {
   return (

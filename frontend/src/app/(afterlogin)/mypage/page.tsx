@@ -1,6 +1,5 @@
 import Profile from '@/components/user/Profile';
 import MyPageContent from '@/components/MyPageContent';
-import NavBarLayout from '@/layout/NavBarLayout';
 import Header from '@/components/Header';
 import { faker } from '@faker-js/faker';
 
