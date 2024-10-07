@@ -15,6 +15,7 @@ public class CookieUtil {
         token.setAttribute("SameSite", "None");
         token.setDomain(frontUrl);
         token.setMaxAge(maxAge);
+        token.setPath("/");
 
         response.addCookie(token);
     }
