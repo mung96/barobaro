@@ -24,7 +24,7 @@ function SignUpFunnel() {
   const [direction, setDirection] = useState<DirectionType>('forward');
   const searchParams = useSearchParams();
   const totalStep = 2;
-  const { step: signUpStep, history } = useFunnel<{
+  const { step: signUpStep, history,context } = useFunnel<{
     MyInfoStep: MyInfoStep;
     MyTownStep: MyTownStep;
   }>({
@@ -57,6 +57,8 @@ function SignUpFunnel() {
     getResponse();
   }, []);
 
+
+
   return (
     <div className="ms-[30px] mb-3">
       <h2 className="text-base font-bold text-center">회원가입</h2>
@@ -79,9 +81,6 @@ function SignUpFunnel() {
             onPrev={() => {
               history.back();
               setDirection('backward');
-            }}
-            onNext={() => {
-              console.log('회원가입 완료');
             }}
           />
         )}

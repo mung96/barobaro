@@ -4,18 +4,20 @@ import { MyTown } from '@/types/domains/signup';
 import MyTownSearch from '@/components/signup/MyTownSearch';
 import { Dong } from '@/types/apis/location';
 import { useEffect } from 'react';
+import { postSignUp } from '@/apis/memberApi';
+import { useSocialMemberAction, useSocialMemberState } from '@/store/useSocialMember';
+import { SocialMember } from '@/types/domains/member';
+import { SignUpMemberRequest } from '@/types/apis/memberRequest';
 
-// type Props = {};
 type Props = {
   onPrev: () => void;
-  onNext: (myInfoData: MyTown) => void;
 };
 
-function MyTownInfo({ onPrev, onNext }: Props) {
+function MyTownInfo({ onPrev }: Props) {
   const {
     getValues,
-    control,
-  } = useForm<MyTown>({ mode: 'onChange' });
+    control,handleSubmit
+  } = useForm<MyTown>({ mode: 'onChange' ,});
 
   const { field: town } = useController<MyTown>({
     control,
@@ -25,12 +27,22 @@ function MyTownInfo({ onPrev, onNext }: Props) {
       maxLength: { value: 3, message: '지역은 3개까지 설정 가능해요.' },
     },
   });
+  const socialMember = useSocialMemberState();
+  const convertSignUpDateToRequest = (member:SocialMember,data:MyTown):SignUpMemberRequest=>{
+    const request ={
+      email: member.email,
+      providerType: member.providerType,
+      nickname: member.nickName,
+      locations: data.town?.map(location=>({
+        locationId: location.locationId,
+        isMain: location.isMain
+      }))
+    }
+    return request;
+  }
 
-  useEffect(()=>{
-    console.log(town.value)
-  },[town.value])
   return (
-    <div className="flex flex-col gap-16 w-full">
+    <div className="flex flex-col gap-16 w-full" >
       <div className="flex flex-col gap-2 w-full">
         <h2 className="text-black-100 text-[15px] font-bold">
           거래를 진행하고 싶은 동네를 선택해주세요
@@ -55,8 +67,8 @@ function MyTownInfo({ onPrev, onNext }: Props) {
           <p className="text-xs">이전</p>
         </Button>
 
-        <Button onClick={() => onNext(getValues())} width="100%" height="36px">
-          <p className="text-xs">다음</p>
+        <Button onClick={()=>postSignUp(convertSignUpDateToRequest(socialMember!,getValues()),socialMember?.profileImage! as File)} width="100%" height="36px">
+          <p className="text-xs">회원가입 하기</p>
         </Button>
       </div>
     </div>
