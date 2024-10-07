@@ -17,9 +17,11 @@ export const getSignUpInfo = async (email: string) => {
   return response;
 };
 
-export const postSignUp = async (data: SignUpMemberRequest, image: File) => {
+export const postSignUp = async (data: SignUpMemberRequest, image: File|string) => {
   const formData = new FormData();
   const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+  console.dir(image);
+  console.log(image);
   formData.append('dto', blob);
   formData.append('file', image);
 

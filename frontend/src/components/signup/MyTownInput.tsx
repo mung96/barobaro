@@ -7,8 +7,6 @@ import MyTownSearch from '@/components/signup/MyTownSearch';
 import { Dong } from '@/types/apis/location';
 import { postSignUp } from '@/apis/memberApi';
 import {  useSocialMemberState } from '@/store/useSocialMember';
-import { SocialMember } from '@/types/domains/member';
-import { SignUpMemberRequest } from '@/types/apis/memberRequest';
 import { useRouter } from 'next/navigation';
 import { convertSignUpDateToRequest } from '@/services/signup/convert';
 
@@ -17,11 +15,21 @@ type Props = {
 };
 
 function MyTownInfo({ onPrev }: Props) {
+  const router = useRouter();
+
+  const signUp = async () =>{
+    try{
+      const response =  await postSignUp(convertSignUpDateToRequest(socialMember!,getValues()),socialMember?.profileImage! as File)
+      router.push('/home');
+    }catch(error){
+      console.error('API 요청 중 오류 발생:', error);
+    }
+  }
+
   const {
-    getValues,
+    getValues,handleSubmit ,
     control,formState:{isSubmitting}
   } = useForm<MyTown>({ mode: 'onChange' ,});
-  const router = useRouter();
   const { field: town } = useController<MyTown>({
     control,
     name: 'town',
@@ -32,21 +40,9 @@ function MyTownInfo({ onPrev }: Props) {
   });
   const socialMember = useSocialMemberState();
 
-  const signUp = async () =>{
-    try{
-      const response =  await postSignUp(convertSignUpDateToRequest(socialMember!,getValues()),socialMember?.profileImage! as File)
-      console.log(response);
-      router.push('/home');
-    }catch(error){
-      console.error('API 요청 중 오류 발생:', error);
-    }
-  }
 
   return (
-    <form className="flex flex-col gap-16 w-full" onSubmit={(e)=>{
-      e.preventDefault();
-      signUp();
-    }}>
+    <form className="flex flex-col gap-16 w-full" onSubmit={handleSubmit(signUp)}>
       <div className="flex flex-col gap-2 w-full">
         <h2 className="text-black-100 text-[15px] font-bold">
           거래를 진행하고 싶은 동네를 선택해주세요
