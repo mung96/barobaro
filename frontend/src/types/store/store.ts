@@ -18,3 +18,12 @@ export type CurrentStoreState = {
     addLentProduct: (product: Product) => void;
   };
 };
+
+export type RecentlyStoreState = {
+  recentlyViewedProducts: Product[];
+  recentlyUploadedProducts: Product[];
+  actions: {
+    setRecentlyViewedProducts: (recentlyViewedProducts: Product[]) => void;
+    setRecentlyUploadedProducts: (recentlyUploadedProducts: Product[]) => void;
+  }
+}

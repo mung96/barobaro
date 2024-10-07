@@ -6,7 +6,7 @@ import NavBarLayout from '@/layout/NavBarLayout';
 import Logo from '@/../public/assets/png/barobaro_logo.png';
 
 export default function Home() {
-  return (
+    return (
     <NavBarLayout current="home">
       <br />
       <br />
