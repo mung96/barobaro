@@ -56,12 +56,11 @@ public class MemberServiceImpl implements MemberService {
             signupReq.setProfileImage(newImageUrl);
 
             log.info("이미지 파일 성공!");
-        }
-        
-
-        if(signupReq.getProfileImage() == null || signupReq.getProfileImage().isEmpty()) {
-            signupReq.setProfileImage(bucketUrl + "profile/default.png");
-            log.info("없으니까 디폴트값!");
+        } else {
+            if(signupReq.getProfileImage() == null || signupReq.getProfileImage().isEmpty()) {
+                signupReq.setProfileImage(bucketUrl + "profile/default.png");
+                log.info("없으니까 디폴트값!");
+            }
         }
 
         Member member = signupReq.toEntity(uuid);
@@ -96,6 +95,7 @@ public class MemberServiceImpl implements MemberService {
 
         return jwtService.createAccessToken(uuid, false);
     }
+
 
 
     @Override
