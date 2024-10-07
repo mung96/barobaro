@@ -74,7 +74,6 @@ export default function ItemList({ data }: { data: string }) {
                     <div className="mx-1">
                       <HeartIcon fill="none" />
                     </div>
-                    {/* TODO : 나중에 좋아요 목록 받고, 해당 값을 하단에 입력 */}
                     <p className="text-[12px] text-gray-200 mt-[1px]">{item.wishCount}</p>
                   </div>
                 </div>

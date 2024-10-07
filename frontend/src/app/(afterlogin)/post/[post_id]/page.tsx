@@ -5,18 +5,35 @@ import PictureCarousel from '@/components/post/Carousel';
 import Profile from '@/components/user/Profile';
 import PostContent from '@/components/post/PostContent';
 import ContractCondition from '@/components/post/ContractCondition';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PostCheckModal from '@/components/modal/PostCheckModal';
 import Header from '@/components/Header';
 import LikeButton from '@/components/(SVG_component)/LikeButton';
 import CalendarSVG from '@/components/(SVG_component)/Calendar';
 import { faker } from '@faker-js/faker';
+import {getProductsDetail} from "@/apis/productDetailApi";
 
 export default function PostDetail() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const modalType = 'needPassword';
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
+  // TODO : API 요청과정 404 확인 필요함.
+  useEffect(() => {
+    const getDetail = async () => {
+      try {
+        const res = await getProductsDetail('1');
+        console.log(res)
+      } catch (err) {
+        console.log('ERR', err)
+      }
+
+
+    }
+    getDetail();
+  })
+
+
   // 해당 내용은 API  호출후 활용 가정
   const writerData = {
     writerId: 'asd',
