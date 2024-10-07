@@ -8,7 +8,6 @@ import baro.baro.global.oauth.jwt.entity.JwtRedis;
 import baro.baro.global.oauth.jwt.service.JwtService;
 import baro.baro.global.utils.CookieUtil;
 import baro.baro.global.utils.RedisUtils;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +19,6 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 @Slf4j
@@ -95,11 +92,7 @@ public class Oauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
             CookieUtil.addCookie(response, "token", accessToken, 3600);
             log.info("쿠키쿠키 넣었음" + response);
 
-            Map<String, String> responseBody = new HashMap<>();
-            responseBody.put("redirectUrl", frontUrl);
-
-            ObjectMapper objectMapper = new ObjectMapper();
-            response.getWriter().write(objectMapper.writeValueAsString(responseBody));
+            response.sendRedirect(frontUrl);
         }
     }
 }
