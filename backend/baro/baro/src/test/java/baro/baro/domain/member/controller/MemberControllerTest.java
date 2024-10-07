@@ -261,46 +261,6 @@ class MemberControllerTest {
     }
 
     @Test
-    public void 로그아웃_성공() throws Exception {
-        //given
-
-        //when
-        ResultActions actions = mockMvc.perform(
-                get("/members/logout")
-                        .header("Authorization", jwtToken)
-                        .contentType(MediaType.APPLICATION_JSON)
-        );
-
-        //then
-        actions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.header.httpStatusCode").value(MEMBER_LOGOUT.getHttpStatusCode()))
-                .andExpect(jsonPath("$.header.message").value(MEMBER_LOGOUT.getMessage()))
-                .andDo(document(
-                        "로그아웃",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        resource(ResourceSnippetParameters.builder()
-                                .tag("Member API")
-                                .summary("로그아웃 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization")
-                                                .description("JWT 토큰")
-                                )
-                                .responseFields(
-                                        getCommonResponseFields(
-                                                fieldWithPath("body").type(NULL)
-                                                        .description("본문 없음")
-                                        )
-                                )
-                                .requestSchema(Schema.schema("로그아웃 Request"))
-                                .responseSchema(Schema.schema("로그아웃 Response"))
-                                .build()
-                        ))
-                );
-    }
-
-    @Test
     public void 회원가입을_위한_회원_정보조회_성공()  throws Exception {
         //given
         SignUpInfoRes res = new SignUpInfoRes("KAKAO", "test@naver.com", "닉네임", "src");

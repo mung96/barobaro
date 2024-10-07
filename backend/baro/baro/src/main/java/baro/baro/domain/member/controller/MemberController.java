@@ -8,8 +8,6 @@ import baro.baro.domain.member.dto.response.ProfileDetailsRes;
 import baro.baro.domain.member.dto.response.SignUpInfoRes;
 import baro.baro.domain.member.service.MemberService;
 import baro.baro.global.dto.ResponseDto;
-import baro.baro.global.utils.CookieUtil;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,25 +30,13 @@ public class MemberController {
 
     @PostMapping("/members/signup")
     public ResponseEntity<?> signUp(@RequestPart(value = "dto") SignupReq signupReq,
-                                    @RequestPart(value = "file", required = false) MultipartFile file,
-                                    HttpServletResponse response) throws IOException {
-
-        log.info("회원가입들어왔슴니다!");
+                                    @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
 
         isInvalidNickname(signupReq.getNickname());
 
         String accessToken = memberService.signup(signupReq, file);
 
-        CookieUtil.addCookie(response, "token", accessToken, 3600);
-
-        return new ResponseEntity<>(ResponseDto.success(MEMBER_CREATED, null), CREATED);
-    }
-
-    @GetMapping("/members/logout")
-    public ResponseEntity<?> logout(HttpServletResponse response) {
-        CookieUtil.deleteCookie(response, "token");
-
-        return new ResponseEntity<>(ResponseDto.success(MEMBER_LOGOUT, null), OK);
+        return new ResponseEntity<>(ResponseDto.success(MEMBER_CREATED, accessToken), CREATED);
     }
 
     @GetMapping("/members/signup/info")
