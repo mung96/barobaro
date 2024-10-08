@@ -12,7 +12,7 @@ const nextConfig = {
     return config;
   },
   images: {
-    domains: ['loremflickr.com', 'loremflickr.com'],
+    domains: ['loremflickr.com', 'loremflickr.com', 'barobaro.s3.ap-northeast-2.amazonaws.com'],
   },
   async rewrites() {
     return [
