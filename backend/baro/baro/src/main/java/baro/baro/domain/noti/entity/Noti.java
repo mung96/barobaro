@@ -1,4 +1,4 @@
-package baro.baro.domain.notification.entity;
+package baro.baro.domain.noti.entity;
 
 import baro.baro.domain.member.entity.Member;
 import jakarta.persistence.*;
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Notification {
+public class Noti {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,6 +30,6 @@ public class Notification {
     private String message;
 
     @Enumerated(EnumType.STRING)
-    private NotificationType notificationType;
+    private NotiType notiType;
 
 }
