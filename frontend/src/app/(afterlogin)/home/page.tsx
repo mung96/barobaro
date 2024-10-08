@@ -4,11 +4,13 @@ import SearchBar from '@/components/SearchBar';
 import Cards from '@/components/(recent_list_component)/Cards';
 import NavBarLayout from '@/layout/NavBarLayout';
 import Logo from '@/../public/assets/png/barobaro_logo.png';
+import UserTown from "@/components/user/UserTown";
 
 export default function Home() {
   return (
     <>
       <br />
+        <UserTown/>
       <br />
       <div className="flex justify-center">
         <Image src={Logo} alt="baro" width={150} height={150} />
