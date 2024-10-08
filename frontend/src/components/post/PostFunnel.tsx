@@ -93,6 +93,7 @@ function PostFunnel() {
         )}
         {registStep === 'ContractPreviewStep' && (
           <ContractPreview
+            context={context}
             onPrev={() => {
               history.back();
               setDirection('backward');
