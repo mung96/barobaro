@@ -61,6 +61,7 @@ function SignUpFunnel() {
       <PageTransition step={signUpStep} direction={direction}>
         {signUpStep === 'MyInfoStep' && (
           <MyInfoInput
+          context={context}
             member={socialMember!}
             onNext={(data: MyInfo) => {
               setSocialMember({ ...socialMember!, ...data });
@@ -71,6 +72,7 @@ function SignUpFunnel() {
         )}
         {signUpStep === 'MyTownStep' && (
           <MyTownInfo
+          context={context}
             onPrev={() => {
               history.back();
               setDirection('backward');
