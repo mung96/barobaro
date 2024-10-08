@@ -110,7 +110,7 @@ export default function MessageRoomList({ selectValue }: MessageRoomListParam) {
         />
       ))}
 
-      <div className="w-full h-[7vh]">&emsp;</div>
+      {/* <div className="w-full h-[7vh]">&emsp;</div> */}
     </div>
   );
 }

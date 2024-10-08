@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import WebSocketClient from '@/utils/webSocketClient';
 import MessageFormType from '@/components/message/chat/MessageFormType';
+import { UUID } from 'crypto';
+import currentTime from '@/utils/currentTime';
 
 export default function useSocketClientModel(
   UserId: string,
@@ -12,21 +14,49 @@ export default function useSocketClientModel(
   );
   const [messageList, setMessageList] = useState<MessageFormType[]>([]);
 
-  // const context = useContext(SocketClientContext);
-  // if (!context) {
-  //   console.error('SocketClientContext is not available.');
-  //   return { socketClient: null, sendChat: () => {} }; // 기본적으로 빈 함수 반환
-  // }
-  // const { chatRoomId } = context;
+  // 백엔드 메시지 타입
+  type BackMessageFormType = {
+    // chatRoomId: number;
+    uuid: UUID | string; // API 연결 이후 UUID only Type으로 바꾸기
+    message: string;
+    image: string | null; // image src
+    chatTime: string; // Date에서 시간이랑 초 자르고 보내야 함. currentTime.formatDate
+    chatType: string;
+  };
 
-  // useContext(SocketClientContext)
+  const chatTypeConverter = (type: number) => {
+    switch (type) {
+      case 1:
+        return 'user';
+      case 2:
+        return 'status';
+      case 3:
+        return 'system';
+      default:
+        return 'error'; // 이런 타입은 없다 ...
+    }
+  };
+
+  const chatConverter = (message: MessageFormType) => {
+    const convertedChatType: BackMessageFormType = {
+      // chatRoomId:
+      uuid: message.user,
+      message: message.body,
+      image: message.type === 4 ? message.body : null,
+      chatTime: currentTime('back'),
+      chatType: chatTypeConverter(message.type),
+    };
+
+    return convertedChatType;
+  };
 
   const sendChat = (message: MessageFormType) => {
     if (!socketClient) return;
     // const destination: string = '/pub/message';
     const destination: string = `/pub/chatrooms/${chatRoomId}`;
     // const destination: string = `${END_POINT.SOCKET_PUBLISH}/${value.chatRoomId}`
-    const msg: string = JSON.stringify(message);
+
+    const msg: string = JSON.stringify(chatConverter(message));
 
     if (socketClient !== null) socketClient.send(destination, msg);
   };

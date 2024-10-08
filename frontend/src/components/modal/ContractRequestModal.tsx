@@ -13,6 +13,7 @@ import currentTime from '@/utils/currentTime';
 import ContractDurationInput from '../message/chat/ContractDurationInput';
 import { ProcessTypes } from '../message/chat/ProcessTypes';
 import MessageFormType from '../message/chat/MessageFormType';
+import PasswordCheckModal from './PassWordCheckModal';
 
 type ContractRequestParams = {
   isOpen: boolean;
@@ -54,6 +55,13 @@ const ContractRequestModal = ({
   const [range, setRange] = useState<DateRange | undefined>(undefined);
   const [ways, setWays] = useState<string>('');
 
+  // 비밀번호 모달 노출 관련 변수
+  const [isPwdModalOpen, setIsPwdModalOpen] = useState(false);
+  const pwdModalClose = () => {
+    setIsPwdModalOpen(false);
+  };
+  // ============================
+
   const processContext = useContext(ProcessContext);
   const socketContext = useContext(SocketClientContext);
 
@@ -68,12 +76,28 @@ const ContractRequestModal = ({
     // 대여자의 계약 요청서를 거절할 때
     // 프로세스 contact로 바꾸고 / 시스템메시지 찍고 /
     if (isApproved) {
+      const approveMessage: MessageFormType = {
+        type: 3,
+        user: '김말이',
+        body: 'accept',
+        timestamp: currentTime(),
+      };
+
+      sendChat(approveMessage);
       // 비밀번호 모달 띄우기
+      setIsPwdModalOpen(true); // 이거 안 기다리고 걍 닫힘 ; **** 타이밍 관련 해결해야 함
       // 서명 모달 띄우기
     } else {
+      const rejectMessage: MessageFormType = {
+        type: 3,
+        user: '김말이',
+        body: 'reject',
+        timestamp: currentTime(),
+      };
+      sendChat(rejectMessage);
       processSetter(ProcessTypes.CONTACT);
+      onRequestClose();
     }
-    onRequestClose();
   };
 
   const requestLogic = (isSubmit: boolean) => {
@@ -175,6 +199,10 @@ const ContractRequestModal = ({
           </button>
         </div>
       </div>
+      <PasswordCheckModal
+        isOpen={isPwdModalOpen}
+        onRequestClose={pwdModalClose}
+      />
     </ReactModal>
   );
 };
