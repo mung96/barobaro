@@ -23,8 +23,7 @@ import java.util.UUID;
 import java.util.stream.IntStream;
 
 import static baro.baro.domain.location.validator.LocationValidator.validateLocationAddRequest;
-import static baro.baro.global.statuscode.ErrorCode.ALREADY_EXIST_MEMBER;
-import static baro.baro.global.statuscode.ErrorCode.LOCATION_NOT_FOUND;
+import static baro.baro.global.statuscode.ErrorCode.*;
 
 @Slf4j
 @Service
@@ -104,5 +103,18 @@ public class MemberServiceImpl implements MemberService {
         redisUtils.deleteData(key + "_signin_key");
 
         return result;
+    }
+
+    public Boolean verifyPassword(String key, Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+        if(!member.getPin().getPinNumber().equals(key)) {
+            throw new CustomException(INVALID_PIN_NUMBER);
+        }
+        return Boolean.TRUE;
+    }
+
+    public Boolean verifyPassword(final String key) {
+        return null;
     }
 }
