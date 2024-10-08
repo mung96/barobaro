@@ -102,63 +102,63 @@ dependencies {
 }
 
 tasks.withType(GenerateSwaggerUI) {
-	dependsOn 'openapi3'
+    dependsOn 'openapi3'
 }
 
 tasks.register('copySwaggerUI', Copy) {
-	dependsOn 'generateSwaggerUISample'
-	def generateSwaggerUISampleTask = tasks.named('generateSwaggerUISample', GenerateSwaggerUI).get()
-	from("${generateSwaggerUISampleTask.outputDir}")
-	into("${project.buildDir}/resources/main/static/docs")
+    dependsOn 'generateSwaggerUISample'
+    def generateSwaggerUISampleTask = tasks.named('generateSwaggerUISample', GenerateSwaggerUI).get()
+    from("${generateSwaggerUISampleTask.outputDir}")
+    into("${project.buildDir}/resources/main/static/docs")
 }
 
 tasks.withType(BootJar) {
-	dependsOn 'copySwaggerUI'
+    dependsOn 'copySwaggerUI'
 }
 
 tasks.named('jar') {
-	dependsOn 'copySwaggerUI'
+    dependsOn 'copySwaggerUI'
 }
 
 tasks.named('resolveMainClassName') {
-	dependsOn 'copySwaggerUI'
+    dependsOn 'copySwaggerUI'
 }
 
 tasks.withType(GenerateSwaggerUI) {
-	dependsOn 'openapi3'
-	doFirst {
-		def swaggerUIFile = file("${openapi3.outputDirectory}/openapi3.yaml")
+    dependsOn 'openapi3'
+    doFirst {
+        def swaggerUIFile = file("${openapi3.outputDirectory}/openapi3.yaml")
 
-		def securitySchemesContent = "  securitySchemes:\n" +
-				"    APIKey:\n" +
-				"      type: apiKey\n" +
-				"      name: Authorization\n" +
-				"      in: header\n" +
-				"security:\n" +
-				"  - APIKey: []  # Apply the security scheme here"
+        def securitySchemesContent = "  securitySchemes:\n" +
+                "    APIKey:\n" +
+                "      type: apiKey\n" +
+                "      name: Authorization\n" +
+                "      in: header\n" +
+                "security:\n" +
+                "  - APIKey: []  # Apply the security scheme here"
 
-		swaggerUIFile.append securitySchemesContent
-	}
+        swaggerUIFile.append securitySchemesContent
+    }
 }
 
 // QueryDsl Build Option
 def querydslDir = layout.buildDirectory.dir("generated/querydsl").get().asFile
 sourceSets {
-	main.java.srcDirs += [querydslDir]
+    main.java.srcDirs += [querydslDir]
 }
 
 tasks.withType(JavaCompile).configureEach {
-	options.getGeneratedSourceOutputDirectory().set(file(querydslDir))
+    options.getGeneratedSourceOutputDirectory().set(file(querydslDir))
 }
 
 clean.doLast {
-	file(querydslDir).deleteDir()
+    file(querydslDir).deleteDir()
 }
 
 clean {
-	delete file('src/main/generated')
+    delete file('src/main/generated')
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }

@@ -39,9 +39,10 @@ public enum SuccessCode {
     SUGGEST_KEYWORD_LIST_OK(OK.value(), "검색어 자동완성에 성공했습니다"),
 
     //본인인증
-
+    PASSWORD_VALIDATION_OK(OK.value(),"PIN번호가 유효합니다"),
     //알림 및 푸시
     NOTIFICATION_LIST_OK(OK.value(), "알림 리스트 조회에 성공했습니다."),
+    FCM_TOKEN_UPDATE_OK(OK.value(),"FCM 토큰 갱신에 성공했습니다."),
 
     //찜
     WISH_LIST_CREATED(CREATED.value(), "관심내역 추가에 성공했습니다."),
@@ -56,6 +57,7 @@ public enum SuccessCode {
     ACCOUNT_CREATED(CREATED.value(), "계좌 연결에 성공했습니다."),
     ACCOUNT_ADD_MAIN_OK(OK.value(), "대표 계좌 설정에 성공했습니다."),
     ACCOUNT_DELETED(NO_CONTENT.value(), "대표 계좌 설정에 성공했습니다."),
+    PASSWORD_CREATED(CREATED.value(), "PIN번호 설정에 성공했습니다."),
     PASSWORD_MODIFIED(OK.value(), "PIN번호 변경에 성공했습니다."),
     PROFILE_DETAILS_OK(OK.value(), "프로필 조회에 성공했습니다."),
     PROFILE_MODIFIED(OK.value(), "프로필 수정에 성공했습니다."),
