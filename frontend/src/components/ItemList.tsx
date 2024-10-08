@@ -6,7 +6,7 @@ import ContractIcon from '@/components/(SVG_component)/(mypage)/Contract';
 import MeatBallsButton from '@/components/(SVG_component)/(mypage)/MeatBallsButton';
 import HeartIcon from '@/components/(SVG_component)/HeartIcon';
 import Link from 'next/link';
-import { useBorrowProducts, useLentProducts, useLikeProducts } from '@/store/useCurrentStore';
+import {useBorrowProducts, useLentProducts, useLikeProducts, useSearchProducts} from '@/store/useCurrentStore';
 
 export default function ItemList({ data }: { data: string }) {
   // 주어진 data에 맞게 List를 받고, 이를 하단의 return 에 맞춰 들어가도록 해야함.
@@ -14,6 +14,7 @@ export default function ItemList({ data }: { data: string }) {
   const borrowProducts = useBorrowProducts();
   const lentProducts = useLentProducts();
   const likeProducts = useLikeProducts();
+  const searchProducts = useSearchProducts();
   let result;
   let title;
   if (data === 'borrow') {
@@ -24,6 +25,8 @@ export default function ItemList({ data }: { data: string }) {
     title = '빌려준 물품 내역';
   } else if (data === 'like') {
     result = likeProducts;
+  } else if (data === 'search') {
+    result = searchProducts;
   }
   return (
     <section>
@@ -36,6 +39,7 @@ export default function ItemList({ data }: { data: string }) {
             <div className="flex flex-row ml-3.5">
               <div className="w-[98px] h-[98px] rounded-[10px] overflow-hidden relative">
                 <Link href={`/post/${item.productId}`}>
+                  {/*TODO : mockup이 수정되면 변경할 것*/}
                   <Image src={`/${item.productMainImage}`} alt="product_image" fill />
                 </Link>
                 <div
