@@ -1,10 +1,8 @@
 package baro.baro.domain.noti.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
 public enum NotiType {
 
     CONTRACT_REQUEST,       // 계약 요청 알림

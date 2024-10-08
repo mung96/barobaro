@@ -13,14 +13,18 @@ import java.io.IOException;
 @Configuration
 public class FcmConfig {
 
+    private final ClassPathResource firebaseResource = new ClassPathResource("barobaro-aa63c-2b4f8f5e33c2.json");
+
     @Bean
     FirebaseApp firebaseApp() throws IOException {
-        ClassPathResource firebaseResource = new ClassPathResource("barobaro-aa63c-2b4f8f5e33c2.json");
-        FirebaseOptions options = FirebaseOptions.builder()
-                .setCredentials(GoogleCredentials.fromStream(
-                        firebaseResource.getInputStream()
-                )).build();
-        return FirebaseApp.initializeApp(options);
+        if (FirebaseApp.getApps().isEmpty()) {
+            FirebaseOptions options = FirebaseOptions.builder()
+                    .setCredentials(GoogleCredentials.fromStream(
+                            firebaseResource.getInputStream()
+                    )).build();
+            return FirebaseApp.initializeApp(options);
+        }
+        return FirebaseApp.getInstance();
     }
 
     @Bean
