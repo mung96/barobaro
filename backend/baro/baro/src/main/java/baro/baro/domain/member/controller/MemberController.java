@@ -65,7 +65,9 @@ public class MemberController {
 
     @GetMapping("/members/me/profile")
     public ResponseEntity<?> profileDetails() {
-        ProfileDetailsRes result = new ProfileDetailsRes("프로필 이미지", "닉네임", "010-1111-1111", "ssafy@ssafy.com", "아무개");
+        Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
+        ProfileDetailsRes result = memberService.getProfileDetails(memberId);
+
 
         return new ResponseEntity<>(ResponseDto.success(PROFILE_DETAILS_OK, result), OK);
     }
