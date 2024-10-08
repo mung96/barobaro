@@ -2,16 +2,10 @@ package baro.baro.domain.product.controller;
 
 import baro.baro.domain.contract.dto.ContractConditionDto;
 import baro.baro.domain.contract.dto.request.ContractConditionReq;
-import baro.baro.domain.product.dto.MyProductDto;
-import baro.baro.domain.product.dto.ProductDetails;
-import baro.baro.domain.product.dto.ProductDto;
-import baro.baro.domain.product.dto.SearchProductDto;
+import baro.baro.domain.product.dto.*;
 import baro.baro.domain.product.dto.request.ProductAddReq;
 import baro.baro.domain.product.dto.request.ProductModifyReq;
-import baro.baro.domain.product.dto.response.MyProductListRes;
-import baro.baro.domain.product.dto.response.RecentlyUploadedListRes;
-import baro.baro.domain.product.dto.response.RecentlyViewListRes;
-import baro.baro.domain.product.dto.response.SearchProductRes;
+import baro.baro.domain.product.dto.response.*;
 import baro.baro.domain.product.entity.ReturnType;
 import baro.baro.domain.product.service.ProductService;
 import baro.baro.global.exception.CustomException;
@@ -55,6 +49,7 @@ import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithNam
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static com.fasterxml.jackson.databind.jsonFormatVisitors.JsonFormatTypes.*;
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
@@ -2301,6 +2296,19 @@ class ProductControllerTest {
     @Test
     public void 검색어_자동완성_성공() throws Exception {
         //given
+        List<KeywordDto> keywords = new ArrayList<>();
+
+        for(int i = 0; i < 10; i++) {
+            KeywordDto keywordDto = KeywordDto.builder()
+                    .name("추천검색어"+i)
+                    .build();
+
+            keywords.add(keywordDto);
+        }
+
+        KeywordListRes result = new KeywordListRes(keywords);
+
+        when(productService.searchKeyword(any())).thenReturn(result);
 
         //when
         ResultActions actions = mockMvc.perform(
