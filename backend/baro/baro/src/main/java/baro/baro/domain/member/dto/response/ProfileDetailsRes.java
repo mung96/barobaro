@@ -19,6 +19,8 @@ public class ProfileDetailsRes {
 
     private String name;
 
+    private Boolean isAuthenticated;
+
     public static ProfileDetailsRes toDto(Member member) {
         return ProfileDetailsRes.builder()
                 .profileImage(member.getProfileImage())
@@ -26,6 +28,7 @@ public class ProfileDetailsRes {
                 .phoneNumber(member.getPhoneNumber())
                 .email(member.getEmail())
                 .name(member.getName())
+                .isAuthenticated(member.getPin() != null)
                 .build();
     }
 }
