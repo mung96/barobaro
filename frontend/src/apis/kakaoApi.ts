@@ -7,7 +7,7 @@ export const getLocationListByQuery = async (query: string) => {
   const response = await kakaoInstance.get<KakaoLocalSearchResponse>(
     END_POINT.LOCATION,
     {
-      params: { query, size: 5 },
+      params: { query, size: 6 },
     },
   );
   return response;
