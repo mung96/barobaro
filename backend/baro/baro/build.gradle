@@ -58,106 +58,107 @@ dependencyManagement {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
-	implementation 'com.auth0:java-jwt:3.13.0'
-	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-	implementation 'org.springframework.boot:spring-boot-starter-websocket'
-	implementation 'org.webjars:sockjs-client:1.5.1'
-	implementation 'org.webjars:stomp-websocket:2.3.4'
-	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
-	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
-	implementation 'org.postgresql:postgresql'
-	implementation 'org.hibernate:hibernate-core:6.4.0.Final'
-	implementation 'org.hibernate:hibernate-spatial:6.4.0.Final'
-	implementation 'net.postgis:postgis-jdbc:2.5.0'
-	implementation 'org.locationtech.jts:jts-core:1.19.0'
-	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
-	implementation 'com.itextpdf:itext7-core:7.1.16'
-	implementation 'com.itextpdf:sign:7.1.16'
-	implementation 'com.itextpdf:bouncy-castle-adapter:8.0.4'
-	implementation 'org.bouncycastle:bcprov-jdk15on:1.68'
-	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
-	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
-	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
-	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
-	runtimeOnly 'org.postgresql:postgresql'
-	runtimeOnly 'com.h2database:h2'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.bouncycastle:bcprov-jdk18on:1.78.1'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-	testImplementation 'com.epages:restdocs-api-spec-mockmvc:' + restdocsApiSpecVersion
-	testImplementation 'org.springframework.security:spring-security-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	swaggerUI 'org.webjars:swagger-ui:4.11.1'
-	compileOnly 'org.projectlombok:lombok'
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    implementation 'com.auth0:java-jwt:3.13.0'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.webjars:sockjs-client:1.5.1'
+    implementation 'org.webjars:stomp-websocket:2.3.4'
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+    implementation 'org.postgresql:postgresql'
+    implementation 'org.hibernate:hibernate-core:6.4.0.Final'
+    implementation 'org.hibernate:hibernate-spatial:6.4.0.Final'
+    implementation 'net.postgis:postgis-jdbc:2.5.0'
+    implementation 'org.locationtech.jts:jts-core:1.19.0'
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    implementation 'com.itextpdf:itext7-core:7.1.16'
+    implementation 'com.itextpdf:sign:7.1.16'
+    implementation 'com.itextpdf:bouncy-castle-adapter:8.0.4'
+    implementation 'org.bouncycastle:bcprov-jdk15on:1.68'
+    implementation 'com.google.firebase:firebase-admin:9.3.0'
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+    annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+    runtimeOnly 'org.postgresql:postgresql'
+    runtimeOnly 'com.h2database:h2'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.bouncycastle:bcprov-jdk18on:1.78.1'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testImplementation 'com.epages:restdocs-api-spec-mockmvc:' + restdocsApiSpecVersion
+    testImplementation 'org.springframework.security:spring-security-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    swaggerUI 'org.webjars:swagger-ui:4.11.1'
+    compileOnly 'org.projectlombok:lombok'
 }
 
 tasks.withType(GenerateSwaggerUI) {
-	dependsOn 'openapi3'
+    dependsOn 'openapi3'
 }
 
 tasks.register('copySwaggerUI', Copy) {
-	dependsOn 'generateSwaggerUISample'
-	def generateSwaggerUISampleTask = tasks.named('generateSwaggerUISample', GenerateSwaggerUI).get()
-	from("${generateSwaggerUISampleTask.outputDir}")
-	into("${project.buildDir}/resources/main/static/docs")
+    dependsOn 'generateSwaggerUISample'
+    def generateSwaggerUISampleTask = tasks.named('generateSwaggerUISample', GenerateSwaggerUI).get()
+    from("${generateSwaggerUISampleTask.outputDir}")
+    into("${project.buildDir}/resources/main/static/docs")
 }
 
 tasks.withType(BootJar) {
-	dependsOn 'copySwaggerUI'
+    dependsOn 'copySwaggerUI'
 }
 
 tasks.named('jar') {
-	dependsOn 'copySwaggerUI'
+    dependsOn 'copySwaggerUI'
 }
 
 tasks.named('resolveMainClassName') {
-	dependsOn 'copySwaggerUI'
+    dependsOn 'copySwaggerUI'
 }
 
 tasks.withType(GenerateSwaggerUI) {
-	dependsOn 'openapi3'
-	doFirst {
-		def swaggerUIFile = file("${openapi3.outputDirectory}/openapi3.yaml")
+    dependsOn 'openapi3'
+    doFirst {
+        def swaggerUIFile = file("${openapi3.outputDirectory}/openapi3.yaml")
 
-		def securitySchemesContent = "  securitySchemes:\n" +
-				"    APIKey:\n" +
-				"      type: apiKey\n" +
-				"      name: Authorization\n" +
-				"      in: header\n" +
-				"security:\n" +
-				"  - APIKey: []  # Apply the security scheme here"
+        def securitySchemesContent = "  securitySchemes:\n" +
+                "    APIKey:\n" +
+                "      type: apiKey\n" +
+                "      name: Authorization\n" +
+                "      in: header\n" +
+                "security:\n" +
+                "  - APIKey: []  # Apply the security scheme here"
 
-		swaggerUIFile.append securitySchemesContent
-	}
+        swaggerUIFile.append securitySchemesContent
+    }
 }
 
 // QueryDsl Build Option
 def querydslDir = layout.buildDirectory.dir("generated/querydsl").get().asFile
 sourceSets {
-	main.java.srcDirs += [querydslDir]
+    main.java.srcDirs += [querydslDir]
 }
 
 tasks.withType(JavaCompile).configureEach {
-	options.getGeneratedSourceOutputDirectory().set(file(querydslDir))
+    options.getGeneratedSourceOutputDirectory().set(file(querydslDir))
 }
 
 clean.doLast {
-	file(querydslDir).deleteDir()
+    file(querydslDir).deleteDir()
 }
 
 clean {
-	delete file('src/main/generated')
+    delete file('src/main/generated')
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
