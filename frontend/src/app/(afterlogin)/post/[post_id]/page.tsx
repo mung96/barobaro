@@ -16,6 +16,7 @@ import {getProductsDetail} from "@/apis/productDetailApi";
 export default function PostDetail() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [postInfo, setPostInfo] = useState<any>(null);
+  {/*TODO : 로그인X => 화면 접근시 ReactModal, 완료된 거래인경우 ReactModal */}
   const modalType = 'needPassword';
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);

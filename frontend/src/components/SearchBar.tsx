@@ -15,6 +15,7 @@ export default function SearchBar() {
             id="search_input"
             placeholder="검색어를 입력해주세요."
             onChange={(e) => handleSearch(e.target.value)}
+            className="w-full outline-none [&::-webkit-search-cancel-button]:appearance-none"
             required
           />
         </div>
