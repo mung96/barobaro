@@ -9,6 +9,9 @@ import { postSignUp } from '@/apis/memberApi';
 import {  useSocialMemberState } from '@/store/useSocialMember';
 import { useRouter } from 'next/navigation';
 import { convertSignUpDateToRequest } from '@/services/signup/convert';
+import { useProfileSet } from '@/store/useMyProfile';
+import { getProfile } from '@/apis/profileApi';
+import { AxiosError } from 'axios';
 
 type Props = {
   onPrev: () => void;
@@ -18,7 +21,7 @@ type Props = {
 function MyTownInfo({ onPrev,context }: Props) {
   const router = useRouter();
   const socialMember = useSocialMemberState();
-
+const setProfile = useProfileSet();
   const signUp = async () =>{
     const member = {
       providerType: socialMember?.providerType!,
@@ -29,6 +32,19 @@ function MyTownInfo({ onPrev,context }: Props) {
     try{
       const response =  await postSignUp(convertSignUpDateToRequest(member,getValues()),context.profile)
       router.push('/home');
+      localStorage.setItem('token',response.data.body);
+      
+      try{
+        const profileResponse = await getProfile();
+        setProfile({
+         ...profileResponse.data.body
+        })
+      }catch(error){
+        if(error instanceof AxiosError){
+          alert(error.response?.data.header.message)
+        }
+      }
+      
     }catch(error){
       console.error('API 요청 중 오류 발생:', error);
     }
