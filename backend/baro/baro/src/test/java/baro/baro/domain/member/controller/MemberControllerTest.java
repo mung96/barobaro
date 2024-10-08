@@ -46,8 +46,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.JsonFieldType.OBJECT;
-import static org.springframework.restdocs.payload.JsonFieldType.STRING;
+import static org.springframework.restdocs.payload.JsonFieldType.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -376,6 +375,7 @@ class MemberControllerTest {
                 .phoneNumber("테스트 전화번호")
                 .email("테스트이메일")
                 .name("테스트 이름")
+                .isAuthenticated(Boolean.TRUE)
                 .build();
         when(memberService.getProfileDetails(anyLong()))
                 .thenReturn(result);
@@ -414,7 +414,9 @@ class MemberControllerTest {
                                                 fieldWithPath("body.email").type(STRING)
                                                         .description("이메일"),
                                                 fieldWithPath("body.name").type(STRING)
-                                                        .description("이름")
+                                                        .description("이름"),
+                                                fieldWithPath("body.isAuthenticated").type(BOOLEAN)
+                                                        .description("본인 인증 여부")
                                         )
                                 )
                                 .responseSchema(Schema.schema("프로필 조회 Response"))
