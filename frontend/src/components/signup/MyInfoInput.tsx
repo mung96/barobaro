@@ -1,6 +1,6 @@
 import { useController, useForm } from 'react-hook-form';
 import CameraBody from '@/components/(SVG_component)/CameraBody';
-import { MyInfo } from '@/types/domains/signup';
+import { MyInfo, MyInfoStep, MyTownStep } from '@/types/domains/signup';
 import Button from '@/components/shared/Button';
 import useFileModel from '@/hooks/shared/useFileModel';
 import NicknameInput from '@/components/signup/NicknameInput';
@@ -9,9 +9,10 @@ import { SocialMember } from '@/types/domains/member';
 type Props = {
   onNext: (myInfoData: MyInfo) => void;
   member: SocialMember;
+  context: MyInfoStep | MyTownStep;
 };
 
-function MyInfoInput({ onNext, member }: Props) {
+function MyInfoInput({ onNext, member,context }: Props) {
   const { file, changeFile } = useFileModel();
   const {
     getValues,
@@ -29,6 +30,13 @@ function MyInfoInput({ onNext, member }: Props) {
       maxLength: { value: 10, message: '닉네임은 10자 이하 입력해주세요' },
     },
   });
+
+  const { field: profile, fieldState: profileState } = useController<MyInfo>({
+    control,
+    name: 'profile',
+    defaultValue: member?.profileImage,
+  });
+
 
   return (
     <div className="flex flex-col gap-16 w-full">
@@ -52,7 +60,7 @@ function MyInfoInput({ onNext, member }: Props) {
       <section className="w-full justify-center items-center flex flex-col gap-7">
         <label className="bg-gray-500 w-[89px] h-[89px] rounded-full relative">
           <img
-            src={file ? (file as string) : member?.profileImage}
+            src={file ? (file as string ) : member?.profileImage as string}
             alt="Profile preview"
             style={{ objectFit: 'cover' }}
             className="border rounded-full border-gray-500 w-full h-full"
@@ -61,14 +69,17 @@ function MyInfoInput({ onNext, member }: Props) {
             type="file"
             accept="image/*"
             className="hidden"
-            onChange={(event) => changeFile(Array.from(event.target.files!))}
+            onChange={async (event) => {
+              await changeFile(Array.from(event.target.files!))
+              profile.onChange(event.target.files![0])
+             }}
           />
           <div className="bg-gray-400 w-[25px] h-[25px] rounded-full absolute bottom-0 right-0 flex items-center justify-center">
             <CameraBody fill="#747483" width="15.2" height="12.67" />
           </div>
         </label>
         <NicknameInput
-          value={nickname.value}
+          value={nickname.value as string}
           onChange={nickname.onChange}
           isInvalid={nicknameState.invalid}
           message={errors.nickname?.message!}

@@ -35,12 +35,12 @@
     "jsx-a11y/label-has-associated-control": "off",
     "react/jsx-no-comment-textnodes": "off",
     "import/no-extraneous-dependencies": "off",
-    "react/jsx-props-no-spreading": "off"
+    "react/jsx-props-no-spreading": "off",
 
     // "react/react-in-jsx-scope": "off",
     // "react/require-default-props": "off",
     // "import/no-extraneous-dependencies": "off",
     // "eslintobject-curly-newline": "off",
-    // "object-curly-newline": "off"
+    // "object-curly-newline": "off",
   }
 }

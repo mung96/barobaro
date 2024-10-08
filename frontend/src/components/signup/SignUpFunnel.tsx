@@ -3,28 +3,26 @@
 import { useFunnel } from '@use-funnel/browser';
 import { useEffect, useState } from 'react';
 
-import axios from 'axios';
 import { useSearchParams } from 'next/navigation';
 import PageTransition, {
   DirectionType,
 } from '@/components/shared/PageTransition';
 import StepBar from '@/components/shared/StepBar';
 import { MyInfo, MyInfoStep, MyTownStep } from '@/types/domains/signup';
-import convertSignUpStepToStepNumber from '@/services/signup/convert';
+import {convertSignUpStepToStepNumber} from '@/services/signup/convert';
 import MyInfoInput from '@/components/signup/MyInfoInput';
 import MyTownInfo from '@/components/signup/MyTownInput';
-import { NEXT_BASE_URL } from '@/constants/api';
 import {
   useSocialMemberAction,
   useSocialMemberState,
-} from '@/stores/useSocialMember';
-import { SocialMemberResponse } from '@/types/apis/memberResponse';
+} from '@/store/useSocialMember';
+import { getSignUpInfo } from '@/apis/memberApi';
 
 function SignUpFunnel() {
   const [direction, setDirection] = useState<DirectionType>('forward');
   const searchParams = useSearchParams();
   const totalStep = 2;
-  const { step: signUpStep, history } = useFunnel<{
+  const { step: signUpStep, history,context } = useFunnel<{
     MyInfoStep: MyInfoStep;
     MyTownStep: MyTownStep;
   }>({
@@ -41,13 +39,9 @@ function SignUpFunnel() {
   useEffect(() => {
     const getResponse = async () => {
       try {
-        const response = await axios.get<SocialMemberResponse>(
-          `${NEXT_BASE_URL}/signup/info`,
-          {
-            params: { key: searchParams.get('key') },
-          },
-        );
+        const response = await getSignUpInfo(searchParams.get('key')!)
         if (response.data.body) {
+          console.log(response.data.body);
           setSocialMember(response.data.body);
         }
       } catch (err) {
@@ -67,8 +61,10 @@ function SignUpFunnel() {
       <PageTransition step={signUpStep} direction={direction}>
         {signUpStep === 'MyInfoStep' && (
           <MyInfoInput
+          context={context}
             member={socialMember!}
             onNext={(data: MyInfo) => {
+              setSocialMember({ ...socialMember!, ...data });
               history.push('MyTownStep', data);
               setDirection('forward');
             }}
@@ -76,12 +72,10 @@ function SignUpFunnel() {
         )}
         {signUpStep === 'MyTownStep' && (
           <MyTownInfo
+          context={context}
             onPrev={() => {
               history.back();
               setDirection('backward');
-            }}
-            onNext={() => {
-              console.log('회원가입 완료');
             }}
           />
         )}
