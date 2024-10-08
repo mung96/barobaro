@@ -1,5 +1,6 @@
 package baro.baro.domain.member.controller;
 
+import baro.baro.domain.member.dto.request.PasswordAddReq;
 import baro.baro.domain.member.dto.request.PasswordModifyReq;
 import baro.baro.domain.member.dto.request.ProfileModifyReq;
 import baro.baro.domain.member.dto.request.SignupReq;
@@ -47,6 +48,15 @@ public class MemberController {
         SignUpInfoRes result = memberService.signupDetails(key);
 
         return new ResponseEntity<>(ResponseDto.success(MEMBER_SIGNUP_DETAILS_OK, result), OK);
+    }
+
+    @PostMapping("/members/me/password")
+    public ResponseEntity<?> passwordAdd(@RequestBody @Valid PasswordAddReq passwordAddReq) throws Exception {
+        Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
+
+        memberService.addPassword(memberId, passwordAddReq);
+
+        return new ResponseEntity<>(ResponseDto.success(PASSWORD_CREATED, null), OK);
     }
 
     @PatchMapping("/members/me/password")
