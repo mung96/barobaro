@@ -39,7 +39,7 @@ public enum SuccessCode {
     SUGGEST_KEYWORD_LIST_OK(OK.value(), "검색어 자동완성에 성공했습니다"),
 
     //본인인증
-
+    PASSWORD_VALIDATION_OK(OK.value(),"PIN번호가 유효합니다"),
     //알림 및 푸시
     NOTIFICATION_LIST_OK(OK.value(), "알림 리스트 조회에 성공했습니다."),
 
