@@ -102,7 +102,7 @@ class NotiControllerTest {
                                                         .description("알림 메시지"),
                                                 fieldWithPath("body.*[].fromMemberId").type(STRING)
                                                         .description("요청한 사람의 UUID"),
-                                                fieldWithPath("body.*[].notificationType").type(STRING)
+                                                fieldWithPath("body.*[].notiType").type(STRING)
                                                         .description("알림 종류")
                                         )
                                 )
