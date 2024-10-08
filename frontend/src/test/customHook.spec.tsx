@@ -2,10 +2,15 @@ import { renderHook, act } from '@testing-library/react';
 import useOpenModalModel from '@/hooks/overlay/useModalModel';
 import useSearchModel from '@/hooks/products/useSearchModel';
 import { useRouter } from 'next/navigation';
+import { getSuggest } from "../apis/searchSuggestApi"
 
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
 }));
+
+jest.mock('../apis/searchSuggestApi', () => ({
+  getSuggest: jest.fn(),
+}))
 
 describe('useOpenModalModel', () => {
   it('초기 상태는 close', () => {
@@ -35,6 +40,8 @@ describe('useSearchModel', () => {
     (useRouter as jest.Mock).mockReturnValue({
       push: mockPush,
     });
+    (getSuggest as jest.Mock).mockReset();
+    (getSuggest as jest.Mock).mockResolvedValue({data:[]})
   });
 
   afterEach(() => {
@@ -68,7 +75,7 @@ describe('useSearchModel', () => {
   it('검색어가 있을 때, goSearch 실행 => router.push', async () => {
     const { result } = renderHook(() => useSearchModel());
     await act(async () => {
-      result.current.handleSearch('test1test2');
+      result.current.handleSearch('t');
     });
     await act(async () => {
       result.current.goSearch();

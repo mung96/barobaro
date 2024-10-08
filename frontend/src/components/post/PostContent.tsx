@@ -1,12 +1,12 @@
 import PlaceMarker from '@/components/(SVG_component)/PlaceMarker';
-import { ProductContent } from '@/types/apis/productResponse';
+import { ProductResponse } from '@/types/apis/productResponse';
 import convertProductStatus from '@/services/post/detail';
 
-export default function PostContent({ data }: { data: ProductContent }) {
+export default function PostContent({ data }: { data: ProductResponse }) {
   const productStatus = convertProductStatus(data.productStatus);
   return (
     <main>
-      <section className="flex items-center max-w-[450px] w-[100dvw]">
+      <section className="flex items-center max-w-[450px] w-[100%]">
         <div className="w-[48px] h-[20px] bg-gray-400 text-[10px] text-gray-300 flex justify-center items-center mx-[10px]">
           {productStatus}
         </div>

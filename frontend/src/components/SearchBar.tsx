@@ -8,13 +8,14 @@ export default function SearchBar() {
   return (
     <section className="flex justify-center">
       <div className="flex flex-row h-12 w-[90%] items-center justify-between rounded-[52px] shadow-xl bg-white">
-        <div className="ml-3">
+        <div className="ml-3 flex flex-1">
           <input
             name="search_input"
             type="search"
             id="search_input"
             placeholder="검색어를 입력해주세요."
             onChange={(e) => handleSearch(e.target.value)}
+            className="w-full outline-none [&::-webkit-search-cancel-button]:appearance-none"
             required
           />
         </div>
