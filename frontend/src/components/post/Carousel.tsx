@@ -22,7 +22,7 @@ export default function PictureCarousel({data}:{data:string[]}) {
 
   const containerStyle: CSSProperties = {
     position: 'relative',
-    width: '400px',
+    width: '370px',
   };
 
   const swiperStyle: CSSProperties = {
