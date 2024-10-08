@@ -10,12 +10,18 @@ import ProductRepairInfoCard from '@/components/post/ProductRepairInfoCard';
 import RefundInfoCard from '@/components/post/RefundInfoCard';
 import OwnerInfoCard from '@/components/post/OwnerInfoCard';
 import { ContractFormFields, StepProps } from '@/hooks/post/usePostFormModel';
+import { ContractInfoStep, ContractPreviewStep, PostInfoStep, RentalInfoStep } from '@/types/domains/product';
 
 type Props = {
   onTotalStepChange: (step: number) => void;
   onNext: (data: ContractConditionRequest) => void;
   onPrev: () => void;
 } & StepProps<ContractFormFields>;
+
+export type InputProps = {
+  fields: ContractFormFields;
+  context: PostInfoStep | RentalInfoStep | ContractInfoStep | ContractPreviewStep;
+}
 
 function ContractInfoInput({ onTotalStepChange, onNext, onPrev, context, fields }: Props) {
   const [value, setValue] = useState('YES');
@@ -43,9 +49,9 @@ function ContractInfoInput({ onTotalStepChange, onNext, onPrev, context, fields 
       {value === 'YES' && (
         <div className="flex flex-col gap-3">
           <RentalInfoCard fields={fields} context={context} />
-          <ProductRepairInfoCard />
-          <OverdueInfoCard />
-          <RefundInfoCard />
+          <ProductRepairInfoCard fields={fields} context={context} />
+          <OverdueInfoCard fields={fields} context={context} />
+          <RefundInfoCard fields={fields} context={context} />
           <OwnerInfoCard />
         </div>
       )}

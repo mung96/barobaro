@@ -5,4 +5,4 @@ export const calculateDaysBetween = (from: Date, to: Date): number => {
 };
 
 //연월일만 표기
-export const formatDate = (date: Date) => date.toISOString().split('T')[0];
+export const formatDate = (date: Date) => date?.toISOString().split('T')[0];
