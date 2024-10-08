@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import Header from '@/components/Header';
 import OriginBoard from '@/components/message/chat/OriginBoard';
 import Dialogs from '@/components/message/chat/Dialogs';
@@ -45,7 +44,7 @@ export default function Chat() {
             {/* 상단 헤더 + 원본 게시글 미리보기 영역 (Header + OriginBoard) */}
             <div className="fixed top-0 w-full bg-white z-10 max-w-[500px]">
               <Header pageName={roomName} hasPrevBtn hasSearchBtn hasAlertBtn />
-              <OriginBoard process={process} processSetter={processSetter} />
+              <OriginBoard />
             </div>
 
             {/* 대화 내용 (Dialogs) */}

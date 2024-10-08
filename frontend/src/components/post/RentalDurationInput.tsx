@@ -12,11 +12,11 @@ import ErrorMessage from '@/components/shared/ErrorMessage';
 type Props = {
   value: DateRange;
   onSelect: (dateRange: DateRange) => void;
-  isInvalid:boolean;
-  message:string;
+  isInvalid: boolean;
+  message: string;
 };
 
-function RentalDurationInput({ value, onSelect,isInvalid,message }: Props) {
+function RentalDurationInput({ value, onSelect, isInvalid, message }: Props) {
   const [isOpenCalendar, setIsOpenCalendar] = useState(false);
   return (
     <div className="flex flex-col gap-1 relative">
@@ -24,9 +24,7 @@ function RentalDurationInput({ value, onSelect,isInvalid,message }: Props) {
       <div className="flex gap-2 relative">
         <Input
           placeholder="대여 날짜"
-          value={
-            value ? format(value.from!, 'yyyy-MM-dd') : ''
-          }
+          value={value ? format(value.from!, 'yyyy-MM-dd') : ''}
           width="108px"
           height="32px"
           icon={<IoCalendarClearOutline className="w-4 h-4 mb-[2px]" />}

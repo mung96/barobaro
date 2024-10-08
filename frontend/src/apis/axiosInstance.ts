@@ -1,10 +1,5 @@
 import axios from 'axios';
-import {
-  KAKAO_BASE_URL,
-  KAKAO_REST_API_KEY,
-  NETWORK,
-  SERVER_BASE_URL,
-} from '@/constants/api';
+import { KAKAO_BASE_URL, KAKAO_REST_API_KEY, NETWORK } from '@/constants/api';
 
 export const kakaoInstance = axios.create({
   baseURL: KAKAO_BASE_URL,

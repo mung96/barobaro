@@ -9,8 +9,11 @@ type MessageRoomListParam = {
 };
 
 export default function MessageRoomList({ selectValue }: MessageRoomListParam) {
-  const { chatList } = useMessageRoomListModel();
+  // const { chatList } = useMessageRoomListModel();
+  useMessageRoomListModel();
 
+  // API 연결 시 아래 chatList_demo를 삭제하고 전부 chatList로 이름 바꾸기
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   const chatList_demo: ChatRoomType[] = [
     {
       chatRoomId: 1,

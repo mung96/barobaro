@@ -8,7 +8,7 @@ type Props = {
   message: string;
 };
 
-const PostBody = ({ value, onChange ,isInvalid,message}: Props) => {
+const PostBody = ({ value, onChange, isInvalid, message }: Props) => {
   console.log(message);
 
   return (

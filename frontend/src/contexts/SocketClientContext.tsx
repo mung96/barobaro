@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useState } from 'react';
+import { createContext, ReactNode, useMemo } from 'react';
 import WebSocketClient from '@/utils/webSocketClient';
 import MessageFormType from '@/components/message/chat/MessageFormType';
 
@@ -19,24 +19,20 @@ const SocketClientProvider = ({
   children,
   value,
 }: SocketClientProviderProps) => {
-  const socketClient: WebSocketClient = value.socketClient;
+  const { socketClient, chatRoomId, sendChat } = value; // 구조 분해
 
-  const chatRoomId: number = value.chatRoomId;
-
-  // const sendChat = (message: MessageFormType) => {
-  //   const destination: string = '/pub/message';
-  //   // const destination: string = `${END_POINT.SOCKET_PUBLISH}/${value.chatRoomId}`
-  //   const msg: string = JSON.stringify(message);
-
-  //   socketClient.send(destination, msg);
-  // };
-
-  const sendChat: (message: MessageFormType) => void = value.sendChat;
+  // useMemo로 감싸기
+  const contextValue = useMemo(
+    () => ({
+      socketClient,
+      sendChat,
+      chatRoomId,
+    }),
+    [socketClient, sendChat, chatRoomId],
+  );
 
   return (
-    <SocketClientContext.Provider
-      value={{ socketClient, sendChat, chatRoomId }}
-    >
+    <SocketClientContext.Provider value={contextValue}>
       {children}
     </SocketClientContext.Provider>
   );

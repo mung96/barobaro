@@ -3,18 +3,9 @@
 import Image from 'next/image';
 import React from 'react';
 import ProcessButton from './ProcessButton';
-import { ProcessType, ProcessTypes } from './ProcessTypes';
-
-type OriginBoardParams = {
-  process: ProcessType;
-  processSetter: (param: ProcessType) => void;
-};
 
 // 채팅창 상단에 뜨는 원본 글 미리보기 영역
-export default function OriginBoard({
-  process,
-  processSetter,
-}: OriginBoardParams) {
+export default function OriginBoard() {
   return (
     <div className="bg-white">
       <div className="flex flex-col p-[2vh]">
