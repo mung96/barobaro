@@ -1,17 +1,35 @@
-import { Location } from "@/types/domains/location";
-import { ContractInfo, PostInfo, ProductCategory, RentalInfo } from "@/types/domains/product";
-import { useState } from "react";
-import { DateRange } from "react-day-picker";
-import { useController, useForm } from "react-hook-form";
+import { ContractInfo, PostInfo, RentalInfo, ContractInfoStep, ContractPreviewStep, PostInfoStep,RentalInfoStep } from "@/types/domains/product";
+import {  FieldErrors, useController,  UseControllerReturn,  useForm } from "react-hook-form";
 
+import { } from '@/types/domains/product';
+
+
+export type StepProps<T> = {
+    fields: T;
+  errors: FieldErrors<PostFunnelStep>;
+  context: PostInfoStep | RentalInfoStep | ContractInfoStep | ContractPreviewStep;
+ 
+};
 type PostFunnelStep = PostInfo&RentalInfo&ContractInfo;
+export type PostFormFields = {
+    title: UseControllerReturn<PostFunnelStep>;
+    body: UseControllerReturn<PostFunnelStep>;
+    category: UseControllerReturn<PostFunnelStep>;
+    images: UseControllerReturn<PostFunnelStep>;
+  
+  };
+export type RentalFormFields = {
+    rentalDuration: UseControllerReturn<PostFunnelStep>;
+    rentalFee: UseControllerReturn<PostFunnelStep>;
+    rentalAddress: UseControllerReturn<PostFunnelStep>;
+    returnTypeList: UseControllerReturn<PostFunnelStep>;
+    returnAddress: UseControllerReturn<PostFunnelStep>;
+  };
 const usePostFormModel = ()=>{
   const { getValues, control, formState: { errors, isValid },handleSubmit} = useForm<PostFunnelStep>({
     mode:'onChange'
   });
-
-  
-  const { field: title, fieldState: titleState } = useController<PostFunnelStep>({
+  const title = useController<PostFunnelStep>({
     control,
     name: 'title',
     defaultValue:'',
@@ -22,12 +40,12 @@ const usePostFormModel = ()=>{
     },
   });
 
-  const { field: images, fieldState: imagesState } = useController<PostFunnelStep>({
+  const images= useController<PostFunnelStep>({
     control,
     name: 'images',
   });
 
-  const { field: category, fieldState: categoryState } = useController<PostFunnelStep>({
+  const  category = useController<PostFunnelStep>({
     control,
     name: 'category',
     defaultValue:'TELESCOPE',
@@ -37,7 +55,7 @@ const usePostFormModel = ()=>{
   });
 
 
-  const { field: body, fieldState: bodyState } = useController<PostFunnelStep>({
+  const  body= useController<PostFunnelStep>({
     control,
     name: 'body',
     defaultValue:'',
@@ -48,7 +66,7 @@ const usePostFormModel = ()=>{
     },
   }); 
  
-  const { field: rentalDuration, fieldState: rentalDurationState } = useController<PostFunnelStep>({
+  const rentalDuration = useController<PostFunnelStep>({
     control,
     name: 'rentalDuration',
     defaultValue:'',
@@ -56,7 +74,7 @@ const usePostFormModel = ()=>{
       required: '대여 날짜를 골라주세요.',
     },
   });
-  const { field: rentalFee, fieldState: rentalFeeState } = useController<PostFunnelStep>({
+  const rentalFee = useController<PostFunnelStep>({
     control,
     name: 'rentalFee',
     defaultValue:'',
@@ -64,7 +82,7 @@ const usePostFormModel = ()=>{
       required: '대여 금액을 입력해주세요.',
     },
   });
-  const { field: rentalAddress, fieldState: rentalAddressState } = useController<PostFunnelStep>({
+  const  rentalAddress = useController<PostFunnelStep>({
     control,
     name: 'rentalAddress',
     defaultValue:'',
@@ -72,7 +90,7 @@ const usePostFormModel = ()=>{
       required: '대여 장소를 입력해주세요.',
     },
   });
-  const { field: returnTypeList, fieldState: returnTypeListState } = useController<PostFunnelStep>({
+  const returnTypeList= useController<PostFunnelStep>({
     control,
     name: 'returnTypeList',
     defaultValue:'',
@@ -80,7 +98,7 @@ const usePostFormModel = ()=>{
       required: '반납 방법을 정해주세요.',
     },
   });
-  const { field: returnAddress, fieldState: returnAddressState } = useController<PostFunnelStep>({
+  const returnAddress = useController<PostFunnelStep>({
     control,
     name: 'returnAddress',
     defaultValue:'',
@@ -88,38 +106,29 @@ const usePostFormModel = ()=>{
       required: '반납 장소를 입력해주세요.',
     },
   });
+  
+   
+const postFieldList:PostFormFields = {
+    title: title,
+    body: body,
+    category: category,
+    images: images,
+};
+  
 
-  const postData = useState<PostInfo>({
-    title: title.value as string,
-    body: body.value as string,
-    category: category.value as ProductCategory,
-    images: images.value as File[]
-  })
+  const rentalFieldList:RentalFormFields ={
+    rentalDuration: rentalDuration,
+    rentalFee:rentalFee,
+    returnTypeList: returnTypeList,
+    returnAddress: returnAddress,
+    rentalAddress: rentalAddress
+  }
 
-  const postDataState = useState({
-    title:titleState,
-    body:bodyState,
-    category:categoryState,
-    images:imagesState
-  })
+  const contractFieldList={
 
-  const rentalData =useState<RentalInfo>({
-    rentalDuration: rentalDuration.value as DateRange,
-    rentalFee:rentalFee.value as number,
-    returnTypeList: returnTypeList.value as string[],
-    returnAddress: returnAddress.value as Location,
-    rentalAddress: rentalAddress.value as Location
-  })
+  }
 
-  const rentalDataState =useState({
-    rentalDuration: rentalDurationState,
-    rentalFee:rentalDurationState,
-    returnTypeList: rentalDurationState,
-    returnAddress: rentalDurationState,
-    rentalAddress: rentalDurationState,
-  })
-
-  return {postData,postDataState,rentalData,rentalDataState ,getValues,errors,isValid,handleSubmit}
+  return {postFieldList,rentalFieldList,getValues,errors,isValid,handleSubmit}
 
 //   const convertProductDataToRequest = ()=>{
 //     //undefined type가드를 활용해야하는데 시간이없네
