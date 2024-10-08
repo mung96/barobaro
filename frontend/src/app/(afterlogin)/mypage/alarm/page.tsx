@@ -3,10 +3,19 @@
 import { useState } from 'react';
 import BlueToggle from '@/components/(toggle)/BlueToggle';
 import Header from '@/components/Header';
+import { requestPermissionAndGetToken } from '@/services/user/fcm';
 
 export default function AlarmSetting() {
-  const [priceChange, setPriceChange] = useState(true);
+  // const [priceChange, setPriceChange] = useState(true);
   const [chatAlarm, setChatAlarm] = useState(false);
+  const toggleAlarm = async (prevAlarmState:boolean) =>{
+    const curAlarmState = !prevAlarmState;
+    if(curAlarmState){
+      await requestPermissionAndGetToken();
+    }
+
+    setChatAlarm(curAlarmState)
+  }
 
   return (
     <>
@@ -17,7 +26,7 @@ export default function AlarmSetting() {
       <main className="flex flex-col items-center">
         <section className="text-black-100 mt-[45px] w-[94%]">
           <h1 className="text-[10px] font-light">서비스별</h1>
-          <section className="mx-5 my-5">
+          {/* <section className="mx-5 my-5">
             <h2 className="text-[14px]">물품대여</h2>
             <div className="mx-1 my-2 flex flex-row justify-between">
               <div>
@@ -33,7 +42,7 @@ export default function AlarmSetting() {
                 <BlueToggle isSelected={priceChange} />
               </button>
             </div>
-          </section>
+          </section> */}
           <section className="mx-5 my-5">
             <h2 className="text-[14px]">채팅</h2>
             <div className="mx-1 my-2 flex flex-row justify-between">
@@ -43,7 +52,8 @@ export default function AlarmSetting() {
                   채팅 메시지가 왔을 때 알려드려요!
                 </p>
               </div>
-              <button type="button" onClick={() => setChatAlarm(!chatAlarm)}>
+              <button type="button" onClick={async () => {toggleAlarm(chatAlarm)
+              }}>
                 <BlueToggle isSelected={chatAlarm} />
               </button>
             </div>
