@@ -6,13 +6,15 @@ import ContractIcon from '@/components/(SVG_component)/(mypage)/Contract';
 import MeatBallsButton from '@/components/(SVG_component)/(mypage)/MeatBallsButton';
 import HeartIcon from '@/components/(SVG_component)/HeartIcon';
 import Link from 'next/link';
-import { useBorrowProducts, useLentProducts } from '@/store/useCurrentStore';
+import {useBorrowProducts, useLentProducts, useLikeProducts, useSearchProducts} from '@/store/useCurrentStore';
 
 export default function ItemList({ data }: { data: string }) {
   // 주어진 data에 맞게 List를 받고, 이를 하단의 return 에 맞춰 들어가도록 해야함.
   // let 으로 정의한건 추후 수정예정.
   const borrowProducts = useBorrowProducts();
   const lentProducts = useLentProducts();
+  const likeProducts = useLikeProducts();
+  const searchProducts = useSearchProducts();
   let result;
   let title;
   if (data === 'borrow') {
@@ -21,6 +23,10 @@ export default function ItemList({ data }: { data: string }) {
   } else if (data === 'lent') {
     result = lentProducts;
     title = '빌려준 물품 내역';
+  } else if (data === 'like') {
+    result = likeProducts;
+  } else if (data === 'search') {
+    result = searchProducts;
   }
   return (
     <section>
@@ -33,7 +39,8 @@ export default function ItemList({ data }: { data: string }) {
             <div className="flex flex-row ml-3.5">
               <div className="w-[98px] h-[98px] rounded-[10px] overflow-hidden relative">
                 <Link href={`/post/${item.productId}`}>
-                  <Image src={item.productMainImage} alt="product_image" fill />
+                  {/*TODO : mockup이 수정되면 변경할 것*/}
+                  <Image src={`/${item.productMainImage}`} alt="product_image" fill />
                 </Link>
                 <div
                   className={`bg-amber-200 w-[48px] h-[20px] flex justify-center items-center rounded-[3px] absolute left-[4px] top-[4px] ${item.boolean === true ? 'bg-gray-500' : 'bg-gray-300'}`}
@@ -71,8 +78,7 @@ export default function ItemList({ data }: { data: string }) {
                     <div className="mx-1">
                       <HeartIcon fill="none" />
                     </div>
-                    {/* TODO : 나중에 좋아요 목록 받고, 해당 값을 하단에 입력 */}
-                    <p className="text-[12px] text-gray-200 mt-[1px]">3</p>
+                    <p className="text-[12px] text-gray-200 mt-[1px]">{item.wishCount}</p>
                   </div>
                 </div>
                 <MeatBallsButton data={item.id} />

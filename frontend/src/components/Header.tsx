@@ -42,7 +42,7 @@ export default function Header({
       </div>
       <div className="flex flex-none items-center space-x-4">
         {hasSearchBtn && (
-          <Link href="/search">
+          <Link href="/searchmain">
             <Search />
           </Link>
         )}

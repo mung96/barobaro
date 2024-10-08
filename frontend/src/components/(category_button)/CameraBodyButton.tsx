@@ -15,7 +15,7 @@ export default function CameraBodyButton() {
   const handleClick = (delay: number) => {
     setIsClicked(!isClicked);
     const queryParams = new URLSearchParams({
-      category: 'camerarbody',
+      category: 'camerabody',
       product: '',
     });
     setTimeout(() => {
