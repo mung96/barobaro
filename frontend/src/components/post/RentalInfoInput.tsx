@@ -59,7 +59,7 @@ function RentalInfoInput({ onNext, onPrev ,context}: Props) {
     },
   });
   const formatDate = (date: Date) => date.toISOString().split('T')[0];
-  const convertDataToRequest = ()=>{
+  const convertProductDataToRequest = ()=>{
     //undefined type가드를 활용해야하는데 시간이없네
     return {
     title: context.title!,

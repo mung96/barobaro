@@ -16,7 +16,7 @@ function PostInfoInput({ onNext }: Props) {
   const { files, changeFile, handleDragEnd, deleteFileByIndex } =
     useFileModel();
 
-  const { getValues, control, formState: { errors, isValid },} = useForm<PostInfo>({
+  const { getValues, control, formState: { errors, isValid }} = useForm<PostInfo>({
     mode:'onChange'
   });
 
@@ -30,6 +30,7 @@ function PostInfoInput({ onNext }: Props) {
       maxLength: { value: 20, message: '제목은 20자 이하 입력해주세요' },
     },
   });
+
 
   const { field: images, fieldState: imagesState } = useController<PostInfo>({
     control,
