@@ -27,4 +27,7 @@ public interface BankFeignClientCustom {
 
     @PostMapping("/edu/demandDeposit/updateDemandDepositAccountDeposit")
     BankAccountDepositRes depositBankAccount(BankAccountDepositReq req); // 계좌 입금
+
+    @PostMapping("/edu/demandDeposit/updateDemandDepositAccountWithdrawal")
+    BankAccountWithdrawalRes withdrawalBankAccount(BankAccountWithdrawalReq req); // 계좌 출금
 }
