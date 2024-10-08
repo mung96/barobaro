@@ -1,5 +1,4 @@
 import { axiosInstance } from '@/apis/axiosInstance';
-import ChatRoomType from '@/components/message/ChatRoomType';
 import { END_POINT } from '@/constants/api';
 import { ChatRoomInfoResponse } from '@/types/apis/chatRoomResponse';
 

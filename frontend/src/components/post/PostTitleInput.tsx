@@ -8,7 +8,7 @@ type Props = {
   message: string;
 };
 
-const PostTitleInput = ({ value, onChange,isInvalid,message }: Props) => {
+const PostTitleInput = ({ value, onChange, isInvalid, message }: Props) => {
   return (
     <div className="flex flex-col gap-1 relative">
       <h3 className="text-base">제목</h3>

@@ -1,13 +1,13 @@
 import { UUID } from 'crypto';
 
-export type chatRoomDto = {
+export type ChatRoomDto = {
   chatRoomId: number;
   opponentUuid: UUID;
   opponentNickname: string;
   rentalStatus: string;
 };
 
-export type chatDto = {
+export type ChatDto = {
   uuid: UUID;
   message: string;
   image: string | null; // 이미지 메시지가 아닌 경우 null
@@ -17,6 +17,6 @@ export type chatDto = {
 
 export type ChatRoomInfoResponse = {
   // 채팅방 채팅 상세 조회 API response
-  chatRoomDto: chatRoomDto;
-  chatDtos: chatDto[];
+  chatRoomDto: ChatRoomDto;
+  chatDtos: ChatDto[];
 };

@@ -50,7 +50,7 @@ export const productCategory = [
 ];
 
 type Props = {
-  value:ProductCategory;
+  value: ProductCategory;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   disabled?: boolean;
   isInvalid: boolean;
@@ -62,7 +62,7 @@ function CategoryTagList({
   value,
   disabled,
   isInvalid,
-  message
+  message,
 }: Props) {
   return (
     <div className="flex gap-1 flex-col relative">

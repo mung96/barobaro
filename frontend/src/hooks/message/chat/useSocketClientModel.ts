@@ -1,7 +1,6 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import WebSocketClient from '@/utils/webSocketClient';
 import MessageFormType from '@/components/message/chat/MessageFormType';
-import { SocketClientContext } from '@/contexts/SocketClientContext';
 
 export default function useSocketClientModel(
   UserId: string,

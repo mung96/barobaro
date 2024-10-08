@@ -11,8 +11,8 @@ import ContractRequestModal from '@/components/modal/ContractRequestModal';
 import ContractConditionModal from '@/components/modal/ContractConditionModal';
 import ChatAlertModal from '@/components/modal/ChatAlertModal';
 import ChatPayModal from '@/components/modal/ChatPayModal';
-import { ProcessTypes as PROCESSTYPES, ProcessType } from './ProcessTypes';
 import { ProcessContext } from '@/contexts/ChatProcessContext';
+import { ProcessTypes as PROCESSTYPES } from './ProcessTypes';
 
 type ProcessButtonParam = {
   hasContract: boolean; // 계약서가 있는 거래인가
@@ -23,13 +23,15 @@ const buttonStyle: string =
   'bg-gray-400 pl-[2vh] pr-[2vh] pt-[0.4vh] pb-[0.4vh] rounded-lg flex items-center active:bg-gray-500 disabled:bg-gray-500';
 
 const ProcessButton: FC<ProcessButtonParam> = ({ isOwner, hasContract }) => {
-  const context = useContext(ProcessContext);
-  if (!context) return null;
-  const { process } = context;
+  // context가 없으면 로딩 또는 대체 UI 표시
 
+  const context = useContext(ProcessContext);
   const { modalType, modalOpen, modalClose, modalTrigger } =
     useProcessButtonEventModal();
 
+  if (!context) return <div>Loading...</div>;
+
+  const { process } = context;
   return (
     <>
       {/* 계약 프로세스와 사용자 역할(파라메터 값)에 따라 노출되는 버튼 결정 */}

@@ -8,11 +8,11 @@ import ErrorMessage from '@/components/shared/ErrorMessage';
 type Props = {
   value: Location;
   onChange: (address: Location) => void;
-  isInvalid:boolean;
-  message:string;
+  isInvalid: boolean;
+  message: string;
 };
 
-function ReturnAddressInput({ value, onChange,isInvalid,message }: Props) {
+function ReturnAddressInput({ value, onChange, isInvalid, message }: Props) {
   const [isOpenSearch, setIsOpenSearch] = useState(false);
   return (
     <div className="flex flex-col gap-1">

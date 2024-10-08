@@ -1,13 +1,11 @@
 'use client';
 
 import SendButton from '@/components/(SVG_component)/(message)/(chat)/SendButton';
-import webSocketClient from '@/utils/webSocketClient';
 import useChatWindowModel from '@/hooks/message/chat/useChatWindowModel';
 import useChatFileModel from '@/hooks/message/chat/useChatFileModel';
+
 import ChatImageList from './ChatImageList';
 import ChatImageAdd from './ChatImageAdd';
-import { useContext } from 'react';
-import { SocketClientContext } from '@/contexts/SocketClientContext';
 
 // type ChatWindowParam = {
 //   client: webSocketClient | null;
@@ -15,13 +13,9 @@ import { SocketClientContext } from '@/contexts/SocketClientContext';
 // export default function ChatWindow({ client }: ChatWindowParam) {
 
 export default function ChatWindow() {
-  const context = useContext(SocketClientContext);
-  if (!context) return null;
-  const { socketClient } = context;
-
   const { chatValue, messageRef, handleChatValue, sendChat, handleEnterPress } =
     // useChatWindowModel(client);
-    useChatWindowModel(socketClient);
+    useChatWindowModel();
 
   const {
     files,

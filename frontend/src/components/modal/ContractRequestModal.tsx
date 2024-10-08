@@ -6,12 +6,13 @@ import { DateRange } from 'react-day-picker';
 
 import Radio from '@/components/shared/Radio';
 import SelectableItem from '@/components/shared/SelectableItem';
-import ContractDurationInput from '../message/chat/ContractDurationInput';
 import { ProcessContext } from '@/contexts/ChatProcessContext';
-import { ProcessTypes } from '../message/chat/ProcessTypes';
 import { SocketClientContext } from '@/contexts/SocketClientContext';
-import MessageFormType from '../message/chat/MessageFormType';
 import currentTime from '@/utils/currentTime';
+
+import ContractDurationInput from '../message/chat/ContractDurationInput';
+import { ProcessTypes } from '../message/chat/ProcessTypes';
+import MessageFormType from '../message/chat/MessageFormType';
 
 type ContractRequestParams = {
   isOpen: boolean;
@@ -54,11 +55,12 @@ const ContractRequestModal = ({
   const [ways, setWays] = useState<string>('');
 
   const processContext = useContext(ProcessContext);
-  if (!processContext) return null;
-  const { processSetter } = processContext;
-
   const socketContext = useContext(SocketClientContext);
-  if (!socketContext) return null;
+
+  if (!processContext || !socketContext) {
+    return <div> Loading ... </div>; // 두 context가 모두 필요한 경우
+  }
+  const { processSetter } = processContext;
   const { sendChat } = socketContext;
 
   const approveLogic = (isApproved: boolean) => {

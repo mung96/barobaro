@@ -1,8 +1,8 @@
 import ReactModal from 'react-modal';
 import React, { useContext, useState } from 'react';
 import { banks, findBankNameByBankValue } from '@/constants/banks';
-import ModalClose from '../(SVG_component)/ModalClose';
 import { ProcessContext } from '@/contexts/ChatProcessContext';
+import ModalClose from '../(SVG_component)/ModalClose';
 import { ProcessTypes } from '../message/chat/ProcessTypes';
 
 type ChatAlertModalParams = {

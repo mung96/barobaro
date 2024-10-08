@@ -1,4 +1,3 @@
-import { END_POINT, SERVER_BASE_URL } from '@/constants/api';
 import { Client, Message } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 

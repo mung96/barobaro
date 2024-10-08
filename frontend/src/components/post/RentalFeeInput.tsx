@@ -2,13 +2,18 @@ import ErrorMessage from '@/components/shared/ErrorMessage';
 import Input from '@/components/shared/Input';
 
 type RentalFeeInputProps = {
-  value:number;
+  value: number;
   onChange: (fee: string) => void;
-  isInvalid:boolean;
-  message:string;
+  isInvalid: boolean;
+  message: string;
 };
 
-const RentalFeeInput = ({ value, onChange,isInvalid,message }: RentalFeeInputProps) => {
+const RentalFeeInput = ({
+  value,
+  onChange,
+  isInvalid,
+  message,
+}: RentalFeeInputProps) => {
   return (
     <div className="flex flex-col gap-1 relative">
       <h3 className="text-base">
