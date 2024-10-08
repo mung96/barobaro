@@ -89,9 +89,9 @@ public class ContractController {
 
     @PostMapping("/terminate")
     public ResponseEntity<?> confirmProductTakeBack(@RequestBody ProductTakeBackReq productTakeBackReq) {
-        ContractTerminatedRes result = ContractTerminatedRes.builder()
-                .chatRoomId(productTakeBackReq.getChatRoomId())
-                .build();
+        Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
+        ContractTerminatedRes result = contractService.confirmProductTakeBack(productTakeBackReq,memberId);
+
         return new ResponseEntity<>(ResponseDto.success(CONTRACT_TERMINATED_OK, result), OK);
 
     }
