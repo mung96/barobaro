@@ -68,7 +68,7 @@ public class FeignClientService {
                 .accountNo(accountNo)
                 .build();
 
-        BankAccountDetailsRes res = bankFeignClientCustom.findBankAccount(req);
-        System.out.println(res.toString());
+//        BankAccountDetailsRes res = bankFeignClientCustom.findBankAccount(req);
+//        System.out.println(res.toString());
     }
 }
