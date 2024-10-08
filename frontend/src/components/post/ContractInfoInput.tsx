@@ -55,29 +55,27 @@ function ContractInfoInput({ onTotalStepChange, onNext, onPrev, context, fields 
           <OwnerInfoCard />
         </div>
       )}
-      <div className="fixed left-0 w-[100vw] bottom-0 px-4 py-3 flex gap-6 border-t-[1px] z-10 bg-white">
-        <Button onClick={onPrev} width="100%" height="36px" color="gray">
-          <p className="text-xs">이전</p>
+
+      <div className="fixed left-0 w-[100vw] bottom-0 px-4 py-3 flex gap-6 border-t-[1px] bg-white z-50">
+        <Button onClick={onPrev} width="30%" height="48px" color="gray">
+          <p className="text-base">뒤로</p>
         </Button>
-        <Button
-          onClick={() =>
-            onNext({
-              productName: '',
-              serialNumber: '',
-              repairVendor: '',
-              overdueCriteria: 0,
-              overdueFee: 0,
-              theftCriteria: 0,
-              refundDeadline: 0,
-            })
-          }
-          width="100%"
-          height="36px"
-          color="blue"
-        >
-          <p className="text-xs">다음</p>
+
+        <Button disabled={false} onClick={() =>
+          onNext({
+            productName: '',
+            serialNumber: '',
+            repairVendor: '',
+            overdueCriteria: 0,
+            overdueFee: 0,
+            theftCriteria: 0,
+            refundDeadline: 0,
+          })
+        } width="100%" height="48px">
+          <p className="text-base">다음으로 가기</p>
         </Button>
       </div>
+
     </div>
   );
 }
