@@ -1,4 +1,4 @@
-package baro.baro.domain.notification.controller;
+package baro.baro.domain.noti.controller;
 
 import baro.baro.global.oauth.jwt.service.JwtService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
@@ -42,7 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 @ExtendWith(RestDocumentationExtension.class)
-class NotificationControllerTest {
+class NotiControllerTest {
     private final static String UUID = "1604b772-adc0-4212-8a90-81186c57f598";
     private final static Boolean isCertificated = false;
 
