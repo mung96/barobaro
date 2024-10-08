@@ -33,3 +33,14 @@ export const postSignUp = async (data: SignUpMemberRequest, image: File|null|und
     },
   });
 };
+
+export const postFcmToken = async (token: string) => {
+  return await axiosInstance.patch(
+    END_POINT.FCM_TOKEN, 
+    {
+      params: {
+        token
+      },
+    },
+  );
+}
