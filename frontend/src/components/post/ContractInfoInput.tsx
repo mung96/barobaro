@@ -42,7 +42,7 @@ function ContractInfoInput({ onTotalStepChange, onNext, onPrev, context, fields 
       </Radio.Group>
       {value === 'YES' && (
         <div className="flex flex-col gap-3">
-          <RentalInfoCard />
+          <RentalInfoCard fields={fields} context={context} />
           <ProductRepairInfoCard />
           <OverdueInfoCard />
           <RefundInfoCard />
