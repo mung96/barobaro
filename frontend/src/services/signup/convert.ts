@@ -14,7 +14,8 @@ export const convertSignUpDateToRequest = (member:SocialMember,data:MyTown):Sign
     email: member.email,
     providerType: member.providerType,
     nickname: member.nickName,
-    locations: data.town?.map(location=>(location.locationId))
+    locations: data.town?.map(location=>(location.locationId)),
+    defaultProfileImg:member.profileImage
   }
   return request;
 }

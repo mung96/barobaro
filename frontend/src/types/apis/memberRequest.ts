@@ -5,6 +5,7 @@ export type SignUpMemberRequest = {
   providerType: SocialName;
   nickname: string;
   locations: number[];
+  defaultProfileImg:string;
 };
 
 type MemberLocationReq = {

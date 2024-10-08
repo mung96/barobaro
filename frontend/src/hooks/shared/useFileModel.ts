@@ -4,7 +4,6 @@ import { readFileArray } from '@/utils/fileUtils';
 
 const useFileModel = () => {
   const [files, setFiles] = useState<Array<string | ArrayBuffer | null>>([]);
-
   const changeFile = async (fileArray: File[]) => {
     const fileArr = await readFileArray(fileArray);
 
