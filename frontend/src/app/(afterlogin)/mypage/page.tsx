@@ -1,7 +1,5 @@
-import Profile from '@/components/user/Profile';
 import MyPageContent from '@/components/MyPageContent';
 import Header from '@/components/Header';
-import { faker } from '@faker-js/faker';
 import ProfileContainer from "@/components/user/ProfileContainer";
 
 export default function MyPage() {
