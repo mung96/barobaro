@@ -20,5 +20,8 @@ public interface BankFeignClientCustom {
     BankProductDetailsRes findBankProducts(BankProductDetailsReq req);
 
     @PostMapping("/edu/demandDeposit/createDemandDepositAccount")
-    BankAccountAddRes addBankAccount(BankAccountAddReq req);
+    BankAccountAddRes addBankAccount(BankAccountAddReq req); // 계좌 생성
+
+    @PostMapping("/edu/demandDeposit/inquireDemandDepositAccountBalance")
+    BankAccountDetailsRes findBankAccount(BankAccountDetailsReq req); // 계좌 잔액 조회
 }
