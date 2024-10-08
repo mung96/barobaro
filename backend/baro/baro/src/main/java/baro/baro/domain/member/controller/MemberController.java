@@ -8,10 +8,12 @@ import baro.baro.domain.member.dto.response.ProfileDetailsRes;
 import baro.baro.domain.member.dto.response.SignUpInfoRes;
 import baro.baro.domain.member.service.MemberService;
 import baro.baro.global.dto.ResponseDto;
+import baro.baro.global.oauth.jwt.service.JwtService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,6 +29,7 @@ import static org.springframework.http.HttpStatus.OK;
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
+    private final JwtService jwtService;
 
     @PostMapping("/members/signup")
     public ResponseEntity<?> signUp(@RequestPart(value = "dto") SignupReq signupReq,
@@ -51,6 +54,13 @@ public class MemberController {
         PasswordModifyRes result = new PasswordModifyRes("654321");
 
         return new ResponseEntity<>(ResponseDto.success(PASSWORD_MODIFIED, result), OK);
+    }
+
+    @GetMapping("/members/me/password/verify")
+    public ResponseEntity<?> verifyPassword(@RequestParam("key") String key) {
+        Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
+        memberService.verifyPassword(key,memberId);
+        return new ResponseEntity<>(ResponseDto.success(PASSWORD_VALIDATION_OK, null), OK);
     }
 
     @GetMapping("/members/me/profile")

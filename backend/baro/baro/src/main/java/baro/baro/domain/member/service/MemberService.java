@@ -10,4 +10,6 @@ public interface MemberService {
     String signup(SignupReq signupReq, MultipartFile file) throws IOException;
 
     SignUpInfoRes signupDetails(String key);
+
+    Boolean verifyPassword(String key, Long memberId);
 }
