@@ -8,9 +8,7 @@ type Props = {
   message: string;
 };
 
-const PostBody = ({ value, onChange ,isInvalid,message}: Props) => {
-  console.log(message);
-
+const PostBody = ({ value, onChange, isInvalid, message }: Props) => {
   return (
     <div className="flex flex-col gap-1 relative">
       <h3 className="text-base">내용</h3>
