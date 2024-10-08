@@ -14,10 +14,7 @@ import baro.baro.domain.product.dto.request.ProductAddReq;
 import baro.baro.domain.product.dto.request.ProductModifyReq;
 import baro.baro.domain.product.dto.request.RecentlyProductsReq;
 import baro.baro.domain.product.dto.request.SearchProductsReq;
-import baro.baro.domain.product.dto.response.MyProductListRes;
-import baro.baro.domain.product.dto.response.RecentlyUploadedListRes;
-import baro.baro.domain.product.dto.response.RecentlyViewListRes;
-import baro.baro.domain.product.dto.response.SearchProductRes;
+import baro.baro.domain.product.dto.response.*;
 import baro.baro.domain.product.entity.Category;
 import baro.baro.domain.product.entity.Product;
 import baro.baro.domain.product.entity.ProductStatus;
@@ -26,7 +23,9 @@ import baro.baro.domain.product.repository.ProductRepository;
 import baro.baro.domain.product_image.dto.request.ProductImageReq;
 import baro.baro.domain.product_image.repository.ProductImageRepository;
 import baro.baro.domain.wish_list.repository.WishListRepository;
+import baro.baro.global.elastic_search.domain.EsKeyword;
 import baro.baro.global.elastic_search.domain.EsProduct;
+import baro.baro.global.elastic_search.repository.EsKeywordRepository;
 import baro.baro.global.elastic_search.service.EsKeywordService;
 import baro.baro.global.elastic_search.service.EsProductService;
 import baro.baro.global.event.UnlockEvent;
@@ -418,6 +417,7 @@ public class ProductServiceImpl implements ProductService {
         return new SearchProductRes(products);
     }
 
+    @Override
     public SearchProductRes searchRecentlyProducts(RecentlyProductsReq recentlyProductsReq, Long memberId) {
         Pageable pageable = PageRequest.of(0, PRODUCT_SIZE);
 
@@ -431,6 +431,17 @@ public class ProductServiceImpl implements ProductService {
                 .toList();
 
         return new SearchProductRes(result);
+    }
+
+    @Override
+    public KeywordListRes searchKeyword(String keyword) {
+        List<EsKeyword> esKeywords = esKeywordService.findKeyword(keyword);
+
+        List<KeywordDto> keywords = esKeywords.stream()
+                .map(KeywordDto::toDto)
+                .toList();
+
+        return new KeywordListRes(keywords);
     }
 
 }
