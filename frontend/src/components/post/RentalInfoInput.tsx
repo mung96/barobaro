@@ -21,47 +21,6 @@ type Props = {
 } & StepProps<RentalFormFields>;
 
 function RentalInfoInput({ onNext, onPrev ,context,fields,errors,getValues,handleSubmit}: Props) {
-  // const { control, getValues, formState:{isValid,errors},handleSubmit } = useForm<RentalInfo>({mode: 'onChange'});
-  // const { field: rentalDuration, fieldState: rentalDurationState } = useController<RentalInfo>({
-  //   control,
-  //   name: 'rentalDuration',
-  //   defaultValue:'',
-  //   rules: {
-  //     required: '대여 날짜를 골라주세요.',
-  //   },
-  // });
-  // const { field: rentalFee, fieldState: rentalFeeState } = useController<RentalInfo>({
-  //   control,
-  //   name: 'rentalFee',
-  //   defaultValue:'',
-  //   rules: {
-  //     required: '대여 금액을 입력해주세요.',
-  //   },
-  // });
-  // const { field: rentalAddress, fieldState: rentalAddressState } = useController<RentalInfo>({
-  //   control,
-  //   name: 'rentalAddress',
-  //   defaultValue:'',
-  //   rules: {
-  //     required: '대여 장소를 입력해주세요.',
-  //   },
-  // });
-  // const { field: returnTypeList, fieldState: returnTypeListState } = useController<RentalInfo>({
-  //   control,
-  //   name: 'returnTypeList',
-  //   defaultValue:'',
-  //   rules: {
-  //     required: '반납 방법을 정해주세요.',
-  //   },
-  // });
-  // const { field: returnAddress, fieldState: returnAddressState } = useController<RentalInfo>({
-  //   control,
-  //   name: 'returnAddress',
-  //   defaultValue:'',
-  //   rules: {
-  //     required: '반납 장소를 입력해주세요.',
-  //   },
-  // });
   const formatDate = (date: Date) => date.toISOString().split('T')[0];
   const convertProductDataToRequest = ()=>{
     //undefined type가드를 활용해야하는데 시간이없네
