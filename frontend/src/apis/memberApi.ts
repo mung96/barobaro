@@ -17,13 +17,15 @@ export const getSignUpInfo = async (email: string) => {
     return response;
 };
 
-export const postSignUp = async (data: SignUpMemberRequest, image: File|string) => {
+export const postSignUp = async (data: SignUpMemberRequest, image: File|null|undefined|string) => {
   const formData = new FormData();
   const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
   console.dir(image);
   console.log(image);
   formData.append('dto', blob);
-  formData.append('file',image);
+  if(image instanceof File){
+    formData.append('file',image);
+  }
 
   return await nonLoginInstance.post(END_POINT.SIGN_UP, formData, {
     headers: {

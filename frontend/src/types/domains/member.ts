@@ -4,5 +4,5 @@ export type SocialMember = {
   providerType: SocialName;
   email: string;
   nickName: string;
-  profileImage: string|File;
+  profileImage: string;
 };
