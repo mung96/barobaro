@@ -5,7 +5,6 @@ import Button from '@/components/shared/Button';
 import useFileModel from '@/hooks/shared/useFileModel';
 import NicknameInput from '@/components/signup/NicknameInput';
 import { SocialMember } from '@/types/domains/member';
-import { useEffect } from 'react';
 import { useSocialMemberAction, useSocialMemberState } from '@/store/useSocialMember';
 import { SocialName } from '@/types/social/social';
 
