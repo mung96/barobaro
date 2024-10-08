@@ -17,6 +17,11 @@ spring:
           batch_size: 20
         order_inserts: true
 
+  elasticsearch:
+    username: ${ELASTIC_USER}
+    password: ${ELASTIC_PASSWORD}
+    uris: ${ELASTIC_URI}
+
   security:
     oauth2:
       client:

@@ -1,12 +1,12 @@
 package baro.baro.domain.product.controller;
 
-import baro.baro.domain.contract.dto.ContractConditionDto;
-import baro.baro.domain.product.dto.*;
+import baro.baro.domain.product.dto.KeywordDto;
+import baro.baro.domain.product.dto.ProductDetails;
 import baro.baro.domain.product.dto.request.ProductAddReq;
 import baro.baro.domain.product.dto.request.ProductModifyReq;
+import baro.baro.domain.product.dto.request.RecentlyProductsReq;
 import baro.baro.domain.product.dto.request.SearchProductsReq;
 import baro.baro.domain.product.dto.response.*;
-import baro.baro.domain.product.entity.ReturnType;
 import baro.baro.domain.product.service.ProductService;
 import baro.baro.global.dto.ResponseDto;
 import baro.baro.global.oauth.jwt.service.JwtService;
@@ -17,16 +17,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static baro.baro.domain.product.entity.Category.LIGHT_STICK;
-import static baro.baro.domain.product.entity.ProductStatus.FINISH;
-import static baro.baro.domain.product.entity.ProductStatus.IN_PROGRESS;
-import static baro.baro.domain.product.entity.ReturnType.DELIVERY;
-import static baro.baro.global.formatter.DateFormatter.calculateTime;
 import static baro.baro.global.statuscode.SuccessCode.*;
 import static org.springframework.http.HttpStatus.*;
 
@@ -96,7 +89,6 @@ public class ProductController {
     @GetMapping("/members/me/owner")
     public ResponseEntity<?> ownerProductList() {
         Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
-
         MyProductListRes result = productService.findOwnerProducts(memberId);
 
         return new ResponseEntity<>(ResponseDto.success(OWNER_PRODUCT_LIST_OK, result), OK);
@@ -104,27 +96,16 @@ public class ProductController {
 
     @GetMapping("/search/products")
     public ResponseEntity<?> searchProducts(@ModelAttribute SearchProductsReq searchProductsReq) {
-        List<SearchProductDto> products = new ArrayList<>();
+        Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
+        SearchProductRes result = productService.searchProduct(searchProductsReq, memberId);
 
-        for(int i = 0; i < 10; i++) {
-            Long id = 10000L + i;
+        return new ResponseEntity<>(ResponseDto.success(SEARCH_PRODUCT_OK, result), OK);
+    }
 
-            SearchProductDto dto = SearchProductDto.builder()
-                    .productId(id)
-                    .productMainImage("대표 이미지 " + id)
-                    .title("제목 " + id)
-                    .startDate(LocalDate.of(2024, 1, 2))
-                    .endDate(LocalDate.of(2024, 5, 24))
-                    .dong("역삼동")
-                    .uploadDate(calculateTime(LocalDateTime.now()))
-                    .rentalFee(100000)
-                    .wishCount(10*i)
-                    .build();
-
-            products.add(dto);
-        }
-
-        SearchProductRes result = new SearchProductRes(products);
+    @GetMapping("/products/recently")
+    public ResponseEntity<?> recentlyProducts(@ModelAttribute RecentlyProductsReq recentlyProductsReq) {
+        Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
+        SearchProductRes result = productService.searchRecentlyProducts(recentlyProductsReq, memberId);
 
         return new ResponseEntity<>(ResponseDto.success(SEARCH_PRODUCT_OK, result), OK);
     }
