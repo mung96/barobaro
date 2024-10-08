@@ -35,16 +35,6 @@ export default function PostDetail() {
     fetchPostDetails();
   }, [fetchPostDetails]);
 
-
-
-  const layoutData = {
-    startDate: '24.10.21',
-    endDate: '24.10.22',
-    rentalFee: 10000,
-  };
-  // 작성자와 유저 아이디 비교하고, 수정 삭제버튼 표시 OX
-  const userId: string = 'asdas';
-
   if (!postInfo) {
     return (<div></div>)
   }
@@ -95,7 +85,6 @@ export default function PostDetail() {
           lat={postInfo.latitude}
           lng={postInfo.longitude}
         />
-        {/* TODO : 몇일 내에 반납해야하는지, 이러한 정보가 오지 않음. */}
         <ContractCondition data={postInfo} />
       </div>
       <div className="-z-0 fixed bottom-0 -z-0 max-w-[500px] w-[100%] h-[60px] bg-white flex items-center">
