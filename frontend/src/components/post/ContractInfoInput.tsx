@@ -10,7 +10,6 @@ import ProductRepairInfoCard from '@/components/post/ProductRepairInfoCard';
 import RefundInfoCard from '@/components/post/RefundInfoCard';
 import OwnerInfoCard from '@/components/post/OwnerInfoCard';
 import { ContractFormFields, StepProps } from '@/hooks/post/usePostFormModel';
-import { ContractInfoStep, ContractPreviewStep, PostInfoStep, RentalInfoStep } from '@/types/domains/product';
 
 type Props = {
   onTotalStepChange: (step: number) => void;
@@ -18,12 +17,9 @@ type Props = {
   onPrev: () => void;
 } & StepProps<ContractFormFields>;
 
-export type InputProps = {
-  fields: ContractFormFields;
-  context: PostInfoStep | RentalInfoStep | ContractInfoStep | ContractPreviewStep;
-}
+export type InputProps = StepProps<ContractFormFields>;
 
-function ContractInfoInput({ onTotalStepChange, onNext, onPrev, context, fields }: Props) {
+function ContractInfoInput({ onTotalStepChange, onNext, onPrev, context, fields, errors }: Props) {
   const [value, setValue] = useState('YES');
   useEffect(() => {
     if (value === 'YES') {
@@ -48,10 +44,12 @@ function ContractInfoInput({ onTotalStepChange, onNext, onPrev, context, fields 
       </Radio.Group>
       {value === 'YES' && (
         <div className="flex flex-col gap-3">
-          <RentalInfoCard fields={fields} context={context} />
-          <ProductRepairInfoCard fields={fields} context={context} />
-          <OverdueInfoCard fields={fields} context={context} />
-          <RefundInfoCard fields={fields} context={context} />
+          <RentalInfoCard fields={fields} context={context} errors={errors}
+          />
+          {/* 예외처리해야해 */}
+          <ProductRepairInfoCard fields={fields} context={context} errors={errors} />
+          <OverdueInfoCard fields={fields} context={context} errors={errors} />
+          <RefundInfoCard fields={fields} context={context} errors={errors} />
           <OwnerInfoCard />
         </div>
       )}

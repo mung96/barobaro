@@ -3,8 +3,9 @@ import ContractCardBox from '@/components/post/ContractCardBox';
 import CheckBox from '@/components/shared/CheckBox';
 import { REPAIR_VENDOR } from '@/constants/product';
 import { InputProps } from '@/components/post/ContractInfoInput';
+import ErrorMessage from '@/components/shared/ErrorMessage';
 
-function ProductRepairInfoCard({ fields }: InputProps) {
+function ProductRepairInfoCard({ fields, context, errors }: InputProps) {
   return (
     <ContractCardBox title="물건 수리" step={2}>
       <CheckBox.Group
@@ -25,6 +26,7 @@ function ProductRepairInfoCard({ fields }: InputProps) {
           </CheckBox.Item>
         ))}
       </CheckBox.Group>
+      <ErrorMessage isInvalid={fields.repairVendor.fieldState.invalid}>{errors.repairVendor?.message}</ErrorMessage>
     </ContractCardBox>
   );
 }
