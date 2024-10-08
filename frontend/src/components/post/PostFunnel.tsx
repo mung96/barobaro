@@ -1,7 +1,7 @@
 'use client';
 
 import { useFunnel } from '@use-funnel/browser';
-import {  useState } from 'react';
+import { useState } from 'react';
 import PostInfoInput from '@/components/post/PostInfoInput';
 import RentalInfoInput from '@/components/post/RentalInfoInput';
 import {
@@ -24,7 +24,7 @@ import usePostFormModel from '@/hooks/post/usePostFormModel';
 function PostFunnel() {
   const [direction, setDirection] = useState<DirectionType>('forward');
   const [totalStep, setTotalStep] = useState(4);
-  const { step: registStep, history,context } = useFunnel<{
+  const { step: registStep, history, context } = useFunnel<{
     PostInfoStep: PostInfoStep;
     RentalInfoStep: RentalInfoStep;
     ContractInfoStep: ContractInfoStep;
@@ -37,7 +37,7 @@ function PostFunnel() {
     },
   });
 
-  const {postFieldList,rentalFieldList,errors,isValid,getValues,handleSubmit} = usePostFormModel();
+  const { postFieldList, rentalFieldList, contractFieldList, errors, isValid, getValues, handleSubmit } = usePostFormModel();
 
   return (
     <div className="flex flex-col gap-4">
@@ -49,8 +49,8 @@ function PostFunnel() {
       <PageTransition step={registStep} direction={direction}>
         {registStep === 'PostInfoStep' && (
           <PostInfoInput
-          context={context}
-           errors={errors}
+            context={context}
+            errors={errors}
             fields={postFieldList}
             onNext={() => {
               history.push('RentalInfoStep', getValues());
@@ -60,11 +60,11 @@ function PostFunnel() {
         )}
         {registStep === 'RentalInfoStep' && (
           <RentalInfoInput
-          getValues={getValues}
-          handleSubmit={handleSubmit}
-          fields={rentalFieldList}
-          errors={errors}
-          context={context}
+            getValues={getValues}
+            handleSubmit={handleSubmit}
+            fields={rentalFieldList}
+            errors={errors}
+            context={context}
             onPrev={() => {
               history.back();
               setDirection('backward');
@@ -77,6 +77,9 @@ function PostFunnel() {
         )}
         {registStep === 'ContractInfoStep' && (
           <ContractInfoInput
+            fields={contractFieldList}
+            errors={errors}
+            context={context}
             onTotalStepChange={setTotalStep}
             onPrev={() => {
               history.back();
