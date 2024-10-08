@@ -1,4 +1,4 @@
-import { postFcmToken } from '@/apis/memberApi';
+import { patchFcmToken } from '@/apis/memberApi';
 import { FCM_VAPID_KEY } from '@/constants/api';
 import { initializeApp } from '@firebase/app';
 import { getMessaging, getToken, onMessage } from '@firebase/messaging';
@@ -21,8 +21,9 @@ export const requestPermissionAndGetToken = async () => {
             const token = await getToken(messaging, {
                 vapidKey: FCM_VAPID_KEY,
             });
+            console.log('Token', token);
             if (token) { // 토큰 받아온 경우, postFcmToken메소드 호출해서 서버측에서 member fcm token 유지할 수 있게.
-                const tokenResult = await postFcmToken(token);
+                const tokenResult = await patchFcmToken(token);
                 console.log('FCM Token Result:', tokenResult);
                 return;
             } else {
