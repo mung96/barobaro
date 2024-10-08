@@ -45,7 +45,7 @@ public class FeignClientService {
                 .build();
 
         // 계좌 잔액 조회
-        getAccountDetails("9992678903441444");
+        // getAccountDetails("9992678903441444");
     }
 
     private void getAccountDetails(String accountNo) {
