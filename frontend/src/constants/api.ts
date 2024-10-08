@@ -2,6 +2,7 @@ export const KAKAO_REST_API_KEY = process.env.NEXT_PUBLIC_KAKAO_REST_API_KEY;
 export const SERVER_BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL;
 export const NEXT_BASE_URL = process.env.NEXT_PUBLIC_FRONT_URL;
 export const KAKAO_BASE_URL = 'https://dapi.kakao.com/v2/';
+export const DummyToken = process.env.NEXT_PUBLIC_AUTH_TOKEN;
 
 export const END_POINT = {
   LOCATION: 'local/search/keyword.json',
