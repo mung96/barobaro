@@ -1,6 +1,6 @@
-import { ContractContent } from '@/types/apis/productResponse';
+import { ProductResponse} from '@/types/apis/productResponse';
 
-export default function ContractCondition({ data }: { data: ContractContent }) {
+export default function ContractCondition({ data }: { data: ProductResponse }) {
   return (
     <section className="w-[85%] my-[12px] text-black-100">
       <h1 className="font-bold text-[12px]">계약조건</h1>
@@ -14,7 +14,7 @@ export default function ContractCondition({ data }: { data: ContractContent }) {
           </div>
           <div>
             <h2 className="text-[11px]">반납 희망 방법</h2>
-            <p className="text-[10px] text-gray-300 ms-2 my-1">직거래, 택배</p>
+            <p className="text-[10px] text-gray-300 ms-2 my-1">{data.returnTypes}</p>
           </div>
           <div>
             <h2 className="text-[11px]">계약 조건</h2>
@@ -26,13 +26,13 @@ export default function ContractCondition({ data }: { data: ContractContent }) {
                 <div className="flex-1">
                   <h3 className="text-gray-300 text-[10px]">수리업체</h3>
                   <p className="text-[8px]">
-                    {data.contractCondition.repairVendor}
+                    제조사 또는 공식 수입사의 AS 센터
                   </p>
                 </div>
                 <div className="flex-1">
                   <h3 className="text-gray-300 text-[10px]">청구 비용</h3>
                   <p className="text-[8px]">
-                    청구 시점 기준 {data.contractCondition.overdueCriteria}일
+                    청구 시점 기준 3일
                     이내 지급
                   </p>
                 </div>
@@ -43,14 +43,15 @@ export default function ContractCondition({ data }: { data: ContractContent }) {
               <div className="flex mx-5">
                 <div className="flex-1">
                   <h3 className="text-gray-300 text-[10px]">기준</h3>
+                  {/*TODO : 몇일 내에 반납하고 이런 데이터가 오지 않음.*/}
                   <p className="text-[8px]">
-                    대여 기간 종료 후 {data.contractCondition.theftCriteria}일
+                    대여 기간 종료 후 3일
                   </p>
                 </div>
                 <div className="flex-1">
                   <h3 className="text-gray-300 text-[10px]">청구 비용</h3>
                   <p className="text-[8px]">
-                    1일 이용 가격의 {data.contractCondition.overdueFee}배
+                    1일 이용 가격의 2배
                   </p>
                 </div>
               </div>
