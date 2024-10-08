@@ -5,7 +5,8 @@ import PictureCarousel from '@/components/post/Carousel';
 import Profile from '@/components/user/Profile';
 import PostContent from '@/components/post/PostContent';
 import ContractCondition from '@/components/post/ContractCondition';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { usePathname } from "next/navigation";
 import PostCheckModal from '@/components/modal/PostCheckModal';
 import Header from '@/components/Header';
 import LikeButton from '@/components/(SVG_component)/LikeButton';
@@ -15,57 +16,39 @@ import {getProductsDetail} from "@/apis/productDetailApi";
 
 export default function PostDetail() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [postInfo, setPostInfo] = useState<any>(null);
   const modalType = 'needPassword';
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
-  // TODO : API 요청과정 404 확인 필요함.
-  useEffect(() => {
-    const getDetail = async () => {
-      try {
-        const res = await getProductsDetail('1');
-        console.log(res)
-      } catch (err) {
-        console.log('ERR', err)
-      }
-
-
+  const currentPath = usePathname()
+  const fetchPostDetails = useCallback(async () => {
+    try {
+      const productId = currentPath.slice(6);
+      const res = await getProductsDetail(productId);
+      setPostInfo(res);
+      console.log('Updated postInfo:', res);
+    } catch (err) {
+      console.log('ERR', err);
     }
-    getDetail();
-  })
+  }, [currentPath]);
+
+  useEffect(() => {
+    fetchPostDetails();
+  }, [fetchPostDetails]);
 
 
-  // 해당 내용은 API  호출후 활용 가정
-  const writerData = {
-    writerId: 'asd',
-    writerProfileImage: faker.image.urlLoremFlickr(),
-    writerNickname: 'UserNicknameExample',
-  };
+
   const layoutData = {
     startDate: '24.10.21',
     endDate: '24.10.22',
     rentalFee: 10000,
   };
-  const contentData = {
-    title: '캐럿봉 대여합니당',
-    productStatus: 'FINISH',
-    wishCount: 3,
-    content: `캐럿봉 대여합니다 \n \n 세븐틴 콘서트장에서도 직거래 가능합니다. \n 대여기간 보시고 연락주세요~~!`,
-    place: '고척스카이돔 중앙출입문 C게이트 앞',
-    latitude: 37.5,
-    longitude: 126.87,
-  };
-  const contractData = {
-    isWriteContract: true,
-    contractCondition: {
-      repairVendor: '제조사 또는 공식 수입사의 AS 센터',
-      overdueCriteria: 5,
-      overdueFee: 2,
-      theftCriteria: 7,
-      refundDeadline: 7,
-    },
-  };
   // 작성자와 유저 아이디 비교하고, 수정 삭제버튼 표시 OX
   const userId: string = 'asdas';
+
+  if (!postInfo) {
+    return (<div></div>)
+  }
   return (
     <>
       <Header pageName="게시글 목록" hasPrevBtn hasSearchBtn hasAlertBtn />
@@ -81,12 +64,12 @@ export default function PostDetail() {
           <Profile
             hasEmail={false}
             hasEditBtn={false}
-            url={writerData.writerProfileImage}
-            nickname={writerData.writerNickname}
+            url={postInfo.writerProfileImage}
+            nickname={postInfo.writerNickname}
             email=""
           />
           <div className="flex-1" />
-          {writerData.writerId === userId ? (
+          {postInfo.isMine ? (
             <div className="flex">
               <button
                 type="button"
@@ -106,14 +89,15 @@ export default function PostDetail() {
         </div>
         <PictureCarousel />
         <div className="bg-gray-500 w-[90%] h-[1px] my-3" />
-        <PostContent data={contentData} />
+        <PostContent data={postInfo} />
         <KakaoMap
           width="85%"
           height="20dvh"
-          lat={contentData.latitude}
-          lng={contentData.longitude}
+          lat={postInfo.latitude}
+          lng={postInfo.longitude}
         />
-        <ContractCondition data={contractData} />
+        {/* TODO : 몇일 내에 반납해야하는지, 이러한 정보가 오지 않음. */}
+        <ContractCondition data={postInfo} />
       </div>
       <div className="-z-0 fixed bottom-0 -z-0 max-w-[500px] w-[100%] h-[60px] bg-white flex items-center">
         <div className="flex items-center justify-center w-full">

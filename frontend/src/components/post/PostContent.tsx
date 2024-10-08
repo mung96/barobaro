@@ -1,8 +1,8 @@
 import PlaceMarker from '@/components/(SVG_component)/PlaceMarker';
-import { ProductContent } from '@/types/apis/productResponse';
+import { ProductResponse } from '@/types/apis/productResponse';
 import convertProductStatus from '@/services/post/detail';
 
-export default function PostContent({ data }: { data: ProductContent }) {
+export default function PostContent({ data }: { data: ProductResponse }) {
   const productStatus = convertProductStatus(data.productStatus);
   return (
     <main>
