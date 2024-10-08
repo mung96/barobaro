@@ -34,7 +34,9 @@ export const END_POINT = {
   PRODUCT: 'products',
   SEARCH_RESULT: 'search/products',
   PIN_PATCH: 'members/me/password',
-  PIN_VERIFIED: 'members/me/password/verified'
+  PIN_VERIFIED: 'members/me/password/verified',
+  LOCATION_GET: 'members/me/locations',
+  LOCATION_MAIN_CHANGE: 'members/me/default-location',
 
 } as const;
 
