@@ -28,7 +28,7 @@ function RentalDurationInput({ value, onSelect,isInvalid,message }: Props) {
             value ? format(value.from!, 'yyyy-MM-dd') : ''
           }
           width="108px"
-          height="32px"
+          height="40px"
           icon={<IoCalendarClearOutline className="w-4 h-4 mb-[2px]" />}
           readOnly
           onFocus={() => setIsOpenCalendar(true)}

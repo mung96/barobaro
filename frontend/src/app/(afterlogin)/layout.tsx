@@ -10,7 +10,7 @@ type Props = {
 export default function AfterLoginLayout({ children }: Props) {
   
   return (
-        <div className="w-full max-w-[500px] mx-auto content-center ">
+        <div className="w-full max-w-[500px] mx-auto content-center pb-12 ">
           {children}
           <NavBar/>
         </div>
