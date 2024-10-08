@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,18 +22,17 @@ import java.security.cert.X509Certificate;
 @RequiredArgsConstructor
 public class KeyStoreConfig {
 
-    private static final String KEYSTORE_PATH = "src/main/resources/keystore.p12";
+    private static final String KEYSTORE_PATH = "keystore.p12";
     private static final String KEYSTORE_PASSWORD = "ssafya401";
 
     @Bean
     public KeyStore keyStore() throws Exception {
         Security.addProvider(new BouncyCastleProvider());
-
-        File keyStoreFile = new File(KEYSTORE_PATH);
+        ClassPathResource resource = new ClassPathResource(KEYSTORE_PATH);
         KeyStore keyStore;
-        if (keyStoreFile.exists()) {
+        if (resource.exists()) {
             keyStore = KeyStore.getInstance("PKCS12");
-            try (FileInputStream fis = new FileInputStream(keyStoreFile)) {
+            try (FileInputStream fis = new FileInputStream(resource.getFile())) {
                 keyStore.load(fis, KEYSTORE_PASSWORD.toCharArray());
             } catch (Exception e) {
                 log.warn("Failed to load keystore", e);
@@ -48,7 +48,9 @@ public class KeyStoreConfig {
             //우리 측 인증서 저장
             keyStore.setKeyEntry("barobaro", keyPair.getPrivate(), KEYSTORE_PASSWORD.toCharArray(), new Certificate[]{certificate});
 
-            try (FileOutputStream fos = new FileOutputStream(KEYSTORE_PATH)) {
+
+            File keyStoreFile = new File(resource.getFile().getPath());
+            try (FileOutputStream fos = new FileOutputStream(keyStoreFile)) {
                 keyStore.store(fos, KEYSTORE_PASSWORD.toCharArray());
             } catch (Exception e) {
                 //키스토어 파일화로 저장하는데 에러 발생.
