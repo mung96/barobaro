@@ -21,6 +21,7 @@ const useChatPageModel = () => {
   // 계약 진행 단계를 나타내는 process
   const [process, setProcess] = useState<ProcessType>(ProcessTypes.CONTACT); // apiResponse 도착한 후 초기화
   const processConverter = (step: string) => {
+    // 백에서 넘어오는 계약 진행 상태를 프론트 버전으로 변경
     switch (step) {
       case 'AVAILABLE':
         return ProcessTypes.CONTACT;
@@ -42,6 +43,7 @@ const useChatPageModel = () => {
     }
   };
 
+  // useContext(ChatProcessContext)
   const processSetter = (step: ProcessType) => {
     // 컴포넌트들이 공유할 setter method
     setProcess(step);
@@ -87,6 +89,7 @@ const useChatPageModel = () => {
     roomName,
     scrollRef,
     otherNickname,
+    chatRoomId,
   };
 };
 

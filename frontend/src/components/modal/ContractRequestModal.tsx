@@ -9,6 +9,9 @@ import SelectableItem from '@/components/shared/SelectableItem';
 import ContractDurationInput from '../message/chat/ContractDurationInput';
 import { ProcessContext } from '@/contexts/ChatProcessContext';
 import { ProcessTypes } from '../message/chat/ProcessTypes';
+import { SocketClientContext } from '@/contexts/SocketClientContext';
+import MessageFormType from '../message/chat/MessageFormType';
+import currentTime from '@/utils/currentTime';
 
 type ContractRequestParams = {
   isOpen: boolean;
@@ -50,11 +53,16 @@ const ContractRequestModal = ({
   const [range, setRange] = useState<DateRange | undefined>(undefined);
   const [ways, setWays] = useState<string>('');
 
-  const context = useContext(ProcessContext);
-  if (!context) return null;
-  const { processSetter } = context;
+  const processContext = useContext(ProcessContext);
+  if (!processContext) return null;
+  const { processSetter } = processContext;
+
+  const socketContext = useContext(SocketClientContext);
+  if (!socketContext) return null;
+  const { sendChat } = socketContext;
 
   const approveLogic = (isApproved: boolean) => {
+    // 소유자가 '상세보기' 버튼을 눌렀을 때 창 처리
     // 대여자의 계약 요청서를 거절할 때
     // 프로세스 contact로 바꾸고 / 시스템메시지 찍고 /
     if (isApproved) {
@@ -67,13 +75,25 @@ const ContractRequestModal = ({
   };
 
   const requestLogic = (isSubmit: boolean) => {
+    // '대여자가 계약 요청' 버튼을 눌렀을 때의 창 처리
     if (!isSubmit) {
       // 대여자가 계약 요청 창을 열었다가 취소한 경우
       setRange(undefined);
       setWays('');
     } else {
+      // submit하는 경우
       // axios로 데이터 보내고
+
       // 상태메시지 보내고
+      const requestMessage: MessageFormType = {
+        type: 2,
+        user: '김말이',
+        body: 'contract',
+        timestamp: currentTime(),
+      };
+      sendChat(requestMessage);
+
+      // 프로세스 바꾸기
       processSetter(ProcessTypes.REQUESTED);
     }
     // 대여자가 요청 submit을 했을 경우
