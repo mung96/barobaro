@@ -75,7 +75,7 @@ public class MemberController {
     @PostMapping("/members/me/profile")
     public ResponseEntity<?> profileModify(@RequestPart(value = "dto") ProfileModifyReq profileModifyReq,
                                            @RequestPart(value = "file") MultipartFile file) {
-        ProfileDetailsRes result = new ProfileDetailsRes("프로필 이미지", "닉네임", "010-1111-1111", "ssafy@ssafy.com", "아무개",null);
+        ProfileDetailsRes result = new ProfileDetailsRes("프로필 이미지", "닉네임", "010-1111-1111", "ssafy@ssafy.com", "아무개",Boolean.TRUE);
 
         return new ResponseEntity<>(ResponseDto.success(PROFILE_MODIFIED, result), OK);
     }
