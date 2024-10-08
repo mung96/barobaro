@@ -1,13 +1,24 @@
-const ContractPaper = () => {
+import { useProfileObject } from "@/store/useMyProfile";
+import { ContractInfoStep, ContractPreviewStep, PostInfoStep, RentalInfoStep } from "@/types/domains/product";
+import { calculateDaysBetween, formatDate } from "@/utils/dayUtil";
+import { convertMoneyNumberToKorean } from "@/utils/moneyUtil";
+
+type Props = {
+    context: PostInfoStep | RentalInfoStep | ContractInfoStep | ContractPreviewStep;
+};
+const ContractPaper = ({ context }: Props) => {
+    const profile = useProfileObject();
+    console.log(profile);
+    const totalFee = (context.rentalFee! * (calculateDaysBetween(context.rentalDuration?.from!, context.rentalDuration?.to!)));
     return <article className="w-full flex flex-col gap-6">
         <h3 className="text-xl font-bold text-center">임대계약서</h3>
         <div className='flex flex-col gap-6'>
-            <p>정지연(이하 ‘갑’이라 함)과(와) 아무개(이하 ‘을’이라 함)과(와)
-                우리서비스이름(이하 ‘병’이라 함)은 다음과 같이 임대계약을 체결한다.</p>
+            <p>{profile.name}(이하 ‘갑’이라 함)과(와) 아무개(이하 ‘을’이라 함)과(와)
+                바로바로(이하 ‘병’이라 함)은 다음과 같이 임대계약을 체결한다.</p>
             <div className='flex flex-col gap-2'>
                 <h4 className='font-bold text-lg'>[제 1조] (계약의 성립)</h4>
                 <p>
-                    <p>① 본 계약에서 대여 제품, 대여비, 대여 기간이라 함은 물건이름(일련번호), 금 육만원 정(60,000원), 2024.09.06 ~ 2024.09.09으로
+                    <p>① 본 계약에서 대여 제품, 대여비, 대여 기간이라 함은 {context.productName}({context.serialNumber}), 금 {convertMoneyNumberToKorean(totalFee)} 정 ({totalFee.toLocaleString()})원, {formatDate(context.rentalDuration?.from!) + ' ~ ' + formatDate(context.rentalDuration?.to!)}으로
                         진행한다.</p>
                     <p>②‘갑’은 대여 서비스를 제공하는 선량한 개인으로써 정직하고 책임감 있게 대여 서비스를 제공하여야하며, ‘을’은 대여 서비스를 받는 선량한 개인으로써 대여 제품의 사용 및 책임의 주체가 된다. ‘병’은 대여 서비스만을 중개하는 업체로써, ‘갑’과 ‘을’간의 분쟁 발생 시에 법적 책임을 지지 않는다.</p>
                 </p>
@@ -22,13 +33,14 @@ const ContractPaper = () => {
                 <h4 className='font-bold text-lg'>[제 3조] (일방적 계약 취소)</h4>
                 <p>
                     <p> ①’갑’이 일방적으로 계약을 취소했을 경우에 ’갑’은 ‘을’에게 보상 의무가 있다. 이 때, 대여 기간 시작일을 기준으로 한다.
-                        7일 전 취소 시, 보상 의무 없음
-                        3일 전 취소 시, 대여금의 50%
-                        3일 이후 취소 시, 대여금의 100%</p>
+                        <p>7일 전 취소 시, 보상 의무 없음</p>
+                        <p>3일 전 취소 시, 대여금의 50%</p>
+                        <p>3일 이후 취소 시, 대여금의 100%</p>
+                    </p>
                     <p>  ②‘을’이 일방적으로 계약을 취소했을 경우에 ’을’은 ‘갑’에게 보상 의무가 있다. 이 때, 대여 기간 시작일을 기준으로 한다.
-                        7일 전 취소 시, 보상 의무 없음
-                        3일 전 취소 시, 대여금의 50%
-                        3일 이후 취소 시, 대여금의 100%</p>
+                        <p>7일 전 취소 시, 보상 의무 없음</p>
+                        <p>3일 전 취소 시, 대여금의 50%</p>
+                        <p>3일 이후 취소 시, 대여금의 100%</p></p>
                 </p>
             </div>
             <div className='flex flex-col gap-2'>
@@ -41,7 +53,7 @@ const ContractPaper = () => {
             <div className='flex flex-col gap-2'>
                 <h4 className='font-bold text-lg'>[제 5조] (수리)</h4>
                 <p>
-                    대여 제품 손상 시, 수리는 제조사 또는 공식 수입사의 AS 센터에서 처리하도록 하며 ‘갑’과 ‘을’은 대여 제품을 자체적으로 개조하지 않고 수리하지 않는다. 수리가 진행될 경우, ‘갑’은 ‘을’에게 수리센터에서 발급한 수리비 견적서나 영수증을 제출해야 한다. 이는 ‘갑’, ‘을’ 모두 부정행위를 저지르지 않게 하기 위함이다.
+                    대여 제품 손상 시, 수리는 {context.repairVendor![0]}에서 처리하도록 하며 ‘갑’과 ‘을’은 대여 제품을 자체적으로 개조하지 않고 수리하지 않는다. 수리가 진행될 경우, ‘갑’은 ‘을’에게 수리센터에서 발급한 수리비 견적서나 영수증을 제출해야 한다. 이는 ‘갑’, ‘을’ 모두 부정행위를 저지르지 않게 하기 위함이다.
                 </p>
             </div>
             <div className='flex flex-col gap-2'>
@@ -60,15 +72,15 @@ const ContractPaper = () => {
             <div className='flex flex-col gap-2'>
                 <h4 className='font-bold text-lg'>[제 8조] (무단 연체)</h4>
                 <p>
-                    <p>①‘을’은 대여 기간 종료 후 4일 안에 대여 제품을 ‘갑’에게 반환해야 한다. 이를 어길 시에, 대여 기간에 따른 무단 연체료가 발생한다. 무단 연체료는 연체된 날마다 대여 제품 1일 가격의 3배로 계산한다. 예를 들어, 1일 가격이 1만 5천원일 때, 1일 연체되었을 경우 4만 5천원의 연체료가 발생한다.</p>
-                    <p>②무단 연체료는 정상 반납이 될 때까지 부과되는 요금이지만, ‘을’이 무단 연체를 7일 이상 지속할 경우 도난으로 취급하고 새 제품 구매 비용을 청구한다. 이는 새제품 구매 비용보다 연체료가 크게 나오는 것을 방지하기 위함이다.</p>
-                    <p>③‘을’과 연락이 지속되는 경우라도, 7일 이상 무단 연체를 지속한다면 해당 사안을 도난으로 취급한다. 이는 ‘을’이 악의적으로 연락만 지속하고 반납을 하지않아 ‘갑’에게 더 큰 영업 손실을 안기는 것을 방지하기 위함이다.</p>
+                    <p>①‘을’은 대여 기간 종료 후 {context.overdueCriteria}일 안에 대여 제품을 ‘갑’에게 반환해야 한다. 이를 어길 시에, 대여 기간에 따른 무단 연체료가 발생한다. 무단 연체료는 연체된 날마다 대여 제품 1일 가격의 {context.overdueFee}배로 계산한다. 예를 들어, 1일 가격이 1만 5천원일 때, 1일 연체되었을 경우 4만 5천원의 연체료가 발생한다.</p>
+                    <p>②무단 연체료는 정상 반납이 될 때까지 부과되는 요금이지만, ‘을’이 무단 연체를  {context.theftCriteria}일 이상 지속할 경우 도난으로 취급하고 새 제품 구매 비용을 청구한다. 이는 새제품 구매 비용보다 연체료가 크게 나오는 것을 방지하기 위함이다.</p>
+                    <p>③‘을’과 연락이 지속되는 경우라도, {context.theftCriteria}일 이상 무단 연체를 지속한다면 해당 사안을 도난으로 취급한다. 이는 ‘을’이 악의적으로 연락만 지속하고 반납을 하지않아 ‘갑’에게 더 큰 영업 손실을 안기는 것을 방지하기 위함이다.</p>
                 </p>
             </div>
             <div className='flex flex-col gap-2'>
                 <h4 className='font-bold text-lg'>[제 9조] (청구 비용의 지불)</h4>
                 <p>
-                    ‘을’은 ‘갑’이 청구한 비용을 청구한 시점 기준 5일 내에 지불해야 한다. ‘을’이 이를 어길 시, ‘갑’은 ‘을’을 민형사상 고소 할 수 있으며 법원에 지불하는 인지대, 송달비 등 도 ‘갑’에게 추가로 청구 할 수 있으며 법정이자 또한 추가로 청구 할 수 있다.
+                    ‘을’은 ‘갑’이 청구한 비용을 청구한 시점 기준  {context.refundDeadline}일 내에 지불해야 한다. ‘을’이 이를 어길 시, ‘갑’은 ‘을’을 민형사상 고소 할 수 있으며 법원에 지불하는 인지대, 송달비 등 도 ‘갑’에게 추가로 청구 할 수 있으며 법정이자 또한 추가로 청구 할 수 있다.
                 </p>
             </div>
             <div className='flex flex-col gap-2'>

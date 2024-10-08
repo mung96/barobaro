@@ -1,16 +1,19 @@
 import ContractPaper from '@/components/post/ContractPaper';
 import Button from '@/components/shared/Button';
+import { ContractInfoStep, ContractPreviewStep, PostInfoStep, RentalInfoStep } from '@/types/domains/product';
 
 type Props = {
   onPrev: () => void;
+  context: PostInfoStep | RentalInfoStep | ContractInfoStep | ContractPreviewStep;
 };
 
-function ContractPreview({ onPrev }: Props) {
+
+function ContractPreview({ onPrev, context }: Props) {
   return <div className="flex flex-col gap-4">
     <h3 className='text-lg'>전자계약서 미리보기</h3>
     <section className='border-[1px] border-gray-500 rounded-xl py-6 ' >
       <div className='max-h-[496px] overflow-y-scroll px-4'>
-        <ContractPaper />
+        <ContractPaper context={context} />
       </div>
     </section>
     <div className="flex  gap-6">
