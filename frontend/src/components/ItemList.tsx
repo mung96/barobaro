@@ -39,6 +39,7 @@ export default function ItemList({ data }: { data: string }) {
             <div className="flex flex-row ml-3.5">
               <div className="w-[98px] h-[98px] rounded-[10px] overflow-hidden relative">
                 <Link href={`/post/${item.productId}`}>
+                  {/*TODO : mockup이 수정되면 변경할 것*/}
                   <Image src={`/${item.productMainImage}`} alt="product_image" fill />
                 </Link>
                 <div
