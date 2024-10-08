@@ -2,6 +2,7 @@ package baro.baro.domain.member.service;
 
 import baro.baro.domain.location.repository.LocationRepository;
 import baro.baro.domain.member.dto.request.SignupReq;
+import baro.baro.domain.member.dto.response.ProfileDetailsRes;
 import baro.baro.domain.member.dto.response.SignUpInfoRes;
 import baro.baro.domain.member.entity.Member;
 import baro.baro.domain.member.repository.MemberRepository;
@@ -45,18 +46,18 @@ public class MemberServiceImpl implements MemberService {
     public String signup(SignupReq signupReq, MultipartFile file) throws IOException {
         String uuid = UUID.randomUUID().toString();
 
-        if (memberRepository.findByEmail(signupReq.getEmail()) != null){
+        if (memberRepository.findByEmail(signupReq.getEmail()) != null) {
             throw new CustomException(ALREADY_EXIST_MEMBER);
         }
 
-        if(file != null && !file.isEmpty()) {
-            String newImageUrl = images3Service.upload(file,  "profile");
+        if (file != null && !file.isEmpty()) {
+            String newImageUrl = images3Service.upload(file, "profile");
 
             signupReq.setProfileImage(newImageUrl);
 
             log.info("이미지 파일 성공!");
         } else {
-            if(signupReq.getProfileImage() == null || signupReq.getProfileImage().isEmpty()) {
+            if (signupReq.getProfileImage() == null || signupReq.getProfileImage().isEmpty()) {
                 signupReq.setProfileImage(bucketUrl + "/profile/default.png");
                 log.info("없으니까 디폴트값!");
             }
@@ -74,27 +75,26 @@ public class MemberServiceImpl implements MemberService {
         log.info("지역 멤버DB에저장~");
 
         IntStream.range(0, signupReq.getLocations().size())
-                        .forEach(index -> {
-                            Long locationId = signupReq.getLocations().get(index);
+                .forEach(index -> {
+                    Long locationId = signupReq.getLocations().get(index);
 
-                            locationRepository.findById(locationId)
-                                    .orElseThrow(() -> new CustomException(LOCATION_NOT_FOUND));
+                    locationRepository.findById(locationId)
+                            .orElseThrow(() -> new CustomException(LOCATION_NOT_FOUND));
 
-                            if(index == 0) {
-                                memberLocationRepository.insertMemberLocations(member.getId(),
-                                        locationId, true);
-                            } else {
-                                memberLocationRepository.insertMemberLocations(member.getId(),
-                                        locationId, true);
-                            }
-                        });
+                    if (index == 0) {
+                        memberLocationRepository.insertMemberLocations(member.getId(),
+                                locationId, true);
+                    } else {
+                        memberLocationRepository.insertMemberLocations(member.getId(),
+                                locationId, true);
+                    }
+                });
 
         JwtRedis jwtRedis = signupReq.toRedis(uuid, member.getId(), jwtService.createRefreshToken(uuid));
         redisUtils.setData(uuid, jwtRedis);
 
         return jwtService.createAccessToken(uuid, false);
     }
-
 
 
     @Override
@@ -108,13 +108,15 @@ public class MemberServiceImpl implements MemberService {
     public Boolean verifyPassword(String key, Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
-        if(!member.getPin().getPinNumber().equals(key)) {
+        if (!member.getPin().getPinNumber().equals(key)) {
             throw new CustomException(INVALID_PIN_NUMBER);
         }
         return Boolean.TRUE;
     }
 
-    public Boolean verifyPassword(final String key) {
-        return null;
+    public ProfileDetailsRes getProfileDetails(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+        return ProfileDetailsRes.toDto(member);
     }
 }
