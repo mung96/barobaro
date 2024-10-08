@@ -17,7 +17,7 @@ public class AccountAddMainRes {
 
     public static AccountAddMainRes toDto(Account account) {
         return AccountAddMainRes.builder()
-                .accountNumber(account.getAccount_number())
+                .accountNumber(account.getAccountNumber())
                 .accountId(account.getId())
                 .main(account.getMain())
                 .build();

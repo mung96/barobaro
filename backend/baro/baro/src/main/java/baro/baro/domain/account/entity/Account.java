@@ -22,9 +22,9 @@ public class Account {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    private String account_number;
+    private String accountNumber;
 
-    private String account_password;
+    private String accountPassword;
 
     private Boolean main;
 }
