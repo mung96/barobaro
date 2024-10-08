@@ -48,4 +48,8 @@ public class Member {
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "member")
     private Pin pin;
+
+    public void updateFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
+    }
 }
