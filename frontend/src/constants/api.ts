@@ -28,6 +28,7 @@ export const END_POINT = {
   WISH_LIST: 'wish-list',
   SUGGESTIONS: 'search/suggestions',
   PRODUCT: 'products',
+  SEARCH_RESULT: 'search/products'
 
 } as const;
 
