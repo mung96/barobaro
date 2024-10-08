@@ -21,6 +21,7 @@ import convertRegistStepToStepNumber from '@/services/post/regist';
 import ContractInfoInput from '@/components/post/ContractInfoInput';
 import ContractPreview from '@/components/post/ContractPreview';
 import { ContractConditionRequest } from '@/types/apis/productRequest';
+import usePostFormModel from '@/hooks/post/usePostFormModel';
 
 function PostFunnel() {
   const [direction, setDirection] = useState<DirectionType>('forward');
@@ -38,6 +39,8 @@ function PostFunnel() {
     },
   });
 
+  const {postFieldList,rentalFieldList,errors,isValid,getValues,handleSubmit} = usePostFormModel();
+
   return (
     <div className="flex flex-col gap-4">
       <h2 className="text-lg font-bold text-center">대여 물품 등록</h2>
@@ -48,21 +51,28 @@ function PostFunnel() {
       <PageTransition step={registStep} direction={direction}>
         {registStep === 'PostInfoStep' && (
           <PostInfoInput
-            onNext={(data: PostInfo) => {
-              history.push('RentalInfoStep', data);
+          context={context}
+           errors={errors}
+            fields={postFieldList}
+            onNext={() => {
+              history.push('RentalInfoStep', getValues());
               setDirection('forward');
             }}
           />
         )}
         {registStep === 'RentalInfoStep' && (
           <RentalInfoInput
+          getValues={getValues}
+          handleSubmit={handleSubmit}
+          fields={rentalFieldList}
+          errors={errors}
           context={context}
             onPrev={() => {
               history.back();
               setDirection('backward');
             }}
-            onNext={(data: RentalInfo) => {
-              history.push('ContractInfoStep', data);
+            onNext={() => {
+              history.push('ContractInfoStep', getValues());
               setDirection('forward');
             }}
           />
