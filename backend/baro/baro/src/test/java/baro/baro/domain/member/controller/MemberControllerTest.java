@@ -3,6 +3,7 @@ package baro.baro.domain.member.controller;
 import baro.baro.domain.member.dto.request.PasswordModifyReq;
 import baro.baro.domain.member.dto.request.ProfileModifyReq;
 import baro.baro.domain.member.dto.request.SignupReq;
+import baro.baro.domain.member.dto.response.ProfileDetailsRes;
 import baro.baro.domain.member.dto.response.SignUpInfoRes;
 import baro.baro.domain.member.service.MemberService;
 import baro.baro.global.exception.CustomException;
@@ -40,6 +41,7 @@ import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.docume
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
@@ -368,7 +370,15 @@ class MemberControllerTest {
     @Test
     public void 프로필_조회_성공() throws Exception {
         // given
-
+        ProfileDetailsRes result = ProfileDetailsRes.builder()
+                .profileImage("테스트 이미지")
+                .nickname("테스트 닉네임")
+                .phoneNumber("테스트 전화번호")
+                .email("테스트이메일")
+                .name("테스트 이름")
+                .build();
+        when(memberService.getProfileDetails(anyLong()))
+                .thenReturn(result);
         // when
         ResultActions actions = mockMvc.perform(
                 get("/members/me/profile")
