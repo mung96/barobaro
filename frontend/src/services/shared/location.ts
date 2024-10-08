@@ -7,8 +7,8 @@ export const convertLocationDataToView = (
   const locationView: Location = {
     addressName: locationData.address_name,
     placeName: locationData.place_name,
-    latitude: locationData.x,
-    longitude: locationData.y,
+    latitude: locationData.y,
+    longitude: locationData.x,
   };
 
   return locationView;

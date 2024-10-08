@@ -32,7 +32,7 @@ function SearchLocationBar({ open, onSelect }: SearchLocationBarProps) {
         </Button>
       </div>
       <div
-        className="flex flex-col gap-2"
+        className="flex flex-col gap-1"
         role="none"
         onClick={() => {
           open(false);

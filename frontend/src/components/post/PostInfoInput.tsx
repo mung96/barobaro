@@ -31,6 +31,10 @@ function PostInfoInput({ onNext }: Props) {
     },
   });
 
+  const { field: images, fieldState: imagesState } = useController<PostInfo>({
+    control,
+    name: 'images',
+  });
 
   const { field: category, fieldState: categoryState } = useController<PostInfo>({
     control,
@@ -74,6 +78,7 @@ function PostInfoInput({ onNext }: Props) {
         width="56px"
         height="56px"
         images={files}
+        onChange={images.onChange}
         addFile={changeFile}
         deleteFile={deleteFileByIndex}
         dropEnd={handleDragEnd}
@@ -85,9 +90,11 @@ function PostInfoInput({ onNext }: Props) {
         isInvalid={bodyState.invalid}
         message={errors.body?.message!}
       />
-      <Button disabled={!isValid} onClick={() => onNext(getValues())} width="100%" height="36px">
-        <p className="text-xs text-white">다음</p>
-      </Button>
+      <div className="fixed bottom-4 left-0 w-[100vw] px-4">
+        <Button disabled={!isValid} onClick={() => onNext(getValues())} width="100%" height="48px">
+          <p className="text-base text-white">다음</p>
+        </Button>
+      </div>
     </div>
   );
 }

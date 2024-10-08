@@ -47,7 +47,7 @@ function ContractInfoInput({ onTotalStepChange, onNext, onPrev }: Props) {
           <OwnerInfoCard />
         </div>
       )}
-      <div className="flex  gap-6">
+ <div className="fixed left-0 w-[100vw] bottom-0 px-4 py-3 flex gap-6 border-t-[1px]">
         <Button onClick={onPrev} width="100%" height="36px" color="gray">
           <p className="text-xs">이전</p>
         </Button>
