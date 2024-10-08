@@ -1,9 +1,11 @@
 import ReactModal from 'react-modal';
 import ModalClose from '../(SVG_component)/ModalClose';
+import { StatusModalType } from '@/types/message/chat/statusModalType';
 
 type PasswordCheckModalParams = {
   isOpen: boolean;
   onRequestClose: () => void;
+  modalChanger: (modal: StatusModalType) => void;
 };
 
 const modalStyle: ReactModal.Styles = {
@@ -31,7 +33,13 @@ const modalStyle: ReactModal.Styles = {
 const PasswordCheckModal = ({
   isOpen,
   onRequestClose,
+  modalChanger,
 }: PasswordCheckModalParams) => {
+  const modalFinish = () => {
+    // 이 모달의 사용이 끝날 때 (비밀번호가 맞았을 때) 작동할 함수
+    modalChanger('signature');
+  };
+
   return (
     <ReactModal
       isOpen={isOpen}
@@ -51,12 +59,7 @@ const PasswordCheckModal = ({
         <div className="flex h-[4vh] text-base font-bold mt-3 mb-3">
           비밀번호 확인
         </div>
-        <div className="flex h-[45vh] w-[98vw] overflow-y-auto rounded-xl border border-gray-500">
-          {/* 계약서 영역 */}
-        </div>
-        <div className="flex h-[30vh] w-[98vw] rounded-xl border border-gray-500 mt-3">
-          {/* 서명 라이브러리 영역 */}
-        </div>
+        {/* 비밀번호 확인 파트 */}
       </div>
     </ReactModal>
   );
