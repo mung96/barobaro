@@ -3,7 +3,6 @@
 import Header from "@/components/Header";
 import useSearchModel from "@/hooks/products/useSearchModel";
 import {useState, useEffect} from "react";
-import {useRouter} from 'next/navigation'
 import Search from "@/components/(SVG_component)/Search";
 
 export default function SearchMain(){
