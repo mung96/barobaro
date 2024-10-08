@@ -10,8 +10,8 @@ export type ContractConditionRequest = {
 
 export type ProductAddRequest = {
   title: string;
-  startDate: Date;
-  endDate: Date;
+  startDate: string;
+  endDate: string;
   rentalFee: number;
   place: string;
   latitude: number;
@@ -20,5 +20,5 @@ export type ProductAddRequest = {
   returnAddress: string;
   content: string;
   category: string;
-  contractConditionReq: ContractConditionRequest;
+  contractConditionReq?: ContractConditionRequest;
 };

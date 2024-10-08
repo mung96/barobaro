@@ -23,7 +23,7 @@ export type PostInfo = {
   title: string;
   body: string;
   category: ProductCategory;
-  images: (string | ArrayBuffer | null)[];
+  images: (string | ArrayBuffer | null)[]|File[];
 };
 
 export type RentalInfo = {

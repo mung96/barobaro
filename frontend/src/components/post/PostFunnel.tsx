@@ -1,7 +1,7 @@
 'use client';
 
 import { useFunnel } from '@use-funnel/browser';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import PostInfoInput from '@/components/post/PostInfoInput';
 import RentalInfoInput from '@/components/post/RentalInfoInput';
 import {
@@ -25,7 +25,7 @@ import { ContractConditionRequest } from '@/types/apis/productRequest';
 function PostFunnel() {
   const [direction, setDirection] = useState<DirectionType>('forward');
   const [totalStep, setTotalStep] = useState(4);
-  const { step: registStep, history } = useFunnel<{
+  const { step: registStep, history,context } = useFunnel<{
     PostInfoStep: PostInfoStep;
     RentalInfoStep: RentalInfoStep;
     ContractInfoStep: ContractInfoStep;
@@ -38,9 +38,14 @@ function PostFunnel() {
     },
   });
 
+  useEffect(() => {
+    console.log(context);
+  },[context.title])
+
+
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-base font-bold text-center">대여 물품 등록</h2>
+      <h2 className="text-lg font-bold text-center">대여 물품 등록</h2>
       <StepBar
         totalStep={totalStep}
         currentStep={convertRegistStepToStepNumber(registStep)}
@@ -56,6 +61,7 @@ function PostFunnel() {
         )}
         {registStep === 'RentalInfoStep' && (
           <RentalInfoInput
+          context={context}
             onPrev={() => {
               history.back();
               setDirection('backward');

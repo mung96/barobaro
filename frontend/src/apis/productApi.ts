@@ -1,5 +1,6 @@
 import { axiosInstance } from '@/apis/axiosInstance';
 import { END_POINT } from '@/constants/api';
+import { ProductAddRequest } from '@/types/apis/productRequest';
 
 export const getLentProducts = async () => {
     const response = await axiosInstance.get(END_POINT.LENT);
@@ -24,3 +25,24 @@ export const getRecentlyViewed = async () => {
     console.log('RECENTLY VIEWED', response.data.body['products'])
     return response.data.body['products'];
 }
+
+
+
+export const postProduct = async (product: ProductAddRequest,images:File[]) => {
+    const formData = new FormData();
+    const blob = new Blob([JSON.stringify(product)], { type: 'application/json' });
+
+    formData.append('dto', blob);
+    images.map((image) => {
+        formData.append('files',image);
+    })
+    
+    console.dir(product);
+    console.dir(images);
+    
+    return await axiosInstance.post(END_POINT.PRODUCT, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  };

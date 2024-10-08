@@ -25,6 +25,7 @@ export const END_POINT = {
   ACCOUNT: 'members/me/accounts',
   RECENTLY_UPLOADED: 'products/recently-uploaded',
   RECENTLY_VIEWED: 'products/recently-viewed',
+  PRODUCT: 'products',
 
 } as const;
 
