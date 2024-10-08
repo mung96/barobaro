@@ -13,12 +13,13 @@ import currentTime from '@/utils/currentTime';
 import ContractDurationInput from '../message/chat/ContractDurationInput';
 import { ProcessTypes } from '../message/chat/ProcessTypes';
 import MessageFormType from '../message/chat/MessageFormType';
-import PasswordCheckModal from './PassWordCheckModal';
+import { StatusModalType } from '@/types/message/chat/statusModalType';
 
 type ContractRequestParams = {
   isOpen: boolean;
   onRequestClose: () => void;
   isFromStatusMessage?: boolean;
+  modalChanger?: (modal: StatusModalType) => void;
 };
 
 const modalStyle: ReactModal.Styles = {
@@ -51,16 +52,10 @@ const ContractRequestModal = ({
   isOpen,
   onRequestClose,
   isFromStatusMessage,
+  modalChanger,
 }: ContractRequestParams) => {
   const [range, setRange] = useState<DateRange | undefined>(undefined);
   const [ways, setWays] = useState<string>('');
-
-  // 비밀번호 모달 노출 관련 변수
-  const [isPwdModalOpen, setIsPwdModalOpen] = useState(false);
-  const pwdModalClose = () => {
-    setIsPwdModalOpen(false);
-  };
-  // ============================
 
   const processContext = useContext(ProcessContext);
   const socketContext = useContext(SocketClientContext);
@@ -85,8 +80,8 @@ const ContractRequestModal = ({
 
       sendChat(approveMessage);
       // 비밀번호 모달 띄우기
-      setIsPwdModalOpen(true); // 이거 안 기다리고 걍 닫힘 ; **** 타이밍 관련 해결해야 함
-      // 서명 모달 띄우기
+
+      if (modalChanger) modalChanger('password');
     } else {
       const rejectMessage: MessageFormType = {
         type: 3,
@@ -199,10 +194,6 @@ const ContractRequestModal = ({
           </button>
         </div>
       </div>
-      <PasswordCheckModal
-        isOpen={isPwdModalOpen}
-        onRequestClose={pwdModalClose}
-      />
     </ReactModal>
   );
 };

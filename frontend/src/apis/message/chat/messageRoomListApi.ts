@@ -11,3 +11,12 @@ export const getMessageRoomList = async () => {
 
   return response;
 };
+
+export const postMessageRoomList = async (productId: number) => {
+  const response = await axiosInstance.post(END_POINT.CHATROOM, {
+    params: {
+      productId,
+    },
+  });
+  return response;
+};

@@ -6,14 +6,13 @@ import SignatureModal from '@/components/modal/SignatureModal';
 import ContractRequestModal from '@/components/modal/ContractRequestModal';
 import MessageFormType from './MessageFormType';
 import MessageCommonStyles from './MessageStyles';
+import PasswordCheckModal from '@/components/modal/PasswordCheckModal';
 
 type BodyType = 'contract' | 'signature' | 'finished';
 
 const StatusMessage: FC<MessageFormType> = ({ body, timestamp, isMine }) => {
-  const { isModalOpen, openModal, closeModal } = useStatusMessageModel();
-  const buttonClickHandler = () => {
-    openModal();
-  };
+  const { modalOpen, modalClose, modalTrigger, modalType, modalChanger } =
+    useStatusMessageModel();
 
   const messageBody = (bodyProp: BodyType) => {
     if (bodyProp === 'contract') {
@@ -96,24 +95,37 @@ const StatusMessage: FC<MessageFormType> = ({ body, timestamp, isMine }) => {
               <button
                 type="button"
                 className="bg-blue-100 text-white text-center rounded-md pt-[1vh] pb-[1vh] mt-[1vh] active:bg-blue-500"
-                onClick={buttonClickHandler}
+                onClick={
+                  body === 'signature'
+                    ? () => modalTrigger('signature')
+                    : () => modalTrigger('request')
+                }
               >
                 {body === 'signature' && '서명하기'}
                 {body === 'contract' && '상세보기'}
               </button>
 
-              {body === 'signature' && ( // '서명하기' 모달
+              {modalType === 'signature' && ( // '서명하기' 모달
                 <SignatureModal
-                  isOpen={isModalOpen}
-                  onRequestClose={closeModal}
+                  isOpen={modalOpen}
+                  onRequestClose={modalClose}
                 />
               )}
 
-              {body === 'contract' && ( // '상세보기' 모달 (대여자가 요청한 계약 요청서를 봄)
+              {modalType === 'request' && ( // '상세보기' 모달 (대여자가 요청한 계약 요청서를 봄)
                 <ContractRequestModal
-                  isOpen={isModalOpen}
-                  onRequestClose={closeModal}
+                  isOpen={modalOpen}
+                  onRequestClose={modalClose}
                   isFromStatusMessage
+                  modalChanger={modalChanger} // -> password
+                />
+              )}
+
+              {modalType === 'password' && (
+                <PasswordCheckModal
+                  isOpen={modalOpen}
+                  onRequestClose={modalClose}
+                  modalChanger={modalChanger} // -> signature
                 />
               )}
             </>
