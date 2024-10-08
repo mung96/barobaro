@@ -5,11 +5,13 @@ import baro.baro.domain.contract.dto.request.ContractConditionReq;
 import baro.baro.domain.product.dto.MyProductDto;
 import baro.baro.domain.product.dto.ProductDetails;
 import baro.baro.domain.product.dto.ProductDto;
+import baro.baro.domain.product.dto.SearchProductDto;
 import baro.baro.domain.product.dto.request.ProductAddReq;
 import baro.baro.domain.product.dto.request.ProductModifyReq;
 import baro.baro.domain.product.dto.response.MyProductListRes;
 import baro.baro.domain.product.dto.response.RecentlyUploadedListRes;
 import baro.baro.domain.product.dto.response.RecentlyViewListRes;
+import baro.baro.domain.product.dto.response.SearchProductRes;
 import baro.baro.domain.product.entity.ReturnType;
 import baro.baro.domain.product.service.ProductService;
 import baro.baro.global.exception.CustomException;
@@ -2211,6 +2213,29 @@ class ProductControllerTest {
     @Test
     public void 물품_검색_성공() throws Exception {
         // given
+        List<SearchProductDto> products = new ArrayList<>();
+
+        for(int i = 0; i < 10; i++) {
+            Long id = 10000L + i;
+
+            SearchProductDto dto = SearchProductDto.builder()
+                    .productId(id)
+                    .productMainImage("대표 이미지 " + id)
+                    .title("제목 " + id)
+                    .startDate(LocalDate.of(2024, 1, 2))
+                    .endDate(LocalDate.of(2024, 5, 24))
+                    .dong("역삼동")
+                    .uploadDate(calculateTime(LocalDateTime.now()))
+                    .rentalFee(100000)
+                    .wishCount(10*i)
+                    .build();
+
+            products.add(dto);
+        }
+
+        SearchProductRes result = new SearchProductRes(products);
+
+        when(productService.searchProduct(any(), anyLong())).thenReturn(result);
 
         // when
         ResultActions actions = mockMvc.perform(
@@ -2242,8 +2267,7 @@ class ProductControllerTest {
                                 .queryParameters(
                                         parameterWithName("keyword").description("검색 할 단어"),
                                         parameterWithName("category").description("카테고리"),
-                                        parameterWithName("locationId").description("지역 아이디"),
-                                        parameterWithName("lastProductId").description("마지막으로 조회한 물품 Id(Optional)").optional()
+                                        parameterWithName("locationId").description("지역 아이디")
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
@@ -2314,6 +2338,92 @@ class ProductControllerTest {
                                 )
                                 .requestSchema(Schema.schema("검색어 자동완성 Request"))
                                 .responseSchema(Schema.schema("검색어 자동완성 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 카테고리별_물품조회_성공() throws Exception {
+        // given
+        List<SearchProductDto> products = new ArrayList<>();
+
+        for(int i = 0; i < 10; i++) {
+            Long id = 10000L + i;
+
+            SearchProductDto dto = SearchProductDto.builder()
+                    .productId(id)
+                    .productMainImage("대표 이미지 " + id)
+                    .title("제목 " + id)
+                    .startDate(LocalDate.of(2024, 1, 2))
+                    .endDate(LocalDate.of(2024, 5, 24))
+                    .dong("역삼동")
+                    .uploadDate(calculateTime(LocalDateTime.now()))
+                    .rentalFee(100000)
+                    .wishCount(10*i)
+                    .build();
+
+            products.add(dto);
+        }
+
+        SearchProductRes result = new SearchProductRes(products);
+
+        when(productService.searchRecentlyProducts(any(), anyLong())).thenReturn(result);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                get("/products/recently")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .param("locationId","11010530")
+                        .param("category", "LIGHT_STICK")
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(SEARCH_PRODUCT_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(SEARCH_PRODUCT_OK.getMessage()))
+                .andDo(document(
+                        "카테고리별 물품 조회 성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Product API")
+                                .summary("카테고리별 물품 조회 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .queryParameters(
+                                        parameterWithName("category").description("카테고리"),
+                                        parameterWithName("locationId").description("지역 아이디")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body.products[].productId").type(NUMBER)
+                                                        .description("대여 물품 아이디"),
+                                                fieldWithPath("body.products[].productMainImage").type(STRING)
+                                                        .description("대여 물품 대표 이미지"),
+                                                fieldWithPath("body.products[].title").type(STRING)
+                                                        .description("대여 물품 제목"),
+                                                fieldWithPath("body.products[].startDate").type(STRING)
+                                                        .description("대여 시작일"),
+                                                fieldWithPath("body.products[].endDate").type(STRING)
+                                                        .description("대여 마감일"),
+                                                fieldWithPath("body.products[].dong").type(STRING)
+                                                        .description("거래 희망 동 정보"),
+                                                fieldWithPath("body.products[].uploadDate").type(STRING)
+                                                        .description("게시글 작성일"),
+                                                fieldWithPath("body.products[].rentalFee").type(NUMBER)
+                                                        .description("대여비"),
+                                                fieldWithPath("body.products[].wishCount").type(NUMBER)
+                                                        .description("찜한 사람 수")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("물품 검색 Request"))
+                                .responseSchema(Schema.schema("물품 검색 Response"))
                                 .build()
                         ))
                 );

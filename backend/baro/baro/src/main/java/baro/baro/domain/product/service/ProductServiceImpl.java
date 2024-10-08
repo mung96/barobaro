@@ -9,14 +9,15 @@ import baro.baro.domain.location.entity.Location;
 import baro.baro.domain.location.repository.LocationRepository;
 import baro.baro.domain.member.entity.Member;
 import baro.baro.domain.member.repository.MemberRepository;
-import baro.baro.domain.product.dto.MyProductDto;
-import baro.baro.domain.product.dto.ProductDetails;
-import baro.baro.domain.product.dto.ProductDto;
+import baro.baro.domain.product.dto.*;
 import baro.baro.domain.product.dto.request.ProductAddReq;
 import baro.baro.domain.product.dto.request.ProductModifyReq;
+import baro.baro.domain.product.dto.request.RecentlyProductsReq;
+import baro.baro.domain.product.dto.request.SearchProductsReq;
 import baro.baro.domain.product.dto.response.MyProductListRes;
 import baro.baro.domain.product.dto.response.RecentlyUploadedListRes;
 import baro.baro.domain.product.dto.response.RecentlyViewListRes;
+import baro.baro.domain.product.dto.response.SearchProductRes;
 import baro.baro.domain.product.entity.Category;
 import baro.baro.domain.product.entity.Product;
 import baro.baro.domain.product.entity.ProductStatus;
@@ -25,12 +26,18 @@ import baro.baro.domain.product.repository.ProductRepository;
 import baro.baro.domain.product_image.dto.request.ProductImageReq;
 import baro.baro.domain.product_image.repository.ProductImageRepository;
 import baro.baro.domain.wish_list.repository.WishListRepository;
+import baro.baro.global.elastic_search.domain.EsProduct;
+import baro.baro.global.elastic_search.service.EsKeywordService;
+import baro.baro.global.elastic_search.service.EsProductService;
 import baro.baro.global.event.UnlockEvent;
 import baro.baro.global.exception.CustomException;
+import baro.baro.global.feigin_client.dto.response.NaverSearchRes;
+import baro.baro.global.feigin_client.service.SearchFeignClientCustom;
 import baro.baro.global.s3.Images3Service;
 import baro.baro.global.utils.RedisUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -45,6 +52,7 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 
 import static baro.baro.domain.chat_room.entity.RentalStatus.AVAILABLE;
+import static baro.baro.domain.product.entity.Category.ALL;
 import static baro.baro.domain.product.validator.ProductValidator.validateProductAddRequest;
 import static baro.baro.domain.product.validator.ProductValidator.validateProductModifyRequest;
 import static baro.baro.global.statuscode.ErrorCode.*;
@@ -67,6 +75,15 @@ public class ProductServiceImpl implements ProductService {
     private final WishListRepository wishListRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ApplicationEventPublisher eventPublisher;
+    private final EsProductService esProductService;
+    private final EsKeywordService esKeywordService;
+    private final SearchFeignClientCustom searchFeignClient;
+
+    @Value("${NAVER_ID}")
+    private String naverId;
+
+    @Value("${NAVER_SECRET}")
+    private String naverSecret;
 
     @Override
     @Transactional
@@ -109,6 +126,9 @@ public class ProductServiceImpl implements ProductService {
 
                     productImageRepository.save(productImageReq.toEntity(product, member));
                 });
+
+        esProductService.saveEsProduct(product.getId(), product.getTitle(),
+                product.getLocationId(), product.getCategory().name());
 
         return ProductDetails.toDto(product, member, imageUrls, contractConditionDto, true);
     }
@@ -356,4 +376,61 @@ public class ProductServiceImpl implements ProductService {
 
         return imageUrls;
     }
+
+    @Override
+    public SearchProductRes searchProduct(SearchProductsReq searchProductsReq, Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
+        Pageable pageable = PageRequest.of(0, PRODUCT_SIZE);
+
+        NaverSearchRes naverSearchRes = searchFeignClient.naverSearch(searchProductsReq.getKeyword(),
+                naverId, naverSecret);
+
+        String keyword = naverSearchRes.getErrata().equals("") ? searchProductsReq.getKeyword() : naverSearchRes.getErrata();
+
+        esKeywordService.saveEsKeyword(keyword);
+        List<Long> esProducts;
+        List<SearchProductTmpDto> tmpProducts;
+
+        if(Category.valueOf(searchProductsReq.getCategory().toUpperCase()) == ALL) {
+            esProducts = esProductService.searchProduct(keyword,
+                            searchProductsReq.getLocationId(), searchProductsReq.getCategory())
+                    .stream()
+                    .map(EsProduct::getId)
+                    .toList();
+
+            tmpProducts = productRepository.findByProductIdIn(esProducts, pageable);
+        } else {
+            esProducts = esProductService.searchProduct(keyword,
+                            searchProductsReq.getLocationId(), searchProductsReq.getCategory())
+                    .stream()
+                    .map(EsProduct::getId)
+                    .toList();
+
+            tmpProducts = productRepository.findByProductIdIn(esProducts, pageable);
+        }
+
+        List<SearchProductDto> products = tmpProducts.stream()
+                .map(SearchProductDto::toDto)
+                .toList();
+
+        return new SearchProductRes(products);
+    }
+
+    public SearchProductRes searchRecentlyProducts(RecentlyProductsReq recentlyProductsReq, Long memberId) {
+        Pageable pageable = PageRequest.of(0, PRODUCT_SIZE);
+
+        Category category = Category.valueOf(recentlyProductsReq.getCategory());
+
+        List<SearchProductTmpDto> tmpProducts = productRepository.findRecentlyCategoryProducts(memberId, category,
+                recentlyProductsReq.getLocationId(), pageable);
+
+        List<SearchProductDto> result = tmpProducts.stream()
+                .map(SearchProductDto::toDto)
+                .toList();
+
+        return new SearchProductRes(result);
+    }
+
 }

@@ -1,0 +1,8 @@
+{
+  "properties" : {
+    "id" : {"type" :  "keyword"},
+    "title": {"type":  "text",  "analyzer":  "korean"},
+    "locationId": {"type" :  "keyword"},
+    "category" : {"type" :  "keyword"}
+  }
+}
