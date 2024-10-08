@@ -1,7 +1,7 @@
 'use client';
 
 import { useFunnel } from '@use-funnel/browser';
-import { useEffect, useState } from 'react';
+import {  useState } from 'react';
 import PostInfoInput from '@/components/post/PostInfoInput';
 import RentalInfoInput from '@/components/post/RentalInfoInput';
 import {
@@ -9,8 +9,6 @@ import {
   RentalInfoStep,
   ContractInfoStep,
   ContractPreviewStep,
-  PostInfo,
-  RentalInfo,
 } from '@/types/domains/product';
 
 import PageTransition, {

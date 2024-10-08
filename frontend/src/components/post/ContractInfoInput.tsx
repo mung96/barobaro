@@ -20,10 +20,6 @@ type Props = {
 function ContractInfoInput({ onTotalStepChange, onNext, onPrev }: Props) {
   const [value, setValue] = useState('YES');
 
-  useEffect(() => {
-    const totalStep = totalStepByContractYN(value);
-    onTotalStepChange(totalStep);
-  }, [value]);
 
   return (
     <div className="flex flex-col gap-2">
@@ -47,7 +43,7 @@ function ContractInfoInput({ onTotalStepChange, onNext, onPrev }: Props) {
           <OwnerInfoCard />
         </div>
       )}
- <div className="fixed left-0 w-[100vw] bottom-0 px-4 py-3 flex gap-6 border-t-[1px]">
+      <div className="fixed left-0 w-[100vw] bottom-0 px-4 py-3 flex gap-6 border-t-[1px] z-10 bg-white">
         <Button onClick={onPrev} width="100%" height="36px" color="gray">
           <p className="text-xs">이전</p>
         </Button>
