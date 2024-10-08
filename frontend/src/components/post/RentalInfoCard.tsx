@@ -3,18 +3,13 @@ import { HiOutlineCurrencyDollar } from 'react-icons/hi2';
 import { IoCalendarClearOutline } from 'react-icons/io5';
 import ContractWidget from '@/components/post/ContractWidget';
 import ContractCardBox from '@/components/post/ContractCardBox';
-import { ContractFormFields } from '@/hooks/post/usePostFormModel';
 import { useProfileObject } from '@/store/useMyProfile';
-import { ContractInfoStep, ContractPreviewStep, PostInfoStep, RentalInfoStep } from '@/types/domains/product';
 import { calculateDaysBetween, formatDate } from '@/utils/dayUtil';
+import { InputProps } from '@/components/post/ContractInfoInput';
 
-type Props = {
-  fields: ContractFormFields;
-  context: PostInfoStep | RentalInfoStep | ContractInfoStep | ContractPreviewStep;
 
-}
 
-function RentalInfoCard({ fields, context }: Props) {
+function RentalInfoCard({ fields, context }: InputProps) {
   const profile = useProfileObject();
 
   return (
