@@ -7,6 +7,9 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.UUID;
 
 import static baro.baro.global.formatter.DateFormatter.convertToDateFormat;
@@ -28,9 +31,13 @@ public class PdfS3Service extends S3Service {
     }
 
     public InputStream download(String fileName) throws IOException {
-        return downloadFile(fileName);
+        return downloadFile("contract/"+fileName);
     }
 
+    public LocalDateTime lastModified(String fileName){
+        Date date = getlastModified("contract/"+fileName);
+        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+    }
     private void validatePdfExtension(String extension) {
         if (!extension.equals("pdf")) {
             throw new CustomException(FILE_EXTENSION_FAIL);

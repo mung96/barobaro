@@ -20,9 +20,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.UUID;
+import java.util.stream.IntStream;
 
 import static baro.baro.domain.location.validator.LocationValidator.validateLocationAddRequest;
-import static baro.baro.global.statuscode.ErrorCode.*;
+import static baro.baro.global.statuscode.ErrorCode.ALREADY_EXIST_MEMBER;
+import static baro.baro.global.statuscode.ErrorCode.LOCATION_NOT_FOUND;
 
 @Slf4j
 @Service
@@ -48,37 +50,52 @@ public class MemberServiceImpl implements MemberService {
             throw new CustomException(ALREADY_EXIST_MEMBER);
         }
 
-        if(file != null || !file.isEmpty()) {
+        if(file != null && !file.isEmpty()) {
             String newImageUrl = images3Service.upload(file,  "profile");
 
             signupReq.setProfileImage(newImageUrl);
-        }
 
-        if(signupReq.getProfileImage() == null || signupReq.getProfileImage().isEmpty()) {
-            signupReq.setProfileImage(bucketUrl + "profile/default.png");
+            log.info("이미지 파일 성공!");
+        } else {
+            if(signupReq.getProfileImage() == null || signupReq.getProfileImage().isEmpty()) {
+                signupReq.setProfileImage(bucketUrl + "/profile/default.png");
+                log.info("없으니까 디폴트값!");
+            }
         }
 
         Member member = signupReq.toEntity(uuid);
 
+        log.info("멤버 Entity 성공");
         validateLocationAddRequest(signupReq.getLocations());
+
+        log.info("지역 예외처리 통과");
 
         memberRepository.save(member);
 
-        signupReq.getLocations()
-                .forEach(location -> {
-                    locationRepository.findById(location.getLocationId())
+        log.info("지역 멤버DB에저장~");
+
+        IntStream.range(0, signupReq.getLocations().size())
+                        .forEach(index -> {
+                            Long locationId = signupReq.getLocations().get(index);
+
+                            locationRepository.findById(locationId)
                                     .orElseThrow(() -> new CustomException(LOCATION_NOT_FOUND));
 
-                    memberLocationRepository.insertMemberLocations(member.getId(),
-                            location.getLocationId(),
-                            location.getIsMain());
-                });
+                            if(index == 0) {
+                                memberLocationRepository.insertMemberLocations(member.getId(),
+                                        locationId, true);
+                            } else {
+                                memberLocationRepository.insertMemberLocations(member.getId(),
+                                        locationId, true);
+                            }
+                        });
 
         JwtRedis jwtRedis = signupReq.toRedis(uuid, member.getId(), jwtService.createRefreshToken(uuid));
         redisUtils.setData(uuid, jwtRedis);
 
         return jwtService.createAccessToken(uuid, false);
     }
+
 
 
     @Override

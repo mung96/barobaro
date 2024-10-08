@@ -25,6 +25,7 @@ import baro.baro.domain.product.repository.ProductRepository;
 import baro.baro.domain.product_image.dto.request.ProductImageReq;
 import baro.baro.domain.product_image.repository.ProductImageRepository;
 import baro.baro.domain.wish_list.repository.WishListRepository;
+import baro.baro.global.elastic_search.service.EsProductService;
 import baro.baro.global.event.UnlockEvent;
 import baro.baro.global.exception.CustomException;
 import baro.baro.global.s3.Images3Service;
@@ -67,6 +68,7 @@ public class ProductServiceImpl implements ProductService {
     private final WishListRepository wishListRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ApplicationEventPublisher eventPublisher;
+    private final EsProductService esProductService;
 
     @Override
     @Transactional
@@ -109,6 +111,8 @@ public class ProductServiceImpl implements ProductService {
 
                     productImageRepository.save(productImageReq.toEntity(product, member));
                 });
+
+        esProductService.saveEsProduct(product.getId(), product.getTitle());
 
         return ProductDetails.toDto(product, member, imageUrls, contractConditionDto, true);
     }

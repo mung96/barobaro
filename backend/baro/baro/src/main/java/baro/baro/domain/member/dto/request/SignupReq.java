@@ -1,7 +1,6 @@
 package baro.baro.domain.member.dto.request;
 
 import baro.baro.domain.member.entity.Member;
-import baro.baro.domain.member_location.dto.request.MemberLocationReq;
 import baro.baro.global.oauth.jwt.entity.JwtRedis;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -27,7 +26,7 @@ public class SignupReq {
     @NotNull
     private String nickname;
 
-    private List<MemberLocationReq> locations;
+    private List<Long> locations;
 
     public Member toEntity(String uuid){
         return Member.builder()

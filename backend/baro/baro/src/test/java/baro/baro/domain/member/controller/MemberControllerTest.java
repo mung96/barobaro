@@ -5,7 +5,6 @@ import baro.baro.domain.member.dto.request.ProfileModifyReq;
 import baro.baro.domain.member.dto.request.SignupReq;
 import baro.baro.domain.member.dto.response.SignUpInfoRes;
 import baro.baro.domain.member.service.MemberService;
-import baro.baro.domain.member_location.dto.request.MemberLocationReq;
 import baro.baro.global.exception.CustomException;
 import baro.baro.global.oauth.jwt.service.JwtService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
@@ -45,7 +44,8 @@ import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.JsonFieldType.*;
+import static org.springframework.restdocs.payload.JsonFieldType.OBJECT;
+import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -98,16 +98,16 @@ class MemberControllerTest {
         req.setNickname("Member123");
         req.setProfileImage("s3 url");
 
-        List<MemberLocationReq> memberLocationReq = new ArrayList<>();
-        memberLocationReq.add(new MemberLocationReq(11010530L, true));
-        memberLocationReq.add(new MemberLocationReq(11010531L, false));
+        List<Long> memberLocationReq = new ArrayList<>();
+        memberLocationReq.add(11010530L);
+        memberLocationReq.add(11010540L);
 
         req.setLocations(memberLocationReq);
 
         MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", objectMapper.writeValueAsBytes(req));
         MockMultipartFile file = new MockMultipartFile("file", "sample.jpg", "image/jpeg", "image/sample.jpg".getBytes());
 
-        when(memberService.signup(any(), any())).thenReturn(MEMBER_CREATED.getMessage());
+        when(memberService.signup(any(), any())).thenReturn(jwtToken);
 
         //when
         ResultActions actions = mockMvc.perform(
@@ -134,8 +134,8 @@ class MemberControllerTest {
                                 .summary("회원가입 API")
                                 .responseFields(
                                         getCommonResponseFields(
-                                                fieldWithPath("body").type(NULL)
-                                                        .description("본문 없음")
+                                                fieldWithPath("body").type(STRING)
+                                                        .description("토큰")
                                         )
                                 )
                                 .requestSchema(Schema.schema("회원 가입 Request"))
@@ -154,9 +154,9 @@ class MemberControllerTest {
         req.setNickname("Member1234535");
         req.setProfileImage("s3 url");
 
-        List<MemberLocationReq> memberLocationReq = new ArrayList<>();
-        memberLocationReq.add(new MemberLocationReq(11010530L, true));
-        memberLocationReq.add(new MemberLocationReq(11010540L, false));
+        List<Long> memberLocationReq = new ArrayList<>();
+        memberLocationReq.add(11010530L);
+        memberLocationReq.add(11010531L);
 
         req.setLocations(memberLocationReq);
 
@@ -212,9 +212,9 @@ class MemberControllerTest {
         req.setNickname("Member12");
         req.setProfileImage("s3 url");
 
-        List<MemberLocationReq> memberLocationReq = new ArrayList<>();
-        memberLocationReq.add(new MemberLocationReq(11010530L, true));
-        memberLocationReq.add(new MemberLocationReq(11010531L, false));
+        List<Long> memberLocationReq = new ArrayList<>();
+        memberLocationReq.add(11010530L);
+        memberLocationReq.add(11010531L);
 
         req.setLocations(memberLocationReq);
 
@@ -256,46 +256,6 @@ class MemberControllerTest {
                                 )
                                 .requestSchema(Schema.schema("회원 가입 Request"))
                                 .responseSchema(Schema.schema("회원 가입 Response"))
-                                .build()
-                        ))
-                );
-    }
-
-    @Test
-    public void 로그아웃_성공() throws Exception {
-        //given
-
-        //when
-        ResultActions actions = mockMvc.perform(
-                get("/members/logout")
-                        .header("Authorization", jwtToken)
-                        .contentType(MediaType.APPLICATION_JSON)
-        );
-
-        //then
-        actions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.header.httpStatusCode").value(MEMBER_LOGOUT.getHttpStatusCode()))
-                .andExpect(jsonPath("$.header.message").value(MEMBER_LOGOUT.getMessage()))
-                .andDo(document(
-                        "로그아웃",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        resource(ResourceSnippetParameters.builder()
-                                .tag("Member API")
-                                .summary("로그아웃 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization")
-                                                .description("JWT 토큰")
-                                )
-                                .responseFields(
-                                        getCommonResponseFields(
-                                                fieldWithPath("body").type(NULL)
-                                                        .description("본문 없음")
-                                        )
-                                )
-                                .requestSchema(Schema.schema("로그아웃 Request"))
-                                .responseSchema(Schema.schema("로그아웃 Response"))
                                 .build()
                         ))
                 );
