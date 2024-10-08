@@ -30,11 +30,6 @@ export const axiosInstance = axios.create({
     baseURL: '/api',
     withCredentials: true, // 도메인이 다른 서버에 쿠키 요청시 필요
     timeout: NETWORK.TIMEOUT, // TimeOut 시간이 지나도 응답이 안오면 에러처리됨
-    headers: {
-      Authorization:
-          `Bearer ${process.env.NEXT_PUBLIC_AUTH_TOKEN}`
-          // `Bearer ${localStorage.getItem('token')}`,
-    },
   });
 
 //TODO: 인터셉터, 요청 후 토큰오면 담자.
@@ -49,7 +44,6 @@ axiosInstance.interceptors.request.use(
   },
   () => {},
 );
-
 
 //요청 후에 Forbidden오면 token 다시 요청
 axiosInstance.interceptors.response.use(
