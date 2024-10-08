@@ -1,8 +1,11 @@
+import { END_POINT, SERVER_BASE_URL } from '@/constants/api';
 import { Client, Message } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 
 const API_URL = 'http://localhost:8080';
 const SOCKET_URL = `${API_URL}/ws`; // 로컬 테스트 시 사용
+// const API_URL = SERVER_BASE_URL;
+// const SOCKET_URL = `${API_URL}/wss`;
 
 export default class WebSocketClient {
   private client: Client;
@@ -13,7 +16,9 @@ export default class WebSocketClient {
     this.client = new Client({
       webSocketFactory: () => new SockJS(SOCKET_URL),
       connectHeaders: {
-        UserId: userIdVal,
+        // 이 부분 수정해야 함
+        Authorization:
+          'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc0NlcnRpZmljYXRlZCI6ZmFsc2UsInN1YiI6IjE2MDRiNzcyLWFkYzAtNDIxMi04YTkwLTgxMTg2YzU3ZjU5OCIsImlzcyI6Ind3dy5zYW1zdW5nLmNvbSIsInR5cGUiOiJhY2Nlc3NfdG9rZW4iLCJleHAiOjE3MzEzNDc4MTZ9.6u9YzSMA0OqD3bw4la-qmgy77jJqUnoz_5bMsDNx-5zSlJumHiJYxCEca5hj-lmehwqGVREgXaRIY231QIyJMA',
       },
       debug: () => {
         // console.log('STOMP: ' + str);

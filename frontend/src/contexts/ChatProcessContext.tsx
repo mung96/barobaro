@@ -21,6 +21,9 @@ const ProcessProvider = ({ children, value }: ProcessProviderProps) => {
     setProcess(step);
   };
 
+  // const processSetter: (step: ProcessType) => void = value.processSetter;
+  // 얘가 setter를 건들기 때문에 주의해야 함
+
   return (
     <ProcessContext.Provider value={{ process, processSetter }}>
       {children}

@@ -26,6 +26,8 @@ export const END_POINT = {
   CONTRACT_SIGN_OWNER: 'contracts/sign/owner',
   CONTRACT_SIGN_RENTAL: 'contracts/sign/rental',
 
+  SOCKET_PUBLISH: 'wss/pub/chatrooms',
+  SOCKET_SUBSCRIBE: 'wss/sub/chatrooms',
 } as const;
 
 export const HTTP_STATUS_CODE = {
