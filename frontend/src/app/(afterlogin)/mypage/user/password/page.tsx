@@ -6,11 +6,12 @@ import KeyPadDelete from '@/components/(SVG_component)/(mypage)/KeyPadDelete';
 import usePasswordChange from '@/hooks/user/usePasswordModel';
 import useKeypad from '@/hooks/keypad/useKeyPadModel';
 import { useEffect } from  'react';
-import {patchPINApi} from "@/apis/passwordApi";
+import {getPINApi, patchPINApi} from "@/apis/passwordApi";
 
 export default function PasswordChange() {
   useEffect(() => {
     // patchPINApi()
+    getPINApi()
   }, [])
 
   // true인 경우 현재 비밀번호 확인 없이 비밀번호 입력 과정 진행 (신규유저 가정)
