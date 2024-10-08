@@ -4,9 +4,10 @@ type ButtonProps = {
   children: ReactNode;
   width: string;
   height: string;
-  onClick: () => void;
+  onClick?: () => void;
   disabled?: boolean;
   color?: 'blue' | 'gray';
+  type?:"button" | "submit" | "reset" ;
 };
 
 function Button({
@@ -16,10 +17,11 @@ function Button({
   onClick,
   disabled,
   color = 'blue',
+  type='button'
 }: ButtonProps) {
   return (
     <button
-      type="button"
+      type={type}
       onClick={onClick}
       disabled={disabled}
       style={{ width: `${width}`, height: `${height}` }}
