@@ -83,6 +83,7 @@ dependencies {
 	implementation 'com.itextpdf:sign:7.1.16'
 	implementation 'com.itextpdf:bouncy-castle-adapter:8.0.4'
 	implementation 'org.bouncycastle:bcprov-jdk15on:1.68'
+	implementation 'com.google.firebase:firebase-admin:9.3.0'
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 	implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
 	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
