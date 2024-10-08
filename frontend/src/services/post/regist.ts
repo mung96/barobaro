@@ -11,3 +11,4 @@ export default function convertRegistStepToStepNumber(step: PostProcess) {
 export const totalStepByContractYN = (contractYN: string) => {
   return !contractYN || contractYN === 'YES' ? 4 : 3;
 };
+

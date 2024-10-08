@@ -17,6 +17,7 @@ type ProductImageListProps = {
   deleteFile: (index: number) => void;
   images: Array<string | ArrayBuffer | null>;
   dropEnd: (result: DropResult) => void;
+  onChange:(images:File[])=>void;
 };
 
 function ProductImageList({
@@ -25,7 +26,7 @@ function ProductImageList({
   addFile,
   deleteFile,
   dropEnd,
-  images,
+  images,onChange
 }: ProductImageListProps) {
   return (
     <div className="flex gap-1 flex-col relative">
@@ -39,7 +40,9 @@ function ProductImageList({
             <FaCamera className="text-gray-300 w-7 h-7" />
             <p className="text-base">{images.length}/5</p>
             <input
-              onChange={(event) => addFile(Array.from(event.target.files!))}
+              onChange={(event) => {
+                addFile(Array.from(event.target.files!));
+                onChange(Array.from(event.target.files!))}}
               type="file"
               accept="image/*"
               className="hidden"

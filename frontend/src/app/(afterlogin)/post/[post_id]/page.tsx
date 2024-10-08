@@ -11,7 +11,6 @@ import PostCheckModal from '@/components/modal/PostCheckModal';
 import Header from '@/components/Header';
 import LikeButton from '@/components/(SVG_component)/LikeButton';
 import CalendarSVG from '@/components/(SVG_component)/Calendar';
-import { faker } from '@faker-js/faker';
 import {getProductsDetail} from "@/apis/productDetailApi";
 
 export default function PostDetail() {
@@ -87,7 +86,7 @@ export default function PostDetail() {
             </div>
           ) : null}
         </div>
-        <PictureCarousel />
+        <PictureCarousel data={postInfo.imageList}/>
         <div className="bg-gray-500 w-[90%] h-[1px] my-3" />
         <PostContent data={postInfo} />
         <KakaoMap
@@ -102,18 +101,18 @@ export default function PostDetail() {
       <div className="-z-0 fixed bottom-0 -z-0 max-w-[500px] w-[100%] h-[60px] bg-white flex items-center">
         <div className="flex items-center justify-center w-full">
           <div className="mx-5">
-            <LikeButton isWished />
+            <LikeButton isWished={postInfo.isWished} />
           </div>
           <div className="h-[42px] w-[1px] bg-gray-500" />
           <div className="flex flex-col flex-1 mx-3">
             <div className="flex items-center">
               <CalendarSVG />
               <p className="text-gray-300 text-[12px]">
-                {layoutData.startDate}~{layoutData.endDate}
+                {postInfo.startDate}~{postInfo.endDate}
               </p>
             </div>
             <p className="text-black-100 text-[16px] font-bold">
-              {layoutData.rentalFee}원/일
+              {postInfo.rentalFee}원/일
             </p>
           </div>
           <button

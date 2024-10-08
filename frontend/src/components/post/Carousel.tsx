@@ -11,18 +11,13 @@ import Image from 'next/image';
 import type { Swiper as SwiperType } from 'swiper';
 import CarouselButtonSVG from '@/components/post/CarouselButtonSVG';
 
-export default function PictureCarousel() {
+export default function PictureCarousel({data}:{data:string[]}) {
   const [imageSize, setImageSize] = useState(0);
   const [pictureList, setPictureList] = useState<string[]>([]);
 
   useEffect(() => {
     setImageSize(window.innerWidth * 0.7);
-    setPictureList([
-      faker.image.urlLoremFlickr(),
-      faker.image.urlLoremFlickr(),
-      faker.image.urlLoremFlickr(),
-      faker.image.urlLoremFlickr(),
-    ]);
+    setPictureList(data);
   }, []);
 
   const containerStyle: CSSProperties = {

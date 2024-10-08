@@ -5,7 +5,7 @@ export type SignUpProcess = 'MyInfoStep' | 'MyTownStep';
 
 export type MyInfo = {
   nickname: string;
-  profile: string;
+  profile: File|string;
 };
 
 export type MyTown = {
