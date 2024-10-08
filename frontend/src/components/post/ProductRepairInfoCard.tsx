@@ -1,17 +1,17 @@
-import { useState } from 'react';
 import { FaCheck } from 'react-icons/fa6';
 import ContractCardBox from '@/components/post/ContractCardBox';
 import CheckBox from '@/components/shared/CheckBox';
 import { REPAIR_VENDOR } from '@/constants/product';
+import { InputProps } from '@/components/post/ContractInfoInput';
+import ErrorMessage from '@/components/shared/ErrorMessage';
 
-function ProductRepairInfoCard() {
-  const [values, setValues] = useState<string[]>([]);
+function ProductRepairInfoCard({ fields, context, errors }: InputProps) {
   return (
     <ContractCardBox title="물건 수리" step={2}>
       <CheckBox.Group
-        values={values}
+        values={fields.repairVendor.field.value as string[]}
         label=""
-        onChange={setValues}
+        onChange={fields.repairVendor.field.onChange}
         className="flex flex-col gap-2"
       >
         {REPAIR_VENDOR.map((vendor) => (
@@ -26,6 +26,7 @@ function ProductRepairInfoCard() {
           </CheckBox.Item>
         ))}
       </CheckBox.Group>
+      <ErrorMessage isInvalid={fields.repairVendor.fieldState.invalid}>{errors.repairVendor?.message}</ErrorMessage>
     </ContractCardBox>
   );
 }
