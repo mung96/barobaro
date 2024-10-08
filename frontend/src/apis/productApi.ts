@@ -1,5 +1,6 @@
 import { axiosInstance } from '@/apis/axiosInstance';
 import { END_POINT } from '@/constants/api';
+import {ProductAddRequest} from "@/types/apis/productRequest";
 
 export const getLentProducts = async () => {
     const response = await axiosInstance.get(END_POINT.LENT);
