@@ -13,7 +13,7 @@ import { RentalFormFields, StepProps } from '@/hooks/post/usePostFormModel';
 
 type Props = {
   onPrev: () => void;
-  onNext: (data: RentalInfo) => void;
+  onNext: () => void;
 
   getValues:any;
   handleSubmit:any;
@@ -80,9 +80,7 @@ function RentalInfoInput({ onNext, onPrev ,context,fields,errors,getValues,handl
           <p className="text-base">뒤로</p>
         </Button>
 
-        {/* <Button type="submit"  disabled={!isValid} onClick={() => onNext(getValues())} width="100%" height="48px"> */}
-          
-        <Button type="submit"  disabled={false} width="100%" height="48px">        
+        <Button disabled={false} onClick={onNext} width="100%" height="48px">
           <p className="text-base">다음으로 가기</p>
         </Button>
       </div>
