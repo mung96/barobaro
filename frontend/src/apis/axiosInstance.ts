@@ -60,7 +60,7 @@ axiosInstance.interceptors.response.use(
       if (
           error?.response?.status === HTTP_STATUS_CODE.UNAUTHORIZED 
       ) {
-          
+          //providerType에 따라 다른 로직을 타야함
       }
   },
 );
