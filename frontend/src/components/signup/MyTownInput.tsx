@@ -2,7 +2,7 @@
 
 import { useController, useForm } from 'react-hook-form';
 import Button from '@/components/shared/Button';
-import { MyTown } from '@/types/domains/signup';
+import { MyInfoStep, MyTown, MyTownStep } from '@/types/domains/signup';
 import MyTownSearch from '@/components/signup/MyTownSearch';
 import { Dong } from '@/types/apis/location';
 import { postSignUp } from '@/apis/memberApi';
@@ -12,14 +12,22 @@ import { convertSignUpDateToRequest } from '@/services/signup/convert';
 
 type Props = {
   onPrev: () => void;
+  context: MyInfoStep | MyTownStep;
 };
 
-function MyTownInfo({ onPrev }: Props) {
+function MyTownInfo({ onPrev,context }: Props) {
   const router = useRouter();
+  const socialMember = useSocialMemberState();
 
   const signUp = async () =>{
+    const member = {
+      providerType: socialMember?.providerType!,
+      email: socialMember?.email!,
+      nickName: context.nickname! ,
+      profileImage: socialMember?.profileImage!,
+    }
     try{
-      const response =  await postSignUp(convertSignUpDateToRequest(socialMember!,getValues()),socialMember?.profileImage! as File)
+      const response =  await postSignUp(convertSignUpDateToRequest(member,getValues()),context.profile)
       router.push('/home');
     }catch(error){
       console.error('API 요청 중 오류 발생:', error);
@@ -38,7 +46,6 @@ function MyTownInfo({ onPrev }: Props) {
       maxLength: { value: 3, message: '지역은 3개까지 설정 가능해요.' },
     },
   });
-  const socialMember = useSocialMemberState();
 
 
   return (
