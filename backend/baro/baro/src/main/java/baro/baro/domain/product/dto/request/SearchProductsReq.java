@@ -9,7 +9,5 @@ public class SearchProductsReq {
     private String category;
 
     private Long locationId;
-
-    private Long lastProductId;
 }
 

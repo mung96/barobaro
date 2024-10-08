@@ -1,7 +1,6 @@
 package baro.baro.domain.product.dto;
 
-import baro.baro.domain.location.entity.Location;
-import baro.baro.domain.product.entity.Product;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
@@ -11,6 +10,7 @@ import static baro.baro.global.formatter.DateFormatter.calculateTime;
 
 @Data
 @Builder
+@AllArgsConstructor
 public class SearchProductDto {
     private Long productId;
 
@@ -30,15 +30,15 @@ public class SearchProductDto {
 
     private Integer wishCount;
 
-    public static SearchProductDto toDto(Product product, String mainImageUrl, Location location) {
+    public static SearchProductDto toDto(SearchProductTmpDto product) {
         return SearchProductDto.builder()
-                .productId(product.getId())
-                .productMainImage(mainImageUrl)
+                .productId(product.getProductId())
+                .productMainImage(product.getProductMainImage())
                 .title(product.getTitle())
                 .startDate(product.getStartDate())
                 .endDate(product.getEndDate())
-                .dong(location.getDong())
-                .uploadDate(calculateTime(product.getCreatedAt()))
+                .dong(product.getDong())
+                .uploadDate(calculateTime(product.getUploadDate()))
                 .rentalFee(product.getRentalFee())
                 .wishCount(product.getWishCount())
                 .build();
