@@ -30,6 +30,16 @@ export type RentalFormFields = {
   returnTypeList: UseControllerReturn<PostFunnelStep>;
   returnAddress: UseControllerReturn<PostFunnelStep>;
 };
+export type ContractFormFields = {
+  productName: UseControllerReturn<PostFunnelStep>;
+  serialNumber: UseControllerReturn<PostFunnelStep>;
+  repairVendor: UseControllerReturn<PostFunnelStep>;
+  overdueCriteria: UseControllerReturn<PostFunnelStep>;
+  overdueFee: UseControllerReturn<PostFunnelStep>;
+  theftCriteria: UseControllerReturn<PostFunnelStep>;
+  refundDeadline: UseControllerReturn<PostFunnelStep>;
+};
+
 const usePostFormModel = () => {
   const {
     getValues,
@@ -39,6 +49,7 @@ const usePostFormModel = () => {
   } = useForm<PostFunnelStep>({
     mode: 'onChange',
   });
+  //게시글 필드
   const title = useController<PostFunnelStep>({
     control,
     name: 'title',
@@ -60,6 +71,7 @@ const usePostFormModel = () => {
     ...POST_FIELD_CONFIG.BODY,
   });
 
+  //대여정보
   const rentalDuration = useController<PostFunnelStep>({
     control,
     name: 'rentalDuration',
@@ -85,6 +97,44 @@ const usePostFormModel = () => {
     name: 'returnAddress',
     ...POST_FIELD_CONFIG.RETURN_ADDRESS,
   });
+
+  //계약서
+  const productName = useController<PostFunnelStep>({
+    control,
+    name: 'productName',
+    ...POST_FIELD_CONFIG.PRODUCT_NAME,
+  });
+  const serialNumber = useController<PostFunnelStep>({
+    control,
+    name: 'serialNumber',
+    ...POST_FIELD_CONFIG.SERIAL_NUMBER,
+  });
+  const repairVendor = useController<PostFunnelStep>({
+    control,
+    name: 'repairVendor',
+    ...POST_FIELD_CONFIG.REPAIR_VENDOR,
+  });
+  const overdueCriteria = useController<PostFunnelStep>({
+    control,
+    name: 'overdueCriteria',
+    ...POST_FIELD_CONFIG.OVERDUE_CRITERIA,
+  });
+  const overdueFee = useController<PostFunnelStep>({
+    control,
+    name: 'overdueFee',
+    ...POST_FIELD_CONFIG.OVERDUE_FEE,
+  });
+  const theftCriteria = useController<PostFunnelStep>({
+    control,
+    name: 'theftCriteria',
+    ...POST_FIELD_CONFIG.THEFT_CRITERIA,
+  });
+  const refundDeadline = useController<PostFunnelStep>({
+    control,
+    name: 'refundDeadline',
+    ...POST_FIELD_CONFIG.REFUND_DEADLINE,
+  });
+
   const postFieldList: PostFormFields = {
     title: title,
     body: body,
@@ -100,7 +150,15 @@ const usePostFormModel = () => {
     rentalAddress: rentalAddress,
   };
 
-  const contractFieldList = {};
+  const contractFieldList: ContractFormFields = {
+    productName: productName,
+    serialNumber: serialNumber,
+    repairVendor: repairVendor,
+    overdueCriteria: overdueCriteria,
+    overdueFee: overdueFee,
+    theftCriteria: theftCriteria,
+    refundDeadline: refundDeadline,
+  };
   //   const convertProductDataToRequest = ()=>{
   //     //undefined type가드를 활용해야하는데 시간이없네
   //     return {
@@ -121,6 +179,7 @@ const usePostFormModel = () => {
   return {
     postFieldList,
     rentalFieldList,
+    contractFieldList,
     getValues,
     errors,
     isValid,
