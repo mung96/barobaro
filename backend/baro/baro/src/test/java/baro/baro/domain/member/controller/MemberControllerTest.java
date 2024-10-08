@@ -432,6 +432,7 @@ class MemberControllerTest {
 
         MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", objectMapper.writeValueAsBytes(req));
         MockMultipartFile file = new MockMultipartFile("file", "sample.jpg", "image/jpeg", "image/sample.jpg".getBytes());
+        ProfileDetailsRes result = new ProfileDetailsRes("테스트이미지","테스트닉네임","테스트전화번호","테스트이메일","테스트이름",Boolean.TRUE)
 
         // when
         ResultActions actions = mockMvc.perform(
@@ -472,7 +473,10 @@ class MemberControllerTest {
                                                 fieldWithPath("body.email").type(STRING)
                                                         .description("이메일"),
                                                 fieldWithPath("body.name").type(STRING)
-                                                        .description("이름")
+                                                        .description("이름"),
+                                                fieldWithPath("body.isAuthenticated").type(BOOLEAN)
+                                                        .description("본인인증 여부")
+                                                
                                         )
                                 )
                                 .requestSchema(Schema.schema("프로필 수정 Request"))
