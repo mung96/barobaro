@@ -34,7 +34,8 @@ export default function CategoryDetailContent() {
         <div className="fixed top-0 left-0 right-0 z-10 bg-white">
           <Header pageName="홈" hasPrevBtn hasSearchBtn hasAlertBtn/>
           <CategorySearch now={categoryData} searchData={searchData}/>
-          {searchData} 검색 결과
+        </div>
+        <div className="mt-[100px]">
           <ItemList data="search"/>
         </div>
       </div>
