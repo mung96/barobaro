@@ -2,10 +2,9 @@ import Image from 'next/image';
 import Category from '@/components/Category';
 import SearchBar from '@/components/SearchBar';
 import Cards from '@/components/(recent_list_component)/Cards';
-import NavBarLayout from '@/layout/NavBarLayout';
 import Logo from '@/../public/assets/png/barobaro_logo.png';
 
-export default function Home() {
+function Home() {
   return (
     <>
       <br />
@@ -25,3 +24,4 @@ export default function Home() {
     </>
   );
 }
+export default Home;

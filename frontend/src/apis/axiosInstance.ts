@@ -8,13 +8,6 @@ import {
   SERVER_BASE_URL,
   // SERVER_BASE_URL,
 } from '@/constants/api';
-let token = '';
-if (location.port === '3001') {
-    localStorage.setItem('token', DummyToken!);
-} else if (location.port !== '3001') {
-    // accessToken = qufitAcessTokenB;
-    // localStorage.setItem('accessToken', qufitAcessTokenB);
-}
 
 export const kakaoInstance = axios.create({
   baseURL: KAKAO_BASE_URL,
