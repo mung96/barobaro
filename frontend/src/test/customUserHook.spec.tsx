@@ -28,6 +28,7 @@ describe('usePasswordModel', () => {
     await act(async () => {
       result.current.setInputPassword('123456');
     });
+    // 상황 : 등록할 비밀번호 등록 => 실패 => 다시 입력 => 재입력 성공 => 번호 등록 완료!
     expect(result.current.passwordMessage).toBe(
       '사용하실 비밀번호를 다시 한 번 입력해주세요',
     );
@@ -40,10 +41,16 @@ describe('usePasswordModel', () => {
     await act(async () => {
       result.current.setInputPassword('123456');
     });
-    expect(result.current.isFinished).toBe(true);
     expect(result.current.passwordMessage).toBe(
-      '비밀번호가 성공적으로 등록되었습니다.',
+      '사용하실 비밀번호를 다시 한 번 입력해주세요',
     );
+    await act(async () => {
+      result.current.setInputPassword('123456');
+    });
+    expect(result.current.passwordMessage).toBe(
+        '비밀번호가 성공적으로 등록되었습니다.',
+    );
+    expect(result.current.isFinished).toBe(true);
   });
 
   it('기존 유저의 비밀번호 수정 로직', async () => {
@@ -77,7 +84,13 @@ describe('usePasswordModel', () => {
       '일치하지 않습니다. 비밀번호를 다시 입력해주세요',
     );
     await act(async () => {
-      result.current.setInputPassword('111111');
+      result.current.setInputPassword('111113');
+    });
+    expect(result.current.passwordMessage).toBe(
+        '사용하실 비밀번호를 다시 한 번 입력해주세요',
+    );
+    await act(async () => {
+      result.current.setInputPassword('111113');
     });
     expect(result.current.isFinished).toBe(true);
     expect(result.current.passwordMessage).toBe(

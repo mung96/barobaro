@@ -1,7 +1,9 @@
-// import Swiper core and required modules
+'use client';
+
 import { Navigation, Pagination, A11y } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { useState } from 'react';
+import {useAccountList} from "@/store/useAccountStore";
 
 // Import Swiper styles
 import 'swiper/css';
@@ -13,26 +15,7 @@ import AddAccountSVG from '@/components/(SVG_component)/(mypage)/AddAccountSVG';
 import accountSort from '@/services/account/accountsort';
 // TODO : main == true 인 경우 맨 앞에 표시되도록
 export default function AccountCarousel() {
-  const accountsInfo: Account[] = [
-    {
-      bank: '국민은행',
-      accountNumber: '3333-05-681789',
-      accountId: 10000,
-      main: false,
-    },
-    {
-      bank: '신한은행',
-      accountNumber: '3333-05-681789',
-      accountId: 10001,
-      main: true,
-    },
-    {
-      bank: '국민은행',
-      accountNumber: '3333-05-681789',
-      accountId: 10002,
-      main: false,
-    },
-  ];
+  const accountsInfo = useAccountList();
   const accounts = accountSort(accountsInfo);
   const [selectedAccount, setSelectedAccount] = useState<number | null>(null);
   const handleAccountSelect = (accountInfo: Account) => {

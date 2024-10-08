@@ -1,75 +1,69 @@
+'use client';
+
 import Link from 'next/link';
 import HomeButton from './(SVG_component)/HomeButton';
 import FavoriteButton from './(SVG_component)/FavoriteButton';
 import PostButton from './(SVG_component)/PostButton';
 import MessageButton from './(SVG_component)/MessageButton';
 import MyPageButton from './(SVG_component)/MyPageButton';
+import { usePathname } from 'next/navigation';
+import { usePathStore, useSetPathStore } from '@/store/usePath';
+import { useEffect } from 'react';
 
-export default function NavBar({ current }: { current: string }) {
+const NavBarItemList = [
+  {id: 0, icon: (currentPath: string) => <HomeButton width='32' height='32' fill={currentPath === '/home' ? '#1A1E27' : '#B6BDC8'} />, label: '홈', path: '/home'},
+  {id: 1, icon: (currentPath: string) => <FavoriteButton width='28' height='28' fill={currentPath === '/like' ? '#1A1E27' : '#B6BDC8'} />, label: '관심내역', path: '/like'},
+  {id: 2, icon: (currentPath: string) => <PostButton width='28' height='28' fill={currentPath === '/post/regist' ? '#1A1E27' : '#B6BDC8'} />, label: '등록', path: '/post/regist'},
+  {id: 3, icon: (currentPath: string) => <MessageButton width='30' height='30' fill={currentPath === '/message' ? '#1A1E27' : '#B6BDC8'} />, label: '채팅', path: '/message'},
+  {id: 4, icon: (currentPath: string) => <MyPageButton width='32' height='32' fill={currentPath === '/mypage' ? '#1A1E27' : '#B6BDC8'} />, label: '마이페이지', path: '/mypage'}
+];
+
+const excludePathList = [
+  '/post/regist',
+  '/post/:id'  // 동적 세그먼트를 나타내는 패턴
+];
+
+function isPathExcluded(path: string): boolean {
+  return excludePathList.some(pattern => {
+    if (pattern.includes(':')) {
+      const regexPattern = pattern.replace(/:[\w]+/g, '[\\w-]+');
+      const regex = new RegExp(`^${regexPattern}$`);
+      return regex.test(path);
+    }
+    return pattern === path;
+  });
+}
+
+export default function NavBar() {
+  const pathname = usePathname();
+  const pathState = usePathStore();
+  const setPath = useSetPathStore();
+
+  useEffect(() => {
+    setPath(pathname);
+  }, [pathname, setPath]);
+
+  if (isPathExcluded(pathname)) {
+    return null; // NavBar를 렌더링하지 않음
+  }
+
   return (
-    <nav className="fixed bottom-0 bg-gray-400 h-12 w-full max-w-[500px] z-10 flex flex-col justify-center">
-      <div className="flex">
-        <Link
-          className="flex flex-1 flex-col items-center justify-center"
-          href="/home"
-        >
-          <HomeButton fill={current === 'home' ? '#1A1E27' : '#B6BDC8'} />
-          <p
-            className="text-xs text-nav_btn"
-            style={{ color: current === 'home' ? '#1A1E27' : '#B6BDC8' }}
-          >
-            홈
-          </p>
-        </Link>
-        <Link
-          className="flex flex-1 flex-col items-center justify-center"
-          href="/like"
-        >
-          <FavoriteButton fill={current === 'like' ? '#1A1E27' : '#B6BDC8'} />
-          <p
-            className="text-xs text-nav_btn"
-            style={{ color: current === 'like' ? '#1A1E27' : '#B6BDC8' }}
-          >
-            관심내역
-          </p>
-        </Link>
-        <Link
-          className="flex flex-1 flex-col items-center justify-center"
-          href="/post/regist"
-        >
-          <PostButton fill={current === 'post' ? '#1A1E27' : '#B6BDC8'} />
-          <p
-            className="text-xs text-nav_btn"
-            style={{ color: current === 'post' ? '#1A1E27' : '#B6BDC8' }}
-          >
-            등록
-          </p>
-        </Link>
-        <Link
-          className="flex flex-1 flex-col items-center justify-center"
-          href="/message"
-        >
-          <MessageButton fill={current === 'message' ? '#1A1E27' : '#B6BDC8'} />
-          <p
-            className="text-xs text-nav_btn"
-            style={{ color: current === 'message' ? '#1A1E27' : '#B6BDC8' }}
-          >
-            채팅
-          </p>
-        </Link>
-        <Link
-          className="flex flex-1 flex-col items-center justify-center"
-          href="/mypage"
-        >
-          <MyPageButton fill={current === 'mypage' ? '#1A1E27' : '#B6BDC8'} />
-          <p
-            className="text-xs text-nav_btn"
-            style={{ color: current === 'mypage' ? '#1A1E27' : '#B6BDC8' }}
-          >
-            마이페이지
-          </p>
-        </Link>
-      </div>
-    </nav>
+      <nav className="fixed flex bottom-0 bg-gray-400 h-[60px] w-full max-w-[500px] z-10 justify-center">
+        {NavBarItemList.map((item) => (
+            <Link
+                className="flex flex-1 flex-col items-center justify-center h-full gap-1"
+                href={item.path}
+                onClick={() => setPath(item.path)}
+                key={item.id}
+            >
+              {item.icon(pathState)}
+              <p
+                  className={`text-xs ${pathState === item.path ? 'text-[#1A1E27] font-bold' : 'text-[#B6BDC8]'}`}
+              >
+                {item.label}
+              </p>
+            </Link>
+        ))}
+      </nav>
   );
 }

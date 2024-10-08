@@ -26,7 +26,7 @@ function RentalDurationInput({ value, onSelect, isInvalid, message }: Props) {
           placeholder="대여 날짜"
           value={value ? format(value.from!, 'yyyy-MM-dd') : ''}
           width="108px"
-          height="32px"
+          height="40px"
           icon={<IoCalendarClearOutline className="w-4 h-4 mb-[2px]" />}
           readOnly
           onFocus={() => setIsOpenCalendar(true)}

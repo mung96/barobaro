@@ -2,13 +2,16 @@ import React from 'react';
 
 type Props = {
   fill: string;
+  width?: string;
+  height?:string;
 };
 
-function MyPageButton({ fill }: Props) {
+
+function MyPageButton({ fill,width='24',height='24' }: Props) {
   return (
     <svg
-      width="23"
-      height="23"
+    width={width}
+    height={height}
       viewBox="0 0 23 23"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

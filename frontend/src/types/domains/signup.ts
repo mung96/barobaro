@@ -1,14 +1,15 @@
+import { Dong } from '@/types/apis/location';
 import { Location } from '@/types/domains/location';
 
 export type SignUpProcess = 'MyInfoStep' | 'MyTownStep';
 
 export type MyInfo = {
   nickname: string;
-  profile: string;
+  profile: File|string;
 };
 
 export type MyTown = {
-  town: Location[];
+  town: Dong[];
 };
 
 export type MyInfoStep = Partial<MyInfo> & Partial<MyTown>;
