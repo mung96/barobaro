@@ -19,8 +19,7 @@ const SocketClientProvider = ({
   children,
   value,
 }: SocketClientProviderProps) => {
-  const { socketClient, chatRoomId, sendChat } = value; // 구조 분해
-
+  const { socketClient, chatRoomId, sendChat } = value;
   // useMemo로 감싸기
   const contextValue = useMemo(
     () => ({

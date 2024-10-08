@@ -1,10 +1,12 @@
 import { Client, Message } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 
-const API_URL = 'http://localhost:8080';
-const SOCKET_URL = `${API_URL}/ws`; // 로컬 테스트 시 사용
-// const API_URL = SERVER_BASE_URL;
-// const SOCKET_URL = `${API_URL}/wss`;
+import { SERVER_BASE_URL } from '@/constants/api';
+
+//const API_URL = 'http://localhost:8080';
+//const SOCKET_URL = `${API_URL}/ws`; // 로컬 테스트 시 사용
+const API_URL = SERVER_BASE_URL;
+const SOCKET_URL = `${API_URL}/wss`;
 
 export default class WebSocketClient {
   private client: Client;

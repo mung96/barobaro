@@ -1,5 +1,3 @@
-import { ProcessType } from './ProcessTypes';
-
 type MessageFormType = {
   type: number;
   user: string;
@@ -8,8 +6,6 @@ type MessageFormType = {
 
   isMine?: boolean; // 하위 메시지 컴포넌트에서만 사용함
   isImg?: boolean; // UserMessage 컴포넌트에만 사용함
-
-  processSetter?: (step: ProcessType) => void;
 };
 
 export default MessageFormType;
