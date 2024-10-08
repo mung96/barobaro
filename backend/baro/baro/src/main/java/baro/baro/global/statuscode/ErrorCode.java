@@ -18,6 +18,7 @@ public enum ErrorCode {
     INVALID_PIN_NUMBER(BAD_REQUEST.value(), "유효하지 않은 PIN 번호입니다."),
     PIN_MISMATCH(BAD_REQUEST.value(), "PIN번호가 일치하지 않습니다."),
     ALREADY_EXIST_PIN(BAD_REQUEST.value(), "이미 PIN번호가 등록되어 있습니다."),
+    PRIVATE_CREATED_FAIL(BAD_REQUEST.value(), "비밀키가 생성되지 않았습니다."),
 
     //토큰
     EXPIRED_TOKEN(BAD_REQUEST.value(), "만료된 토큰입니다."),

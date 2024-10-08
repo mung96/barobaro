@@ -136,6 +136,9 @@ public class MemberServiceImpl implements MemberService {
         String uuid = UUID.randomUUID().toString();
         pinRepository.save(passwordAddReq.toEntity(member, uuid));
         PrivateKey privateKey = certificateUtils.generateMemberPrivateKey(memberId, uuid);
+        if(privateKey == null) {
+            throw new CustomException(PRIVATE_CREATED_FAIL);
+        }
     }
 
     public Boolean verifyPassword(String key, Long memberId) {
