@@ -17,7 +17,6 @@ function ContractPreview({ onPrev, context }: Props) {
       </div>
     </section>
     <div className="flex  gap-6">
-
       <div className="fixed left-0 w-[100vw] bottom-0 px-4 py-3 flex gap-6 border-t-[1px] bg-white z-50">
         <Button onClick={onPrev} width="30%" height="48px" color="gray">
           <p className="text-base">뒤로</p>

@@ -9,7 +9,7 @@ import { InputProps } from '@/components/post/ContractInfoInput';
 
 
 
-function RentalInfoCard({ fields, context }: InputProps) {
+function RentalInfoCard({ fields, context, errors }: InputProps) {
   const profile = useProfileObject();
 
   return (
@@ -21,12 +21,13 @@ function RentalInfoCard({ fields, context }: InputProps) {
           value={profile.name}
           disabled
         />
-
         <ContractWidget
           title="대여 물품"
           name="물품 이름"
           value={fields.productName.field.value as string}
           onChange={fields.productName.field.onChange}
+          isInvalid={fields.productName.fieldState.invalid}
+          message={errors.productName?.message}
           placeholder="물건 이름"
         />
 
@@ -35,6 +36,8 @@ function RentalInfoCard({ fields, context }: InputProps) {
           name="일련 번호"
           value={fields.serialNumber.field.value as string}
           onChange={fields.serialNumber.field.onChange}
+          isInvalid={fields.serialNumber.fieldState.invalid}
+          message={errors.serialNumber?.message}
           placeholder="일련 번호 입력"
         />
         <ContractWidget
