@@ -42,6 +42,7 @@ public enum SuccessCode {
 
     //알림 및 푸시
     NOTIFICATION_LIST_OK(OK.value(), "알림 리스트 조회에 성공했습니다."),
+    FCM_TOKEN_UPDATE_OK(OK.value(),"FCM 토큰 갱신에 성공했습니다."),
 
     //찜
     WISH_LIST_CREATED(CREATED.value(), "관심내역 추가에 성공했습니다."),
