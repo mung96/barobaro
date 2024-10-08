@@ -1,6 +1,5 @@
 package baro.baro.domain.contract.entity;
 
-import baro.baro.domain.product.entity.Product;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,18 +13,19 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Contract {
+public class SignatureInformation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "contract_id")
-    private Long id;
+    @Column(name = "signature_information_id")
+    private Long signatureInformationId;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
-    private Product product;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "contract_id")
+    private Contract contract;
 
-    private LocalDateTime createdAt;
+    private Long memberId;
 
-    private String contractKeyName;
+    private LocalDateTime signedAt;
+
 }

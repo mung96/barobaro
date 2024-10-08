@@ -1,12 +1,12 @@
 package baro.baro.domain.product.controller;
 
-import baro.baro.domain.contract.dto.ContractConditionDto;
-import baro.baro.domain.product.dto.*;
+import baro.baro.domain.product.dto.KeywordDto;
+import baro.baro.domain.product.dto.ProductDetails;
+import baro.baro.domain.product.dto.SearchProductDto;
 import baro.baro.domain.product.dto.request.ProductAddReq;
 import baro.baro.domain.product.dto.request.ProductModifyReq;
 import baro.baro.domain.product.dto.request.SearchProductsReq;
 import baro.baro.domain.product.dto.response.*;
-import baro.baro.domain.product.entity.ReturnType;
 import baro.baro.domain.product.service.ProductService;
 import baro.baro.global.dto.ResponseDto;
 import baro.baro.global.oauth.jwt.service.JwtService;
@@ -22,10 +22,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static baro.baro.domain.product.entity.Category.LIGHT_STICK;
-import static baro.baro.domain.product.entity.ProductStatus.FINISH;
-import static baro.baro.domain.product.entity.ProductStatus.IN_PROGRESS;
-import static baro.baro.domain.product.entity.ReturnType.DELIVERY;
 import static baro.baro.global.formatter.DateFormatter.calculateTime;
 import static baro.baro.global.statuscode.SuccessCode.*;
 import static org.springframework.http.HttpStatus.*;
