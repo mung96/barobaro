@@ -6,10 +6,8 @@ export const getSuggest = async (value: string) => {
         const response = await axiosInstance.get(END_POINT.SUGGESTIONS, {
             params: { query: value }
         });
-        console.log('SUGGESTIONS', response.data);
         return response.data;
     } catch (error) {
-        console.error('Error SUGGEST API', error);
         throw error;
     }
 }
