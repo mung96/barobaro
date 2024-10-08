@@ -6,6 +6,7 @@ import baro.baro.domain.contract.dto.request.*;
 import baro.baro.domain.contract.dto.response.ContractApproveRes;
 import baro.baro.domain.contract.dto.response.ContractOptionDetailRes;
 import baro.baro.domain.contract.dto.response.ContractSignedRes;
+import baro.baro.domain.contract.dto.response.ContractTerminatedRes;
 import baro.baro.domain.contract.service.ContractService;
 import baro.baro.domain.product.entity.ReturnType;
 import baro.baro.global.exception.CustomException;
@@ -2996,10 +2997,12 @@ class ContractControllerTest {
 
         //given
         ProductTakeBackReq productTakeBackReq = new ProductTakeBackReq(
-                10000L
+                1L
         );
-
         String content = objectMapper.writeValueAsString(productTakeBackReq);
+        ContractTerminatedRes result = new ContractTerminatedRes(1L);
+        when(contractService.confirmProductTakeBack(any(),anyLong()))
+                .thenReturn(result);
 
         //when
         ResultActions actions = mockMvc.perform(
@@ -3035,6 +3038,276 @@ class ContractControllerTest {
                                         getCommonResponseFields(
                                                 fieldWithPath("body.chatRoomId").type(NUMBER)
                                                         .description("현재 대화중인 채팅방 Id")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("물품 수령 확인 Request"))
+                                .responseSchema(Schema.schema("물품 수령 확인 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 물품_수령_확인_실패_존재하지_않는_채팅방() throws Exception {
+
+        //given
+        ProductTakeBackReq productTakeBackReq = new ProductTakeBackReq(
+                1L
+        );
+        String content = objectMapper.writeValueAsString(productTakeBackReq);
+        when(contractService.confirmProductTakeBack(any(),anyLong()))
+                .thenThrow(new CustomException(CHATROOM_NOT_FOUND));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/contracts/terminate")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+        // then
+        actions
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CHATROOM_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CHATROOM_NOT_FOUND.getMessage()))
+                .andDo(document(
+                        "물품 수령 확인 실패 - 존재하지 않는 채팅방",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("물품 수령 확인 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("정보 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("물품 수령 확인 Request"))
+                                .responseSchema(Schema.schema("물품 수령 확인 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 물품_수령_확인_실패_참여하지_않는_채팅방() throws Exception {
+
+        //given
+        ProductTakeBackReq productTakeBackReq = new ProductTakeBackReq(
+                1L
+        );
+        String content = objectMapper.writeValueAsString(productTakeBackReq);
+        when(contractService.confirmProductTakeBack(any(),anyLong()))
+                .thenThrow(new CustomException(CHATROOM_NOT_ENROLLED));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/contracts/terminate")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+        // then
+        actions
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CHATROOM_NOT_ENROLLED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CHATROOM_NOT_ENROLLED.getMessage()))
+                .andDo(document(
+                        "물품 수령 확인 실패 - 참여하지 않는 채팅방",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("물품 수령 확인 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("정보 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("물품 수령 확인 Request"))
+                                .responseSchema(Schema.schema("물품 수령 확인 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 물품_수령_확인_실패_존재하지_않는_상품() throws Exception {
+
+        //given
+        ProductTakeBackReq productTakeBackReq = new ProductTakeBackReq(
+                1L
+        );
+        String content = objectMapper.writeValueAsString(productTakeBackReq);
+        when(contractService.confirmProductTakeBack(any(),anyLong()))
+                .thenThrow(new CustomException(PRODUCT_NOT_FOUND));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/contracts/terminate")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+        // then
+        actions
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(PRODUCT_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(PRODUCT_NOT_FOUND.getMessage()))
+                .andDo(document(
+                        "물품 수령 확인 실패 - 존재하지 않는 상품",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("물품 수령 확인 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("정보 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("물품 수령 확인 Request"))
+                                .responseSchema(Schema.schema("물품 수령 확인 Response"))
+                                .build()
+                        ))
+                );
+    }
+    
+    @Test
+    public void 물품_수령_확인_실패_분산락_획득_실패() throws Exception {
+
+        //given
+        ProductTakeBackReq productTakeBackReq = new ProductTakeBackReq(
+                1L
+        );
+        String content = objectMapper.writeValueAsString(productTakeBackReq);
+        when(contractService.confirmProductTakeBack(any(),anyLong()))
+                .thenThrow(new CustomException(CONFLICT_WITH_OTHER));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/contracts/terminate")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+        // then
+        actions
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CONFLICT_WITH_OTHER.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CONFLICT_WITH_OTHER.getMessage()))
+                .andDo(document(
+                        "물품 수령 확인 실패 - 분산락 획득 실패",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("물품 수령 확인 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("정보 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("물품 수령 확인 Request"))
+                                .responseSchema(Schema.schema("물품 수령 확인 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 물품_수령_확인_실패_존재하지_않는_계약() throws Exception {
+
+        //given
+        ProductTakeBackReq productTakeBackReq = new ProductTakeBackReq(
+                1L
+        );
+        String content = objectMapper.writeValueAsString(productTakeBackReq);
+        when(contractService.confirmProductTakeBack(any(),anyLong()))
+                .thenThrow(new CustomException(CONTRACT_NOT_FOUND));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/contracts/terminate")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+        // then
+        actions
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CONTRACT_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CONTRACT_NOT_FOUND.getMessage()))
+                .andDo(document(
+                        "물품 수령 확인 실패 - 존재하지 않는 계약",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Contract API")
+                                .summary("물품 수령 확인 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id")
+                                        )
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("정보 없음")
                                         )
                                 )
                                 .requestSchema(Schema.schema("물품 수령 확인 Request"))
