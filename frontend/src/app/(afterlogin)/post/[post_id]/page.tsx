@@ -17,13 +17,15 @@ import { postMessageRoomList } from '@/apis/message/chat/messageRoomListApi';
 export default function PostDetail() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [postInfo, setPostInfo] = useState<any>(null);
+  const currentPath = usePathname();
+
+  const router = useRouter();
   {
     /*TODO : 로그인X => 화면 접근시 ReactModal, 완료된 거래인경우 ReactModal */
   }
   const modalType = 'needPassword';
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
-  const currentPath = usePathname();
   const fetchPostDetails = useCallback(async () => {
     try {
       const productId = currentPath.slice(6);
@@ -43,7 +45,8 @@ export default function PostDetail() {
   useEffect(() => {
     console.log('------------');
     console.log(postInfo);
-    console.log(postInfo.title);
+    console.log(postInfo?.title);
+    console.log(postInfo?.isMine);
   }, [postInfo]);
 
   if (!postInfo) {
@@ -51,12 +54,10 @@ export default function PostDetail() {
   }
 
   const createChatRoom = async () => {
-    const router = useRouter();
     try {
-      const response = await postMessageRoomList(postInfo.productId);
+      const response = await postMessageRoomList(currentPath.slice(6));
       const chatRoomId = response.data.body.chatRoomId; // API 테스트 후 확정
-      console.log(response);
-      // router.push(`/message/chat/${chatRoomId}`);
+      router.push(`/message/chat/${chatRoomId}`);
     } catch (err) {
       console.log('Error occur on creating chatroom : ', err);
     }
@@ -130,9 +131,13 @@ export default function PostDetail() {
           </div>
           <button
             type="button"
-            className="mx-3 text-[12px] text-gray-200 rounded-[3px] w-[69px] h-[28px] bg-gray-400"
+            className={`mx-3 text-[12px] rounded-[3px] w-[69px] h-[28px] ${
+              postInfo.isMine
+                ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
+                : 'bg-blue-100 text-white'
+            }`}
             onClick={createChatRoom}
-            disabled={!postInfo.isMine}
+            disabled={postInfo.isMine}
           >
             채팅하기
           </button>

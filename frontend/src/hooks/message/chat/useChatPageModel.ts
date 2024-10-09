@@ -60,7 +60,8 @@ const useChatPageModel = () => {
     // API
     const getResponse = async () => {
       try {
-        const apiResponse = await getMessageRoomInfo(chatRoomId);
+        const apiResponse = await getMessageRoomInfo(chatId[0]);
+        console.log('wait!===============');
         console.log(apiResponse);
         // setProcess(processConverter(apiResponse.chatRoomDto.rentalStatus));
       } catch (e) {

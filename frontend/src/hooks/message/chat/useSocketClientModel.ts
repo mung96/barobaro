@@ -20,31 +20,57 @@ export default function useSocketClientModel(
     uuid: UUID | string; // API 연결 이후 UUID only Type으로 바꾸기
     message: string;
     image: string | null; // image src
-    chatTime: string; // Date에서 시간이랑 초 자르고 보내야 함. currentTime.formatDate
+    chatTime: string;
     chatType: string;
   };
 
-  const chatTypeConverter = (type: number) => {
+  const chatTypeConverterToBe = (type: number) => {
     switch (type) {
       case 1:
-        return 'user';
+        return 'USER';
       case 2:
-        return 'status';
+        return 'STATUS';
       case 3:
-        return 'system';
+        return 'SYSTEM';
       default:
-        return 'error'; // 이런 타입은 없다 ...
+        return 'ERROR'; // 이런 타입은 없다 ...
     }
   };
 
-  const chatConverter = (message: MessageFormType) => {
+  const chatTypeConverterFromBe = (type: string, image: string | null) => {
+    switch (type) {
+      case 'USER': {
+        if (image) return 4;
+        return 1;
+      }
+      case 'STATUS':
+        return 2;
+      case 'SYSTEM':
+        return 3;
+      default:
+        return 5; // 이런 타입은 없다.
+    }
+  };
+
+  const chatConverterToBe = (message: MessageFormType) => {
     const convertedChatType: BackMessageFormType = {
       // chatRoomId:
       uuid: message.user,
       message: message.body,
       image: message.type === 4 ? message.body : null,
       chatTime: currentTime('back'),
-      chatType: chatTypeConverter(message.type),
+      chatType: chatTypeConverterToBe(message.type),
+    };
+
+    return convertedChatType;
+  };
+
+  const chatConverterFromBe = (message: BackMessageFormType) => {
+    const convertedChatType: MessageFormType = {
+      user: message.uuid,
+      type: chatTypeConverterFromBe(message.chatType, message.image),
+      timestamp: currentTime(message.chatTime),
+      body: message.message,
     };
 
     return convertedChatType;
@@ -56,7 +82,7 @@ export default function useSocketClientModel(
     const destination: string = `/pub/chatrooms/${chatRoomId}`;
     // const destination: string = `${END_POINT.SOCKET_PUBLISH}/${value.chatRoomId}`
 
-    const msg: string = JSON.stringify(chatConverter(message));
+    const msg: string = JSON.stringify(chatConverterToBe(message));
 
     if (socketClient !== null) socketClient.send(destination, msg);
   };
@@ -77,15 +103,14 @@ export default function useSocketClientModel(
         await socketClient.connect();
         //   socketClient.subscribe(`/sub/message/${UserId}`, (message) => {
         socketClient.subscribe(`/sub/chatrooms/${chatRoomId}`, (message) => {
-          const parsedMessage = JSON.parse(message.body);
+          const parsedMessage: BackMessageFormType = JSON.parse(message.body);
+          console.log(
+            `useSocketClientModel:line 82, detected new Message : ${message.body}`,
+          );
 
           // 메시지 타입으로 반환하기
-          const toMessageFormType: MessageFormType = {
-            user: parsedMessage.user,
-            type: parsedMessage.type,
-            timestamp: parsedMessage.timestamp,
-            body: parsedMessage.body,
-          };
+          const toMessageFormType: MessageFormType =
+            chatConverterFromBe(parsedMessage);
 
           setMessageList((_messageList) => [
             ..._messageList,
@@ -97,7 +122,7 @@ export default function useSocketClientModel(
           };
         });
       } catch (error) {
-        // console.error('Error connecting to WebSocket:', error);
+        console.error('Error connecting to WebSocket:', error);
       }
     };
 

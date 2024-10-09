@@ -36,6 +36,16 @@ const SystemMessage: FC<MessageFormType> = ({ user, timestamp, body }) => {
             </div>
           </div>
         )}
+        {body === 'received' && (
+          <div>
+            <b>{user}</b>님께서 대여 물품을 <b>수령</b>하셨습니다.
+          </div>
+        )}
+        {body === 'paid' && (
+          <div>
+            <b>{user}</b>님께서 <b>송금</b>을 완료하셨습니다.
+          </div>
+        )}
         {(body === 'accept' || body === 'reject') && ( // A-4. 거래 요청 수락 / 거절 메시지
           <div>
             <b>{user}</b>님이 계약을
@@ -47,7 +57,9 @@ const SystemMessage: FC<MessageFormType> = ({ user, timestamp, body }) => {
           body === 'reject' ||
           body === 'finished' ||
           body === 'modified' ||
-          body === 'datealert' || ( // A-5. 지정된 body 값에 해당하지 않는 경우
+          body === 'datealert' ||
+          body === 'received' ||
+          body === 'paid' || ( // A-5. 지정된 body 값에 해당하지 않는 경우
             <div>메시지 변환 중 오류가 발생하였습니다.</div>
           )}
       </div>

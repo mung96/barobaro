@@ -65,14 +65,6 @@ const SignatureModal = ({ isOpen, onRequestClose }: SignatureModalParam) => {
 
       console.log(dataUrl); // BE에 보내야 할 서명 파일
 
-      if (process === 2) {
-        // 소유자의 서명 요청 메시지
-        processSetter(4);
-      } else if (process === 4) {
-        processSetter(6);
-        // 숫자로 쓰는 게 더 직관적인 로직이라 숫자로 썼음
-      }
-
       const signRequestMessage: MessageFormType = {
         // 상태 메시지 보내기
         type: 2,
@@ -80,7 +72,35 @@ const SignatureModal = ({ isOpen, onRequestClose }: SignatureModalParam) => {
         body: 'signature',
         timestamp: currentTime(),
       };
-      if (sendChat) sendChat(signRequestMessage);
+
+      const finishedSystemMessaege: MessageFormType = {
+        type: 3,
+        user: 'sys',
+        body: 'finished',
+        timestamp: currentTime(),
+      };
+
+      if (process === 2) {
+        // 소유자의 서명 요청 메시지
+        processSetter(4);
+
+        if (sendChat) sendChat(signRequestMessage);
+      } else if (process === 4) {
+        processSetter(6);
+        // 숫자로 쓰는 게 더 직관적인 로직이라 숫자로 썼음
+
+        const sendMessages = async () => {
+          if (sendChat) {
+            await sendChat(signRequestMessage); // 첫 번째 메시지를 전송
+            await sendChat(finishedSystemMessaege); // 두 번째 메시지를 전송
+          }
+        };
+
+        // 호출
+        sendMessages().catch((error) => {
+          console.error('Error sending messages:', error);
+        });
+      }
 
       onRequestClose(); // 모달 닫기
       setPressed(false);

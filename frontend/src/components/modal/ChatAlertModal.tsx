@@ -4,6 +4,9 @@ import ReactModal from 'react-modal';
 import ModalWarningSVG from '@/components/(SVG_component)/ModalWarning';
 import { ProcessContext } from '@/contexts/ChatProcessContext';
 import { ProcessTypes } from '../message/chat/ProcessTypes';
+import { SocketClientContext } from '@/contexts/SocketClientContext';
+import MessageFormType from '../message/chat/MessageFormType';
+import currentTime from '@/utils/currentTime';
 
 type ChatAlertModalParams = {
   isOpen: boolean;
@@ -42,9 +45,11 @@ const ChatAlertModal = ({
   onRequestClose,
   type,
 }: ChatAlertModalParams) => {
-  const context = useContext(ProcessContext);
-  if (!context) return null;
-  const { process, processSetter } = context;
+  const processContext = useContext(ProcessContext);
+  const socketClientContext = useContext(SocketClientContext);
+  if (!processContext || !socketClientContext) return null;
+  const { process, processSetter } = processContext;
+  const { sendChat } = socketClientContext;
 
   const onReceived = () => {
     // 수령확인 버튼 누른 후의 로직 작성
@@ -58,6 +63,15 @@ const ChatAlertModal = ({
     } else if (process === ProcessTypes.PAID_DIRECT) {
       processSetter(ProcessTypes.FINISHED);
     }
+
+    const message: MessageFormType = {
+      type: 3,
+      user: '김말이',
+      body: 'received',
+      timestamp: currentTime(),
+    };
+
+    sendChat(message);
     onRequestClose();
   };
   return (

@@ -97,7 +97,7 @@ const StatusMessage: FC<MessageFormType> = ({ body, timestamp, isMine }) => {
                 className="bg-blue-100 text-white text-center rounded-md pt-[1vh] pb-[1vh] mt-[1vh] active:bg-blue-500"
                 onClick={
                   body === 'signature'
-                    ? () => modalTrigger('signature')
+                    ? () => modalTrigger('password')
                     : () => modalTrigger('request')
                 }
               >
@@ -126,6 +126,7 @@ const StatusMessage: FC<MessageFormType> = ({ body, timestamp, isMine }) => {
                   isOpen={modalOpen}
                   onRequestClose={modalClose}
                   modalChanger={modalChanger} // -> signature
+                  purpose="beforeSignature"
                 />
               )}
             </>
