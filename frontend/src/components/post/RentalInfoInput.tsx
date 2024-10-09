@@ -16,9 +16,9 @@ type Props = {
 
 } & StepProps<RentalFormFields>;
 
-function RentalInfoInput({ onNext, onPrev, context, fields, errors, getValues, isValid }: Props) {
+function RentalInfoInput({ onNext, onPrev, context, fields, errors, isValid }: Props) {
   return (
-    <form className="flex flex-col gap-4 pb-12">
+    <form className="flex flex-col gap-7 pb-12">
       <RentalDurationInput
         value={fields.rentalDuration.field.value as DateRange}
         onSelect={fields.rentalDuration.field.onChange}
