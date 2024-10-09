@@ -37,7 +37,7 @@ function PostFunnel() {
     },
   });
 
-  const { postFieldList, rentalFieldList, contractFieldList, errors, isValid, getValues, handleSubmit } = usePostFormModel();
+  const { postFieldList, rentalFieldList, contractFieldList, errors, isFormValid, getValues, handleSubmit, isFieldValid } = usePostFormModel();
 
   return (
     <div className="flex flex-col gap-4">
@@ -52,6 +52,7 @@ function PostFunnel() {
             context={context}
             errors={errors}
             fields={postFieldList}
+            isValid={isFieldValid.postFieldList}
             onNext={() => {
               history.push('RentalInfoStep', getValues());
               setDirection('forward');
@@ -65,7 +66,7 @@ function PostFunnel() {
             fields={rentalFieldList}
             errors={errors}
             context={context}
-            isValid={isValid}
+            isValid={isFormValid}
             onPrev={() => {
               history.back();
               setDirection('backward');
