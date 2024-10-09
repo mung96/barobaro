@@ -18,7 +18,6 @@ import StepBar from '@/components/shared/StepBar';
 import convertRegistStepToStepNumber from '@/services/post/regist';
 import ContractInfoInput from '@/components/post/ContractInfoInput';
 import ContractPreview from '@/components/post/ContractPreview';
-import { ContractConditionRequest } from '@/types/apis/productRequest';
 import usePostFormModel from '@/hooks/post/usePostFormModel';
 
 function PostFunnel() {
@@ -37,7 +36,7 @@ function PostFunnel() {
     },
   });
 
-  const { postFieldList, rentalFieldList, contractFieldList, errors, isFormValid, getValues, handleSubmit, isFieldValid } = usePostFormModel(context);
+  const { postFieldList, rentalFieldList, contractFieldList, errors, isFormValid, getValues, postProductWithoutContract, isFieldValid, isSubmitting } = usePostFormModel(context);
 
   return (
     <div className="flex flex-col gap-4">
@@ -62,7 +61,6 @@ function PostFunnel() {
         {registStep === 'RentalInfoStep' && (
           <RentalInfoInput
             getValues={getValues}
-            handleSubmit={handleSubmit}
             fields={rentalFieldList}
             errors={errors}
             context={context}
@@ -82,14 +80,17 @@ function PostFunnel() {
             fields={contractFieldList}
             errors={errors}
             context={context}
+            onSubmit={postProductWithoutContract}
             onTotalStepChange={setTotalStep}
             isValid={isFieldValid.contractFieldList}
+            isFormValid={isFormValid}
+            isSubmitting={isSubmitting}
             onPrev={() => {
               history.back();
               setDirection('backward');
             }}
-            onNext={(data: ContractConditionRequest) => {
-              history.push('ContractPreviewStep', data);
+            onNext={() => {
+              history.push('ContractPreviewStep', getValues());
               setDirection('forward');
             }}
           />

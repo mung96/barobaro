@@ -12,6 +12,8 @@ import { FieldErrors, useController, UseControllerReturn, useForm } from 'react-
 import { POST_FIELD_CONFIG } from '@/constants/post';
 import { formatDate } from '@/utils/dayUtil';
 import { postProduct } from '@/apis/productApi';
+import { isAxiosError } from 'axios';
+import { useRouter } from 'next/navigation';
 
 export type StepProps<T> = {
   fields: T;
@@ -43,10 +45,11 @@ export type ContractFormFields = {
 };
 
 const usePostFormModel = (context: PostInfoStep | RentalInfoStep | ContractInfoStep | ContractPreviewStep) => {
+  const router = useRouter();
   const {
     getValues,
     control,
-    formState: { errors, isValid: isFormValid },
+    formState: { errors, isValid: isFormValid, isSubmitting },
     handleSubmit,
   } = useForm<PostFunnelStep>({
     mode: 'onChange',
@@ -189,9 +192,17 @@ const usePostFormModel = (context: PostInfoStep | RentalInfoStep | ContractInfoS
       category: context.category!,
     };
   };
-  const postProductWithoutContract = () => {
-    postProduct(convertProductDataToRequest(), context.images! as File[]);
-  };
+  const postProductWithoutContract = handleSubmit(async () => {
+    try {
+      const response = await postProduct(convertProductDataToRequest(), context.images! as File[]);
+      const productId = response.data.body.productId;
+      router.push(`/post/${productId}`);
+    } catch (error) {
+      if (isAxiosError(error)) {
+        alert(error.response?.data.message);
+      }
+    }
+  });
   return {
     postFieldList,
     rentalFieldList,
@@ -199,8 +210,9 @@ const usePostFormModel = (context: PostInfoStep | RentalInfoStep | ContractInfoS
     getValues,
     errors,
     isFormValid,
-    handleSubmit,
     isFieldValid,
+    isSubmitting,
+    postProductWithoutContract,
   };
 };
 

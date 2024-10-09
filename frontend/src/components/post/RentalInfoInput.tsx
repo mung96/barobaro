@@ -15,7 +15,6 @@ type Props = {
   onNext: () => void;
   isValid: boolean;
   getValues: any;
-  handleSubmit: UseFormHandleSubmit<any, undefined>;
 
 } & StepProps<RentalFormFields>;
 
