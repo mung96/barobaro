@@ -6,71 +6,16 @@ import FavoriteButton from './(SVG_component)/FavoriteButton';
 import PostButton from './(SVG_component)/PostButton';
 import MessageButton from './(SVG_component)/MessageButton';
 import MyPageButton from './(SVG_component)/MyPageButton';
-import { usePathname } from 'next/navigation';
-import { usePathStore, useSetPathStore } from '@/store/usePath';
+import { usePathname, useRouter } from 'next/navigation';
+import { usePathStore, usePrevPathStore, useSetPathStore, useSetPrevPathStore } from '@/store/usePath';
 import { useEffect } from 'react';
 
 const NavBarItemList = [
-  {
-    id: 0,
-    icon: (currentPath: string) => (
-      <HomeButton
-        width="32"
-        height="32"
-        fill={currentPath === '/home' ? '#1A1E27' : '#B6BDC8'}
-      />
-    ),
-    label: '홈',
-    path: '/home',
-  },
-  {
-    id: 1,
-    icon: (currentPath: string) => (
-      <FavoriteButton
-        width="28"
-        height="28"
-        fill={currentPath === '/like' ? '#1A1E27' : '#B6BDC8'}
-      />
-    ),
-    label: '관심내역',
-    path: '/like',
-  },
-  {
-    id: 2,
-    icon: (currentPath: string) => (
-      <PostButton
-        width="28"
-        height="28"
-        fill={currentPath === '/post/regist' ? '#1A1E27' : '#B6BDC8'}
-      />
-    ),
-    label: '등록',
-    path: '/post/regist',
-  },
-  {
-    id: 3,
-    icon: (currentPath: string) => (
-      <MessageButton
-        width="30"
-        height="30"
-        fill={currentPath === '/message' ? '#1A1E27' : '#B6BDC8'}
-      />
-    ),
-    label: '채팅',
-    path: '/message',
-  },
-  {
-    id: 4,
-    icon: (currentPath: string) => (
-      <MyPageButton
-        width="32"
-        height="32"
-        fill={currentPath === '/mypage' ? '#1A1E27' : '#B6BDC8'}
-      />
-    ),
-    label: '마이페이지',
-    path: '/mypage',
-  },
+  { id: 0, icon: (currentPath: string) => <HomeButton width='32' height='32' fill={currentPath === '/home' ? '#1A1E27' : '#B6BDC8'} />, label: '홈', path: '/home' },
+  { id: 1, icon: (currentPath: string) => <FavoriteButton width='28' height='28' fill={currentPath === '/like' ? '#1A1E27' : '#B6BDC8'} />, label: '관심내역', path: '/like' },
+  { id: 2, icon: (currentPath: string) => <PostButton width='28' height='28' fill={currentPath === '/post/regist' ? '#1A1E27' : '#B6BDC8'} />, label: '등록', path: '/post/regist' },
+  { id: 3, icon: (currentPath: string) => <MessageButton width='30' height='30' fill={currentPath === '/message' ? '#1A1E27' : '#B6BDC8'} />, label: '채팅', path: '/message' },
+  { id: 4, icon: (currentPath: string) => <MyPageButton width='32' height='32' fill={currentPath === '/mypage' ? '#1A1E27' : '#B6BDC8'} />, label: '마이페이지', path: '/mypage' }
 ];
 
 const excludePathList = [
@@ -95,6 +40,8 @@ export default function NavBar() {
   const pathState = usePathStore();
   const setPath = useSetPathStore();
 
+  const setPrevPathState = useSetPrevPathStore();
+
   useEffect(() => {
     setPath(pathname);
   }, [pathname, setPath]);
@@ -102,14 +49,16 @@ export default function NavBar() {
   if (isPathExcluded(pathname)) {
     return null; // NavBar를 렌더링하지 않음
   }
-
   return (
     <nav className="fixed flex bottom-0 bg-gray-400 h-[60px] w-full max-w-[500px] z-10 justify-center">
       {NavBarItemList.map((item) => (
         <Link
           className="flex flex-1 flex-col items-center justify-center h-full gap-1"
           href={item.path}
-          onClick={() => setPath(item.path)}
+          onClick={() => {
+            setPath(item.path)
+            setPrevPathState(window.location.pathname)
+          }}
           key={item.id}
         >
           {item.icon(pathState)}

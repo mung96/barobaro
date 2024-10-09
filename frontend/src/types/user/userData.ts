@@ -9,6 +9,7 @@ export type UserProfile = {
   phoneNumber: string;
   email: string;
   name: string;
+  isAuthenticated: boolean;
 };
 
 export type UserAccount = {

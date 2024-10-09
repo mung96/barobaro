@@ -30,7 +30,7 @@ export default function Profile({
         <div className="border border-gray-200 rounded-full w-12 h-12 items-center relative overflow-hidden">
           {/*TODO: url이 /프로필 꼴로 도착해서 404 에러 발생함. 추후 정상적 값 확인하고 수정할 것*/}
           <Image
-            src={Baro}
+            src={url}
             alt={url}
             width={47}
             height={47}

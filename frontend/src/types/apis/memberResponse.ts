@@ -7,8 +7,8 @@ export type MyProfile = {
   phoneNumber: string;
   email: string;
   name: string;
+  isAuthenticated: boolean;
 };
 
 export type SocialMemberResponse = Response<SocialMember>;
 export type MyProfileResponse = Response<MyProfile>;
-
