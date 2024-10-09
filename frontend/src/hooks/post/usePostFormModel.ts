@@ -7,8 +7,12 @@ import {
   ContractPreviewStep,
   PostInfoStep,
   RentalInfoStep,
+  PostFunnelStep,
+  PostFormFields,
+  RentalFormFields,
+  ContractFormFields,
 } from '@/types/domains/product';
-import { FieldErrors, useController, UseControllerReturn, useForm } from 'react-hook-form';
+import { useController, useForm } from 'react-hook-form';
 
 import { POST_FIELD_CONFIG } from '@/constants/post';
 import { formatDate } from '@/utils/dayUtil';
@@ -16,35 +20,6 @@ import { postProduct } from '@/apis/productApi';
 import { isAxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import { ContractConditionRequest } from '@/types/apis/productRequest';
-
-export type StepProps<T> = {
-  fields: T;
-  errors: FieldErrors<PostFunnelStep>;
-  context: PostInfoStep | RentalInfoStep | ContractInfoStep | ContractPreviewStep;
-};
-export type PostFunnelStep = PostInfo & RentalInfo & ContractInfo;
-export type PostFormFields = {
-  title: UseControllerReturn<PostFunnelStep>;
-  body: UseControllerReturn<PostFunnelStep>;
-  category: UseControllerReturn<PostFunnelStep>;
-  images: UseControllerReturn<PostFunnelStep>;
-};
-export type RentalFormFields = {
-  rentalDuration: UseControllerReturn<PostFunnelStep>;
-  rentalFee: UseControllerReturn<PostFunnelStep>;
-  rentalAddress: UseControllerReturn<PostFunnelStep>;
-  returnTypeList: UseControllerReturn<PostFunnelStep>;
-  returnAddress: UseControllerReturn<PostFunnelStep>;
-};
-export type ContractFormFields = {
-  productName: UseControllerReturn<PostFunnelStep>;
-  serialNumber: UseControllerReturn<PostFunnelStep>;
-  repairVendor: UseControllerReturn<PostFunnelStep>;
-  overdueCriteria: UseControllerReturn<PostFunnelStep>;
-  overdueFee: UseControllerReturn<PostFunnelStep>;
-  theftCriteria: UseControllerReturn<PostFunnelStep>;
-  refundDeadline: UseControllerReturn<PostFunnelStep>;
-};
 
 const usePostFormModel = (context: PostInfoStep | RentalInfoStep | ContractInfoStep | ContractPreviewStep) => {
   const router = useRouter();
@@ -66,6 +41,7 @@ const usePostFormModel = (context: PostInfoStep | RentalInfoStep | ContractInfoS
   const images = useController<PostFunnelStep>({
     control,
     name: 'images',
+    ...POST_FIELD_CONFIG.IMAGES,
   });
   const category = useController<PostFunnelStep>({
     control,

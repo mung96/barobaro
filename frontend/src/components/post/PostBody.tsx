@@ -14,7 +14,7 @@ const PostBody = ({ value, onChange, isInvalid, message }: Props) => {
       <h3 className="text-base">내용</h3>
       <TextArea
         rows={6}
-        placeholder="가격을 입력해주세요."
+        placeholder="게시글 내용을 입력해주세요."
         value={value}
         onChange={onChange}
       />
