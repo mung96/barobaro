@@ -30,8 +30,8 @@ export type RecentlyStoreState = {
   actions: {
     setRecentlyViewedProducts: (recentlyViewedProducts: Product[]) => void;
     setRecentlyUploadedProducts: (recentlyUploadedProducts: Product[]) => void;
-  }
-}
+  };
+};
 
 type Profile = {
   profileImage: string;
@@ -39,12 +39,13 @@ type Profile = {
   phoneNumber: string;
   email: string;
   name: string;
-}
+  isAuthenticated: boolean;
+};
 
 export type ProfileStoreState = {
-  profileObject : Profile;
+  profileObject: Profile;
   isInit: boolean;
   actions: {
     setProfileObject: (profileObject: Profile) => void;
-  }
-}
+  };
+};

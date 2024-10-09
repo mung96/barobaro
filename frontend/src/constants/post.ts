@@ -1,10 +1,15 @@
+export const IMAGE_MAX_LENGTH = 5;
+export const IMAGE_MIN_LENGTH = 1;
+export const BODY_MAX_LENGTH = 1000;
+export const POST_TITLE_MAX_LENGTH = 20;
+
 export const POST_FIELD_CONFIG = {
   TITLE: {
     defaultValue: '',
     rules: {
       required: '게시글 제목을 입력해주세요.',
       minLength: { value: 2, message: '제목은 2자 이상 입력해주세요' },
-      maxLength: { value: 20, message: '제목은 20자 이하 입력해주세요' },
+      maxLength: { value: POST_TITLE_MAX_LENGTH, message: `제목은 ${POST_TITLE_MAX_LENGTH}자 이하 입력해주세요` },
     },
   },
   CATEGORY: {
@@ -14,8 +19,9 @@ export const POST_FIELD_CONFIG = {
     },
   },
   IMAGES: {
+    defaultValue: [],
     rules: {
-      required: '최소 1장이 사진을 등록해주세요.',
+      required: '최소 1장의 사진을 등록해주세요.',
     },
   },
   BODY: {
@@ -23,7 +29,7 @@ export const POST_FIELD_CONFIG = {
     rules: {
       required: '게시글 내용을 입력해주세요.',
       minLength: { value: 1, message: '게시글은 1자 이상 입력해주세요' },
-      maxLength: { value: 1000, message: '게시글은 1000자 이하 입력해주세요' },
+      maxLength: { value: BODY_MAX_LENGTH, message: `게시글은 ${BODY_MAX_LENGTH}자 이하 입력해주세요` },
     },
   },
 
@@ -46,7 +52,7 @@ export const POST_FIELD_CONFIG = {
     },
   },
   RETURN_TYPE_LIST: {
-    defaultValue: '',
+    defaultValue: [],
     rules: {
       required: '반납 방법을 정해주세요.',
     },

@@ -38,7 +38,7 @@ function ContractInfoInput({ onTotalStepChange, onNext, onPrev, context, fields,
     const onClick = isContractWrite === 'YES' ? onNext : onSubmit;
     const text = isContractWrite === 'YES' ? '다음으로 가기' : '작성 완료하기';
     return { type, disabled, onClick, text }
-  }, [isContractWrite])
+  }, [isContractWrite, isValid, isSubmitting])
 
   return (
     <form className="flex flex-col gap-2" onSubmit={onSubmit}>

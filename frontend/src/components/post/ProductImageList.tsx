@@ -8,7 +8,9 @@ import {
   Droppable,
   DropResult,
 } from 'react-beautiful-dnd';
-import { MdCancel } from 'react-icons/md';
+import { MdCancel, MdError } from 'react-icons/md';
+import { IMAGE_MAX_LENGTH } from '@/constants/post';
+import { useEffect, useState } from 'react';
 
 type ProductImageListProps = {
   width: string;
@@ -17,7 +19,8 @@ type ProductImageListProps = {
   deleteFile: (index: number) => void;
   images: Array<string | ArrayBuffer | null>;
   dropEnd: (result: DropResult) => void;
-  onChange:(images:File[])=>void;
+  onChange: (images: File[]) => void;
+
 };
 
 function ProductImageList({
@@ -26,23 +29,37 @@ function ProductImageList({
   addFile,
   deleteFile,
   dropEnd,
-  images,onChange
+  images, onChange
+
 }: ProductImageListProps) {
+  const [isError, setIsError] = useState(false);
+  const [isFirst, setIsFirst] = useState(true);
+  useEffect(() => {
+    if (!isFirst && images.length == 0) {
+      setIsError(true)
+    }
+  }, [images])
   return (
     <div className="flex gap-1 flex-col relative">
       <p className="text-base text-black">게시글 사진</p>
       <div className="flex gap-2">
-        {images.length < 5 && (
+        {images.length < IMAGE_MAX_LENGTH && (
           <label
             style={{ width, height }}
             className="flex flex-col items-center justify-center border-gray-500 border rounded pt-[6px]"
           >
             <FaCamera className="text-gray-300 w-7 h-7" />
-            <p className="text-base">{images.length}/5</p>
+            <p className="text-base">{images.length}/{IMAGE_MAX_LENGTH}</p>
             <input
               onChange={(event) => {
-                addFile(Array.from(event.target.files!));
-                onChange(Array.from(event.target.files!))}}
+                if (event.target.files!.length > IMAGE_MAX_LENGTH || event.target.files!.length === 0) {
+                  setIsError(true);
+                } else {
+                  addFile(Array.from(event.target.files!))
+                  onChange(Array.from(event.target.files!))
+                }
+                setIsFirst(false);
+              }}
               type="file"
               accept="image/*"
               className="hidden"
@@ -107,8 +124,14 @@ function ProductImageList({
             )}
           </Droppable>
         </DragDropContext>
+        {isError && <p
+          className={`text-xs flex gap-1 absolute -bottom-1 translate-y-full text-pinkRed`}
+        >
+          <MdError className="text-pinkRed text-sm" />
+          사진은 1장에서 5장까지 업로드 가능합니다.
+        </p>}
       </div>
-    </div>
+    </div >
   );
 }
 

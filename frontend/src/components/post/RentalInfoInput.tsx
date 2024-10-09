@@ -1,4 +1,3 @@
-import { useForm, UseFormHandleSubmit } from 'react-hook-form';
 import RentalDurationInput from '@/components/post/RentalDurationInput';
 import RentalFeeInput from '@/components/post/RentalFeeInput';
 import ReturnTypeList from '@/components/post/ReturnTypeList';
@@ -7,8 +6,7 @@ import RentalAddressInput from '@/components/post/RentalAddressInput';
 import ReturnAddressInput from '@/components/post/ReturnAddressInput';
 import { DateRange } from 'react-day-picker';
 import { Location } from '@/types/domains/location';
-import { postProduct } from '@/apis/productApi';
-import { PostFunnelStep, RentalFormFields, StepProps } from '@/hooks/post/usePostFormModel';
+import { RentalFormFields, StepProps } from '@/types/domains/product';
 
 type Props = {
   onPrev: () => void;

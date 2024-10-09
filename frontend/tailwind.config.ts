@@ -11,8 +11,7 @@ const config: Config = {
     extend: {
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic':
-          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
       colors: {
         'blue-100': '#3897F0',
@@ -25,6 +24,7 @@ const config: Config = {
         'gray-500': '#D9D9D9',
         'gray-600': '#919191',
         'black-100': '#33373F',
+        pinkRed: '#F7385A',
       },
       fontSize: {
         '2xs': '10px',
