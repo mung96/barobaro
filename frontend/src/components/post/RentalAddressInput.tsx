@@ -6,13 +6,13 @@ import { Location } from '@/types/domains/location';
 import ErrorMessage from '@/components/shared/ErrorMessage';
 
 type Props = {
-  value:Location;
+  value: Location;
   onChange: (value: Location) => void;
-  isInvalid:boolean;
-  message:string;
+  isInvalid: boolean;
+  message: string;
 };
 
-function RentalAddressInput({ value, onChange,isInvalid,message }: Props) {
+function RentalAddressInput({ value, onChange, isInvalid, message }: Props) {
   const [isOpenSearch, setIsOpenSearch] = useState(false);
   return (
     <div className="flex flex-col gap-1 relative">
@@ -20,7 +20,7 @@ function RentalAddressInput({ value, onChange,isInvalid,message }: Props) {
       <Input
         placeholder="위치 추가"
         width="100%"
-        height="32px"
+        height="40px"
         value={value.addressName}
         onFocus={() => setIsOpenSearch(true)}
         readOnly
