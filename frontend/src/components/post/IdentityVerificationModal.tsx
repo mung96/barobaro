@@ -6,6 +6,9 @@ import ReactModal from 'react-modal';
 import VerificationButton from '@/components/user/VerificationButton';
 import Button from '@/components/shared/Button';
 import { useRouter } from 'next/navigation';
+import { useProfileSet } from '@/store/useMyProfile';
+import { getProfile } from '@/apis/profileApi';
+import { AxiosError } from 'axios';
 
 type Props = {
     isOpen: boolean;
@@ -41,6 +44,22 @@ const IdentityVerificationModal = ({
     isOpen,
 }: Props) => {
     const router = useRouter();
+    const setProfile = useProfileSet();
+
+    const fetchProfile = async () => {
+        try {
+            const profileResponse = await getProfile();
+            setProfile({
+                ...profileResponse.data.body
+            })
+            router.replace('/post/regist');
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                alert(error.response?.data.header.message)
+            }
+        }
+    }
+
     return (
         <ReactModal
             isOpen={isOpen}
@@ -58,7 +77,7 @@ const IdentityVerificationModal = ({
                         <p className="text-base">뒤로</p>
                     </Button>
                     <div className='w-full'>
-                        <VerificationButton width='100%' height='40px' ><p className="text-base">확인</p></VerificationButton>
+                        <VerificationButton onSuccess={fetchProfile} width='100%' height='40px' ><p className="text-base">확인</p></VerificationButton>
                     </div>
                 </div>
             </div>

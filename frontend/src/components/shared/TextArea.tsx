@@ -14,7 +14,7 @@ function TextArea({ onChange, placeholder, value, rows, maxLength }: TextAreaPro
       value={value}
       maxLength={maxLength}
       onChange={(e) => onChange(e.target.value)}
-      className="w-full px-4 py-3 outline-none border rounded-md text-sm text-gray-700 placeholder-gray-500"
+      className="w-full px-4 py-3 outline-none border rounded-md text-sm text-gray-700 placeholder-gray-500  focus:border-black focus:border-opacity-50 focus:border-1"
     />
   );
 }

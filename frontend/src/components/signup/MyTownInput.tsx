@@ -6,7 +6,7 @@ import { MyInfoStep, MyTown, MyTownStep } from '@/types/domains/signup';
 import MyTownSearch from '@/components/signup/MyTownSearch';
 import { Dong } from '@/types/apis/location';
 import { postSignUp } from '@/apis/memberApi';
-import {  useSocialMemberState } from '@/store/useSocialMember';
+import { useSocialMemberState } from '@/store/useSocialMember';
 import { useRouter } from 'next/navigation';
 import { convertSignUpDateToRequest } from '@/services/signup/convert';
 import { useProfileSet } from '@/store/useMyProfile';
@@ -18,42 +18,42 @@ type Props = {
   context: MyInfoStep | MyTownStep;
 };
 
-function MyTownInfo({ onPrev,context }: Props) {
+function MyTownInfo({ onPrev, context }: Props) {
   const router = useRouter();
   const socialMember = useSocialMemberState();
-const setProfile = useProfileSet();
-  const signUp = async () =>{
+  const setProfile = useProfileSet();
+  const signUp = async () => {
     const member = {
       providerType: socialMember?.providerType!,
       email: socialMember?.email!,
-      nickName: context.nickname! ,
+      nickName: context.nickname!,
       profileImage: socialMember?.profileImage!,
     }
-    try{
-      const response =  await postSignUp(convertSignUpDateToRequest(member,getValues()),context.profile)
+    try {
+      const response = await postSignUp(convertSignUpDateToRequest(member, getValues()), context.profile)
       router.push('/home');
-      localStorage.setItem('token',response.data.body);
-      
-      try{
+      localStorage.setItem('token', response.data.body);
+
+      try {
         const profileResponse = await getProfile();
         setProfile({
-         ...profileResponse.data.body
+          ...profileResponse.data.body
         })
-      }catch(error){
-        if(error instanceof AxiosError){
+      } catch (error) {
+        if (error instanceof AxiosError) {
           alert(error.response?.data.header.message)
         }
       }
-      
-    }catch(error){
+
+    } catch (error) {
       console.error('API 요청 중 오류 발생:', error);
     }
   }
 
   const {
-    getValues,handleSubmit ,
-    control,formState:{isSubmitting}
-  } = useForm<MyTown>({ mode: 'onChange' ,});
+    getValues, handleSubmit,
+    control, formState: { isSubmitting }
+  } = useForm<MyTown>({ mode: 'onChange', });
   const { field: town } = useController<MyTown>({
     control,
     name: 'town',
@@ -83,14 +83,14 @@ const setProfile = useProfileSet();
           </p>
         </div>
       </div>
-      <MyTownSearch values={town.value as Dong[]} onChange={town.onChange}/>
+      <MyTownSearch values={town.value as Dong[]} onChange={town.onChange} />
 
       <div className="flex  gap-6">
         <Button onClick={onPrev} width="100%" height="36px" color="gray">
           <p className="text-xs">이전</p>
         </Button>
 
-        <Button type='submit' disabled={isSubmitting}  width="100%" height="36px">
+        <Button type='submit' disabled={isSubmitting} width="100%" height="36px">
           <p className="text-xs">회원가입 하기</p>
         </Button>
       </div>
