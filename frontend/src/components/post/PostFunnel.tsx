@@ -40,7 +40,6 @@ function PostFunnel() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-lg font-bold text-center">대여 물품 등록</h2>
       <StepBar
         totalStep={totalStep}
         currentStep={convertRegistStepToStepNumber(registStep)}

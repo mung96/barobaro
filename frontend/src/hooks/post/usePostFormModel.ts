@@ -196,7 +196,7 @@ const usePostFormModel = (context: PostInfoStep | RentalInfoStep | ContractInfoS
     try {
       const response = await postProduct(convertProductDataToRequest(), context.images! as File[]);
       const productId = response.data.body.productId;
-      router.push(`/post/${productId}`);
+      router.replace(`/post/${productId}`);
     } catch (error) {
       if (isAxiosError(error)) {
         alert(error.response?.data.message);
