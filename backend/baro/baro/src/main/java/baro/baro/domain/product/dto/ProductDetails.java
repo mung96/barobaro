@@ -63,8 +63,10 @@ public class ProductDetails {
 
     private Boolean isMine;
 
+    private Boolean isWished;
+
     public static ProductDetails toDto(Product product, Member member, List<String> imageList,
-                                       ContractConditionDto contractCondition, Boolean isMine) {
+                                       ContractConditionDto contractCondition, Boolean isMine, Boolean isWished) {
         return ProductDetails.builder()
                 .productId(product.getId())
                 .writerId(member.getUuid())
@@ -88,6 +90,7 @@ public class ProductDetails {
                 .endDate(product.getEndDate())
                 .rentalFee(product.getRentalFee())
                 .isMine(isMine)
+                .isWished(isWished)
                 .build();
     }
 }

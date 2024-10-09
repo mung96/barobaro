@@ -1,10 +1,15 @@
 package baro.baro.domain.wish_list.controller;
 
 import baro.baro.domain.product.dto.SearchProductDto;
+import baro.baro.domain.product.dto.response.SearchProductRes;
+import baro.baro.domain.wish_list.dto.WishDto;
 import baro.baro.domain.wish_list.dto.response.MyWishListRes;
+import baro.baro.domain.wish_list.service.WishListService;
 import baro.baro.global.dto.ResponseDto;
+import baro.baro.global.oauth.jwt.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -19,39 +24,29 @@ import static org.springframework.http.HttpStatus.*;
 @RestController
 @RequiredArgsConstructor
 public class WishListController {
+    private final WishListService wishListService;
+    private final JwtService jwtService;
+
     @PostMapping("/wish-list/{productId}")
-    public ResponseEntity<?> wishListAdd(@PathVariable("productId") String productId) {
-        return new ResponseEntity<>(ResponseDto.success(WISH_LIST_CREATED, null), CREATED);
+    public ResponseEntity<?> wishListAdd(@PathVariable("productId") Long productId) {
+        Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
+        WishDto result = wishListService.addWishList(productId, memberId);
+
+        return new ResponseEntity<>(ResponseDto.success(WISH_LIST_CREATED, result), CREATED);
     }
 
     @DeleteMapping("/wish-list/{productId}")
-    public ResponseEntity<?> wishListRemove(@PathVariable("productId") String productId) {
-        return new ResponseEntity<>(ResponseDto.success(WISH_LIST_DELETED, null), NO_CONTENT);
+    public ResponseEntity<?> wishListRemove(@PathVariable("productId") Long productId) {
+        Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
+        WishDto result = wishListService.deleteWishList(productId, memberId);
+
+        return new ResponseEntity<>(ResponseDto.success(WISH_LIST_DELETED, result), OK);
     }
 
     @GetMapping("/wish-list")
     public ResponseEntity<?> wishList() {
-        List<SearchProductDto> products = new ArrayList<>();
-
-        for(int i = 0; i < 10; i++) {
-            Long id = 10000L + i;
-
-            SearchProductDto dto = SearchProductDto.builder()
-                    .productId(id)
-                    .productMainImage("대표 이미지 " + id)
-                    .title("제목 " + id)
-                    .startDate(LocalDate.of(2024, 1, 2))
-                    .endDate(LocalDate.of(2024, 5, 24))
-                    .dong("역삼동")
-                    .uploadDate(calculateTime(LocalDateTime.now()))
-                    .rentalFee(100000)
-                    .wishCount(10*i)
-                    .build();
-
-            products.add(dto);
-        }
-
-        MyWishListRes result = new MyWishListRes(products);
+        Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
+        MyWishListRes result = wishListService.getWishList(memberId);
 
         return new ResponseEntity<>(ResponseDto.success(WISH_LIST_OK, result), OK);
     }
