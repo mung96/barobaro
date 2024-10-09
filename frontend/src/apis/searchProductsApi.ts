@@ -1,26 +1,38 @@
 import { axiosInstance } from '@/apis/axiosInstance';
 import { END_POINT } from '@/constants/api';
 
-
+const categoryConverter = {
+    'all' : 'ALL',
+    'lightstick' : 'LIGHT_STICK',
+    'smartphone' : 'SMART_PHONE',
+    'telescope' : 'TELESCOPE',
+    'camerabody' : 'CAMERA_BODY',
+    'cameralens' : 'CAMERA_LENS',
+    'etc' : 'ETC',
+}
 
 // TODO : Location Id => string 값으로
 export const getSearchData = async (keywords: string, category: string, locationId: number) => {
-    if (keywords === '') {
-        try {
-            const stringLocationId = locationId.toString();
-            const response = await axiosInstance.get(END_POINT.SEARCH_RECENTLY, {
-                params: { category: category, locationId: stringLocationId }
-            });
-            console.log('RECENTLY SEARCH API', category, stringLocationId,response);
-            return response;
-        } catch (err) {
-            console.log('RECENTLY ERR', err)
-        }
-    }
-
     try {
+        const stringLocationId = await locationId.toString()
+        const convertedCategory = categoryConverter[category as keyof typeof categoryConverter] || category;
+
+        if (keywords === '') {
+            const response = await axiosInstance.get(END_POINT.SEARCH_RECENTLY, {
+                params: {
+                    category: convertedCategory,
+                    locationId: stringLocationId
+                }
+            });
+            console.log('searchAPI-Recently', convertedCategory, response);
+            return response.data.body.products;
+        }
         const response = await axiosInstance.get(END_POINT.SEARCH_RESULT, {
-            params: { keyword: keywords, category: category, locationId: 1 }
+            params: {
+                keyword: keywords,
+                category: category,
+                locationId: stringLocationId
+            }
         });
         console.log('searchAPI', response);
         return response.data.body.products;
