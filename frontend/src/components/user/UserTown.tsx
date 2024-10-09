@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { getLocation, changeMainLocation } from "@/apis/profileApi";
 import { useSetLocations, useLocations } from '@/store/useLocationStore';
+import Location from "@/components/(SVG_component)/Location";
 
 export default function UserTown() {
   const locations = useLocations();
@@ -40,10 +41,11 @@ export default function UserTown() {
         <>
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="bg-white border border-gray-300 rounded-md px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="flex justify-center items-center px-4 py-2 text-sm font-medium text-gray-700 rounded-[10px] focus:bg-gray-400"
           >
-            {mainLocation ? mainLocation.dong : '위치를 선택하세요'}
-            <span className="ml-2">▼</span>
+            <Location where={mainLocation.dong} />
+            {/*{mainLocation ? mainLocation.dong : '위치를 선택하세요'}*/}
+            {/*<span className="ml-2">▼</span>*/}
           </button>
 
           {isOpen && (
