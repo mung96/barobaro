@@ -164,6 +164,7 @@ class ProductControllerTest {
                 .endDate(LocalDate.of(2024, 10, 24))
                 .rentalFee(10000)
                 .isMine(true)
+                .isWished(false)
                 .build();
 
         when(productService.addProduct(any(), anyList(), anyLong())).thenReturn(result);
@@ -250,7 +251,9 @@ class ProductControllerTest {
                                                 fieldWithPath("body.rentalFee").type(NUMBER)
                                                         .description("물품 대여비"),
                                                 fieldWithPath("body.isMine").type(BOOLEAN)
-                                                        .description("나의 게시글 여부")
+                                                        .description("나의 게시글 여부"),
+                                                fieldWithPath("body.isWished").type(BOOLEAN)
+                                                        .description("찜 여부")
 
                                         )
                                 )
@@ -818,6 +821,7 @@ class ProductControllerTest {
                 .endDate(LocalDate.of(2024, 10, 24))
                 .rentalFee(10000)
                 .isMine(true)
+                .isWished(true)
                 .build();
 
         when(productService.findProduct(anyLong(), anyLong())).thenReturn(result);
@@ -899,7 +903,10 @@ class ProductControllerTest {
                                                 fieldWithPath("body.rentalFee").type(NUMBER)
                                                         .description("물품 대여비"),
                                                 fieldWithPath("body.isMine").type(BOOLEAN)
-                                                        .description("나의 게시글 여부")
+                                                        .description("나의 게시글 여부"),
+                                                fieldWithPath("body.isWished").type(BOOLEAN)
+                                                        .description("찜 여부")
+
                                         )
                                 )
                                 .requestSchema(Schema.schema("대여 물품 상세 조회 Request"))
@@ -1192,6 +1199,7 @@ class ProductControllerTest {
                 .endDate(LocalDate.of(2024, 10, 24))
                 .rentalFee(10000)
                 .isMine(true)
+                .isWished(true)
                 .build();
 
         when(productService.modifyProduct(any(), any(), anyLong(), anyLong())).thenReturn(result);
@@ -1278,7 +1286,9 @@ class ProductControllerTest {
                                                 fieldWithPath("body.rentalFee").type(NUMBER)
                                                         .description("물품 대여비"),
                                                 fieldWithPath("body.isMine").type(BOOLEAN)
-                                                        .description("나의 게시글 여부")
+                                                        .description("나의 게시글 여부"),
+                                                fieldWithPath("body.isWished").type(BOOLEAN)
+                                                        .description("찜 여부")
 
                                         )
                                 )
