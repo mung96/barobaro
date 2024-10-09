@@ -16,7 +16,7 @@ export type StepProps<T> = {
   errors: FieldErrors<PostFunnelStep>;
   context: PostInfoStep | RentalInfoStep | ContractInfoStep | ContractPreviewStep;
 };
-type PostFunnelStep = PostInfo & RentalInfo & ContractInfo;
+export type PostFunnelStep = PostInfo & RentalInfo & ContractInfo;
 export type PostFormFields = {
   title: UseControllerReturn<PostFunnelStep>;
   body: UseControllerReturn<PostFunnelStep>;
