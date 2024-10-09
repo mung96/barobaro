@@ -7,6 +7,7 @@ import ItemList from '@/components/ItemList';
 import { useEffect, useState } from 'react';
 import {getSearchData} from "@/apis/searchProductsApi";
 import {useCurrentActions} from "@/store/useCurrentStore";
+import {useMain} from "@/store/useLocationStore";
 
 function useGetSearchData(data: string) {
   const searchParams = useSearchParams();
@@ -17,10 +18,13 @@ export default function CategoryDetailContent() {
   const useSearchStore = useCurrentActions()
   const categoryData = useGetSearchData('category') || '';
   const searchData = useGetSearchData('product') || '';
+  const mainLoationId = useMain()
+
   useEffect(() => {
     async function getSearchOutput() {
       try {
-        const result = await getSearchData(searchData, categoryData);
+        console.log('CATE', categoryData, 'SEARCH', searchData);
+        const result = await getSearchData(searchData, categoryData, mainLoationId);
         useSearchStore.setSearchList(result);
       } catch (err) {
         console.log('search Result Err', err)

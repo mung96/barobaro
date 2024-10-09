@@ -1,8 +1,23 @@
 import { axiosInstance } from '@/apis/axiosInstance';
 import { END_POINT } from '@/constants/api';
 
+
+
 // TODO : Location Id => string 값으로
-export const getSearchData = async (keywords: string, category: string) => {
+export const getSearchData = async (keywords: string, category: string, locationId: number) => {
+    if (keywords === '') {
+        try {
+            const stringLocationId = locationId.toString();
+            const response = await axiosInstance.get(END_POINT.SEARCH_RECENTLY, {
+                params: { category: category, locationId: stringLocationId }
+            });
+            console.log('RECENTLY SEARCH API', category, stringLocationId,response);
+            return response;
+        } catch (err) {
+            console.log('RECENTLY ERR', err)
+        }
+    }
+
     try {
         const response = await axiosInstance.get(END_POINT.SEARCH_RESULT, {
             params: { keyword: keywords, category: category, locationId: 1 }
