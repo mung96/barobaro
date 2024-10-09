@@ -1,76 +1,80 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Button from '@/components/shared/Button';
 import Radio from '@/components/shared/Radio';
 import SelectableItem from '@/components/shared/SelectableItem';
 import { CONTRACT_YN } from '@/constants/product';
-import { totalStepByContractYN } from '@/services/post/regist';
-import { ContractConditionRequest } from '@/types/apis/productRequest';
 import RentalInfoCard from '@/components/post/RentalInfoCard';
 import OverdueInfoCard from '@/components/post/OverdueInfoCard';
 import ProductRepairInfoCard from '@/components/post/ProductRepairInfoCard';
 import RefundInfoCard from '@/components/post/RefundInfoCard';
 import OwnerInfoCard from '@/components/post/OwnerInfoCard';
+import { ContractFormFields, StepProps } from '@/hooks/post/usePostFormModel';
 
 type Props = {
   onTotalStepChange: (step: number) => void;
-  onNext: (data: ContractConditionRequest) => void;
+  onNext: () => void;
   onPrev: () => void;
-};
+  isValid: boolean;
+  onSubmit: () => void;
+  isFormValid: boolean;
+  isSubmitting: boolean;
+} & StepProps<ContractFormFields>;
 
-function ContractInfoInput({ onTotalStepChange, onNext, onPrev }: Props) {
-  const [value, setValue] = useState('YES');
-
+export type InputProps = StepProps<ContractFormFields>;
+type ButtonType = "button" | "submit";
+function ContractInfoInput({ onTotalStepChange, onNext, onPrev, context, fields, errors, isValid, onSubmit, isSubmitting }: Props) {
+  const [isContractWrite, setIsContractWrite] = useState('YES');
   useEffect(() => {
-    const totalStep = totalStepByContractYN(value);
-    onTotalStepChange(totalStep);
-  }, [value]);
+    if (isContractWrite === 'YES') {
+      onTotalStepChange(4);
+    } else {
+      onTotalStepChange(3);
+    }
+  }, [isContractWrite])
+
+  const buttonProps = useMemo(() => {
+    const type: ButtonType = isContractWrite === 'YES' ? 'button' : 'submit';
+    const disabled = isContractWrite === 'YES' ? !isValid : isSubmitting;
+    const onClick = isContractWrite === 'YES' ? onNext : onSubmit;
+    const text = isContractWrite === 'YES' ? '다음으로 가기' : '작성 완료하기';
+    return { type, disabled, onClick, text }
+  }, [isContractWrite])
 
   return (
-    <div className="flex flex-col gap-2">
+    <form className="flex flex-col gap-2" onSubmit={onSubmit}>
       <h2>전자계약서 작성 여부</h2>
       <Radio.Group
         fieldSetName="전자계약서 작성 여부"
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
+        value={isContractWrite}
+        onChange={(e) => setIsContractWrite(e.target.value)}
         className="flex gap-4"
       >
         {CONTRACT_YN.map((item) => (
           <SelectableItem type="radio" value={item.value} label={item.label} />
         ))}
       </Radio.Group>
-      {value === 'YES' && (
+      {isContractWrite === 'YES' && (
         <div className="flex flex-col gap-3">
-          <RentalInfoCard />
-          <ProductRepairInfoCard />
-          <OverdueInfoCard />
-          <RefundInfoCard />
+          <RentalInfoCard fields={fields} context={context} errors={errors}
+          />
+          {/* 예외처리해야해 */}
+          <ProductRepairInfoCard fields={fields} context={context} errors={errors} />
+          <OverdueInfoCard fields={fields} context={context} errors={errors} />
+          <RefundInfoCard fields={fields} context={context} errors={errors} />
           <OwnerInfoCard />
         </div>
       )}
- <div className="fixed left-0 w-[100vw] bottom-0 px-4 py-3 flex gap-6 border-t-[1px]">
-        <Button onClick={onPrev} width="100%" height="36px" color="gray">
-          <p className="text-xs">이전</p>
+
+      <div className="fixed left-0 w-[100vw] bottom-0 px-4 py-3 flex gap-6 border-t-[1px] bg-white z-50">
+        <Button onClick={onPrev} width="30%" height="48px" color="gray">
+          <p className="text-base">뒤로</p>
         </Button>
-        <Button
-          onClick={() =>
-            onNext({
-              productName: '',
-              serialNumber: '',
-              repairVendor: '',
-              overdueCriteria: 0,
-              overdueFee: 0,
-              theftCriteria: 0,
-              refundDeadline: 0,
-            })
-          }
-          width="100%"
-          height="36px"
-          color="blue"
-        >
-          <p className="text-xs">다음</p>
+
+        <Button type={buttonProps.type} disabled={buttonProps.disabled} onClick={buttonProps.onClick} width="100%" height="48px">
+          <p className="text-base">{buttonProps.text}</p>
         </Button>
       </div>
-    </div>
+    </form >
   );
 }
 
