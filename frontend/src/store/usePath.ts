@@ -9,7 +9,6 @@ type Action = {
   setPath: (path: string) => void;
   setPrevPath: (path: string) => void;
 };
-console.log('usePath.ts');
 
 const usePath = create<State & Action>((set) => ({
   prevPath: '/',
