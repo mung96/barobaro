@@ -22,7 +22,7 @@ import java.security.cert.X509Certificate;
 @RequiredArgsConstructor
 public class KeyStoreConfig {
 
-    private static final String keyStorePath = "./config/keystore.p12";
+    private static final String keyStorePath = "/src/main/resources/keystore.p12";
 
     private static final String KEYSTORE_PASSWORD = "ssafya401";
 

@@ -2,6 +2,7 @@ package baro.baro.global.event;
 
 import baro.baro.domain.member.entity.Member;
 import baro.baro.domain.noti.entity.NotiType;
+import lombok.Builder;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 
