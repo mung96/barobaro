@@ -47,7 +47,6 @@ function PostFunnel() {
 
   useEffect(() => {
     openModal(window.location.pathname);
-
   }, []);
 
   const openModal = (moveLink: string) => {
@@ -60,7 +59,7 @@ function PostFunnel() {
   return (
     <div className="flex flex-col gap-4">
 
-      <IdentityVerificationModal isOpen={isIdentityVerificationModalOpen} />
+      {/* <IdentityVerificationModal isOpen={isIdentityVerificationModalOpen} /> */}
       <StepBar
         totalStep={totalStep}
         currentStep={convertRegistStepToStepNumber(registStep)}

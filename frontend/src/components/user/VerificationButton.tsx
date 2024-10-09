@@ -39,8 +39,9 @@ type Props = {
     width: string,
     height: string
     children: ReactNode
+    onSuccess: () => void
 }
-const VerificationButton = ({ width, height, children }: Props) => {
+const VerificationButton = ({ width, height, children, onSuccess }: Props) => {
     const MID = "MIIiasTest";
     const [isScriptLoaded, setIsScriptLoaded] = useState<boolean>(false);
     // 스크립트 로드 완료 상태를 useEffect로 관리
@@ -88,6 +89,7 @@ const VerificationButton = ({ width, height, children }: Props) => {
                         const result = await getCertification(resp.imp_uid);
                         console.log(`=== 유저 인증정보 조회 결과 ===`);
                         console.log(result.data);
+                        onSuccess();
                     } catch (error) {
                         console.error("인증 정보를 가져오는 중 오류 발생:", error);
                     }
