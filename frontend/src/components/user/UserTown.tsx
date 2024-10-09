@@ -41,7 +41,7 @@ export default function UserTown() {
         <>
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="flex justify-center items-center px-4 py-2 text-sm font-medium text-gray-700 rounded-[10px] focus:bg-gray-400"
+            className={`flex justify-center items-center px-4 py-2 text-sm font-medium text-gray-700 rounded-[10px] ${isOpen ? 'bg-gray-400' : null}`}
           >
             <Location where={mainLocation.dong} />
             {/*{mainLocation ? mainLocation.dong : '위치를 선택하세요'}*/}
