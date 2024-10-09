@@ -34,6 +34,9 @@ export type SearchHookType = {
   search: string;
   goSearch: () => void;
   handleSearch: (value: string) => void;
+  recommendData: any;
+  setRecommendData: (data: any) => void;
+  goSearchWord: (category: string, word: string) => void;
 };
 
 export type CategoryCardType = {

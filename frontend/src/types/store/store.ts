@@ -12,10 +12,12 @@ export type CurrentStoreState = {
   borrowProducts: Product[];
   lentProducts: Product[];
   likeProducts: Product[];
+  searchProducts: Product[];
   actions: {
     setBorrowList: (borrowList: Product[]) => void;
     setLentList: (lentList: Product[]) => void;
     setLikeList: (likeList: Product[]) => void;
+    setSearchList: (searchList: Product[]) => void;
     addBorrowProduct: (product: Product) => void;
     addLentProduct: (product: Product) => void;
     addLikeProduct: (product: Product) => void;
@@ -28,8 +30,8 @@ export type RecentlyStoreState = {
   actions: {
     setRecentlyViewedProducts: (recentlyViewedProducts: Product[]) => void;
     setRecentlyUploadedProducts: (recentlyUploadedProducts: Product[]) => void;
-  }
-}
+  };
+};
 
 type Profile = {
   profileImage: string;
@@ -37,12 +39,13 @@ type Profile = {
   phoneNumber: string;
   email: string;
   name: string;
-}
+  isAuthenticated: boolean;
+};
 
 export type ProfileStoreState = {
-  profileObject : Profile;
+  profileObject: Profile;
   isInit: boolean;
   actions: {
     setProfileObject: (profileObject: Profile) => void;
-  }
-}
+  };
+};

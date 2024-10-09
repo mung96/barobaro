@@ -115,7 +115,7 @@ export default function PostDetail() {
       <div className="-z-0 fixed bottom-0 -z-0 max-w-[500px] w-[100%] h-[60px] bg-white flex items-center">
         <div className="flex items-center justify-center w-full">
           <div className="mx-5">
-            <LikeButton isWished={postInfo.isWished} />
+            <LikeButton isWished={postInfo.isWished} productId={postInfo.productId} />
           </div>
           <div className="h-[42px] w-[1px] bg-gray-500" />
           <div className="flex flex-col flex-1 mx-3">
