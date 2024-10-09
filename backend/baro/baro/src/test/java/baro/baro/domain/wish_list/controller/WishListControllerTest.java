@@ -1,5 +1,10 @@
 package baro.baro.domain.wish_list.controller;
 
+import baro.baro.domain.product.dto.SearchProductDto;
+import baro.baro.domain.product.dto.response.SearchProductRes;
+import baro.baro.domain.wish_list.dto.WishDto;
+import baro.baro.domain.wish_list.dto.response.MyWishListRes;
+import baro.baro.domain.wish_list.service.WishListService;
 import baro.baro.global.oauth.jwt.service.JwtService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
@@ -22,14 +27,20 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static baro.baro.global.ResponseFieldUtils.getCommonResponseFields;
+import static baro.baro.global.formatter.DateFormatter.calculateTime;
 import static baro.baro.global.statuscode.SuccessCode.*;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static com.fasterxml.jackson.databind.jsonFormatVisitors.JsonFormatTypes.BOOLEAN;
 import static com.fasterxml.jackson.databind.jsonFormatVisitors.JsonFormatTypes.NUMBER;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
@@ -58,6 +69,9 @@ public class WishListControllerTest {
     @MockBean
     private JwtService jwtService;
 
+    @MockBean
+    private WishListService wishListService;
+
     private String jwtToken;
 
     @BeforeEach
@@ -77,6 +91,9 @@ public class WishListControllerTest {
     @Test
     public void 관심내역_추가_성공() throws Exception {
         //given
+        WishDto result = new WishDto(true, 3);
+
+        when(wishListService.addWishList(anyLong(), anyLong())).thenReturn(result);
 
         //when
         ResultActions actions = mockMvc.perform(
@@ -105,8 +122,10 @@ public class WishListControllerTest {
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
-                                                fieldWithPath("body").type(NULL)
-                                                        .description("본문 없음")
+                                                fieldWithPath("body.isWished").type(BOOLEAN)
+                                                        .description("찜 여부"),
+                                                fieldWithPath("body.wishCount").type(NUMBER)
+                                                        .description("찜한 사람 수")
                                         )
                                 )
                                 .requestSchema(Schema.schema("관심 내역 추가 Request"))
@@ -119,6 +138,9 @@ public class WishListControllerTest {
     @Test
     public void 관심내역_삭제_성공() throws Exception {
         //given
+        WishDto result = new WishDto(false, 3);
+
+        when(wishListService.deleteWishList(anyLong(), anyLong())).thenReturn(result);
 
         //when
         ResultActions actions = mockMvc.perform(
@@ -131,7 +153,7 @@ public class WishListControllerTest {
 
         // then
         actions
-                .andExpect(status().isNoContent())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(WISH_LIST_DELETED.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(WISH_LIST_DELETED.getMessage()))
                 .andDo(document(
@@ -147,8 +169,10 @@ public class WishListControllerTest {
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
-                                                fieldWithPath("body").type(NULL)
-                                                        .description("본문 없음")
+                                                fieldWithPath("body.isWished").type(BOOLEAN)
+                                                        .description("찜 여부"),
+                                                fieldWithPath("body.wishCount").type(NUMBER)
+                                                        .description("찜한 사람 수")
                                         )
                                 )
                                 .requestSchema(Schema.schema("관심 내역 삭제 Request"))
@@ -161,6 +185,29 @@ public class WishListControllerTest {
     @Test
     public void 관심내역_조회_성공() throws Exception {
         // given
+        List<SearchProductDto> products = new ArrayList<>();
+
+        for(int i = 0; i < 10; i++) {
+            Long id = 10000L + i;
+
+            SearchProductDto dto = SearchProductDto.builder()
+                    .productId(id)
+                    .productMainImage("대표 이미지 " + id)
+                    .title("제목 " + id)
+                    .startDate(LocalDate.of(2024, 1, 2))
+                    .endDate(LocalDate.of(2024, 5, 24))
+                    .dong("역삼동")
+                    .uploadDate(calculateTime(LocalDateTime.now()))
+                    .rentalFee(100000)
+                    .wishCount(10*i)
+                    .build();
+
+            products.add(dto);
+        }
+
+        MyWishListRes result = new MyWishListRes(products);
+
+        when(wishListService.getWishList(anyLong())).thenReturn(result);
 
         // when
         ResultActions actions = mockMvc.perform(
