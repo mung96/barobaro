@@ -12,6 +12,7 @@ export default function Card({ cardInfo }: { cardInfo: CurrentProduct }) {
     console.log('click');
     console.log(cardInfo.productId);
   };
+
   return (
     <div>
       {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events */}
@@ -22,7 +23,7 @@ export default function Card({ cardInfo }: { cardInfo: CurrentProduct }) {
         className="w-[125px] h-[168px] rounded-[10px] bg-red-50 items-center relative overflow-hidden cursor-pointer"
       >
         <div className="z-10 absolute top-2 right-2">
-          <LikeButton isWished={cardInfo.isWished} />
+          <LikeButton isWished={cardInfo.isWished} productId={cardInfo.productId.toString()} />
         </div>
         <Image
           src={cardInfo.productMainImage}

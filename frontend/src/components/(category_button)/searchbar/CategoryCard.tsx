@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import {useRouter, useSearchParams} from 'next/navigation';
 import LightStick from '@/components/(SVG_component)/LightStick';
 import SmartPhone from '@/components/(SVG_component)/SmartPhone';
 import TeleScope from '@/components/(SVG_component)/TeleScope';
@@ -9,6 +9,9 @@ import CameraLens from '@/components/(SVG_component)/CameraLens';
 import Etc from '@/components/(SVG_component)/Etc';
 import categoryNameList from '@/services/products/category';
 import { CategoryCardType } from '@/types/products/products';
+import {useEffect} from "react";
+import {getSearchData} from "@/apis/searchProductsApi";
+import { useMain } from '@/store/useLocationStore'
 
 export default function CategoryCard({
   type,
@@ -58,6 +61,29 @@ export default function CategoryCard({
   const categoryList = categoryNameList;
   const title = categoryList[type as keyof typeof categoryList];
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const targetLocation = useMain()
+
+  // API 호출 함수
+  const fetchSearchData = async (category: string, keywords: string) => {
+    try {
+      const locationId: number = targetLocation; // locationId를 1로 고정
+      const results = await getSearchData(keywords, category, locationId);
+      console.log('Search results:', results);
+    } catch (error) {
+      console.error('API 호출 중 오류 발생:', error);
+    }
+  };
+
+  useEffect(() => {
+    const category = searchParams.get('category');
+    const product = searchParams.get('product');
+
+    if (category && product) {
+      fetchSearchData(category, product);
+    }
+  }, [searchParams]);
+
   const handleClick = () => {
     if (!selected) {
       const queryParams = new URLSearchParams({
@@ -65,9 +91,9 @@ export default function CategoryCard({
         product: searchData,
       });
       router.push(`/search?${queryParams.toString()}`);
+      fetchSearchData(type, searchData);
     }
   };
-
   return (
     <button
       type="button"
