@@ -122,6 +122,10 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
+        if(!member.getIsCertificated()) {
+            throw new CustomException(AUTHENTICATION_REQUIRED);
+        }
+
         String password = passwordAddReq.getPassword();
         String checkPassword = passwordAddReq.getCheckPassword();
         if(!password.equals(checkPassword)) {

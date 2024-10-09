@@ -62,6 +62,10 @@ public enum ErrorCode {
     //카테고리
     CATEGORY_NOT_FOUND(NOT_FOUND.value(), "존재하지 않는 카테고리입니다."),
 
+    //인증
+    AUTHENTICATION_REQUIRED(BAD_REQUEST.value(), "본인인증이 필요합니다."),
+    FAIL_PORTONE_TOKEN(BAD_REQUEST.value(), "포트원 토큰 발급 실패했습니다."),
+    FAIL_PORTONE_IDENTIFIED(BAD_REQUEST.value(), "포트원 본인인증값을 가져올 수 없습니다."),
 
     //채팅
     CHATROOM_SELF_CREATED(BAD_REQUEST.value(), "본인이 올린 대여 물품의 채팅방은 만들 수 없습니다"),
