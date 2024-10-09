@@ -112,17 +112,7 @@ public class ProductController {
 
     @GetMapping("/search/suggestions")
     public ResponseEntity<?> keywordList(@RequestParam("keyword") String keyword) {
-        List<KeywordDto> keywords = new ArrayList<>();
-
-        for(int i = 0; i < 10; i++) {
-            KeywordDto keywordDto = KeywordDto.builder()
-                    .name("추천검색어"+i)
-                    .build();
-
-            keywords.add(keywordDto);
-        }
-
-        KeywordListRes result = new KeywordListRes(keywords);
+        KeywordListRes result = productService.searchKeyword(keyword);
 
         return new ResponseEntity<>(ResponseDto.success(SUGGEST_KEYWORD_LIST_OK, result), OK);
     }
