@@ -9,7 +9,7 @@ type Props = {
 };
 
 function ContractCardBox({ title, step, children }: Props) {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <div className="bg-gray-400 py-5 px-4 w-full rounded-xl flex flex-col gap-3">
       <button
