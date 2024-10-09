@@ -2,12 +2,13 @@ import { FaCheck } from 'react-icons/fa6';
 import ContractCardBox from '@/components/post/ContractCardBox';
 import { REPAIR_VENDOR } from '@/constants/product';
 import { InputProps } from '@/components/post/ContractInfoInput';
-import ErrorMessage from '@/components/shared/ErrorMessage';
 import Radio from '@/components/shared/Radio';
+import ErrorMessage from '@/components/shared/ErrorMessage';
 
 function ProductRepairInfoCard({ fields, context, errors }: InputProps) {
   return (
     <ContractCardBox title="물건 수리" step={2}>
+
       <Radio.Group
         value={fields.repairVendor.field.value as string}
         label=""
@@ -26,7 +27,6 @@ function ProductRepairInfoCard({ fields, context, errors }: InputProps) {
           </Radio.Item>
         ))}
       </Radio.Group>
-      <ErrorMessage isInvalid={fields.repairVendor.fieldState.invalid}>{errors.repairVendor?.message}</ErrorMessage>
     </ContractCardBox>
   );
 }
