@@ -12,7 +12,7 @@ type Props = {
 
 function ReturnTypeList({ value, onChange, isInvalid, message }: Props) {
   return (
-    <div className="flex gap-1 flex-col relative">
+    <div className="flex gap-2 flex-col relative">
       <p className="text-base text-black">반납 희망 방법</p>
       <CheckBox.Group
         values={value}

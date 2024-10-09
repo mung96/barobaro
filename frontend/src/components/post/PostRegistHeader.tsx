@@ -18,7 +18,7 @@ function PostRegistHeader({
   const router = useRouter();
   const prevPathState = usePrevPathStore();
 
-  return (<header className="bg-white w-full h-14 flex items-center justify-center fixed top-0 left-0">
+  return (<header className="bg-white w-full h-14 flex items-center justify-center fixed top-0 left-0 z-50">
     <div onClick={() => router.push(prevPathState)} role="presentation" className='absolute left-3'>
       <IoMdClose className='text-2xl' />
     </div>

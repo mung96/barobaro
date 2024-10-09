@@ -2,6 +2,8 @@ export const IMAGE_MAX_LENGTH = 5;
 export const IMAGE_MIN_LENGTH = 1;
 export const BODY_MAX_LENGTH = 1000;
 export const POST_TITLE_MAX_LENGTH = 20;
+export const RENTAL_FEE_PER_DAY_MAX_VALUE = 100_000;
+export const RENTAL_FEE_PER_DAY_MIN_VALUE = 100;
 
 export const POST_FIELD_CONFIG = {
   TITLE: {
@@ -49,6 +51,14 @@ export const POST_FIELD_CONFIG = {
     defaultValue: '',
     rules: {
       required: '대여 금액을 입력해주세요.',
+      min: {
+        value: RENTAL_FEE_PER_DAY_MIN_VALUE,
+        message: `대여 금액은 ${RENTAL_FEE_PER_DAY_MIN_VALUE}원 이상으로 입력해주세요.`,
+      },
+      max: {
+        value: RENTAL_FEE_PER_DAY_MAX_VALUE,
+        message: `대여 금액은 ${RENTAL_FEE_PER_DAY_MAX_VALUE}원 이하로 입력해주세요.`,
+      },
     },
   },
   RETURN_TYPE_LIST: {

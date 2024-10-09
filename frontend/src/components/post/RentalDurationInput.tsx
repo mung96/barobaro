@@ -19,7 +19,7 @@ type Props = {
 function RentalDurationInput({ value, onSelect, isInvalid, message }: Props) {
   const [isOpenCalendar, setIsOpenCalendar] = useState(false);
   return (
-    <div className="flex flex-col gap-1 relative">
+    <div className="flex flex-col gap-2 relative">
       <h3 className="text-base">대여정보</h3>
       <div className="flex gap-2 relative">
         <Input
