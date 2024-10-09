@@ -1,6 +1,7 @@
 package baro.baro.global.config;
 
 import jakarta.annotation.PreDestroy;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
@@ -10,27 +11,26 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 public class RedisConfig {
-    @Bean
-    public LettuceConnectionFactory redisConnectionFactory() {
-        return new LettuceConnectionFactory();
+    private final LettuceConnectionFactory lettuceConnectionFactory;
+
+    public RedisConfig(LettuceConnectionFactory lettuceConnectionFactory) {
+        this.lettuceConnectionFactory = lettuceConnectionFactory;
     }
 
     @Bean
-    public RedisTemplate<String, Object> redisTemplate(LettuceConnectionFactory connectionFactory) {
+    public RedisTemplate<String, Object> redisTemplate() {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
-        redisTemplate.setConnectionFactory(connectionFactory);
+        redisTemplate.setConnectionFactory(lettuceConnectionFactory); // 주입된 LettuceConnectionFactory 사용
         redisTemplate.setEnableTransactionSupport(true);
-
         return redisTemplate;
     }
 
     @PreDestroy
-    public void cleanUp(LettuceConnectionFactory connectionFactory) {
-        if (connectionFactory != null) {
-            connectionFactory.destroy();
+    public void cleanUp() {
+        if (lettuceConnectionFactory != null) {
+            lettuceConnectionFactory.destroy();
         }
     }
 }
-
