@@ -17,6 +17,11 @@ export const END_POINT = {
   SEARCH_LOCATION: 'search/locations',
   DEFAULT_LOCATION:'members/me/default-location',
 
+  //Search
+  SUGGESTIONS: 'search/suggestions',
+  SEARCH_RESULT: 'search/products',
+  SEARCH_RECENTLY: 'products/recently',
+
   //Member
   FCM_TOKEN: 'notifications/fcm-register',
   LOGOUT: 'members/logout',
@@ -30,9 +35,7 @@ export const END_POINT = {
   RECENTLY_UPLOADED: 'products/recently-uploaded',
   RECENTLY_VIEWED: 'products/recently-viewed',
   WISH_LIST: 'wish-list',
-  SUGGESTIONS: 'search/suggestions',
   PRODUCT: 'products',
-  SEARCH_RESULT: 'search/products',
   PIN_PATCH: 'members/me/password',
   PIN_VERIFIED: 'members/me/password/verified',
   LOCATION_GET: 'members/me/locations',

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getLocation } from "@/apis/profileApi";
 import { postDefaultLocation } from "@/apis/locationApi"
 import {useSetLocations, useLocations, useSetMain} from '@/store/useLocationStore';
@@ -11,6 +11,7 @@ export default function UserTown() {
   const setLocations = useSetLocations();
   const setMainLocation = useSetMain();
   const [isOpen, setIsOpen] = useState(false);
+  const [main, setMain] = useState(0);
 
   useEffect(() => {
     const fetchLocations = async () => {
@@ -32,6 +33,7 @@ export default function UserTown() {
       setMainLocation(locationId)
       setLocations(updatedLocations);
       setIsOpen(false);
+      setMain(locationId);
     } catch (error) {
       console.error("메인 위치 변경에 실패했습니다:", error);
     }

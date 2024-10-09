@@ -5,7 +5,9 @@ import { DefaultLocationResponse, DefaultLocationRequest, MyLocationRequest, Sea
 export const postDefaultLocation = async (locationNumber : number) => {
     try {
         const locationString = await locationNumber.toString();
-        const response =  await axiosInstance.post<DefaultLocationResponse>(END_POINT.DEFAULT_LOCATION,{locationString})
+        const response =  await axiosInstance.post(END_POINT.DEFAULT_LOCATION,{
+            locationId: locationString
+        })
         console.log('SUCCESS CHANGE MAIN', response)
         return response
     } catch (err) {

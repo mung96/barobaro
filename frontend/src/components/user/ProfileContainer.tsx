@@ -15,7 +15,7 @@ export default function ProfileContainer() {
             try {
                 const getProfileApi = await getProfile();
                 const profileData = getProfileApi.data.body
-                setProfileImageUrl(`/${profileData.profileImage}`)
+                setProfileImageUrl(profileData.profileImage)
                 setProfileNickname(profileData.nickname)
                 setProfileEmail(profileData.email)
             } catch (err) {
