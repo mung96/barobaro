@@ -8,7 +8,7 @@ import OverdueInfoCard from '@/components/post/OverdueInfoCard';
 import ProductRepairInfoCard from '@/components/post/ProductRepairInfoCard';
 import RefundInfoCard from '@/components/post/RefundInfoCard';
 import OwnerInfoCard from '@/components/post/OwnerInfoCard';
-import { ContractFormFields, StepProps } from '@/hooks/post/usePostFormModel';
+import { ContractFormFields, StepProps } from '@/types/domains/product';
 
 type Props = {
   onTotalStepChange: (step: number) => void;
