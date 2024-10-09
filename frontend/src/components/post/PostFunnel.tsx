@@ -65,6 +65,7 @@ function PostFunnel() {
             fields={rentalFieldList}
             errors={errors}
             context={context}
+            isValid={isValid}
             onPrev={() => {
               history.back();
               setDirection('backward');

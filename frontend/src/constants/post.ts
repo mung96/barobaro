@@ -49,57 +49,54 @@ export const POST_FIELD_CONFIG = {
   },
   RETURN_ADDRESS: {
     defaultValue: '',
-    rules: {
-      required: '반납 장소를 입력해주세요.',
-    },
   },
 
   PRODUCT_NAME: {
     defaultValue: '',
     rules: {
-      required: '제품 이름을 입력해주세요.',
+      // required: '제품 이름을 입력해주세요.',
     },
   },
 
   SERIAL_NUMBER: {
     defaultValue: '',
     rules: {
-      required: '일련 번호를 입력해주세요.',
+      // required: '일련 번호를 입력해주세요.',
     },
   },
 
   REPAIR_VENDOR: {
     defaultValue: '',
     rules: {
-      required: '수리업체를 선택해주세요.',
+      // required: '수리업체를 선택해주세요.',
     },
   },
 
   OVERDUE_CRITERIA: {
     defaultValue: '',
     rules: {
-      required: '무단연체 기준을 입력해주세요.',
+      // required: '무단연체 기준을 입력해주세요.',
     },
   },
 
   OVERDUE_FEE: {
     defaultValue: '',
     rules: {
-      required: '무단연체시 가격을 입력해주세요.',
+      // required: '무단연체시 가격을 입력해주세요.',
     },
   },
 
   THEFT_CRITERIA: {
     defaultValue: '',
     rules: {
-      required: '도난 취급 기준을 입력해주세요.',
+      // required: '도난 취급 기준을 입력해주세요.',
     },
   },
 
   REFUND_DEADLINE: {
     defaultValue: '',
     rules: {
-      required: '청구 비용 일수를 입려갷주세요.',
+      // required: '청구 비용 일수를 입려갷주세요.',
     },
   },
 };
