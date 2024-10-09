@@ -14,7 +14,7 @@ import {
 } from '@/types/domains/product';
 import { useController, useForm } from 'react-hook-form';
 
-import { POST_FIELD_CONFIG } from '@/constants/post';
+import { IMAGE_MAX_LENGTH, IMAGE_MIN_LENGTH, POST_FIELD_CONFIG } from '@/constants/post';
 import { formatDate } from '@/utils/dayUtil';
 import { postProduct } from '@/apis/productApi';
 import { isAxiosError } from 'axios';
@@ -148,7 +148,7 @@ const usePostFormModel = (context: PostInfoStep | RentalInfoStep | ContractInfoS
   const isFieldValid = useMemo(
     () => ({
       //TODO: merge시에 주석풀어야함.
-      // postFieldList: fieldMapInvalid(postFieldList),
+      // postFieldList: fieldMapInvalid(postFieldList) && (images.field.value as File[]).length >= IMAGE_MIN_LENGTH&& (images.field.value as File[]).length <=IMAGE_MAX_LENGTH,
       // rentalFieldList: fieldMapInvalid(rentalFieldList),
       // contractFieldList: fieldMapInvalid(contractFieldList),
       postFieldList: true,

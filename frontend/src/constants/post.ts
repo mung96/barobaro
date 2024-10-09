@@ -1,5 +1,7 @@
 export const IMAGE_MAX_LENGTH = 5;
+export const IMAGE_MIN_LENGTH = 1;
 export const BODY_MAX_LENGTH = 1000;
+export const POST_TITLE_MAX_LENGTH = 20;
 
 export const POST_FIELD_CONFIG = {
   TITLE: {
@@ -7,7 +9,7 @@ export const POST_FIELD_CONFIG = {
     rules: {
       required: '게시글 제목을 입력해주세요.',
       minLength: { value: 2, message: '제목은 2자 이상 입력해주세요' },
-      maxLength: { value: 20, message: '제목은 20자 이하 입력해주세요' },
+      maxLength: { value: POST_TITLE_MAX_LENGTH, message: `제목은 ${POST_TITLE_MAX_LENGTH}자 이하 입력해주세요` },
     },
   },
   CATEGORY: {

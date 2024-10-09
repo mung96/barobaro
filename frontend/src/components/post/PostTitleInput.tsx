@@ -1,5 +1,6 @@
 import ErrorMessage from '@/components/shared/ErrorMessage';
 import Input from '@/components/shared/Input';
+import { POST_TITLE_MAX_LENGTH } from '@/constants/post';
 
 type Props = {
   onChange?: (title: string) => void;
@@ -18,6 +19,7 @@ const PostTitleInput = ({ value, onChange, isInvalid, message }: Props) => {
         placeholder="게시글 제목을 입력해주세요"
         value={value}
         onChange={onChange}
+        maxLength={POST_TITLE_MAX_LENGTH}
       />
       <ErrorMessage isInvalid={isInvalid}>{message}</ErrorMessage>
     </div>
