@@ -1,3 +1,5 @@
+export const IMAGE_MAX_LENGTH = 5;
+
 export const POST_FIELD_CONFIG = {
   TITLE: {
     defaultValue: '',
@@ -14,8 +16,9 @@ export const POST_FIELD_CONFIG = {
     },
   },
   IMAGES: {
+    defaultValue: [],
     rules: {
-      required: '최소 1장이 사진을 등록해주세요.',
+      required: '최소 1장의 사진을 등록해주세요.',
     },
   },
   BODY: {
@@ -46,7 +49,7 @@ export const POST_FIELD_CONFIG = {
     },
   },
   RETURN_TYPE_LIST: {
-    defaultValue: '',
+    defaultValue: [],
     rules: {
       required: '반납 방법을 정해주세요.',
     },

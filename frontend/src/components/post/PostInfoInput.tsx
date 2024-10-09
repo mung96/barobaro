@@ -4,19 +4,26 @@ import PostTitleInput from '@/components/post/PostTitleInput';
 import ProductImageList from '@/components/post/ProductImageList';
 import Button from '@/components/shared/Button';
 import useFileModel from '@/hooks/shared/useFileModel';
-import { ProductCategory } from '@/types/domains/product';
-import { PostFormFields, StepProps } from '@/hooks/post/usePostFormModel';
+import { PostFormFields, ProductCategory, StepProps } from '@/types/domains/product';
+import { useEffect } from 'react';
 
 type Props = {
   onNext: () => void;
   isValid: boolean;
+  getValues: any;
 } & StepProps<PostFormFields>;
 
-function PostInfoInput({ onNext, fields, errors, isValid }: Props) {
+function PostInfoInput({ onNext, fields, errors, isValid, getValues }: Props) {
   const { files, changeFile, handleDragEnd, deleteFileByIndex } =
     useFileModel();
+
+  useEffect(() => {
+    if (getValues().images) {
+      changeFile(getValues().images as File[]);
+    }
+  }, [])
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-7">
       <PostTitleInput
         value={fields.title.field.value as string}
         onChange={fields.title.field.onChange}

@@ -47,6 +47,7 @@ function PostFunnel() {
       <PageTransition step={registStep} direction={direction}>
         {registStep === 'PostInfoStep' && (
           <PostInfoInput
+            getValues={getValues}
             context={context}
             errors={errors}
             fields={postFieldList}
