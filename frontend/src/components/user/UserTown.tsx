@@ -6,6 +6,13 @@ import { postDefaultLocation } from "@/apis/locationApi"
 import {useSetLocations, useLocations, useSetMain} from '@/store/useLocationStore';
 import Location from "@/components/(SVG_component)/Location";
 
+interface LocationInfo {
+  locationId: number;
+  name: string;
+  dong: string;
+  isMain: boolean;
+}
+
 export default function UserTown() {
   const locations = useLocations();
   const setLocations = useSetLocations();
@@ -18,14 +25,22 @@ export default function UserTown() {
       try {
         const response = await getLocation();
         setLocations(response);
-
+        const mainRes = response.find((location: LocationInfo) => location.isMain);
+        if (mainRes) {
+          setMain(mainRes.locationId);
+          setMainLocation(mainRes.locationId);
+        }
       } catch (error) {
         console.error("위치 정보를 가져오는데 실패했습니다:", error);
       }
     };
     fetchLocations();
-  }, [setLocations]);
+  }, [setLocations, setMainLocation]);
 
+  useEffect(() => {
+    console.log('MainLocation !!!', main);
+  }, [main]);
+  
   const handleChangeMainLocation = async (locationId: number) => {
     try {
       await postDefaultLocation(locationId);

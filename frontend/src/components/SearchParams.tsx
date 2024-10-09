@@ -7,7 +7,8 @@ import ItemList from '@/components/ItemList';
 import { useEffect, useState } from 'react';
 import {getSearchData} from "@/apis/searchProductsApi";
 import {useCurrentActions} from "@/store/useCurrentStore";
-import {useMain} from "@/store/useLocationStore";
+import {useMain, useSetLocations} from "@/store/useLocationStore";
+import {getLocation} from "@/apis/profileApi";
 
 function useGetSearchData(data: string) {
   const searchParams = useSearchParams();
@@ -19,8 +20,21 @@ export default function CategoryDetailContent() {
   const categoryData = useGetSearchData('category') || '';
   const searchData = useGetSearchData('product') || '';
   const mainLoationId = useMain()
+  const setLocations = useSetLocations();
 
   useEffect(() => {
+    const fetchLocations = async () => {
+      try {
+        const response = await getLocation();
+        setLocations(response);
+
+      } catch (error) {
+        console.error("위치 정보를 가져오는데 실패했습니다:", error);
+      }
+    };
+    fetchLocations();
+
+
     async function getSearchOutput() {
       try {
         console.log('CATE', categoryData, 'SEARCH', searchData);
