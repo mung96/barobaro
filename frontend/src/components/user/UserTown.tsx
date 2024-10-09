@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { getLocation } from "@/apis/profileApi";
 import { postDefaultLocation } from "@/apis/locationApi"
-import {useSetLocations, useLocations, useSetMain} from '@/store/useLocationStore';
+import { useSetLocations, useLocations, useSetMain } from '@/store/useLocationStore';
 import Location from "@/components/(SVG_component)/Location";
 
 interface LocationInfo {
@@ -40,7 +40,7 @@ export default function UserTown() {
   useEffect(() => {
     console.log('MainLocation !!!', main);
   }, [main]);
-  
+
   const handleChangeMainLocation = async (locationId: number) => {
     try {
       await postDefaultLocation(locationId);
@@ -71,17 +71,17 @@ export default function UserTown() {
             <div className="absolute left-0 mt-2 w-[150px] rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
               <div className="py-1" role="menu">
                 {locations
-                .filter(location => !location.isMain)
-                .map((location) => (
-                  <button
-                    key={location.locationId}
-                    onClick={() => handleChangeMainLocation(location.locationId)}
-                    className="block text-left px-4 py-2 text-sm text-gray-700"
-                    role="menuitem"
-                  >
-                    {location.dong}
-                  </button>
-                ))}
+                  .filter(location => !location.isMain)
+                  .map((location) => (
+                    <button
+                      key={location.locationId}
+                      onClick={() => handleChangeMainLocation(location.locationId)}
+                      className="block text-left px-4 py-2 text-sm text-gray-700"
+                      role="menuitem"
+                    >
+                      {location.dong}
+                    </button>
+                  ))}
               </div>
             </div>
           )}
