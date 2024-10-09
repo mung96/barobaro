@@ -15,34 +15,35 @@ type Props = {
   onTotalStepChange: (step: number) => void;
   onNext: (data: ContractConditionRequest) => void;
   onPrev: () => void;
+  isValid: boolean;
 } & StepProps<ContractFormFields>;
 
 export type InputProps = StepProps<ContractFormFields>;
 
-function ContractInfoInput({ onTotalStepChange, onNext, onPrev, context, fields, errors }: Props) {
-  const [value, setValue] = useState('YES');
+function ContractInfoInput({ onTotalStepChange, onNext, onPrev, context, fields, errors, isValid }: Props) {
+  const [isContractWrite, setIsContractWrite] = useState('YES');
   useEffect(() => {
-    if (value === 'YES') {
+    if (isContractWrite === 'YES') {
       onTotalStepChange(4);
     } else {
       onTotalStepChange(3);
     }
-  }, [value])
+  }, [isContractWrite])
 
   return (
     <div className="flex flex-col gap-2">
       <h2>전자계약서 작성 여부</h2>
       <Radio.Group
         fieldSetName="전자계약서 작성 여부"
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
+        value={isContractWrite}
+        onChange={(e) => setIsContractWrite(e.target.value)}
         className="flex gap-4"
       >
         {CONTRACT_YN.map((item) => (
           <SelectableItem type="radio" value={item.value} label={item.label} />
         ))}
       </Radio.Group>
-      {value === 'YES' && (
+      {isContractWrite === 'YES' && (
         <div className="flex flex-col gap-3">
           <RentalInfoCard fields={fields} context={context} errors={errors}
           />
@@ -59,7 +60,7 @@ function ContractInfoInput({ onTotalStepChange, onNext, onPrev, context, fields,
           <p className="text-base">뒤로</p>
         </Button>
 
-        <Button disabled={false} onClick={() =>
+        <Button disabled={isContractWrite === 'YES' ? !isValid : false} onClick={() =>
           onNext({
             productName: '',
             serialNumber: '',
@@ -74,7 +75,7 @@ function ContractInfoInput({ onTotalStepChange, onNext, onPrev, context, fields,
         </Button>
       </div>
 
-    </div>
+    </div >
   );
 }
 

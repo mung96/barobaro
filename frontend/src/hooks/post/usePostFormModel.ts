@@ -10,6 +10,8 @@ import {
 import { FieldErrors, useController, UseControllerReturn, useForm } from 'react-hook-form';
 
 import { POST_FIELD_CONFIG } from '@/constants/post';
+import { formatDate } from '@/utils/dayUtil';
+import { postProduct } from '@/apis/productApi';
 
 export type StepProps<T> = {
   fields: T;
@@ -40,7 +42,7 @@ export type ContractFormFields = {
   refundDeadline: UseControllerReturn<PostFunnelStep>;
 };
 
-const usePostFormModel = () => {
+const usePostFormModel = (context: PostInfoStep | RentalInfoStep | ContractInfoStep | ContractPreviewStep) => {
   const {
     getValues,
     control,
@@ -164,11 +166,32 @@ const usePostFormModel = () => {
     Object.values(fieldList).every((field) => !field.fieldState.invalid && field.field.value);
 
   const isFieldValid = {
-    postFieldList: fieldMapInvalid(postFieldList),
-    rentalFieldList: fieldMapInvalid(rentalFieldList),
+    //TODO: merge시에 주석풀어야함.
+    // postFieldList: fieldMapInvalid(postFieldList),
+    // rentalFieldList: fieldMapInvalid(rentalFieldList),
+    // contractFieldList: fieldMapInvalid(contractFieldList),
+    postFieldList: true,
+    rentalFieldList: true,
     contractFieldList: fieldMapInvalid(contractFieldList),
   };
-
+  const convertProductDataToRequest = () => {
+    return {
+      title: context.title!,
+      startDate: formatDate(getValues().rentalDuration?.from!),
+      endDate: formatDate(getValues().rentalDuration?.to!),
+      rentalFee: getValues().rentalFee!,
+      place: getValues().rentalAddress?.addressName!,
+      latitude: Number(getValues().rentalAddress?.latitude!),
+      longitude: Number(getValues().rentalAddress?.longitude!),
+      returnTypeList: getValues().returnTypeList!,
+      returnAddress: getValues().returnAddress?.addressName!,
+      content: context.body!,
+      category: context.category!,
+    };
+  };
+  const postProductWithoutContract = () => {
+    postProduct(convertProductDataToRequest(), context.images! as File[]);
+  };
   return {
     postFieldList,
     rentalFieldList,
