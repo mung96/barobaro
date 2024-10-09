@@ -94,7 +94,7 @@ public class MemberServiceImpl implements MemberService {
                                 locationId, true);
                     } else {
                         memberLocationRepository.insertMemberLocations(member.getId(),
-                                locationId, true);
+                                locationId, false);
                     }
                 });
 
