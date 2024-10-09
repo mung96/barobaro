@@ -10,13 +10,17 @@ import {
 import { FieldErrors, useController, UseControllerReturn, useForm } from 'react-hook-form';
 
 import { POST_FIELD_CONFIG } from '@/constants/post';
+import { formatDate } from '@/utils/dayUtil';
+import { postProduct } from '@/apis/productApi';
+import { isAxiosError } from 'axios';
+import { useRouter } from 'next/navigation';
 
 export type StepProps<T> = {
   fields: T;
   errors: FieldErrors<PostFunnelStep>;
   context: PostInfoStep | RentalInfoStep | ContractInfoStep | ContractPreviewStep;
 };
-type PostFunnelStep = PostInfo & RentalInfo & ContractInfo;
+export type PostFunnelStep = PostInfo & RentalInfo & ContractInfo;
 export type PostFormFields = {
   title: UseControllerReturn<PostFunnelStep>;
   body: UseControllerReturn<PostFunnelStep>;
@@ -40,11 +44,12 @@ export type ContractFormFields = {
   refundDeadline: UseControllerReturn<PostFunnelStep>;
 };
 
-const usePostFormModel = () => {
+const usePostFormModel = (context: PostInfoStep | RentalInfoStep | ContractInfoStep | ContractPreviewStep) => {
+  const router = useRouter();
   const {
     getValues,
     control,
-    formState: { errors, isValid },
+    formState: { errors, isValid: isFormValid, isSubmitting },
     handleSubmit,
   } = useForm<PostFunnelStep>({
     mode: 'onChange',
@@ -159,31 +164,55 @@ const usePostFormModel = () => {
     theftCriteria: theftCriteria,
     refundDeadline: refundDeadline,
   };
-  //   const convertProductDataToRequest = ()=>{
-  //     //undefined type가드를 활용해야하는데 시간이없네
-  //     return {
-  //     title: context.title!,
-  //     startDate: formatDate(getValues().rentalDuration?.from!),
-  //     endDate: formatDate(getValues().rentalDuration?.to!),
-  //     rentalFee: getValues().rentalFee!,
-  //     place: getValues().rentalAddress?.addressName!,
-  //     latitude: Number(getValues().rentalAddress?.latitude!),
-  //     longitude: Number(getValues().rentalAddress?.longitude!),
-  //     returnTypeList: getValues().returnTypeList!,
-  //     returnAddress: getValues().returnAddress?.addressName!,
-  //     content: context.body!,
-  //     category: context.category!}
-  //   }
-  //   const postProduct =   handleSubmit(()=>postProduct(convertProductDataToRequest(),context.images! as File[]))
 
+  const fieldMapInvalid = (fieldList: PostFormFields | RentalFormFields | ContractFormFields) =>
+    Object.values(fieldList).every((field) => !field.fieldState.invalid && field.field.value);
+
+  const isFieldValid = {
+    //TODO: merge시에 주석풀어야함.
+    // postFieldList: fieldMapInvalid(postFieldList),
+    // rentalFieldList: fieldMapInvalid(rentalFieldList),
+    // contractFieldList: fieldMapInvalid(contractFieldList),
+    postFieldList: true,
+    rentalFieldList: true,
+    contractFieldList: fieldMapInvalid(contractFieldList),
+  };
+  const convertProductDataToRequest = () => {
+    return {
+      title: context.title!,
+      startDate: formatDate(getValues().rentalDuration?.from!),
+      endDate: formatDate(getValues().rentalDuration?.to!),
+      rentalFee: getValues().rentalFee!,
+      place: getValues().rentalAddress?.addressName!,
+      latitude: Number(getValues().rentalAddress?.latitude!),
+      longitude: Number(getValues().rentalAddress?.longitude!),
+      returnTypeList: getValues().returnTypeList!,
+      returnAddress: getValues().returnAddress?.addressName!,
+      content: context.body!,
+      category: context.category!,
+    };
+  };
+  const postProductWithoutContract = handleSubmit(async () => {
+    try {
+      const response = await postProduct(convertProductDataToRequest(), context.images! as File[]);
+      const productId = response.data.body.productId;
+      router.replace(`/post/${productId}`);
+    } catch (error) {
+      if (isAxiosError(error)) {
+        alert(error.response?.data.message);
+      }
+    }
+  });
   return {
     postFieldList,
     rentalFieldList,
     contractFieldList,
     getValues,
     errors,
-    isValid,
-    handleSubmit,
+    isFormValid,
+    isFieldValid,
+    isSubmitting,
+    postProductWithoutContract,
   };
 };
 

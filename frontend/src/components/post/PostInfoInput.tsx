@@ -4,14 +4,15 @@ import PostTitleInput from '@/components/post/PostTitleInput';
 import ProductImageList from '@/components/post/ProductImageList';
 import Button from '@/components/shared/Button';
 import useFileModel from '@/hooks/shared/useFileModel';
-import {  ProductCategory } from '@/types/domains/product';
+import { ProductCategory } from '@/types/domains/product';
 import { PostFormFields, StepProps } from '@/hooks/post/usePostFormModel';
 
 type Props = {
   onNext: () => void;
-}& StepProps<PostFormFields>;
+  isValid: boolean;
+} & StepProps<PostFormFields>;
 
-function PostInfoInput({ onNext,fields,errors }: Props) {
+function PostInfoInput({ onNext, fields, errors, isValid }: Props) {
   const { files, changeFile, handleDragEnd, deleteFileByIndex } =
     useFileModel();
   return (
@@ -47,7 +48,7 @@ function PostInfoInput({ onNext,fields,errors }: Props) {
         message={errors.body?.message!}
       />
       <div className="fixed bottom-4 left-0 w-[100vw] px-4">
-        <Button disabled={false} onClick={onNext} width="100%" height="48px">
+        <Button disabled={!isValid} onClick={onNext} width="100%" height="48px">
           <p className="text-base text-white">다음</p>
         </Button>
       </div>

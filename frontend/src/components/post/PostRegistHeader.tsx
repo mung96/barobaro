@@ -1,9 +1,9 @@
 'use client';
 
-import GoBack from '@/components/(SVG_component)/GoBack';
-import { usePathStore, useSetPathStore } from '@/store/usePath';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePrevPathStore } from '@/store/usePath';
+import { useRouter } from 'next/navigation';
+
+import { IoMdClose } from "react-icons/io";
 
 
 type Props = {
@@ -14,19 +14,17 @@ type Props = {
 
 function PostRegistHeader({
   pageName,
-  hasPrevBtn,
 }: Props) {
-  return (<header className="bg-white w-full min-h-12 flex items-center ">
-      <div className="flex flex-grow gap-2 items-center">
-          <div onClick={()=>window.history.back()} role="presentation">
-            <GoBack />
-          </div>
-       {pageName && <h2 className="flex-grow text-left mx-5 ml-0">{pageName}</h2>}
-      </div>
-    </header>
+  const router = useRouter();
+  const prevPathState = usePrevPathStore();
+
+  return (<header className="bg-white w-full h-14 flex items-center justify-center fixed top-0 left-0">
+    <div onClick={() => router.push(prevPathState)} role="presentation" className='absolute left-3'>
+      <IoMdClose className='text-2xl' />
+    </div>
+    {pageName && <h2 className="text-lg font-semibold text-center mt-1">{pageName}</h2>}
+  </header>
   );
 }
 
 export default PostRegistHeader;
-
-// noti list에서 안 읽은 알림이 있다 ? notification_with_noti : notification 형태로 배치

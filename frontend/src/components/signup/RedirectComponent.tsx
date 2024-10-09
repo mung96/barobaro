@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Logo from '@/../public/assets/png/barobaro_logo.png';
 import { useRouter, useSearchParams } from "next/navigation";
-import { jwtDecode } from "jwt-decode";
+// import { jwtDecode } from "jwt-decode";
 import { getProfile } from "@/apis/profileApi";
 import { useEffect } from "react";
 import { useProfileSet } from "@/store/useMyProfile";
@@ -13,8 +13,8 @@ const RedirectComponent = () => {
   const searchParams = useSearchParams();
   console.log(searchParams.get('token'));
   localStorage.setItem('token', searchParams.get('token')!);
-  const decoded = jwtDecode(searchParams.get('token')!);
-  console.log(decoded);
+  // const decoded = jwtDecode(searchParams.get('token')!);
+  // console.log(decoded);
   const setProfile = useProfileSet();
 
   useEffect(() => {
