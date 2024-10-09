@@ -1,4 +1,5 @@
 export const IMAGE_MAX_LENGTH = 5;
+export const BODY_MAX_LENGTH = 1000;
 
 export const POST_FIELD_CONFIG = {
   TITLE: {
@@ -26,7 +27,7 @@ export const POST_FIELD_CONFIG = {
     rules: {
       required: '게시글 내용을 입력해주세요.',
       minLength: { value: 1, message: '게시글은 1자 이상 입력해주세요' },
-      maxLength: { value: 1000, message: '게시글은 1000자 이하 입력해주세요' },
+      maxLength: { value: BODY_MAX_LENGTH, message: `게시글은 ${BODY_MAX_LENGTH}자 이하 입력해주세요` },
     },
   },
 
