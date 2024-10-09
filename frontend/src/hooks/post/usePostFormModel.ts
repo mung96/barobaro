@@ -44,7 +44,7 @@ const usePostFormModel = () => {
   const {
     getValues,
     control,
-    formState: { errors, isValid },
+    formState: { errors, isValid: isFormValid },
     handleSubmit,
   } = useForm<PostFunnelStep>({
     mode: 'onChange',
@@ -159,22 +159,15 @@ const usePostFormModel = () => {
     theftCriteria: theftCriteria,
     refundDeadline: refundDeadline,
   };
-  //   const convertProductDataToRequest = ()=>{
-  //     //undefined type가드를 활용해야하는데 시간이없네
-  //     return {
-  //     title: context.title!,
-  //     startDate: formatDate(getValues().rentalDuration?.from!),
-  //     endDate: formatDate(getValues().rentalDuration?.to!),
-  //     rentalFee: getValues().rentalFee!,
-  //     place: getValues().rentalAddress?.addressName!,
-  //     latitude: Number(getValues().rentalAddress?.latitude!),
-  //     longitude: Number(getValues().rentalAddress?.longitude!),
-  //     returnTypeList: getValues().returnTypeList!,
-  //     returnAddress: getValues().returnAddress?.addressName!,
-  //     content: context.body!,
-  //     category: context.category!}
-  //   }
-  //   const postProduct =   handleSubmit(()=>postProduct(convertProductDataToRequest(),context.images! as File[]))
+
+  const fieldMapInvalid = (fieldList: PostFormFields | RentalFormFields | ContractFormFields) =>
+    Object.values(fieldList).every((field) => !field.fieldState.invalid && field.field.value);
+
+  const isFieldValid = {
+    postFieldList: fieldMapInvalid(postFieldList),
+    rentalFieldList: fieldMapInvalid(rentalFieldList),
+    contractFieldList: fieldMapInvalid(contractFieldList),
+  };
 
   return {
     postFieldList,
@@ -182,8 +175,9 @@ const usePostFormModel = () => {
     contractFieldList,
     getValues,
     errors,
-    isValid,
+    isFormValid,
     handleSubmit,
+    isFieldValid,
   };
 };
 

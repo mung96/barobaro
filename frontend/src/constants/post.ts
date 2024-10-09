@@ -13,7 +13,11 @@ export const POST_FIELD_CONFIG = {
       required: '카테고리를 선택해주세요',
     },
   },
-  IMAGES: {},
+  IMAGES: {
+    rules: {
+      required: '최소 1장이 사진을 등록해주세요.',
+    },
+  },
   BODY: {
     defaultValue: '',
     rules: {
