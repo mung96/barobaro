@@ -9,6 +9,7 @@ import MyPageButton from './(SVG_component)/MyPageButton';
 import { usePathname, useRouter } from 'next/navigation';
 import { usePathStore, usePrevPathStore, useSetPathStore, useSetPrevPathStore } from '@/store/usePath';
 import { useEffect } from 'react';
+import { useProfileObject } from '@/store/useMyProfile';
 
 const NavBarItemList = [
   { id: 0, icon: (currentPath: string) => <HomeButton width='32' height='32' fill={currentPath === '/home' ? '#1A1E27' : '#B6BDC8'} />, label: '홈', path: '/home' },
@@ -38,7 +39,6 @@ export default function NavBar() {
   const pathname = usePathname();
   const pathState = usePathStore();
   const setPath = useSetPathStore();
-
   const setPrevPathState = useSetPrevPathStore();
 
   useEffect(() => {

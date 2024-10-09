@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import Script from "next/script";
 import { axiosInstance } from "@/apis/axiosInstance";
 import { AxiosResponse } from "axios";
 import { IMP_CODE } from "@/constants/api";
+import Button from "@/components/shared/Button";
 
 // 인증 정보를 위한 타입 정의
 type CertificationResponse = {
@@ -34,8 +35,12 @@ declare global {
         IMP?: IMP;  // window.IMP는 동적이므로 undefined일 수 있음
     }
 }
-
-const Verification = () => {
+type Props = {
+    width: string,
+    height: string
+    children: ReactNode
+}
+const VerificationButton = ({ width, height, children }: Props) => {
     const MID = "MIIiasTest";
     const [isScriptLoaded, setIsScriptLoaded] = useState<boolean>(false);
     // 스크립트 로드 완료 상태를 useEffect로 관리
@@ -97,6 +102,7 @@ const Verification = () => {
         <div className="App">
             {/* PortOne SDK 스크립트를 로드 */}
             <Script
+                className="hidden"
                 src="https://cdn.iamport.kr/v1/iamport.js"
                 strategy="lazyOnload"
                 onLoad={() => {
@@ -109,11 +115,12 @@ const Verification = () => {
                 }}
                 onError={() => console.error("Failed to load PortOne SDK.")}
             />
-            <button onClick={certification} disabled={!isScriptLoaded}>
-                본인인증
-            </button>
-        </div>
+
+            <Button onClick={certification} disabled={!isScriptLoaded} width={width} height={height}>
+                {children}
+            </Button>
+        </div >
     );
 };
 
-export default Verification;
+export default VerificationButton;
