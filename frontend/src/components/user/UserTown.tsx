@@ -1,46 +1,71 @@
 'use client';
 
-import { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { getLocation, changeMainLocation } from "@/apis/profileApi";
 import { useSetLocations, useLocations } from '@/store/useLocationStore';
 
 export default function UserTown() {
-    const locations = useLocations();
-    const setLocations = useSetLocations();
+  const locations = useLocations();
+  const setLocations = useSetLocations();
+  const [isOpen, setIsOpen] = useState(false);
 
-    useEffect(() => {
-        const fetchLocations = async () => {
-            try {
-                const response = await getLocation();
-                setLocations(response);
-            } catch (error) {
-                console.error("위치 정보를 가져오는데 실패했습니다:", error);
-            }
-        };
+  useEffect(() => {
+    const fetchLocations = async () => {
+      try {
+        const response = await getLocation();
+        setLocations(response);
+      } catch (error) {
+        console.error("위치 정보를 가져오는데 실패했습니다:", error);
+      }
+    };
+    fetchLocations();
+  }, [setLocations]);
 
-        fetchLocations();
-    }, [setLocations]);
+  // const handleChangeMainLocation = async (locationId: number) => {
+  //   try {
+  //     await changeMainLocation();
+  //     const updatedLocations = await getLocation();
+  //     setLocations(updatedLocations);
+  //     setIsOpen(false);
+  //   } catch (error) {
+  //     console.error("메인 위치 변경에 실패했습니다:", error);
+  //   }
+  // };
 
-    // // 메인 위치 변경 함수 (필요시 사용)
-    // const handleChangeMainLocation = async (locationId: string) => {
-    //     try {
-    //         await changeMainLocation(locationId);
-    //         // 위치 정보를 다시 불러와 상태를 업데이트
-    //         const updatedLocations = await getLocation();
-    //         setLocations(updatedLocations);
-    //     } catch (error) {
-    //         console.error("메인 위치 변경에 실패했습니다:", error);
-    //     }
-    // };
+  const mainLocation = locations.find(location => location.isMain) || locations[0];
 
-    return (
-        <div>
-            {/*{locations.map((location, index) => (*/}
-            {/*    <div key={index} className="w-[100px] h-[20px] bg-amber-200 my-2">*/}
-            {/*        {location}*/}
-            {/*    </div>*/}
-            {/*))}*/}
-            asdas
-        </div>
-    );
+  return (
+    <div className="relative">
+      {locations.length > 0 ? (
+        <>
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="bg-white border border-gray-300 rounded-md px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            {mainLocation ? mainLocation.dong : '위치를 선택하세요'}
+            <span className="ml-2">▼</span>
+          </button>
+
+          {isOpen && (
+            <div className="absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+              <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                {locations.map((location) => (
+                  <button
+                    key={location.locationId}
+                    // onClick={() => handleChangeMainLocation(location.locationId)}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                    role="menuitem"
+                  >
+                    {location.dong}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </>
+      ) : (
+        <p>위치 정보가 없습니다.</p>
+      )}
+    </div>
+  );
 }
