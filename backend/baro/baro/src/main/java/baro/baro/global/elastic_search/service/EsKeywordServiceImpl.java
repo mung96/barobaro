@@ -5,6 +5,8 @@ import baro.baro.global.elastic_search.repository.EsKeywordRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class EsKeywordServiceImpl implements EsKeywordService {
@@ -15,5 +17,10 @@ public class EsKeywordServiceImpl implements EsKeywordService {
         EsKeyword esKeyword = EsKeyword.builder().keyword(keyword).build();
 
         esKeywordRepository.save(esKeyword);
+    }
+
+    @Override
+    public List<EsKeyword> findKeyword(String keyword) {
+        return esKeywordRepository.findByKeyword(keyword);
     }
 }
