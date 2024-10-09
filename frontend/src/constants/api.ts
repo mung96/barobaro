@@ -4,6 +4,7 @@ export const NEXT_BASE_URL = process.env.NEXT_PUBLIC_FRONT_URL;
 export const KAKAO_BASE_URL = 'https://dapi.kakao.com/v2/';
 export const DummyToken = process.env.NEXT_PUBLIC_AUTH_TOKEN;
 export const FCM_VAPID_KEY = process.env.NEXT_PUBLIC_FCM_VAPID_KEY;
+export const IMP_CODE = process.env.NEXT_PUBLIC_IMP_CODE;
 
 export const END_POINT = {
   LOCATION: 'local/search/keyword.json',
@@ -13,9 +14,9 @@ export const END_POINT = {
   KAKAO_LOGIN: 'members/signin/social/kakao',
 
   //Location
-  MY_LOCATIONS:'members/me/locations',
+  MY_LOCATIONS: 'members/me/locations',
   SEARCH_LOCATION: 'search/locations',
-  DEFAULT_LOCATION:'members/me/default-location',
+  DEFAULT_LOCATION: 'members/me/default-location',
 
   //Search
   SUGGESTIONS: 'search/suggestions',
@@ -40,7 +41,6 @@ export const END_POINT = {
   PIN_VERIFIED: 'members/me/password/verified',
   LOCATION_GET: 'members/me/locations',
   LOCATION_MAIN_CHANGE: 'members/me/default-location',
-
 } as const;
 
 export const HTTP_STATUS_CODE = {
