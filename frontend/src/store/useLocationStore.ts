@@ -1,18 +1,22 @@
-import { create } from 'zustand';
+// useLocationStore.ts
+import {create} from 'zustand';
 
-type LocationStoreType = {
-    locations: string[];
-    actions: {
-        setLocations: (locationList: string[]) => void;
-    }
+interface Location {
+    locationId: number;
+    name: string;
+    dong: string;
+    isMain: boolean;
 }
 
-const useLocationStore = create<LocationStoreType>((set) => ({
-    locations : [],
-    actions: {
-        setLocations: (locationList) => set({locations: locationList}),
-    }
-}))
+interface LocationState {
+    locations: Location[];
+    setLocations: (locations: Location[]) => void;
+}
 
-export const useSetLocations = () => useLocationStore((store) => store.actions.setLocations);
-export const useLocations = () => useLocationStore((store) => store.locations);
+export const useLocationStore = create<LocationState>((set) => ({
+    locations: [],
+    setLocations: (locations) => set({ locations }),
+}));
+
+export const useLocations = () => useLocationStore((state) => state.locations);
+export const useSetLocations = () => useLocationStore((state) => state.setLocations);
