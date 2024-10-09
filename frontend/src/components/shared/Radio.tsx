@@ -14,7 +14,7 @@ type RadioGroupProps = {
   className?: string;
   value: string;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
-  fieldSetName: string;
+  fieldSetName?: string;
 };
 
 function RadioGroup({

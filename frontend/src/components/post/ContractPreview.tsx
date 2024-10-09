@@ -5,11 +5,14 @@ import { ContractInfoStep, ContractPreviewStep, PostInfoStep, RentalInfoStep } f
 type Props = {
   onPrev: () => void;
   context: PostInfoStep | RentalInfoStep | ContractInfoStep | ContractPreviewStep;
+  isFormValid: boolean;
+  isSubmitting: boolean;
+  onSubmit: () => void;
 };
 
 
-function ContractPreview({ onPrev, context }: Props) {
-  return <div className="flex flex-col gap-4">
+function ContractPreview({ onPrev, context, onSubmit, isFormValid, isSubmitting }: Props) {
+  return <form className="flex flex-col gap-4" onSubmit={onSubmit}>
     <h3 className='text-lg'>전자계약서 미리보기</h3>
     <section className='border-[1px] border-gray-500 rounded-xl py-6 ' >
       <div className='max-h-[496px] overflow-y-scroll px-4'>
@@ -22,13 +25,11 @@ function ContractPreview({ onPrev, context }: Props) {
           <p className="text-base">뒤로</p>
         </Button>
 
-        <Button disabled={false} onClick={() =>
-          console.log(1)
-        } width="100%" height="48px">
+        <Button type='submit' disabled={isSubmitting} width="100%" height="48px">
           <p className="text-base">작성 완료하기</p>
         </Button>
       </div>
     </div>
-  </div>
+  </form>
 }
 export default ContractPreview;

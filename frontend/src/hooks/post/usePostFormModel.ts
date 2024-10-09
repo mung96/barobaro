@@ -1,3 +1,4 @@
+import { useCallback, useMemo } from 'react';
 import {
   ContractInfo,
   PostInfo,
@@ -14,6 +15,7 @@ import { formatDate } from '@/utils/dayUtil';
 import { postProduct } from '@/apis/productApi';
 import { isAxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
+import { ContractConditionRequest } from '@/types/apis/productRequest';
 
 export type StepProps<T> = {
   fields: T;
@@ -54,7 +56,8 @@ const usePostFormModel = (context: PostInfoStep | RentalInfoStep | ContractInfoS
   } = useForm<PostFunnelStep>({
     mode: 'onChange',
   });
-  //게시글 필드
+
+  // 게시글 필드
   const title = useController<PostFunnelStep>({
     control,
     name: 'title',
@@ -64,7 +67,6 @@ const usePostFormModel = (context: PostInfoStep | RentalInfoStep | ContractInfoS
     control,
     name: 'images',
   });
-
   const category = useController<PostFunnelStep>({
     control,
     name: 'category',
@@ -76,7 +78,7 @@ const usePostFormModel = (context: PostInfoStep | RentalInfoStep | ContractInfoS
     ...POST_FIELD_CONFIG.BODY,
   });
 
-  //대여정보
+  // 대여정보
   const rentalDuration = useController<PostFunnelStep>({
     control,
     name: 'rentalDuration',
@@ -103,7 +105,7 @@ const usePostFormModel = (context: PostInfoStep | RentalInfoStep | ContractInfoS
     ...POST_FIELD_CONFIG.RETURN_ADDRESS,
   });
 
-  //계약서
+  // 계약서
   const productName = useController<PostFunnelStep>({
     control,
     name: 'productName',
@@ -140,69 +142,109 @@ const usePostFormModel = (context: PostInfoStep | RentalInfoStep | ContractInfoS
     ...POST_FIELD_CONFIG.REFUND_DEADLINE,
   });
 
-  const postFieldList: PostFormFields = {
-    title: title,
-    body: body,
-    category: category,
-    images: images,
+  const postFieldList = {
+    title,
+    body,
+    category,
+    images,
+  };
+  const rentalFieldList = {
+    rentalDuration,
+    rentalFee,
+    returnTypeList,
+    returnAddress,
+    rentalAddress,
   };
 
-  const rentalFieldList: RentalFormFields = {
-    rentalDuration: rentalDuration,
-    rentalFee: rentalFee,
-    returnTypeList: returnTypeList,
-    returnAddress: returnAddress,
-    rentalAddress: rentalAddress,
-  };
-
-  const contractFieldList: ContractFormFields = {
-    productName: productName,
-    serialNumber: serialNumber,
-    repairVendor: repairVendor,
-    overdueCriteria: overdueCriteria,
-    overdueFee: overdueFee,
-    theftCriteria: theftCriteria,
-    refundDeadline: refundDeadline,
+  const contractFieldList = {
+    productName,
+    serialNumber,
+    repairVendor,
+    overdueCriteria,
+    overdueFee,
+    theftCriteria,
+    refundDeadline,
   };
 
   const fieldMapInvalid = (fieldList: PostFormFields | RentalFormFields | ContractFormFields) =>
     Object.values(fieldList).every((field) => !field.fieldState.invalid && field.field.value);
 
-  const isFieldValid = {
-    //TODO: merge시에 주석풀어야함.
-    // postFieldList: fieldMapInvalid(postFieldList),
-    // rentalFieldList: fieldMapInvalid(rentalFieldList),
-    // contractFieldList: fieldMapInvalid(contractFieldList),
-    postFieldList: true,
-    rentalFieldList: true,
-    contractFieldList: fieldMapInvalid(contractFieldList),
-  };
+  const isFieldValid = useMemo(
+    () => ({
+      //TODO: merge시에 주석풀어야함.
+      // postFieldList: fieldMapInvalid(postFieldList),
+      // rentalFieldList: fieldMapInvalid(rentalFieldList),
+      // contractFieldList: fieldMapInvalid(contractFieldList),
+      postFieldList: true,
+      rentalFieldList: true,
+      contractFieldList: fieldMapInvalid(contractFieldList),
+    }),
+    [postFieldList, rentalFieldList, contractFieldList],
+  );
+
   const convertProductDataToRequest = () => {
     return {
       title: context.title!,
-      startDate: formatDate(getValues().rentalDuration?.from!),
-      endDate: formatDate(getValues().rentalDuration?.to!),
-      rentalFee: getValues().rentalFee!,
-      place: getValues().rentalAddress?.addressName!,
-      latitude: Number(getValues().rentalAddress?.latitude!),
-      longitude: Number(getValues().rentalAddress?.longitude!),
-      returnTypeList: getValues().returnTypeList!,
-      returnAddress: getValues().returnAddress?.addressName!,
+      startDate: formatDate(context.rentalDuration?.from!),
+      endDate: formatDate(context.rentalDuration?.to!),
+      rentalFee: context.rentalFee!,
+      place: context.rentalAddress?.addressName!,
+      latitude: Number(context.rentalAddress?.latitude!),
+      longitude: Number(context.rentalAddress?.longitude!),
+      returnTypeList: context.returnTypeList!,
+      returnAddress: context.returnAddress?.addressName!,
       content: context.body!,
       category: context.category!,
     };
   };
-  const postProductWithoutContract = handleSubmit(async () => {
-    try {
-      const response = await postProduct(convertProductDataToRequest(), context.images! as File[]);
-      const productId = response.data.body.productId;
-      router.replace(`/post/${productId}`);
-    } catch (error) {
-      if (isAxiosError(error)) {
-        alert(error.response?.data.message);
+  const convertContractDataToRequest = (): ContractConditionRequest => {
+    return {
+      productName: context.productName!,
+      serialNumber: context.serialNumber!,
+      repairVendor: context.repairVendor!,
+      overdueCriteria: context.overdueCriteria!,
+      overdueFee: context.overdueFee!,
+      theftCriteria: context.theftCriteria!,
+      refundDeadline: context.refundDeadline!,
+    };
+  };
+
+  const postProductWithoutContract = useCallback(
+    handleSubmit(async () => {
+      try {
+        const response = await postProduct(convertProductDataToRequest(), context.images! as File[]);
+        const productId = response.data.body.productId;
+        router.replace(`/post/${productId}`);
+      } catch (error) {
+        if (isAxiosError(error)) {
+          alert(error.response?.data.message);
+        }
       }
-    }
-  });
+    }),
+    [context],
+  );
+
+  const postProductWithContract = useCallback(
+    handleSubmit(async () => {
+      try {
+        const response = await postProduct(
+          {
+            ...convertProductDataToRequest(),
+            contractConditionReq: { ...convertContractDataToRequest() },
+          },
+          context.images! as File[],
+        );
+        const productId = response.data.body.productId;
+        router.replace(`/post/${productId}`);
+      } catch (error) {
+        if (isAxiosError(error)) {
+          alert(error.response?.data.message);
+        }
+      }
+    }),
+    [context],
+  );
+
   return {
     postFieldList,
     rentalFieldList,
@@ -213,6 +255,7 @@ const usePostFormModel = (context: PostInfoStep | RentalInfoStep | ContractInfoS
     isFieldValid,
     isSubmitting,
     postProductWithoutContract,
+    postProductWithContract,
   };
 };
 

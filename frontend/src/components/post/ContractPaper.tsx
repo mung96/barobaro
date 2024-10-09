@@ -8,7 +8,6 @@ type Props = {
 };
 const ContractPaper = ({ context }: Props) => {
     const profile = useProfileObject();
-    console.log(profile);
     const totalFee = (context.rentalFee! * (calculateDaysBetween(context.rentalDuration?.from!, context.rentalDuration?.to!)));
     return <article className="w-full flex flex-col gap-6">
         <h3 className="text-xl font-bold text-center">임대계약서</h3>
