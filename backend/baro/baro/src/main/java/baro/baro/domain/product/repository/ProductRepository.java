@@ -18,7 +18,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "FROM Product p " +
             "LEFT JOIN ProductImage pi ON pi.product.id = p.id AND pi.isMain = true " +
             "LEFT JOIN WishList wl ON wl.product.id = p.id AND wl.member.id = :memberId " +
-            "WHERE p.id != :memberId " +
+            "WHERE p.member.id != :memberId " +
             "ORDER BY p.id DESC")
     List<ProductDto> findRecentlyProducts(@Param("memberId") Long memberId, Pageable pageable);
 
@@ -33,10 +33,18 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "p.title, p.startDate, p.endDate, p.dong, p.createdAt, p.rentalFee, p.wishCount)" +
             "FROM Product p " +
             "LEFT JOIN ProductImage pi ON pi.product.id = p.id AND pi.isMain = true " +
-            "WHERE p.id != :memberId AND p.category = :category AND p.locationId = :locationId " +
+            "WHERE p.member.id != :memberId AND p.category = :category AND p.locationId = :locationId " +
             "ORDER BY p.id DESC")
     List<SearchProductTmpDto> findRecentlyCategoryProducts(@Param("memberId") Long memberId,
                                                   @Param("category") Category category,
                                                   @Param("locationId") Long locationId,
                                                   Pageable pageable);
+
+    @Query("SELECT new baro.baro.domain.product.dto.SearchProductTmpDto(p.id, pi.src, " +
+            "p.title, p.startDate, p.endDate, p.dong, p.createdAt, p.rentalFee, p.wishCount)" +
+            "FROM Product p " +
+            "LEFT JOIN ProductImage pi ON pi.product.id = p.id AND pi.isMain = true " +
+            "JOIN WishList wl ON wl.product.id = p.id AND wl.member.id = :memberId " +
+            "ORDER BY p.id DESC")
+    List<SearchProductTmpDto> findMyWishListProducts(@Param("memberId") Long memberId, Pageable pageable);
 }

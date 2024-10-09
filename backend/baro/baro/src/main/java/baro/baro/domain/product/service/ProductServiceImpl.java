@@ -129,7 +129,7 @@ public class ProductServiceImpl implements ProductService {
         esProductService.saveEsProduct(product.getId(), product.getTitle(),
                 product.getLocationId(), product.getCategory().name());
 
-        return ProductDetails.toDto(product, member, imageUrls, contractConditionDto, true);
+        return ProductDetails.toDto(product, member, imageUrls, contractConditionDto, true, false);
     }
 
     @Override
@@ -154,7 +154,9 @@ public class ProductServiceImpl implements ProductService {
 
         redisUtils.productRecentlySave(memberId, id);
 
-        return ProductDetails.toDto(product, member, imageUrls, contractConditionDto, isMine);
+        Boolean isWish = wishListRepository.existsByMemberIdAndProductId(memberId, id);
+
+        return ProductDetails.toDto(product, member, imageUrls, contractConditionDto, isMine, isWish);
     }
 
     @Override
@@ -229,6 +231,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public ProductDetails modifyProduct(ProductModifyReq productModifyReq, List<MultipartFile> files, Long productId, Long memberId) throws IOException {
         //물품 수정 예외처리
         //1. 없는 상품 수정
@@ -274,7 +277,9 @@ public class ProductServiceImpl implements ProductService {
 
         ContractConditionDto contractConditionDto = updateContractCondition(productModifyReq.getContractConditionReq(), product);
 
-        ProductDetails result = ProductDetails.toDto(product, member, imageUrls, contractConditionDto , true);
+        Boolean isWish = wishListRepository.existsByMemberIdAndProductId(memberId, productId);
+
+        ProductDetails result = ProductDetails.toDto(product, member, imageUrls, contractConditionDto , true, isWish);
 
         eventPublisher.publishEvent(new UnlockEvent(this, "contract_" + product.getId()));
 

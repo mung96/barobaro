@@ -71,6 +71,10 @@ public enum ErrorCode {
     CHATROOM_SELF_CREATED(BAD_REQUEST.value(), "본인이 올린 대여 물품의 채팅방은 만들 수 없습니다"),
     CHATROOM_NOT_FOUND(NOT_FOUND.value(), "존재하지 않는 채팅방입니다."),
     CHATROOM_NOT_ENROLLED(FORBIDDEN.value(), "참가중인 채팅방이 아닙니다"),
+
+    //위시리스트
+    WISHLIST_IS_PRESENT(BAD_REQUEST.value(), "이미 찜한 게시글입니다."),
+    WISHLIST_IS_NOT_PRESENT(BAD_REQUEST.value(), "찜하지 않은 게시글은 취소할 수 없습니다"),
     ;
 
     private final int httpStatusCode;
