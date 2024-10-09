@@ -1,5 +1,6 @@
 package baro.baro.domain.contract.entity;
 
+import baro.baro.domain.member.entity.Member;
 import baro.baro.domain.product.entity.Product;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -27,5 +28,13 @@ public class Contract {
 
     private LocalDateTime createdAt;
 
-    private String contractKeyName;
+    private String contractUrl;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "rental_id")
+    private Member rental;
+
+    public void updateContractUrl(String contractUrl) {
+        this.contractUrl = contractUrl;
+    }
 }
