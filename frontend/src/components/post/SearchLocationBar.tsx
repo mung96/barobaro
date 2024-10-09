@@ -19,16 +19,16 @@ function SearchLocationBar({ open, onSelect }: SearchLocationBarProps) {
         <Input
           placeholder="위치를 검색해주세요."
           width="100%"
-          height="32px"
+          height="40px"
           value={keyWord}
           onChange={setKeyWord}
         />
         <Button
-          width="72px"
-          height="32px"
+          width="96px"
+          height="40px"
           onClick={() => searchLocationListByQuery(keyWord)}
         >
-          검색
+          <p className='text-sm'>검색</p>
         </Button>
       </div>
       <div
