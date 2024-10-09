@@ -31,7 +31,7 @@ function Input({
         onChange={(event) => onChange && onChange(event.target.value)}
         value={value}
         placeholder={placeholder}
-        className="border w-full border-gray-500 rounded-md placeholder-gray-500 text-base pl-2 pr-6 py-1 outline-none focus:border-black focus:border-opacity-50 focus:border-1"
+        className="border w-full border-gray-500 rounded-md placeholder-gray-500 text-sm pl-2 pr-6 py-1 outline-none focus:border-black focus:border-opacity-50 focus:border-1"
         {...rest}
       />
       <div className="absolute top-1/2 right-1 -translate-y-1/2 flex items-center justify-center">

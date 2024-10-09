@@ -5,11 +5,12 @@ import Cards from '@/components/(recent_list_component)/Cards';
 import Logo from '@/../public/assets/png/barobaro_logo.png';
 import UserTown from "@/components/user/UserTown";
 
+
 function Home() {
   return (
     <>
       <br />
-        <UserTown/>
+      <UserTown />
       <br />
       <div className="flex justify-center">
         <Image src={Logo} alt="baro" width={150} height={150} />

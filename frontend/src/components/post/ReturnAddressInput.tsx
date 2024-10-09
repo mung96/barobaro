@@ -8,19 +8,19 @@ import ErrorMessage from '@/components/shared/ErrorMessage';
 type Props = {
   value: Location;
   onChange: (address: Location) => void;
-  isInvalid:boolean;
-  message:string;
+  isInvalid: boolean;
+  message: string;
 };
 
-function ReturnAddressInput({ value, onChange,isInvalid,message }: Props) {
+function ReturnAddressInput({ value, onChange, isInvalid, message }: Props) {
   const [isOpenSearch, setIsOpenSearch] = useState(false);
   return (
     <div className="flex flex-col gap-1">
-      <p className="text-xs">반납 희망 장소</p>
+      <p className="text-base">반납 희망 장소</p>
       <Input
         placeholder="위치 추가"
         width="100%"
-        height="32px"
+        height="40px"
         value={value.addressName}
         onFocus={() => setIsOpenSearch(true)}
         readOnly
