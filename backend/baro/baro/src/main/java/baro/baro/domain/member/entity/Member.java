@@ -52,4 +52,20 @@ public class Member {
     public void updateFcmToken(String fcmToken) {
         this.fcmToken = fcmToken;
     }
+
+    public void updateName(String name){
+        this.name = name;
+    }
+
+    public void updateBirthDate(LocalDate birthDate){
+        this.birthDate = birthDate;
+    }
+
+    public void updatePhoneNumber(String phoneNumber){
+        this.phoneNumber = phoneNumber;
+    }
+
+    public void updateIsCertificated(Boolean isCertificated){
+        this.isCertificated = isCertificated;
+    }
 }
