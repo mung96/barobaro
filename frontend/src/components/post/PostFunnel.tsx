@@ -36,7 +36,7 @@ function PostFunnel() {
     },
   });
 
-  const { postFieldList, rentalFieldList, contractFieldList, errors, isFormValid, getValues, postProductWithoutContract, isFieldValid, isSubmitting } = usePostFormModel(context);
+  const { postFieldList, rentalFieldList, contractFieldList, errors, isFormValid, getValues, postProductWithoutContract, postProductWithContract, isFieldValid, isSubmitting } = usePostFormModel(context);
 
   return (
     <div className="flex flex-col gap-4">
@@ -97,6 +97,9 @@ function PostFunnel() {
         {registStep === 'ContractPreviewStep' && (
           <ContractPreview
             context={context}
+            isFormValid={isFormValid}
+            onSubmit={postProductWithContract}
+            isSubmitting={isSubmitting}
             onPrev={() => {
               history.back();
               setDirection('backward');

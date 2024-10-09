@@ -8,21 +8,35 @@ import { getProfile } from "@/apis/profileApi";
 import { useEffect } from "react";
 import { useProfileSet } from "@/store/useMyProfile";
 import { AxiosError } from "axios";
+import { axiosInstance } from "@/apis/axiosInstance";
 
 const RedirectComponent = () => {
   const searchParams = useSearchParams();
-  console.log(searchParams.get('token'));
   localStorage.setItem('token', searchParams.get('token')!);
   // const decoded = jwtDecode(searchParams.get('token')!);
   // console.log(decoded);
   const setProfile = useProfileSet();
-
+  const getCertification = async (imp_uid: string) => {
+    const body = {
+      "impUid": imp_uid,
+    };
+    console.log(body.impUid);
+    const response = await axiosInstance.post(`/auth/authentication`, body);
+    console.log(response);
+    return response;
+  };
   useEffect(() => {
     const fetchData = async () => {
       try {
         const profileResponse = await getProfile();
+        console.log(profileResponse);
         setProfile({
-          ...profileResponse.data.body
+          profileImage: profileResponse.data.body.profileImage,
+          nickname: profileResponse.data.body.nickname,
+          phoneNumber: profileResponse.data.body.phoneNumber,
+          email: profileResponse.data.body.email,
+          name: profileResponse.data.body.name,
+          isAuthenticated: profileResponse.data.body.isAuthenticated,
         })
       } catch (error) {
         if (error instanceof AxiosError) {
@@ -31,7 +45,7 @@ const RedirectComponent = () => {
       }
     }
     fetchData();
-  })
+  }, [])
 
   const router = useRouter();
   router.push('/home');
@@ -44,3 +58,4 @@ const RedirectComponent = () => {
 
 
 export default RedirectComponent;
+
