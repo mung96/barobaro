@@ -34,16 +34,26 @@ export type RentalInfo = {
   rentalAddress: Location;
 };
 
+export type ContractInfo = {
+  productName: string;
+  serialNumber: string;
+  repairVendor: string;
+  overdueCriteria: number;
+  overdueFee: number;
+  theftCriteria: number;
+  refundDeadline: number;
+}
+
 // 기존 타입들을 PostInfo와 RentalInfo를 조합하여 재정의
 export type PostInfoStep = Partial<PostInfo> &
   Partial<RentalInfo> &
-  Partial<ContractConditionRequest>;
+  Partial<ContractInfo>;
 export type RentalInfoStep = PostInfo &
   Partial<RentalInfo> &
-  Partial<ContractConditionRequest>;
+  Partial<ContractInfo>;
 export type ContractInfoStep = PostInfo &
   RentalInfo &
-  Partial<ContractConditionRequest>;
+  Partial<ContractInfo>;
 export type ContractPreviewStep = PostInfo &
   RentalInfo &
-  ContractConditionRequest;
+  ContractInfo;
