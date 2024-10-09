@@ -10,6 +10,7 @@ import baro.baro.global.feigin_client.dto.response.PortOneCiRes;
 import baro.baro.global.feigin_client.service.PortOneService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
@@ -23,6 +24,7 @@ public class CiServiceImpl implements CiService{
     private final PortOneService portOneService;
 
     @Override
+    @Transactional
     public void addCi(CiAddReq req, Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));

@@ -16,6 +16,7 @@ import baro.baro.domain.member_location.repository.MemberLocationRepository;
 import baro.baro.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.IntStream;
@@ -25,12 +26,14 @@ import static baro.baro.global.statuscode.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class LocationServiceImpl implements LocationService {
     private final MemberRepository memberRepository;
     private final LocationRepository locationRepository;
     private final MemberLocationRepository memberLocationRepository;
 
     @Override
+    @Transactional
     public LocationsAddRes addLocations(LocationsAddReq locationsAddReq, Long memberId) {
         //지역 설정 예외처리
         //없는 지역 ID면 에러
@@ -73,6 +76,7 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
+    @Transactional
     public DefaultLocationRes updateDefaultLocation(DefaultLocationReq defaultLocationReq, Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
