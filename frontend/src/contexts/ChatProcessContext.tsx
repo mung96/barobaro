@@ -1,5 +1,5 @@
 import { ProcessType } from '@/components/message/chat/ProcessTypes';
-import { createContext, ReactNode, useState, useMemo } from 'react';
+import { createContext, ReactNode, useState, useMemo, useEffect } from 'react';
 
 interface ProcessContextType {
   process: ProcessType;
@@ -33,11 +33,11 @@ const ProcessProvider = ({ children, value }: ProcessProviderProps) => {
     [process],
   );
 
-  return (
-    <ProcessContext.Provider value={contextValue}>
-      {children}
-    </ProcessContext.Provider>
-  );
+  useEffect(() => {
+    console.log(`detected process changed : ${process} - in processContext`);
+  }, [process]);
+
+  return <ProcessContext.Provider value={contextValue}>{children}</ProcessContext.Provider>;
 };
 
 export { ProcessProvider, ProcessContext };

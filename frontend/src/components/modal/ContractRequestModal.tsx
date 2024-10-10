@@ -59,7 +59,7 @@ const ContractRequestModal = ({ isOpen, onRequestClose, isFromStatusMessage, mod
   if (!processContext || !socketContext) {
     return <div> Loading ... </div>; // 두 context가 모두 필요한 경우
   }
-  const { processSetter } = processContext;
+  // const { processSetter } = processContext;
   const { sendChat } = socketContext;
   const profile = useProfileObject();
 
@@ -87,7 +87,7 @@ const ContractRequestModal = ({ isOpen, onRequestClose, isFromStatusMessage, mod
         timestamp: currentTime(),
       };
       sendChat(rejectMessage);
-      processSetter(ProcessTypes.CONTACT);
+      //    processSetter(ProcessTypes.CONTACT);
       onRequestClose();
     }
   };
@@ -112,7 +112,7 @@ const ContractRequestModal = ({ isOpen, onRequestClose, isFromStatusMessage, mod
       sendChat(requestMessage);
 
       // 프로세스 바꾸기
-      processSetter(ProcessTypes.REQUESTED);
+      //  processSetter(ProcessTypes.REQUESTED);
     }
     // 대여자가 요청 submit을 했을 경우
     // axios로 데이터 보내고 / 상태메시지 찍고 / 프로세스 requested로 바꾸고

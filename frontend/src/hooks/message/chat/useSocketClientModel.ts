@@ -1,83 +1,26 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import WebSocketClient from '@/utils/webSocketClient';
 import MessageFormType from '@/components/message/chat/MessageFormType';
+import { chatConverterFromBe, chatConverterToBe } from '@/services/message/chat/chatConverter';
+import { BackMessageFormType } from '@/types/message/chat/BackMessageFormType';
+import chatProcessConverter from '@/services/message/chat/chatProcessConverter';
+import { ProcessContext } from '@/contexts/ChatProcessContext';
+import { ProcessType } from '@/components/message/chat/ProcessTypes';
+import { useProfileObject } from '@/store/useMyProfile';
 import { UUID } from 'crypto';
-import currentTime from '@/utils/currentTime';
 
 export default function useSocketClientModel(
-  messageAddHandler: (messages: MessageFormType[]) => void,
+  messageAddHandler: (messages: MessageFormType) => void,
   chatRoomId: number,
+  ownerUuid: UUID | string,
 ) {
   const [socketClient, setSocketClient] = useState<WebSocketClient | null>(null);
-  const [messageList, setMessageList] = useState<MessageFormType[]>([]);
-
-  // 백엔드 메시지 타입
-  type BackMessageFormType = {
-    // chatRoomId: number;
-    uuid: UUID | string; // API 연결 이후 UUID only Type으로 바꾸기
-    message: string;
-    image: string | null; // image src
-    chatTime: string;
-    chatType: string;
-  };
-
-  const chatTypeConverterToBe = (type: number) => {
-    switch (type) {
-      case 1:
-        return 'USER';
-      case 2:
-        return 'STATUS';
-      case 3:
-        return 'SYSTEM';
-      default:
-        return 'ERROR'; // 이런 타입은 없다 ...
-    }
-  };
-
-  const chatTypeConverterFromBe = (type: string, image: string | null) => {
-    switch (type) {
-      case 'USER': {
-        if (image) return 4;
-        return 1;
-      }
-      case 'STATUS':
-        return 2;
-      case 'SYSTEM':
-        return 3;
-      default:
-        return 5; // 이런 타입은 없다.
-    }
-  };
-
-  const chatConverterToBe = (message: MessageFormType) => {
-    const convertedChatType: BackMessageFormType = {
-      // chatRoomId:
-      uuid: message.user,
-      message: message.body,
-      image: message.type === 4 ? message.body : null,
-      chatTime: currentTime('back'),
-      chatType: chatTypeConverterToBe(message.type),
-    };
-
-    return convertedChatType;
-  };
-
-  const chatConverterFromBe = (message: BackMessageFormType) => {
-    const convertedChatType: MessageFormType = {
-      user: message.uuid,
-      type: chatTypeConverterFromBe(message.chatType, message.image),
-      timestamp: currentTime(message.chatTime),
-      body: message.message,
-    };
-
-    return convertedChatType;
-  };
+  const [eventedProcess, setEventedProcess] = useState<ProcessType>();
+  const ownerUuidRef = useRef(ownerUuid);
 
   const sendChat = (message: MessageFormType) => {
     if (!socketClient) return;
-    // const destination: string = '/pub/message';
     const destination: string = `/pub/chatrooms/${chatRoomId}`;
-    // const destination: string = `${END_POINT.SOCKET_PUBLISH}/${value.chatRoomId}`
 
     const msg: string = JSON.stringify(chatConverterToBe(message));
 
@@ -87,11 +30,16 @@ export default function useSocketClientModel(
   useEffect(() => {
     const client = new WebSocketClient();
     setSocketClient(client);
-
     return () => {
       if (client) client.disconnect();
     };
   }, []);
+
+  useEffect(() => {
+    console.log(`ownerUuid was changed : ${ownerUuid} - usesocketClientModel line 41`);
+    ownerUuidRef.current = ownerUuid;
+    console.log(ownerUuid);
+  }, [ownerUuid]);
 
   useEffect(() => {
     const connectWebSocket = async () => {
@@ -105,8 +53,19 @@ export default function useSocketClientModel(
 
           // 메시지 타입으로 반환하기
           const toMessageFormType: MessageFormType = chatConverterFromBe(parsedMessage);
+          messageAddHandler(toMessageFormType);
+          console.log('---------------------------------');
+          console.log(ownerUuidRef.current);
+          console.log(toMessageFormType.user);
+          console.log(ownerUuid === toMessageFormType.user);
+          console.log('---------------------------------');
+          const convertedType = chatProcessConverter(
+            toMessageFormType,
+            ownerUuidRef.current === toMessageFormType.user,
+          );
 
-          setMessageList((_messageList) => [..._messageList, toMessageFormType]);
+          // !
+          if (convertedType) setEventedProcess(convertedType);
 
           return () => {
             socketClient.disconnect();
@@ -120,9 +79,5 @@ export default function useSocketClientModel(
     connectWebSocket();
   }, [socketClient]);
 
-  useEffect(() => {
-    messageAddHandler(messageList);
-  }, [messageList]);
-
-  return { socketClient, sendChat };
+  return { socketClient, sendChat, eventedProcess };
 }
