@@ -14,6 +14,7 @@ import { useProfileObject } from '@/store/useMyProfile';
 type SignatureModalParam = {
   onRequestClose: () => void;
   isOpen: boolean;
+  onChange?: (data: File) => void
 };
 
 const modalStyle: ReactModal.Styles = {
@@ -38,7 +39,7 @@ const modalStyle: ReactModal.Styles = {
   },
 };
 
-const SignatureModal = ({ isOpen, onRequestClose }: SignatureModalParam) => {
+const SignatureModal = ({ isOpen, onRequestClose, onChange }: SignatureModalParam) => {
   const [pressed, setPressed] = useState(false); // '확인' 버튼이 눌렸는지
   const [dataUrl, setDataUrl] = useState('');
   const processContext = useContext(ProcessContext);

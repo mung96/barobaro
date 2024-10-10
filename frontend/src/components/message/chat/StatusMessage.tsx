@@ -9,7 +9,7 @@ import { OpponentContext } from '@/contexts/ChatOpponentUserInfoContext';
 import { useProfileObject } from '@/store/useMyProfile';
 import currentTime from '@/utils/currentTime';
 import Button from '@/components/shared/Button';
-import { getContractRequest, postContractApprove } from '@/apis/contractApi';
+import { getContractRequest, postContractApprove, SignRequest } from '@/apis/contractApi';
 import { useParams } from 'next/navigation';
 import MessageFormType from '@/components/message/chat/MessageFormType';
 
@@ -28,6 +28,8 @@ const StatusMessage: FC<MessageFormType> = ({ body, timestamp, isMine }) => {
 
   const [data, setData] = useState();
 
+
+
   const { chat_id: chatRoomId } = useParams();
   const handleRequestModalOpen = async () => {
     try {
@@ -38,8 +40,6 @@ const StatusMessage: FC<MessageFormType> = ({ body, timestamp, isMine }) => {
     } catch (error) {
       console.log(error);
     }
-
-    // return postContractApprove;
   }
 
 
@@ -66,6 +66,13 @@ const StatusMessage: FC<MessageFormType> = ({ body, timestamp, isMine }) => {
     }
     return neverExpected(bodyProp);
   };
+
+  const { chat_id: charRoomId } = useParams();
+
+  const [pinNumber, setPinNumber] = useState(0);
+  const [signData, setSignData] = useState<File | null>();
+  const [s3FileUrl, setS3FileUrl] = useState('');
+
 
   return (
     <div className={`${MessageCommonStyles.outerDivStyle} ${isMine ? 'justify-end' : 'justify-start'}`}>
@@ -108,11 +115,12 @@ const StatusMessage: FC<MessageFormType> = ({ body, timestamp, isMine }) => {
               </Button>
 
               {modalType === 'signature' && ( // '서명하기' 모달
-                <SignatureModal isOpen={modalOpen} onRequestClose={modalClose} />
+                <SignatureModal onChange={setSignData} isOpen={modalOpen} onRequestClose={modalClose} />
               )}
 
               {modalType === 'request' && ( // '상세보기' 모달 (대여자가 요청한 계약 요청서를 봄)
                 <ContractRequestModal
+                  onChange={setS3FileUrl}
                   disabled={true}
                   data={data}
                   isOpen={modalOpen}
@@ -124,6 +132,8 @@ const StatusMessage: FC<MessageFormType> = ({ body, timestamp, isMine }) => {
 
               {modalType === 'password' && (
                 <PasswordCheckModal
+                  value={pinNumber}
+                  onChange={setPinNumber}
                   isOpen={modalOpen}
                   onRequestClose={modalClose}
                   modalChanger={modalChanger} // -> signature
