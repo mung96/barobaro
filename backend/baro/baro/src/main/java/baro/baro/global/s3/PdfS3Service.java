@@ -28,6 +28,8 @@ public class PdfS3Service extends S3Service {
         objectMetadata.setContentLength(pdfBytes.length);
         objectMetadata.setContentType("application/pdf");
         UUID uuid = UUID.randomUUID();
+
+        log.info("upload성공!!");
         String s3FileName = "contract/" + uuid.toString() + "_" + convertToDateFormat() + ".pdf";
         return uploadFile(pdfBytes, s3FileName, "application/pdf");
     }

@@ -31,6 +31,8 @@ public abstract class S3Service {
         objectMetadata.setContentType(contentType);
         objectMetadata.setContentLength(content.length);
 
+        log.info("업로드 파일 들어옴~~~~~~!");
+
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(content);
 
         try {
