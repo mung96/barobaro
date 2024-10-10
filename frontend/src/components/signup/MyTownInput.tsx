@@ -9,7 +9,7 @@ import { postSignUp } from '@/apis/memberApi';
 import { useSocialMemberState } from '@/store/useSocialMember';
 import { useRouter } from 'next/navigation';
 import { convertSignUpDateToRequest } from '@/services/signup/convert';
-import { useProfileSet } from '@/store/useMyProfile';
+import { useProfileObject, useProfileSet } from '@/store/useMyProfile';
 import { getProfile } from '@/apis/profileApi';
 import { AxiosError } from 'axios';
 
@@ -22,6 +22,7 @@ function MyTownInfo({ onPrev, context }: Props) {
   const router = useRouter();
   const socialMember = useSocialMemberState();
   const setProfile = useProfileSet();
+  const profile = useProfileObject();
   const signUp = async () => {
     const member = {
       providerType: socialMember?.providerType!,
@@ -37,6 +38,7 @@ function MyTownInfo({ onPrev, context }: Props) {
       try {
         const profileResponse = await getProfile();
         setProfile({
+          id: profile.id,
           ...profileResponse.data.body
         })
       } catch (error) {

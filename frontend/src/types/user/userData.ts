@@ -4,6 +4,7 @@ export type UserDataPassword = {
 };
 
 export type UserProfile = {
+  id: string;
   profileImage: string;
   nickname: string;
   phoneNumber: string;
