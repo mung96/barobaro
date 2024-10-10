@@ -284,6 +284,7 @@ public class ContractServiceImpl implements ContractService {
 				PdfCreateDto pdfCreateDto = PdfCreateDto.toDto(contractApproveReq.getChatRoomId(),
 						uuid, me, opponent, product, contractApplicationDto, product.getContractCondition());
 				generatedS3PdfUrl = pdfUtils.createPdf(pdfCreateDto);
+				log.info(generatedS3PdfUrl);
 			} catch (Exception e) {
 				log.info(Arrays.toString(e.getStackTrace()));
 				log.info("에러에러" + e.getMessage());
