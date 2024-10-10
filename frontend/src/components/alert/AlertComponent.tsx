@@ -12,6 +12,8 @@ type Props = {
   chatId: any;
 }
 
+
+
 export default function AlertComponent( {nickname, profileUrl, orderType, message, timeData, chatId} : Props) {
   // const router = useRouter();
 
@@ -20,8 +22,8 @@ export default function AlertComponent( {nickname, profileUrl, orderType, messag
     console.log(chatId)
     // router.push({`/chat/${chatId}`})
   }
-  const orderConverter = {
-    'CONTRACT_REQUEST' : '계약요청'
+  const orderConverter : any = {
+    CONTRACT_REQUEST : '계약요청'
   }
   // @ts-ignore
   return (
