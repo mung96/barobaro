@@ -173,9 +173,6 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public void modifyPassword(Long memberId, PasswordModifyReq passwordModifyReq) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
-
         Pin pin = pinRepository.findByMemberId(memberId)
                 .orElseThrow(() -> new CustomException(PIN_NOT_FOUND));
 
