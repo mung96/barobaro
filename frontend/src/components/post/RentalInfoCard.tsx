@@ -9,11 +9,11 @@ import { InputProps } from '@/components/post/ContractInfoInput';
 
 
 
-function RentalInfoCard({ fields, context, errors }: InputProps) {
+function RentalInfoCard({ fields, context, errors, isValid }: InputProps) {
   const profile = useProfileObject();
 
   return (
-    <ContractCardBox title="물건 소유자 및 대여 정보" step={1}>
+    <ContractCardBox title="물건 소유자 및 대여 정보" step={1} hasInput={true} isCardValid={!fields.productName.fieldState.invalid && !fields.serialNumber.fieldState.invalid}>
       <div className="flex flex-col gap-2">
         <ContractWidget
           title="물건 소유자(갑)"
@@ -29,6 +29,7 @@ function RentalInfoCard({ fields, context, errors }: InputProps) {
           isInvalid={fields.productName.fieldState.invalid}
           message={errors.productName?.message}
           placeholder="물건 이름"
+          hasInput={true}
         />
 
         <ContractWidget
@@ -39,6 +40,7 @@ function RentalInfoCard({ fields, context, errors }: InputProps) {
           isInvalid={fields.serialNumber.fieldState.invalid}
           message={errors.serialNumber?.message}
           placeholder="일련 번호 입력"
+          hasInput={true}
         />
         <ContractWidget
           title="대여 기간"
