@@ -37,9 +37,8 @@ function ContractWidget({
 
       <div className="bg-gray-500 py-1 flex w-fit rounded-md px-1">
         <p className="text-sm px-2 min-w-fit py-1">{name}</p>
-
         <input
-          className="text-sm text-center bg-gray-500 outline-none inline-block max-w-60"
+          className={`text-sm text-center bg-gray-500 outline-none ${end ? 'w-[100px]' : 'max-w-48 w-fit'}`}
           value={value}
           type={type}
           onChange={(e) => {
