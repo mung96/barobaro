@@ -1,6 +1,7 @@
 package baro.baro.domain.member.service;
 
 import baro.baro.domain.member.dto.request.PasswordAddReq;
+import baro.baro.domain.member.dto.request.PasswordModifyReq;
 import baro.baro.domain.member.dto.request.ProfileModifyReq;
 import baro.baro.domain.member.dto.request.SignupReq;
 import baro.baro.domain.member.dto.response.ProfileDetailsRes;
@@ -22,4 +23,6 @@ public interface MemberService {
     ProfileDetailsRes getProfileDetails(Long memberId);
 
     ProfileDetailsRes modifyProfie(Long memberId, ProfileModifyReq profileModifyReq, MultipartFile file) throws IOException;
+
+    void modifyPassword(Long memberId, @Valid PasswordModifyReq passwordModifyReq);
 }

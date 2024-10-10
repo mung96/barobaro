@@ -25,4 +25,6 @@ public class Pin {
     private String pinNumber;
 
     private String keystorePassword;
+
+    public void updatePinNumber(String pinNumber) { this.pinNumber = pinNumber; }
 }
