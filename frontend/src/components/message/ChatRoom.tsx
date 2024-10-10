@@ -13,12 +13,13 @@ export default function ChatRoomEach({ chatRoomId, profileImage, nickname, lastC
     <Link className="flex gap-0 p-4" href={encodeURI(`message/chat/${chatRoomId}`)} onMouseDown={isClicked}>
       <div className="w-2/12 flex items-center justify-center">
         <div className="relative w-full h-full aspect-square">
-          <Image
-            unoptimized={true}
+          <img
+
+            //     unoptimized={true}
             src={profileImage} // public 폴더 내의 이미지 경로
             alt="profImg" // 이미지 설명 추가
-            layout="fill" // 부모 div의 크기에 맞게 이미지가 채워지도록 설정
-            objectFit="cover" // 이미지 비율 유지하면서 부모 div에 맞게 채움
+            //     layout="fill" // 부모 div의 크기에 맞게 이미지가 채워지도록 설정
+            //     objectFit="cover" // 이미지 비율 유지하면서 부모 div에 맞게 채움
             className="rounded-full" // 원형으로 만들기
           />
         </div>
@@ -35,8 +36,8 @@ export default function ChatRoomEach({ chatRoomId, profileImage, nickname, lastC
       {/* 오른쪽 이미지 */}
       <div className="w-2/12 flex items-center justify-center">
         <div className="relative w-full h-full">
-          <Image
-            unoptimized={true}
+          <img
+            // unoptimized={true}
             src={productMainImage} // public 폴더 내의 이미지 경로
             alt="thumb" // 이미지 설명 추가
             className="rounded-lg w-full h-full object-cover" // 모서리 둥글게 및 부모 div에 맞게 채우기
