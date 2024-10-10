@@ -25,7 +25,8 @@ public enum SuccessCode {
     CONTRACT_TERMINATED_OK(OK.value(), "물품 회수가 확인되었습니다."),
     PRODUCT_VIDEO_UPLOADED_OK(OK.value(), "영상이 정상 제출되었습니다."),
     PRODUCT_VIDEO_DETAILS_OK(OK.value(), "등록된 영상 정보 조회에 성공했습니다."),
-    PDF_GENERATE_OK(OK.value(), "pdf 생성에 성공했습니다"),
+    PDF_GENERATE_OK(OK.value(), "pdf 생성에 성공했습니다."),
+    PRESENT_PDF_OK(OK.value(), "현재 계약서 조회에 성공했습니다."),
 
     //채팅
     CHATROOM_CREATED(CREATED.value(), "채팅방 생성에 성공했습니다."),
