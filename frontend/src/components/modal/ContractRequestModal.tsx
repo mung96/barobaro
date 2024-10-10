@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import ReactModal from 'react-modal';
 // import ModalWarningSVG from '@/components/(SVG_component)/ModalWarning';
 
@@ -6,12 +6,21 @@ import { DateRange } from 'react-day-picker';
 
 import Radio from '@/components/shared/Radio';
 import SelectableItem from '@/components/shared/SelectableItem';
+import { ProcessContext } from '@/contexts/ChatProcessContext';
+import { SocketClientContext } from '@/contexts/SocketClientContext';
+import currentTime from '@/utils/currentTime';
+
 import ContractDurationInput from '../message/chat/ContractDurationInput';
+import { ProcessTypes } from '../message/chat/ProcessTypes';
+import MessageFormType from '../message/chat/MessageFormType';
+import { StatusModalType } from '@/types/message/chat/statusModalType';
+import { useProfileObject } from '@/store/useMyProfile';
 
 type ContractRequestParams = {
   isOpen: boolean;
   onRequestClose: () => void;
   isFromStatusMessage?: boolean;
+  modalChanger?: (modal: StatusModalType) => void;
 };
 
 const modalStyle: ReactModal.Styles = {
@@ -40,27 +49,70 @@ const modalStyle: ReactModal.Styles = {
   },
 };
 
-const ContractRequestModal = ({
-  isOpen,
-  onRequestClose,
-  isFromStatusMessage,
-}: ContractRequestParams) => {
+const ContractRequestModal = ({ isOpen, onRequestClose, isFromStatusMessage, modalChanger }: ContractRequestParams) => {
   const [range, setRange] = useState<DateRange | undefined>(undefined);
   const [ways, setWays] = useState<string>('');
 
+  const processContext = useContext(ProcessContext);
+  const socketContext = useContext(SocketClientContext);
+
+  if (!processContext || !socketContext) {
+    return <div> Loading ... </div>; // 두 context가 모두 필요한 경우
+  }
+  const { processSetter } = processContext;
+  const { sendChat } = socketContext;
+  const profile = useProfileObject();
+
   const approveLogic = (isApproved: boolean) => {
+    // 소유자가 '상세보기' 버튼을 눌렀을 때 창 처리
     // 대여자의 계약 요청서를 거절할 때
     // 프로세스 contact로 바꾸고 / 시스템메시지 찍고 /
-    if (isApproved) console.log('whoa!');
-    else console.log('nooo');
-    onRequestClose();
+    if (isApproved) {
+      const approveMessage: MessageFormType = {
+        type: 3,
+        user: profile.id,
+        body: 'accept',
+        timestamp: currentTime(),
+      };
+
+      sendChat(approveMessage);
+      // 비밀번호 모달 띄우기
+
+      if (modalChanger) modalChanger('password');
+    } else {
+      const rejectMessage: MessageFormType = {
+        type: 3,
+        user: profile.id,
+        body: 'reject',
+        timestamp: currentTime(),
+      };
+      sendChat(rejectMessage);
+      processSetter(ProcessTypes.CONTACT);
+      onRequestClose();
+    }
   };
 
   const requestLogic = (isSubmit: boolean) => {
+    // '대여자가 계약 요청' 버튼을 눌렀을 때의 창 처리
     if (!isSubmit) {
       // 대여자가 계약 요청 창을 열었다가 취소한 경우
       setRange(undefined);
       setWays('');
+    } else {
+      // submit하는 경우
+      // axios로 데이터 보내고
+
+      // 상태메시지 보내고
+      const requestMessage: MessageFormType = {
+        type: 2,
+        user: profile.id,
+        body: 'contract',
+        timestamp: currentTime(),
+      };
+      sendChat(requestMessage);
+
+      // 프로세스 바꾸기
+      processSetter(ProcessTypes.REQUESTED);
     }
     // 대여자가 요청 submit을 했을 경우
     // axios로 데이터 보내고 / 상태메시지 찍고 / 프로세스 requested로 바꾸고
@@ -101,11 +153,7 @@ const ContractRequestModal = ({
                 className="flex gap-4"
               >
                 <SelectableItem type="radio" value="direct" label="직거래" />
-                <SelectableItem
-                  type="radio"
-                  value="delivery"
-                  label="택배거래"
-                />
+                <SelectableItem type="radio" value="delivery" label="택배거래" />
               </Radio.Group>
             </div>
           </div>
@@ -118,22 +166,14 @@ const ContractRequestModal = ({
           <button
             type="button"
             className="bg-gray-200 text-white rounded-lg w-[50%] p-2 text-sm"
-            onClick={
-              isFromStatusMessage
-                ? () => approveLogic(false)
-                : () => requestLogic(false)
-            }
+            onClick={isFromStatusMessage ? () => approveLogic(false) : () => requestLogic(false)}
           >
             {isFromStatusMessage ? '거절' : '취소'}
           </button>
           <button
             type="button"
             className="bg-blue-100 text-white rounded-lg w-[50%] p-2 text-sm"
-            onClick={
-              isFromStatusMessage
-                ? () => approveLogic(true)
-                : () => requestLogic(true)
-            }
+            onClick={isFromStatusMessage ? () => approveLogic(true) : () => requestLogic(true)}
           >
             {isFromStatusMessage ? '승인 및 서명' : '요청'}
           </button>
