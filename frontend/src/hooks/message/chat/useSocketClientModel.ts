@@ -5,12 +5,14 @@ import { chatConverterFromBe, chatConverterToBe } from '@/services/message/chat/
 import { BackMessageFormType } from '@/types/message/chat/BackMessageFormType';
 import chatProcessConverter from '@/services/message/chat/chatProcessConverter';
 import { ProcessContext } from '@/contexts/ChatProcessContext';
+import { ProcessType } from '@/components/message/chat/ProcessTypes';
 
 export default function useSocketClientModel(
   messageAddHandler: (messages: MessageFormType) => void,
   chatRoomId: number,
 ) {
   const [socketClient, setSocketClient] = useState<WebSocketClient | null>(null);
+  const [eventedProcess, setEventedProcess] = useState<ProcessType>();
 
   const sendChat = (message: MessageFormType) => {
     if (!socketClient) return;
@@ -52,7 +54,8 @@ export default function useSocketClientModel(
           const convertedType = chatProcessConverter(toMessageFormType);
 
           // !
-          //      if (convertedType) processSetter(convertedType);
+          // if (convertedType) processSetter(convertedType);
+          if (convertedType) setEventedProcess(convertedType);
 
           return () => {
             socketClient.disconnect();
@@ -66,5 +69,5 @@ export default function useSocketClientModel(
     connectWebSocket();
   }, [socketClient]);
 
-  return { socketClient, sendChat };
+  return { socketClient, sendChat, eventedProcess };
 }
