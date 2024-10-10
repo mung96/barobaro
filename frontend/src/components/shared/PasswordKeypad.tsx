@@ -2,14 +2,17 @@ import KeyPadDelete from "@/components/(SVG_component)/(mypage)/KeyPadDelete";
 import DisplayPassword from "@/components/user/DisplayPassword"
 import useKeypad from "@/hooks/keypad/useKeyPadModel";
 import usePasswordChange from "@/hooks/user/usePasswordModel";
+import { useState } from "react";
 
 type Props = {
     isNewPassword: boolean
 }
-
+const BUTTON_ACTIVE_TIME = 120;
 const PasswordKeypad = ({ isNewPassword }: Props) => {
     const realPassword = '112233';
     const keys = [1, 2, 3, 4, 5, 6, 7, 8, 9, 'empty', 0, 'delete'];
+
+    const [activatedKeys, setActivatedKeys] = useState<number[]>([]);
     const { inputPassword, setInputPassword, passwordMessage, isFinished } =
         usePasswordChange(
             isNewPassword,
@@ -18,7 +21,25 @@ const PasswordKeypad = ({ isNewPassword }: Props) => {
     const { passwordHandler, deleteHandler } = useKeypad(setInputPassword);
 
     //완료되면 inputPassword API 보내기
+    const handleButtonClick = (selectedKey: number) => {
+        passwordHandler(selectedKey.toString());
+        // 나머지 숫자 중 랜덤하게 2개의 숫자를 선택
+        const remainingKeys = keys.filter(key => key !== selectedKey && key !== 'empty' && key !== 'delete');
+        const randomKeys: number[] = [];
+        while (randomKeys.length < 2) {
+            const randomIndex = Math.floor(Math.random() * remainingKeys.length);
+            const randomKey = remainingKeys[randomIndex];
+            if (!randomKeys.includes(randomKey as number)) {
+                randomKeys.push(randomKey as number);
+            }
+        }
 
+        setActivatedKeys([selectedKey, ...randomKeys]);
+
+        setTimeout(() => {
+            setActivatedKeys([]);
+        }, BUTTON_ACTIVE_TIME);
+    };
     return <><main className="flex flex-col justify-center items-center flex-1">
         <p className="text-[14px] text-black-100">{passwordMessage}</p>
         <p>{inputPassword}</p>
@@ -26,7 +47,6 @@ const PasswordKeypad = ({ isNewPassword }: Props) => {
             {!isFinished ? (
                 <DisplayPassword length={inputPassword.length} />
             ) : null}
-            {/* 비밀번호를 설정하고 완료되었다면 ---이걸 표시하지 않음. */}
         </div>
     </main>
         <section className="w-full max-w-[500px] mx-auto text-gray-600">
@@ -50,8 +70,9 @@ const PasswordKeypad = ({ isNewPassword }: Props) => {
                             <button
                                 key={index}
                                 type="button"
-                                className="w-full text-2xl h-[10dvh] flex items-center justify-center active:rounded-lg active:bg-gray-100"
-                                onClick={() => passwordHandler(key.toString())}
+                                className={`w-full text-2xl h-[10dvh] flex items-center justify-center 
+                                    ${activatedKeys.includes(key as number) ? 'bg-gray-100' : ''}`}
+                                onClick={() => handleButtonClick(key as number)}
                             >
                                 {key}
                             </button>
