@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import Header from "@/components/Header";
 import axios from "axios";
+import {getContractPdf} from "@/apis/contractPdfApi";
 
 const PdfViewer = dynamic(
     () => import('@naverpay/react-pdf').then((mod) => mod.PdfViewer),
@@ -14,6 +15,11 @@ export default function ContractPDFPage() {
     const [isClient, setIsClient] = useState(false);
     const [isDownloading, setIsDownloading] = useState(false);
     const pdfUrl = "https://barobaro.s3.ap-northeast-2.amazonaws.com/contract/res.pdf"
+    // let pdfUrl;
+    // TODO : PDF 가져오는 과정 테스트 필요.
+    useEffect(() => {
+        getContractPdf('1');
+    })
 
     const downloadPdf = async () => {
         setIsDownloading(true);
