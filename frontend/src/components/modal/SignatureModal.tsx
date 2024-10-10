@@ -91,11 +91,11 @@ const SignatureModal = ({ isOpen, onRequestClose }: SignatureModalParam) => {
 
       if (process === 2) {
         // 소유자의 서명 요청 메시지
-        processSetter(4);
+        //   processSetter(4);
 
         if (sendChat) sendChat(signRequestMessage);
       } else if (process === 4) {
-        processSetter(6);
+        //   processSetter(6);
         // 숫자로 쓰는 게 더 직관적인 로직이라 숫자로 썼음
 
         const sendMessages = async () => {

@@ -6,6 +6,7 @@ import PageTransition from '@/components/shared/PageTransition';
 import { ProcessProvider } from '@/contexts/ChatProcessContext';
 import { SocketClientProvider } from '@/contexts/SocketClientContext';
 import { OpponentProvider } from '@/contexts/ChatOpponentUserInfoContext';
+import ChatProcessSetter from '@/components/message/chat/ChatProcessSetter';
 import { lazy, Suspense } from 'react';
 
 const Header = lazy(() => import('@/components/Header'));
@@ -26,10 +27,11 @@ export default function Chat() {
     otherUuid,
     chatRoomId,
     ownerUuid,
+    initProcess,
   } = useChatPageModel();
 
   // webSocket Client
-  const { socketClient, sendChat } = useSocketClientModel(handleAddMessages, chatRoomId);
+  const { socketClient, sendChat, eventedProcess } = useSocketClientModel(handleAddMessages, chatRoomId, ownerUuid);
 
   // socketClient가 null일 때 렌더링
   if (!socketClient) {
@@ -37,10 +39,11 @@ export default function Chat() {
   }
 
   return (
-<SocketClientProvider value={{ socketClient, sendChat, chatRoomId }}>
+    <SocketClientProvider value={{ socketClient, sendChat, chatRoomId }}>
       <OpponentProvider value={{ otherNickname, otherUuid, ownerUuid }}>
         <ProcessProvider value={{ process, processSetter }}>
           <PageTransition direction="forward" step="g">
+            <ChatProcessSetter fromChatPageModel={initProcess} fromSocketClientModel={eventedProcess} />
             <div className="flex flex-col h-screen">
               {/* 상단 헤더 + 원본 게시글 미리보기 영역 (Header + OriginBoard) */}
               <Suspense>
@@ -53,7 +56,7 @@ export default function Chat() {
               {/* 대화 내용 (Dialogs) */}
               <Suspense>
                 <div className="flex-1 mt-[25vh] overflow-y-scroll" ref={scrollRef}>
-                  <Dialogs messages={messages} otherNickname={otherNickname} />
+                  <Dialogs messages={messages} />
                 </div>
               </Suspense>
 

@@ -9,7 +9,6 @@ import { useProfileObject } from '@/store/useMyProfile';
 const Message: React.FC<MessageFormType> = ({ type, user, body, timestamp }) => {
   const profile = useProfileObject();
   const me: string = profile.id;
-  console.log(profile.id);
   // 메시지 타입에 따라 처리 분리
   const isMine: boolean = me === user; // 내가 보낸 메시지인지
   const isStatus: boolean = type === MESSAGETYPES.STATUS; // 거래 프로세스와 관련된 메시지인지
