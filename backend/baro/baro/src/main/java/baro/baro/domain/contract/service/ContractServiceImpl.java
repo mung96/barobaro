@@ -216,10 +216,6 @@ public class ContractServiceImpl implements ContractService {
 			throw new CustomException(CONFLICT_WITH_OTHER);
 		}
 
-		if (product.getContractCondition() == null) {
-			throw new CustomException(CONTRACT_TYPE_NOT_VALID);
-		}
-
 		//이미 해당 상품에 진행중인 계약이 있음
 		Contract contract = product.getContract();
 
@@ -267,7 +263,8 @@ public class ContractServiceImpl implements ContractService {
 					.build();
 		}
 		else {
-			//상품 대여 상태 업데이트
+
+            //상품 대여 상태 업데이트
 			product.updateProductStatus(ProductStatus.IN_PROGRESS);
 
 			//채팅방의 거래 상태 업데이트
