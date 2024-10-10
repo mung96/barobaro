@@ -1,6 +1,9 @@
 package baro.baro.domain.account.controller;
 
+import baro.baro.domain.account.dto.AccountDto;
 import baro.baro.domain.account.dto.request.AccountAddReq;
+import baro.baro.domain.account.dto.response.AccountListRes;
+import baro.baro.domain.account.service.AccountService;
 import baro.baro.global.oauth.jwt.service.JwtService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
@@ -30,6 +33,7 @@ import static baro.baro.global.statuscode.SuccessCode.*;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
@@ -59,6 +63,9 @@ class AccountControllerTest {
     @MockBean
     private JwtService jwtService;
 
+    @MockBean
+    private AccountService accountService;
+
     private String jwtToken;
 
     @BeforeEach
@@ -78,6 +85,16 @@ class AccountControllerTest {
     @Test
     public void 계좌_리스트_조회_성공() throws Exception {
         // given
+        List<AccountDto> res = List.of(
+                AccountDto.builder()
+                        .bank("싸피은행")
+                        .accountNumber("12345678")
+                        .accountId(1L)
+                        .main(true)
+                        .build()
+        );
+        when(accountService.findAccounts(anyLong()))
+                .thenReturn(new AccountListRes(res));
 
         // when
         ResultActions actions = mockMvc.perform(
