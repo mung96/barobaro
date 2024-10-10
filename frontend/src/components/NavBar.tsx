@@ -21,12 +21,13 @@ const NavBarItemList = [
 
 const excludePathList = [
   '/post/regist',
-  '/post/:id',  // 동적 세그먼트를 나타내는 패턴
+  '/post/:id', // 동적 세그먼트를 나타내는 패턴
+  '/message/chat/:id',
   '/mypage/user/password/new'
 ];
 
 function isPathExcluded(path: string): boolean {
-  return excludePathList.some(pattern => {
+  return excludePathList.some((pattern) => {
     if (pattern.includes(':')) {
       const regexPattern = pattern.replace(/:[\w]+/g, '[\\w-]+');
       const regex = new RegExp(`^${regexPattern}$`);

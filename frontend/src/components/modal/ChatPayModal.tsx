@@ -2,6 +2,7 @@ import ReactModal from 'react-modal';
 import React, { useState } from 'react';
 import { banks, findBankNameByBankValue } from '@/constants/banks';
 import ModalClose from '../(SVG_component)/ModalClose';
+import PasswordCheckModal from './PasswordCheckModal';
 
 type ChatAlertModalParams = {
   isOpen: boolean;
@@ -76,7 +77,6 @@ const ChatPayModal = ({ isOpen, onRequestClose }: ChatAlertModalParams) => {
     // 비밀번호 체크 모달을 현제 송금 모달 '위에' 띄워야 함
     // 비밀번호 체크 성공하면 비밀번호 체크 모달 닫히면서 송금 진행
     // 송금 완료 시에는 프로세스 바꾸고 송금 모달까지 닫기
-    onRequestClose();
   };
 
   const closeRequest = () => {
@@ -197,10 +197,11 @@ const ChatPayModal = ({ isOpen, onRequestClose }: ChatAlertModalParams) => {
               </button>
               {/*  여기에 비밀번호 체크 모달 로드, isOpen(트리거)을 isOpenPwdModal */}
               {isOpenPwdModal && (
-                <div>
-                  <h1>lala</h1>
-                  <h2>lolo</h2>
-                </div>
+                <PasswordCheckModal
+                  isOpen={isOpenPwdModal}
+                  onRequestClose={onRequestClose}
+                  purpose="beforePay"
+                />
               )}
             </div>
           </>

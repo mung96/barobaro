@@ -90,7 +90,11 @@ function CheckBoxGroup({
     if (checked) {
       onChange(currentValues.concat(value));
     } else {
-      onChange(currentValues.filter((v) =>{return v !== value}));
+      onChange(
+        currentValues.filter((v) => {
+          return v !== value;
+        }),
+      );
     }
   };
 

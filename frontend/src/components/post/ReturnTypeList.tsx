@@ -14,17 +14,9 @@ function ReturnTypeList({ value, onChange, isInvalid, message }: Props) {
   return (
     <div className="flex gap-2 flex-col relative">
       <p className="text-base text-black">반납 희망 방법</p>
-      <CheckBox.Group
-        values={value}
-        onChange={onChange}
-        className="flex gap-2"
-      >
+      <CheckBox.Group values={value} onChange={onChange} className="flex gap-2">
         {RETURN_TYPE.map((returnType) => (
-          <SelectableItem
-            type="checkbox"
-            value={returnType.value}
-            label={returnType.label}
-          />
+          <SelectableItem type="checkbox" value={returnType.value} label={returnType.label} />
         ))}
       </CheckBox.Group>
       <ErrorMessage isInvalid={isInvalid}>{message}</ErrorMessage>
