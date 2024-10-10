@@ -24,6 +24,7 @@ export default function ChatRoomEach({
       <div className="w-2/12 flex items-center justify-center">
         <div className="relative w-full h-full aspect-square">
           <Image
+            unoptimized={true}
             src={profileImage} // public 폴더 내의 이미지 경로
             alt="profImg" // 이미지 설명 추가
             layout="fill" // 부모 div의 크기에 맞게 이미지가 채워지도록 설정
@@ -47,6 +48,7 @@ export default function ChatRoomEach({
       <div className="w-2/12 flex items-center justify-center">
         <div className="relative w-full h-full">
           <Image
+            unoptimized={true}
             src={productMainImage} // public 폴더 내의 이미지 경로
             alt="thumb" // 이미지 설명 추가
             layout="fill" // 부모 div의 크기에 맞게 이미지가 채워지도록 설정
