@@ -291,7 +291,7 @@ public class ContractServiceImpl implements ContractService {
 				log.info("에러에러" + e.getMessage());
 				throw new CustomException(PDF_GENERATE_FAILED);
 			}
-
+			log.info("여기까지 잘 들옴 ㅇㅇ");
 			LocalDateTime lastModified = pdfS3Service.lastModified(generatedS3PdfUrl);
 
 			Contract newContract = Contract.builder()
@@ -303,6 +303,8 @@ public class ContractServiceImpl implements ContractService {
 
 			contractRepository.save(newContract);
 
+			log.info("계약 생성완료");
+			
 			result = ContractApproveRes.builder()
 					.chatRoomId(contractApproveReq.getChatRoomId())
 					.fileUrl(generatedS3PdfUrl)
