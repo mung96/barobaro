@@ -9,6 +9,7 @@ import useChatPageModel from '@/hooks/message/chat/useChatPageModel';
 import PageTransition from '@/components/shared/PageTransition';
 import { ProcessProvider } from '@/contexts/ChatProcessContext';
 import { SocketClientProvider } from '@/contexts/SocketClientContext';
+import { OpponentContext } from '@/contexts/ChatOpponentUserInfoContext';
 
 export default function Chat() {
   // chatting header, scroll setting
@@ -20,16 +21,12 @@ export default function Chat() {
     roomName,
     scrollRef, // processSetter
     otherNickname,
+    otherUuid,
     chatRoomId,
   } = useChatPageModel();
 
-  const UserId = '김말이'; // 사용자 PK
   // webSocket Client
-  const { socketClient, sendChat } = useSocketClientModel(
-    UserId,
-    handleAddMessages,
-    chatRoomId,
-  );
+  const { socketClient, sendChat } = useSocketClientModel(handleAddMessages, chatRoomId);
 
   // socketClient가 null일 때 렌더링
   if (!socketClient) {

@@ -5,13 +5,10 @@ import { UUID } from 'crypto';
 import currentTime from '@/utils/currentTime';
 
 export default function useSocketClientModel(
-  UserId: string,
   messageAddHandler: (messages: MessageFormType[]) => void,
   chatRoomId: number,
 ) {
-  const [socketClient, setSocketClient] = useState<WebSocketClient | null>(
-    null,
-  );
+  const [socketClient, setSocketClient] = useState<WebSocketClient | null>(null);
   const [messageList, setMessageList] = useState<MessageFormType[]>([]);
 
   // 백엔드 메시지 타입
@@ -88,7 +85,7 @@ export default function useSocketClientModel(
   };
 
   useEffect(() => {
-    const client = new WebSocketClient(UserId);
+    const client = new WebSocketClient();
     setSocketClient(client);
 
     return () => {
@@ -104,18 +101,12 @@ export default function useSocketClientModel(
         //   socketClient.subscribe(`/sub/message/${UserId}`, (message) => {
         socketClient.subscribe(`/sub/chatrooms/${chatRoomId}`, (message) => {
           const parsedMessage: BackMessageFormType = JSON.parse(message.body);
-          console.log(
-            `useSocketClientModel:line 82, detected new Message : ${message.body}`,
-          );
+          console.log(`useSocketClientModel:line 82, detected new Message : ${message.body}`);
 
           // 메시지 타입으로 반환하기
-          const toMessageFormType: MessageFormType =
-            chatConverterFromBe(parsedMessage);
+          const toMessageFormType: MessageFormType = chatConverterFromBe(parsedMessage);
 
-          setMessageList((_messageList) => [
-            ..._messageList,
-            toMessageFormType,
-          ]);
+          setMessageList((_messageList) => [..._messageList, toMessageFormType]);
 
           return () => {
             socketClient.disconnect();

@@ -73,6 +73,13 @@ const SignatureModal = ({ isOpen, onRequestClose }: SignatureModalParam) => {
         timestamp: currentTime(),
       };
 
+      const signFinishedMessage: MessageFormType = {
+        type: 2,
+        user: '김말이',
+        body: 'finished',
+        timestamp: currentTime(),
+      };
+
       const finishedSystemMessaege: MessageFormType = {
         type: 3,
         user: 'sys',
@@ -91,7 +98,7 @@ const SignatureModal = ({ isOpen, onRequestClose }: SignatureModalParam) => {
 
         const sendMessages = async () => {
           if (sendChat) {
-            await sendChat(signRequestMessage); // 첫 번째 메시지를 전송
+            await sendChat(signFinishedMessage); // 첫 번째 메시지를 전송
             await sendChat(finishedSystemMessaege); // 두 번째 메시지를 전송
           }
         };
@@ -129,26 +136,17 @@ const SignatureModal = ({ isOpen, onRequestClose }: SignatureModalParam) => {
       style={modalStyle}
     >
       <div className="flex flex-col w-[100vw] h-[100vh] items-center">
-        <div
-          className="pl-3 pt-3 h-[4vh] self-start"
-          onClick={onRequestClose}
-          role="presentation"
-        >
+        <div className="pl-3 pt-3 h-[4vh] self-start" onClick={onRequestClose} role="presentation">
           <ModalClose />
         </div>
-        <div className="flex h-[4vh] text-base font-bold mt-3 mb-3">
-          전자계약서 확인 및 서명
-        </div>
+        <div className="flex h-[4vh] text-base font-bold mt-3 mb-3">전자계약서 확인 및 서명</div>
         <div className="flex h-[45vh] w-[98vw] overflow-y-auto rounded-xl border border-gray-500">
           {/* 계약서 영역 */}
           <ContractContent />
         </div>
         <div className="flex h-[30vh] w-[98vw] rounded-xl border border-gray-500 mt-3">
           {/* 서명 라이브러리 영역 */}
-          <SignatureArea
-            handleSignature={handleSignature}
-            saveTrigger={pressed}
-          />
+          <SignatureArea handleSignature={handleSignature} saveTrigger={pressed} />
         </div>
         <button
           type="button"

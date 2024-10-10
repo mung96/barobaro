@@ -7,12 +7,7 @@ import StatusMessage from './StatusMessage';
 
 const me: string = '김말이'; // 임의 지정한 유저 닉네임
 
-const Message: React.FC<MessageFormType> = ({
-  type,
-  user,
-  body,
-  timestamp,
-}) => {
+const Message: React.FC<MessageFormType> = ({ type, user, body, timestamp }) => {
   // 메시지 타입에 따라 처리 분리
   const isMine: boolean = me === user; // 내가 보낸 메시지인지
   const isStatus: boolean = type === MESSAGETYPES.STATUS; // 거래 프로세스와 관련된 메시지인지
@@ -25,34 +20,12 @@ const Message: React.FC<MessageFormType> = ({
   return (
     <>
       {/*  A. 시스템 메시지 */}
-      {isSys && (
-        <SystemMessage
-          type={type}
-          body={body}
-          timestamp={timestamp}
-          user={user}
-        />
-      )}
+      {isSys && <SystemMessage type={type} body={body} timestamp={timestamp} user={user} />}
       {/* B. 상태 메시지 */}
-      {isStatus && (
-        <StatusMessage
-          type={type}
-          body={body}
-          timestamp={timestamp}
-          user={user}
-          isMine={isMine}
-        />
-      )}
+      {isStatus && <StatusMessage type={type} body={body} timestamp={timestamp} user={user} isMine={isMine} />}
       {/* C. 텍스트 / 이미지 메시지 */}
       {!isSys && !isStatus && (
-        <UserMessage
-          type={type}
-          body={body}
-          timestamp={timestamp}
-          user={user}
-          isMine={isMine}
-          isImg={isImg}
-        />
+        <UserMessage type={type} body={body} timestamp={timestamp} user={user} isMine={isMine} isImg={isImg} />
       )}
     </>
   );
