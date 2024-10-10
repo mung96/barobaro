@@ -58,6 +58,7 @@ public class WishListServiceImpl implements WishListService {
         }
 
         Integer count = wishListRepository.countWishList(product.getId());
+        product.updateWishCount(count);
 
         return WishDto.toDto(isWished, count);
     }

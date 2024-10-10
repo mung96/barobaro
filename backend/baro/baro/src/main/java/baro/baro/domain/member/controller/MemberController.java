@@ -61,9 +61,11 @@ public class MemberController {
 
     @PatchMapping("/members/me/password")
     public ResponseEntity<?> passwordModify(@RequestBody @Valid PasswordModifyReq passwordModifyReq) {
-        PasswordModifyRes result = new PasswordModifyRes("654321");
+        Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
 
-        return new ResponseEntity<>(ResponseDto.success(PASSWORD_MODIFIED, result), OK);
+        memberService.modifyPassword(memberId, passwordModifyReq);
+
+        return new ResponseEntity<>(ResponseDto.success(PASSWORD_MODIFIED, null), OK);
     }
 
     @GetMapping("/members/me/password/verify")
@@ -84,8 +86,10 @@ public class MemberController {
 
     @PostMapping("/members/me/profile")
     public ResponseEntity<?> profileModify(@RequestPart(value = "dto") ProfileModifyReq profileModifyReq,
-                                           @RequestPart(value = "file") MultipartFile file) {
-        ProfileDetailsRes result = new ProfileDetailsRes("프로필 이미지", "uuid", "닉네임", "010-1111-1111", "ssafy@ssafy.com", "아무개",Boolean.TRUE);
+                                           @RequestPart(value = "file") MultipartFile file) throws IOException {
+        Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
+
+        ProfileDetailsRes result = memberService.modifyProfie(memberId, profileModifyReq, file);
 
         return new ResponseEntity<>(ResponseDto.success(PROFILE_MODIFIED, result), OK);
     }

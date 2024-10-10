@@ -62,6 +62,7 @@ public enum ErrorCode {
     PRODUCT_NOT_MODIFIABLE(FORBIDDEN.value(), "거래가 진행중이거나 끝난 물품은 수정할 수 없습니다."),
     PRODUCT_MODIFY_FORBIDDEN(FORBIDDEN.value(), "본인의 게시글이 아닌 경우에 수정할 수 없습니다."),
     INVALID_CONTRACT_CONDITION(BAD_REQUEST.value(), "입력값이 비어있습니다. 입력값을 넣어주세요."),
+    PRODUCT_NOT_DELETED(FORBIDDEN.value(), "거래가 진행중일 때는 게시글을 삭제할 수 없습니다."),
 
     //카테고리
     CATEGORY_NOT_FOUND(NOT_FOUND.value(), "존재하지 않는 카테고리입니다."),

@@ -133,4 +133,8 @@ public class Product {
     public void updateLastModifiedAt() {
         this.lastModifiedAt = LocalDateTime.now();
     }
+
+    public void updateWishCount(Integer wishCount) {
+        this.wishCount = wishCount;
+    }
 }

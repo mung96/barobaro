@@ -73,6 +73,8 @@ public class ProductServiceImpl implements ProductService {
     private final ContractConditionRepository contractConditionRepository;
     private final WishListRepository wishListRepository;
     private final ChatRoomRepository chatRoomRepository;
+    private final ContractRepository contractRepository;
+    private final SignatureInformationRepository signatureInformationRepository;
     private final ApplicationEventPublisher eventPublisher;
     private final EsProductService esProductService;
     private final EsKeywordService esKeywordService;
@@ -182,13 +184,13 @@ public class ProductServiceImpl implements ProductService {
             contractConditionDto = ContractConditionDto.toDto(contractCondition);
         }
 
-        Boolean isMine = Objects.equals(member.getId(), product.getMember().getId());
+        Boolean isMine = product.getMember().getId().equals(memberId);
 
         redisUtils.productRecentlySave(memberId, id);
 
         Boolean isWish = wishListRepository.existsByMemberIdAndProductId(memberId, id);
 
-        return ProductDetails.toDto(product, member, imageUrls, contractConditionDto, isMine, isWish);
+        return ProductDetails.toDto(product, product.getMember(), imageUrls, contractConditionDto, isMine, isWish);
     }
 
     @Override
@@ -493,6 +495,43 @@ public class ProductServiceImpl implements ProductService {
                 .toList();
 
         return new KeywordListRes(keywords);
+    }
+    
+    @Override
+    @Transactional
+    public void deleteProduct(Long productId, Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
+
+        if(!member.getId().equals(product.getMember().getId())) {
+            throw new CustomException(PRODUCT_NOT_DELETED);
+        }
+
+        log.info("1111111111111111111111111111");
+
+        if (!redisUtils.lock("contract_" + product.getId(), 20000L)) {
+            throw new CustomException(CONFLICT_WITH_OTHER);
+        }
+
+        log.info("redis 키상태찍어보자");
+
+        if(product.getProductStatus() == ProductStatus.IN_PROGRESS ||
+            product.getProductStatus() == ProductStatus.APPROVED) {
+            throw new CustomException(PRODUCT_NOT_DELETED);
+        }
+
+        log.info("redis 키상태찍어보자111111111111111");
+
+        chatRoomRepository.deleteByProductId(productId);
+        productImageRepository.deleteByProductId(productId);
+        wishListRepository.deleteWishListByProductId(productId);
+
+        productRepository.delete(product);
+
+        eventPublisher.publishEvent(new UnlockEvent(this, "contract_" + product.getId()));
     }
 
 }

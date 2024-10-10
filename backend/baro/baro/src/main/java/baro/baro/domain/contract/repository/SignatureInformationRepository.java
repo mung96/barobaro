@@ -10,4 +10,10 @@ import java.util.List;
 public interface SignatureInformationRepository extends JpaRepository<SignatureInformation, Long> {
     @Query("SELECT s FROM SignatureInformation s WHERE s.contract.id = :contractId")
     List<SignatureInformation> findByContractId(@Param("contractId") Long contractId);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM SignatureInformation s " +
+            "WHERE s.contract.id = :contractId")
+    void deleteByContractId(@Param("contractId") Long contractId);
 }
