@@ -145,17 +145,30 @@ const usePostFormModel = (context: PostInfoStep | RentalInfoStep | ContractInfoS
   const isFieldValid = useMemo(
     () => ({
       //TODO: merge시에 주석풀어야함.
-      // postFieldList: fieldMapInvalid(postFieldList) && (images.field.value as File[]).length >= IMAGE_MIN_LENGTH&& (images.field.value as File[]).length <=IMAGE_MAX_LENGTH,
-      // rentalFieldList: fieldMapInvalid(rentalFieldList),
-      // contractFieldList: fieldMapInvalid(contractFieldList),
-      postFieldList: true,
-      rentalFieldList: true,
-      contractFieldList: true,
+      postFieldList:
+        fieldMapInvalid(postFieldList) &&
+        (images.field.value as File[]).length >= IMAGE_MIN_LENGTH &&
+        (images.field.value as File[]).length <= IMAGE_MAX_LENGTH,
+      rentalFieldList: fieldMapInvalid(rentalFieldList),
+      contractFieldList: fieldMapInvalid(contractFieldList),
+      // postFieldList: true,
+      // rentalFieldList: true,
+      // contractFieldList: true,
     }),
     [postFieldList, rentalFieldList, contractFieldList],
   );
 
   const convertProductDataToRequest = () => {
+    const a = formatDate(context.rentalDuration?.from!);
+    const b = formatDate(context.rentalDuration?.to!);
+
+    console.group('convertProductDataToRequest');
+    console.log('원본데이터 from', context.rentalDuration?.from!);
+    console.log('원본데이터 to', context.rentalDuration?.to!);
+    console.log('from', a);
+    console.log('to', b);
+    console.groupEnd();
+
     return {
       title: context.title!,
       startDate: formatDate(context.rentalDuration?.from!),
