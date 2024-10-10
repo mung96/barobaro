@@ -84,6 +84,8 @@ const PasswordKeypad = ({ isNewPassword, value, onChange }: Props) => {
         }, BUTTON_ACTIVE_TIME);
     };
     return <><main className="flex flex-col justify-center items-center flex-1">
+        <p className="text-[14px] text-black-100">{passwordMessage}</p>
+
         <div className="mt-9">
             {!isFinished ? (
                 <DisplayPassword length={inputPassword.length} />

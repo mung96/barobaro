@@ -5,6 +5,7 @@ import GoBack from './(SVG_component)/GoBack';
 import Search from './(SVG_component)/Search';
 import Notification from './(SVG_component)/Notification';
 import Location from './(SVG_component)/Location';
+import { useRouter } from 'next/navigation';
 
 type HeaderProps = {
   pageName: string; // 헤더에 표시될 text (e.g. 홈, 게시글 쓰기, 채팅 등 페이지의 제목)
@@ -21,8 +22,9 @@ export default function Header({
   hasSearchBtn,
   hasAlertBtn,
 }: HeaderProps) {
+  const router = useRouter();
   const handleGoBack = () => {
-    window.history.back();
+    router.push('/home');
   };
 
   const userLocation: string = '역삼동';
