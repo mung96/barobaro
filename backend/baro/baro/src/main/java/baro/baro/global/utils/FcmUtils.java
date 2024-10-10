@@ -4,14 +4,11 @@ import baro.baro.domain.member.entity.Member;
 import baro.baro.domain.noti.entity.Noti;
 import baro.baro.domain.noti.entity.NotiType;
 import baro.baro.domain.noti.repository.NotiRepository;
-
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
-
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.stereotype.Component;
 
 @Component
@@ -31,15 +28,19 @@ public class FcmUtils {
 			.build();
 		notiRepository.save(notification);
 
-		String token = to.getFcmToken();
-		Message message = Message.builder()
-			.setNotification(Notification.builder()
-				.setTitle(title)
-				.setBody(from.getNickname() + body)
-				.build())
-			.setToken(token)
-			.build();
-		firebaseMessaging.send(message);
+		if(to.getFcmToken() != null) {
+			String token = to.getFcmToken();
+			Message message = Message.builder()
+					.setNotification(Notification.builder()
+							.setTitle(title)
+							.setBody(from.getNickname() + body)
+							.build())
+					.setToken(token)
+					.build();
+
+			firebaseMessaging.send(message);
+		}
+
 	}
 
 }
