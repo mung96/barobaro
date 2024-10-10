@@ -43,7 +43,7 @@ export default function OriginBoard({ originBoardParams }: OriginBoardParams) {
           {/* 이미지, p 태그 들어감 */}
           <div className="w-3/12 flex flex-row">
             {originBoardParams?.thumbnail && (
-              <Image src={originBoardParams?.thumbnail} alt="cat" width={100} height={100} className="rounded-lg" />
+              <img src={originBoardParams?.thumbnail} alt="cat" width={100} height={100} className="rounded-lg" />
             )}
           </div>
           <div className="w-9/12 flex flex-col pt-[1vh] pl-[2vh] items-start">
