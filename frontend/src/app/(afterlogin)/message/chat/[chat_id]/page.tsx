@@ -9,7 +9,7 @@ import useChatPageModel from '@/hooks/message/chat/useChatPageModel';
 import PageTransition from '@/components/shared/PageTransition';
 import { ProcessProvider } from '@/contexts/ChatProcessContext';
 import { SocketClientProvider } from '@/contexts/SocketClientContext';
-import { OpponentContext } from '@/contexts/ChatOpponentUserInfoContext';
+import { OpponentProvider } from '@/contexts/ChatOpponentUserInfoContext';
 
 export default function Chat() {
   // chatting header, scroll setting
@@ -23,6 +23,7 @@ export default function Chat() {
     otherNickname,
     otherUuid,
     chatRoomId,
+    ownerUuid,
   } = useChatPageModel();
 
   // webSocket Client
@@ -35,28 +36,30 @@ export default function Chat() {
 
   return (
     <SocketClientProvider value={{ socketClient, sendChat, chatRoomId }}>
-      <ProcessProvider value={{ process, processSetter }}>
-        <PageTransition direction="forward" step="g">
-          <div className="flex flex-col h-screen">
-            {/* 상단 헤더 + 원본 게시글 미리보기 영역 (Header + OriginBoard) */}
-            <div className="fixed top-0 w-full bg-white z-10 max-w-[500px]">
-              <Header pageName={roomName} hasPrevBtn hasSearchBtn hasAlertBtn />
-              <OriginBoard />
-            </div>
+      <OpponentProvider value={{ otherNickname, otherUuid, ownerUuid }}>
+        <ProcessProvider value={{ process, processSetter }}>
+          <PageTransition direction="forward" step="g">
+            <div className="flex flex-col h-screen">
+              {/* 상단 헤더 + 원본 게시글 미리보기 영역 (Header + OriginBoard) */}
+              <div className="fixed top-0 w-full bg-white z-10 max-w-[500px]">
+                <Header pageName={roomName} hasPrevBtn hasSearchBtn hasAlertBtn />
+                <OriginBoard />
+              </div>
 
-            {/* 대화 내용 (Dialogs) */}
-            <div className="flex-1 mt-[25vh] overflow-y-scroll" ref={scrollRef}>
-              <Dialogs messages={messages} otherNickname={otherNickname} />
-            </div>
+              {/* 대화 내용 (Dialogs) */}
+              <div className="flex-1 mt-[25vh] overflow-y-scroll" ref={scrollRef}>
+                <Dialogs messages={messages} otherNickname={otherNickname} />
+              </div>
 
-            {/* 메시지 입력창 (ChatWindow) */}
-            <div className="fixed bottom-0 box-border w-full bg-white z-10 max-w-[500px]">
-              {/* <ChatWindow client={socketClient} /> */}
-              <ChatWindow />
+              {/* 메시지 입력창 (ChatWindow) */}
+              <div className="fixed bottom-0 box-border w-full bg-white z-10 max-w-[500px]">
+                {/* <ChatWindow client={socketClient} /> */}
+                <ChatWindow />
+              </div>
             </div>
-          </div>
-        </PageTransition>
-      </ProcessProvider>
+          </PageTransition>
+        </ProcessProvider>
+      </OpponentProvider>
     </SocketClientProvider>
   );
 }

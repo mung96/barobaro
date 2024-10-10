@@ -4,6 +4,7 @@ import { createContext, ReactNode, useState } from 'react';
 interface ChatOpponentUserInfoContextType {
   otherNickname: string;
   otherUuid: UUID | string;
+  ownerUuid: UUID | string;
 }
 
 const OpponentContext = createContext<ChatOpponentUserInfoContextType | null>(null);
@@ -14,9 +15,11 @@ interface ChatOpponentUserInfoContextProps {
 }
 
 const OpponentProvider = ({ children, value }: ChatOpponentUserInfoContextProps) => {
-  const { otherNickname, otherUuid } = value;
+  const { otherNickname, otherUuid, ownerUuid } = value;
 
-  return <OpponentContext.Provider value={{ otherNickname, otherUuid }}>{children}</OpponentContext.Provider>;
+  return (
+    <OpponentContext.Provider value={{ otherNickname, otherUuid, ownerUuid }}>{children}</OpponentContext.Provider>
+  );
 };
 
 export { OpponentProvider, OpponentContext };

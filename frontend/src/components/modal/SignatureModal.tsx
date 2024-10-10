@@ -9,6 +9,7 @@ import SignatureArea from '../message/chat/SignatureArea';
 import currentTime from '@/utils/currentTime';
 import MessageFormType from '../message/chat/MessageFormType';
 import { SocketClientContext } from '@/contexts/SocketClientContext';
+import { useProfileObject } from '@/store/useMyProfile';
 
 type SignatureModalParam = {
   onRequestClose: () => void;
@@ -45,6 +46,7 @@ const SignatureModal = ({ isOpen, onRequestClose }: SignatureModalParam) => {
   const [contextLoaded, setContextLoaded] = useState(false);
   const { process, processSetter } = processContext || {};
   const { sendChat } = clientContext || {};
+  const profile = useProfileObject();
 
   useEffect(() => {
     if (processContext && clientContext) {
@@ -68,21 +70,21 @@ const SignatureModal = ({ isOpen, onRequestClose }: SignatureModalParam) => {
       const signRequestMessage: MessageFormType = {
         // 상태 메시지 보내기
         type: 2,
-        user: '김말이',
+        user: profile.id,
         body: 'signature',
         timestamp: currentTime(),
       };
 
       const signFinishedMessage: MessageFormType = {
         type: 2,
-        user: '김말이',
+        user: profile.id,
         body: 'finished',
         timestamp: currentTime(),
       };
 
       const finishedSystemMessaege: MessageFormType = {
         type: 3,
-        user: 'sys',
+        user: profile.id,
         body: 'finished',
         timestamp: currentTime(),
       };
