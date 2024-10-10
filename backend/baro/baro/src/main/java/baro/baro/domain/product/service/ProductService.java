@@ -22,4 +22,5 @@ public interface ProductService {
     SearchProductRes searchProduct(SearchProductsReq searchProductsReq, Long memberId);
     SearchProductRes searchRecentlyProducts(RecentlyProductsReq recentlyProductsReq, Long memberId);
     KeywordListRes searchKeyword(String keyword);
+    void deleteProduct(Long productId, Long memberId);
 }

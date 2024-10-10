@@ -40,8 +40,10 @@ import static baro.baro.global.statuscode.SuccessCode.*;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static java.lang.Boolean.TRUE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
@@ -322,6 +324,8 @@ class MemberControllerTest {
 
         String content = objectMapper.writeValueAsString(req);
 
+        doNothing().when(memberService).modifyPassword(anyLong(), any(PasswordModifyReq.class));
+
         // when
         ResultActions actions = mockMvc.perform(
                 patch("/members/me/password")
@@ -356,7 +360,8 @@ class MemberControllerTest {
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
-                                                fieldWithPath("body.password").type(STRING).description("변경된 PIN번호")
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("내용 없음")
                                         )
                                 )
                                 .requestSchema(Schema.schema("PIN번호 변경 Request"))
@@ -376,7 +381,7 @@ class MemberControllerTest {
                 .phoneNumber("테스트 전화번호")
                 .email("테스트이메일")
                 .name("테스트 이름")
-                .isAuthenticated(Boolean.TRUE)
+                .isAuthenticated(TRUE)
                 .build();
         when(memberService.getProfileDetails(anyLong()))
                 .thenReturn(result);
@@ -435,6 +440,19 @@ class MemberControllerTest {
 
         MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", objectMapper.writeValueAsBytes(req));
         MockMultipartFile file = new MockMultipartFile("file", "sample.jpg", "image/jpeg", "image/sample.jpg".getBytes());
+
+        ProfileDetailsRes res = ProfileDetailsRes.builder()
+                .profileImage("프로필 사진")
+                .uuid("UUID")
+                .nickname("닉네임")
+                .phoneNumber("01012345678")
+                .email("email")
+                .name("이름")
+                .isAuthenticated(TRUE)
+                .build();
+
+        when(memberService.modifyProfie(anyLong(), any(ProfileModifyReq.class), any(MockMultipartFile.class)))
+                .thenReturn(res);
 
         // when
         ResultActions actions = mockMvc.perform(

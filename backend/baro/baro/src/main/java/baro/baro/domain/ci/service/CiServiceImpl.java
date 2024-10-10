@@ -29,13 +29,15 @@ public class CiServiceImpl implements CiService{
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
-        PortOneCiRes portOneCiRes = portOneService.getPortOneToken(req.getImpUid());
+        if(!ciRepository.findCiByMember(member)) {
+            PortOneCiRes portOneCiRes = portOneService.getPortOneToken(req.getImpUid());
 
-        updateMember(portOneCiRes, member);
+            updateMember(portOneCiRes, member);
 
-        Ci ci = req.toEntity(portOneCiRes.getResponse().getUnique_key(), member);
+            Ci ci = req.toEntity(portOneCiRes.getResponse().getUnique_key(), member);
 
-        ciRepository.save(ci);
+            ciRepository.save(ci);
+        }
     }
 
     private void updateMember(PortOneCiRes portOneCiRes, Member member) {

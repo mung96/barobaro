@@ -68,4 +68,8 @@ public class Member {
     public void updateIsCertificated(Boolean isCertificated){
         this.isCertificated = isCertificated;
     }
+
+    public void updateNickname(String nickname) { this.nickname = nickname; }
+
+    public void updateProfileImage(String profileImage) { this.profileImage = profileImage; }
 }
