@@ -6,13 +6,17 @@ import { BackMessageFormType } from '@/types/message/chat/BackMessageFormType';
 import chatProcessConverter from '@/services/message/chat/chatProcessConverter';
 import { ProcessContext } from '@/contexts/ChatProcessContext';
 import { ProcessType } from '@/components/message/chat/ProcessTypes';
+import { useProfileObject } from '@/store/useMyProfile';
+import { UUID } from 'crypto';
 
 export default function useSocketClientModel(
   messageAddHandler: (messages: MessageFormType) => void,
   chatRoomId: number,
+  ownerUuid: UUID | string,
 ) {
   const [socketClient, setSocketClient] = useState<WebSocketClient | null>(null);
   const [eventedProcess, setEventedProcess] = useState<ProcessType>();
+  const profile = useProfileObject();
 
   const sendChat = (message: MessageFormType) => {
     if (!socketClient) return;
@@ -22,12 +26,6 @@ export default function useSocketClientModel(
 
     if (socketClient !== null) socketClient.send(destination, msg);
   };
-
-  // // ===================== context 사용
-  // const context = useContext(ProcessContext);
-  // if (!context) return { socketClient, sendChat };
-  // const { processSetter } = context;
-  // // =================== context 사용하면 렌더가 아예 안 됨.
 
   useEffect(() => {
     const client = new WebSocketClient();
@@ -51,10 +49,9 @@ export default function useSocketClientModel(
           // 메시지 타입으로 반환하기
           const toMessageFormType: MessageFormType = chatConverterFromBe(parsedMessage);
           messageAddHandler(toMessageFormType);
-          const convertedType = chatProcessConverter(toMessageFormType);
+          const convertedType = chatProcessConverter(toMessageFormType, ownerUuid === toMessageFormType.user);
 
           // !
-          // if (convertedType) processSetter(convertedType);
           if (convertedType) setEventedProcess(convertedType);
 
           return () => {

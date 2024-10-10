@@ -4,6 +4,7 @@ import MessageFormType from '@/components/message/chat/MessageFormType';
 import { ProcessType, ProcessTypes } from '@/components/message/chat/ProcessTypes';
 import { chatConverterFromBe } from '@/services/message/chat/chatConverter';
 import chatProcessConverter from '@/services/message/chat/chatProcessConverter';
+import { useProfileObject } from '@/store/useMyProfile';
 import { useParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 
@@ -18,7 +19,7 @@ const useChatPageModel = () => {
   const [roomName, setRoomName] = useState(``);
   const [ownerUuid, setOwnerUuid] = useState('');
   const [initProcess, setInitProcess] = useState<ProcessType>(ProcessTypes.CONTACT);
-
+  const profile = useProfileObject();
   // message list
   const [messages, setMessages] = useState<MessageFormType[]>([]);
   const handleAddMessages = (message: MessageFormType): void => {
@@ -57,8 +58,9 @@ const useChatPageModel = () => {
         const parsedMessages: MessageFormType[] = [];
 
         apiResponse.chatDtos.map((each) => {
+          const isOwner: boolean = apiResponse.chatRoomDto.ownerUuid === each.uuid;
           const parsedMessage: MessageFormType = chatConverterFromBe(each);
-          const convertedType = chatProcessConverter(parsedMessage);
+          const convertedType = chatProcessConverter(parsedMessage, isOwner);
           if (convertedType) setInitProcess(convertedType);
           parsedMessages.push(parsedMessage);
         });
