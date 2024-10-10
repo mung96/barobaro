@@ -56,7 +56,7 @@ export default function ProfilePhoto({ isSignup }: { isSignup: boolean }) {
         <div className="mb-4 text-[13px]">닉네임</div>
         <div className="w-full h-[32px] rounded-[7px] flex flex-col justify-center items-center border-gray-500 border-[1px]">
           <input
-            className="w-full max-w-[450px]"
+            className="w-full max-w-[450px] focus:outline-none pl-2"
             onChange={(e) => handleNicknameChange(e.target.value)}
             value={inputNickname}
           />
@@ -69,7 +69,7 @@ export default function ProfilePhoto({ isSignup }: { isSignup: boolean }) {
           </div>
         )}
       </section>
-      <div className="fixed bottom-10 w-[100%] justify-items-center flex p-4 bg-white">
+      <div className="w-[100%] justify-items-center flex p-4 bg-white">
         <button
           type="button"
           className={`${
