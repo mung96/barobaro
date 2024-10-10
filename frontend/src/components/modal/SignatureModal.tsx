@@ -14,7 +14,7 @@ import { useProfileObject } from '@/store/useMyProfile';
 type SignatureModalParam = {
   onRequestClose: () => void;
   isOpen: boolean;
-  onChange?: (data: File) => void
+  onChange?: (data: string) => void
 };
 
 const modalStyle: ReactModal.Styles = {
@@ -127,6 +127,7 @@ const SignatureModal = ({ isOpen, onRequestClose, onChange }: SignatureModalPara
   };
 
   const handleSignature = (signatureUrl: string) => {
+    onChange && onChange(signatureUrl);
     setDataUrl(signatureUrl);
   };
 
