@@ -3,26 +3,25 @@
 import Image from "next/image";
 import Logo from '@/../public/assets/png/barobaro_logo.png';
 import { useRouter, useSearchParams } from "next/navigation";
-// import { jwtDecode } from "jwt-decode";
+
 import { getProfile } from "@/apis/profileApi";
 import { useEffect } from "react";
 import { useProfileSet } from "@/store/useMyProfile";
 import { AxiosError } from "axios";
 import { axiosInstance } from "@/apis/axiosInstance";
+import { jwtDecode } from "jwt-decode";
 
 const RedirectComponent = () => {
   const searchParams = useSearchParams();
   localStorage.setItem('token', searchParams.get('token')!);
-  // const decoded = jwtDecode(searchParams.get('token')!);
-  // console.log(decoded);
+  const decoded = jwtDecode(searchParams.get('token')!);
+  console.log(decoded.sub);
   const setProfile = useProfileSet();
   const getCertification = async (imp_uid: string) => {
     const body = {
       "impUid": imp_uid,
     };
-    console.log(body.impUid);
     const response = await axiosInstance.post(`/auth/authentication`, body);
-    console.log(response);
     return response;
   };
   useEffect(() => {
@@ -31,6 +30,7 @@ const RedirectComponent = () => {
         const profileResponse = await getProfile();
         console.log(profileResponse);
         setProfile({
+          id: decoded.sub!,
           profileImage: profileResponse.data.body.profileImage,
           nickname: profileResponse.data.body.nickname,
           phoneNumber: profileResponse.data.body.phoneNumber,

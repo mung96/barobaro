@@ -1,8 +1,5 @@
 import { useCallback, useMemo } from 'react';
 import {
-  ContractInfo,
-  PostInfo,
-  RentalInfo,
   ContractInfoStep,
   ContractPreviewStep,
   PostInfoStep,
@@ -153,7 +150,7 @@ const usePostFormModel = (context: PostInfoStep | RentalInfoStep | ContractInfoS
       // contractFieldList: fieldMapInvalid(contractFieldList),
       postFieldList: true,
       rentalFieldList: true,
-      contractFieldList: fieldMapInvalid(contractFieldList),
+      contractFieldList: true,
     }),
     [postFieldList, rentalFieldList, contractFieldList],
   );

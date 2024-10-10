@@ -41,26 +41,28 @@ function ContractInfoInput({ onTotalStepChange, onNext, onPrev, context, fields,
   }, [isContractWrite, isValid, isSubmitting])
 
   return (
-    <form className="flex flex-col gap-2" onSubmit={onSubmit}>
-      <h2>전자계약서 작성 여부</h2>
-      <Radio.Group
-        fieldSetName="전자계약서 작성 여부"
-        value={isContractWrite}
-        onChange={(e) => setIsContractWrite(e.target.value)}
-        className="flex gap-4"
-      >
-        {CONTRACT_YN.map((item) => (
-          <SelectableItem type="radio" value={item.value} label={item.label} />
-        ))}
-      </Radio.Group>
+    <form className="flex flex-col gap-7" onSubmit={onSubmit}>
+      <section className='flex flex-col gap-2'>
+        <h2>전자계약서 작성 여부</h2>
+        <Radio.Group
+          fieldSetName="전자계약서 작성 여부"
+          value={isContractWrite}
+          onChange={(e) => setIsContractWrite(e.target.value)}
+          className="flex gap-4"
+        >
+          {CONTRACT_YN.map((item) => (
+            <SelectableItem type="radio" value={item.value} label={item.label} />
+          ))}
+        </Radio.Group>
+      </section>
       {isContractWrite === 'YES' && (
         <div className="flex flex-col gap-3">
           <RentalInfoCard fields={fields} context={context} errors={errors}
+            isValid={isValid}
           />
-          {/* 예외처리해야해 */}
-          <ProductRepairInfoCard fields={fields} context={context} errors={errors} />
-          <OverdueInfoCard fields={fields} context={context} errors={errors} />
-          <RefundInfoCard fields={fields} context={context} errors={errors} />
+          <ProductRepairInfoCard fields={fields} context={context} errors={errors} isValid={isValid} />
+          <OverdueInfoCard fields={fields} context={context} errors={errors} isValid={isValid} />
+          <RefundInfoCard fields={fields} context={context} errors={errors} isValid={isValid} />
           <OwnerInfoCard />
         </div>
       )}

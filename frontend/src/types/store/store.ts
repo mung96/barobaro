@@ -34,6 +34,7 @@ export type RecentlyStoreState = {
 };
 
 type Profile = {
+  id: string;
   profileImage: string;
   nickname: string;
   phoneNumber: string;
