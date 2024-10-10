@@ -39,7 +39,7 @@ public class PdfS3Service extends S3Service {
     }
 
     public LocalDateTime lastModified(String fileName){
-        Date date = getlastModified("contract/"+fileName);
+        Date date = getlastModified(fileName);
         log.info("여기서에러남?" + fileName);
         log.info(date.toString());
         return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
