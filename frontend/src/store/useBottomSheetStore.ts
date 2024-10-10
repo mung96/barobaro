@@ -17,6 +17,7 @@ const useBottomSheetStore = create<BottomSheetStoreState>((set) => ({
     setIsOpen: () => {set({ isOpen: true })},
     setIsClose: () => {
       set({ isOpen: false })
+      set({ selectedAccount: 0 });
     },
     setSelectedAccount: (accountId: number) => {
       set({selectedAccount: accountId});
