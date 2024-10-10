@@ -111,16 +111,17 @@ const StatusMessage: FC<MessageFormType> = ({ body, timestamp, isMine }) => {
 
           {!isMine && (body === 'signature' || body === 'contract') && (
             <>
-              <Button
-                onClick={body === 'signature'
-                  ? () => modalTrigger('password')
-                  : handleRequestModalOpen}
-                width="100%"
-                height="32px">
-                <p>{body === 'signature' && '서명하기'}
-                  {body === 'contract' && '상세보기'}</p>
-              </Button>
-
+              <div className='mt-2'>
+                <Button
+                  onClick={body === 'signature'
+                    ? () => modalTrigger('password')
+                    : handleRequestModalOpen}
+                  width="100%"
+                  height="32px">
+                  <p>{body === 'signature' && '서명하기'}
+                    {body === 'contract' && '상세보기'}</p>
+                </Button>
+              </div>
               {modalType === 'signature' && ( // '서명하기' 모달
                 <SignatureModal onChange={setSignData} isOpen={modalOpen} onRequestClose={modalClose} />
               )}
