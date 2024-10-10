@@ -7,10 +7,7 @@ type SelectTabParams = {
   changeSelected: (value: string) => void;
 };
 
-export default function SelectTab({
-  selectValue,
-  changeSelected,
-}: SelectTabParams) {
+export default function SelectTab({ selectValue, changeSelected }: SelectTabParams) {
   // 이벤트 핸들러의 타입을 MouseEvent<HTMLButtonElement>로 수정
   const handleSelect = (e: MouseEvent<HTMLButtonElement>) => {
     // 버튼의 data-value 속성에서 값을 가져옴
@@ -21,7 +18,7 @@ export default function SelectTab({
   };
 
   return (
-    <div className="w-full h-[5vh] flex">
+    <div className="w-full h-[5vh] mt-[7vh] flex">
       <button
         type="button"
         data-value="entire"
