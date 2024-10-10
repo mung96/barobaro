@@ -1,8 +1,5 @@
 import { useCallback, useMemo } from 'react';
 import {
-  ContractInfo,
-  PostInfo,
-  RentalInfo,
   ContractInfoStep,
   ContractPreviewStep,
   PostInfoStep,

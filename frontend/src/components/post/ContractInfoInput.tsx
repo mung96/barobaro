@@ -58,11 +58,11 @@ function ContractInfoInput({ onTotalStepChange, onNext, onPrev, context, fields,
       {isContractWrite === 'YES' && (
         <div className="flex flex-col gap-3">
           <RentalInfoCard fields={fields} context={context} errors={errors}
+            isValid={isValid}
           />
-          {/* 예외처리해야해 */}
-          <ProductRepairInfoCard fields={fields} context={context} errors={errors} />
-          <OverdueInfoCard fields={fields} context={context} errors={errors} />
-          <RefundInfoCard fields={fields} context={context} errors={errors} />
+          <ProductRepairInfoCard fields={fields} context={context} errors={errors} isValid={isValid} />
+          <OverdueInfoCard fields={fields} context={context} errors={errors} isValid={isValid} />
+          <RefundInfoCard fields={fields} context={context} errors={errors} isValid={isValid} />
           <OwnerInfoCard />
         </div>
       )}
