@@ -68,7 +68,9 @@ public class ChatServiceImpl implements ChatService {
             pdfSrc = contract.getContractUrl();
         }
 
-        return new ChatRoomAndChatsDetailsRes(ChatRoomDto.toDto(chatRoom, member, pdfSrc), chatDtos);
+        Boolean isContract = contract != null;
+
+        return new ChatRoomAndChatsDetailsRes(ChatRoomDto.toDto(chatRoom, member, pdfSrc, isContract), chatDtos);
     }
 
     @Override

@@ -45,7 +45,6 @@ import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.JsonFieldType.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
@@ -103,6 +102,7 @@ public class ChatControllerTest {
                 .opponentProfileImage("opponentProfileImage")
                 .rentalStatus(AVAILABLE)
                 .pdfSrc("pdfSrc")
+                .isContract(true)
                 .build();
         List<ChatDto> chatDtos = List.of(
                 new ChatDto("uuid", "message", "image", LocalDateTime.now(), USER));
@@ -155,6 +155,8 @@ public class ChatControllerTest {
                                                         .description("채팅방 상태"),
                                                 fieldWithPath("body.chatRoomDto.pdfSrc").type(STRING)
                                                         .description("전자계약서 S3 주소"),
+                                                fieldWithPath("body.chatRoomDto.isContract").type(BOOLEAN)
+                                                        .description("전자계약서 작성 여부"),
                                                 fieldWithPath("body.chatDtos[].uuid").type(STRING)
                                                         .description("채팅 유저 UUID"),
                                                 fieldWithPath("body.chatDtos[].message").type(STRING)
