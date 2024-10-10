@@ -1,10 +1,8 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter } from 'next/font/google';
 import Script from 'next/script';
 import './globals.css';
 import React from 'react';
-
-const inter = Inter({ subsets: ['latin'] });
+import Head from 'next/head';
 
 export const metadata: Metadata = {
   title: '바로바로',
@@ -31,7 +29,7 @@ type Props = {
 export default function RootLayout({ children }: Props) {
   return (
     <html lang="ko">
-      <body className={inter.className}>
+      <body className="font-pretendard">
         <Script
           src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID}&libraries=services,clusterer&autoload=false`}
           strategy="beforeInteractive"
