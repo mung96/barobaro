@@ -8,6 +8,7 @@ import { useRecentlyViewed, useRecentlyUploaded, useRecentlyActions } from "@/st
 
 export default function Cards({ CardsData }: { CardsData: CardsType }) {
     const dataController = useRecentlyActions();
+
     let data;
     if (CardsData === 'recentlyUploaded') {
         data = useRecentlyUploaded();

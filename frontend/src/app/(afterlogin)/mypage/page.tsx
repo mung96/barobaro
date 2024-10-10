@@ -9,13 +9,9 @@ export default function MyPage() {
     <>
       <Header pageName="" hasPrevBtn={false} hasSearchBtn={false} hasAlertBtn />
       <div className="flex flex-col justify-center">
-        {/*<Profile*/}
-        {/*  hasEmail*/}
-        {/*  hasEditBtn*/}
-        {/*  writerNickname="MyPageUserNameSector"*/}
-        {/*  writerProfileImage={faker.image.urlLoremFlickr()}*/}
-        {/*/>*/}
-          <ProfileContainer/>
+        <div className="mt-[60px]">
+            <ProfileContainer/>
+        </div>
         <div>
           <MyPageContent />
         </div>
