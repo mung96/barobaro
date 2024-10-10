@@ -246,12 +246,17 @@ public class ContractServiceImpl implements ContractService {
 			.findFirst()
 			.orElseThrow(() -> new CustomException(CONTRACT_REQUEST_NOT_FOUND));
 
-		//상품 대여 상태 업데이트
-		product.updateProductStatus(ProductStatus.IN_PROGRESS);
-
 		ContractApproveRes result;
 
 		if(product.getContractCondition() == null) {
+
+			if (!product.getProductStatus().equals(ProductStatus.AVAILABLE)) {
+				throw new CustomException(CONTRACT_IN_PROGRESS_BY_OTHERS);
+			}
+
+			//상품 대여 상태 업데이트
+			product.updateProductStatus(ProductStatus.APPROVED);
+
 			chatRoom.updateRentalStatus(RentalStatus.APPROVED);
 
 			redisUtils.deleteData("contract_" + product.getId());
@@ -261,6 +266,12 @@ public class ContractServiceImpl implements ContractService {
 					.fileUrl(null)
 					.build();
 		} else {
+			//상품 대여 상태 업데이트
+			product.updateProductStatus(ProductStatus.IN_PROGRESS);
+
+			//채팅방의 거래 상태 업데이트
+			chatRoom.updateRentalStatus(RentalStatus.NEED_OWNER_SIGN);
+
 			//내 정보 불러오기
 			Member me = chatRoom.getOwner();
 
@@ -287,9 +298,6 @@ public class ContractServiceImpl implements ContractService {
 					.contractUrl(generatedS3PdfUrl)
 					.rental(chatRoom.getRental())
 					.build();
-
-			//채팅방의 거래 상태 업데이트
-			chatRoom.updateRentalStatus(RentalStatus.NEED_OWNER_SIGN);
 
 			contractRepository.save(newContract);
 
