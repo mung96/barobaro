@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useEffect, useCallback, lazy, Suspense, use } from 'react';
+import { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { postMessageRoomList } from '@/apis/message/chat/messageRoomListApi';
-import { getProductsDetail, deleteProductsDetail } from "@/apis/productDetailApi";
+import { getProductsDetail, deleteProductsDetail } from '@/apis/productDetailApi';
 import { IoCalendarClearOutline } from 'react-icons/io5';
-import { useProfileObject, useProfileSet } from '@/store/useMyProfile';
+import { useProfileObject } from '@/store/useMyProfile';
+import formatCost from '@/utils/formatCost';
 
 const KakaoMap = lazy(() => import('@/components/map/KakaoMap'));
 const PictureCarousel = lazy(() => import('@/components/post/Carousel'));
@@ -18,13 +19,10 @@ const LikeButton = lazy(() => import('@/components/(SVG_component)/LikeButton'))
 const Button = lazy(() => import('@/components/shared/Button'));
 const IdentityVerificationModal = lazy(() => import('@/components/post/IdentityVerificationModal'));
 
-import { useSetPrevPathStore } from '@/store/usePath';
-
 export default function PostDetail() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [postInfo, setPostInfo] = useState<any>(null);
   const currentPath = usePathname();
-  const setPrevPath = useSetPrevPathStore();
 
   /*TODO : 로그인X => 화면 접근시 ReactModal, 완료된 거래인경우 ReactModal */
   const router = useRouter();
@@ -37,8 +35,7 @@ export default function PostDetail() {
       const productId = currentPath.slice(6);
       const res = await getProductsDetail(productId);
       setPostInfo(res);
-    } catch (err) {
-    }
+    } catch (err) {}
   }, [currentPath]);
 
   useEffect(() => {
@@ -47,7 +44,7 @@ export default function PostDetail() {
 
   const [isIdentityVerificationModalOpen, setIsIdentityVerificationModalOpen] = useState(false);
   const profileState = useProfileObject();
-  const setProfile = useProfileSet();
+
   if (!postInfo) {
     return <div></div>;
   }
@@ -62,23 +59,25 @@ export default function PostDetail() {
   };
 
   const pushPasswordNew = () => {
-    // router.push('/mypage/user/password/new');
-    setProfile({ ...profileState, isAuthenticated: true });
+    router.push('/mypage/user/password/new');
     setIsIdentityVerificationModalOpen(false);
-  }
+  };
 
   const handleChattingButtonClick = async () => {
     if (!profileState.isAuthenticated) {
-      setPrevPath(currentPath);
       setIsIdentityVerificationModalOpen(true);
     } else {
       await createChatRoom();
     }
-  }
+  };
   return (
     <>
       <Suspense>
-        <IdentityVerificationModal isOpen={isIdentityVerificationModalOpen} onPrev={(() => setIsIdentityVerificationModalOpen(false))} onConfirm={pushPasswordNew} />
+        <IdentityVerificationModal
+          isOpen={isIdentityVerificationModalOpen}
+          onPrev={() => setIsIdentityVerificationModalOpen(false)}
+          onConfirm={pushPasswordNew}
+        />
       </Suspense>
 
       <Suspense>
@@ -87,11 +86,7 @@ export default function PostDetail() {
       <div className="flex flex-col items-center w-full mb-20">
         <div className="z-50">
           <Suspense>
-            <PostCheckModal
-              modalType={modalType}
-              isOpen={isModalOpen}
-              onRequestClose={closeModal}
-            />
+            <PostCheckModal modalType={modalType} isOpen={isModalOpen} onRequestClose={closeModal} />
           </Suspense>
         </div>
         <div className="flex w-full">
@@ -132,12 +127,7 @@ export default function PostDetail() {
           <PostContent data={postInfo} />
         </Suspense>
         <Suspense>
-          <KakaoMap
-            width="85%"
-            height="20dvh"
-            lat={postInfo.latitude}
-            lng={postInfo.longitude}
-          />
+          <KakaoMap width="85%" height="20dvh" lat={postInfo.latitude} lng={postInfo.longitude} />
         </Suspense>
         <Suspense>
           <ContractCondition data={postInfo} />
@@ -152,21 +142,20 @@ export default function PostDetail() {
         <div className="flex flex-col flex-1 mx-3">
           <div className="flex items-center">
             <Suspense>
-              <IoCalendarClearOutline className='text-base' />
+              <IoCalendarClearOutline className="text-base" />
             </Suspense>
             <p className="text-gray-300 text-[12px]">
               {postInfo.startDate}~{postInfo.endDate}
             </p>
           </div>
-          <p className="text-black-100 text-[16px] font-bold">
-            {postInfo.rentalFee}원/일
-          </p>
+          <p className="text-black-100 text-[16px] font-bold">{formatCost(postInfo.rentalFee)}원/일</p>
         </div>
-        {!postInfo.isMine && <Button width='80px' height='40px' onClick={handleChattingButtonClick}>
-          <p className='text-sm'>채팅하기</p>
-        </Button>}
+        {!postInfo.isMine && (
+          <Button width="80px" height="40px" onClick={handleChattingButtonClick}>
+            <p className="text-sm">채팅하기</p>
+          </Button>
+        )}
       </footer>
     </>
   );
 }
-
