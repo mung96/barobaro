@@ -11,10 +11,4 @@ import java.io.IOException;
 @Configuration
 public class PdfConfig {
 
-    @Bean
-    public PdfFont koreanFont() throws IOException {
-        ClassPathResource fontResource = new ClassPathResource("PretendardVariable.ttf");
-        String fontPath = fontResource.getPath();
-        return PdfFontFactory.createFont(fontPath, "Identity-H",true);
-    }
 }
