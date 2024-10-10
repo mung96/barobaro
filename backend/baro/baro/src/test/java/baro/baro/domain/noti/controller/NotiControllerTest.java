@@ -1,11 +1,12 @@
 package baro.baro.domain.noti.controller;
 
+import baro.baro.domain.noti.dto.response.NotiDto;
+import baro.baro.domain.noti.dto.response.NotiListRes;
+import baro.baro.domain.noti.service.NotiService;
 import baro.baro.global.oauth.jwt.service.JwtService;
-
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
 import com.fasterxml.jackson.core.JsonProcessingException;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,12 +24,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import static baro.baro.domain.noti.entity.NotiType.CONTRACT_REQUEST;
 import static baro.baro.global.ResponseFieldUtils.getCommonResponseFields;
 import static baro.baro.global.statuscode.SuccessCode.NOTIFICATION_LIST_OK;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
@@ -54,6 +58,9 @@ class NotiControllerTest {
 	@MockBean
 	private JwtService jwtService;
 
+	@MockBean
+	private NotiService notiService;
+
 	private String jwtToken;
 
 	@BeforeEach
@@ -73,6 +80,23 @@ class NotiControllerTest {
 	@Test
 	public void 알림_리스트_조회_성공() throws Exception {
 		//given
+		List<NotiDto> notis = new ArrayList<>();
+		for (int i = 1; i <= 3; i++) {
+			String fromMemberId = java.util.UUID.randomUUID().toString();
+			NotiDto dto = NotiDto.builder()
+					.message("ㅇㅇㅇ" + "님이 계약 요청을 했습니다.")
+					.fromMemberId(fromMemberId)
+					.fromMemberImage(
+							"https://static.coupangcdn.com/image/coupang/common/pc_header_img_sprite_new_gnb.svg#person")
+					.fromMemberNickName("멤버 닉네임")
+					.notiType(CONTRACT_REQUEST)
+					.build();
+			notis.add(dto);
+		}
+
+		NotiListRes result = new NotiListRes(notis);
+
+		when(notiService.getNotiList(anyLong())).thenReturn(result);
 
 		//when
 		ResultActions actions = mockMvc.perform(
