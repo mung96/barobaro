@@ -41,6 +41,8 @@ export const END_POINT = {
   PIN_VERIFIED: 'members/me/password/verified',
   LOCATION_GET: 'members/me/locations',
   LOCATION_MAIN_CHANGE: 'members/me/default-location',
+  ALERT: 'notifications',
+
 } as const;
 
 export const HTTP_STATUS_CODE = {

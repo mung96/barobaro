@@ -1,14 +1,16 @@
 'use client';
 
 import AccountCarousel from '@/components/(bottomsheet)/AccountCarousel';
-
+import {useBottomSheetAction, useSelectedAccount} from "@/store/useBottomSheetStore";
 
 type Props = {
   BottomSheetTitle: string;
 };
 
 export default function ConnectAccountContent({ BottomSheetTitle }: Props) {
-    return (
+  const pivot = useSelectedAccount();
+  const cancleEvent = useBottomSheetAction().setIsClose;
+  return (
     <section className="flex flex-col h-[360px]">
       <section className="mb-3">
         <div className="flex flex-row justify-center">
@@ -30,12 +32,13 @@ export default function ConnectAccountContent({ BottomSheetTitle }: Props) {
           <button
             type="button"
             className="bg-gray-500 w-[40%] h-[50px] rounded-[10px] text-white"
+            onClick={cancleEvent}
           >
             취소
           </button>
           <button
             type="button"
-            className="bg-blue-500 w-[40%] h-[50px] rounded-[10px] text-white"
+            className={`w-[40%] h-[50px] rounded-[10px] text-white ${pivot === 0 ? 'bg-gray-500 disabled' : 'bg-blue-500'}`}
           >
             적용
           </button>
