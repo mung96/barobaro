@@ -43,6 +43,7 @@ import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static java.lang.Boolean.TRUE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
@@ -323,6 +324,8 @@ class MemberControllerTest {
 
         String content = objectMapper.writeValueAsString(req);
 
+        doNothing().when(memberService).modifyPassword(anyLong(), any(PasswordModifyReq.class));
+
         // when
         ResultActions actions = mockMvc.perform(
                 patch("/members/me/password")
@@ -357,7 +360,8 @@ class MemberControllerTest {
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
-                                                fieldWithPath("body.password").type(STRING).description("변경된 PIN번호")
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("내용 없음")
                                         )
                                 )
                                 .requestSchema(Schema.schema("PIN번호 변경 Request"))
