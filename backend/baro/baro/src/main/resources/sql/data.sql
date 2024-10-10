@@ -12,9 +12,9 @@ values (123, 'ssafy123@email.com', 'ssafy123', 'image 123', '주소',
         'GOOGLE', true, true, '2024-09-27'::timestamp)
 ;
 
-insert into account (account_id, member_id, account_number, main)
-values(1, 123, 9992678903441444, true),
-      (2, 123, 9990922075160138, false),
-      (3, 123, 9999078627963564, false),
-      (4, 123, 9996856657136140, false)
+insert into account (account_id, member_id, bank, account_number, main)
+values(1, 123, '싸피은행', 9992678903441444, true),
+      (2, 123, '싸피은행', 9990922075160138, false),
+      (3, 123, '싸피은행', 9999078627963564, false),
+      (4, 123, '싸피은행', 9996856657136140, false)
 ;

@@ -22,6 +22,8 @@ public class Account {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    private String bank;
+
     private String accountNumber;
 
     private String accountPassword;
