@@ -1,9 +1,8 @@
 import { FC, useContext } from 'react';
+import { useRouter } from 'next/navigation';
 import Clipboard from '@/components/(SVG_component)/(message)/Clipboard';
 import AddMessage from '@/components/(SVG_component)/(message)/AddMessage';
 import Checked from '@/components/(SVG_component)/(message)/(chat)/Checked';
-import OpenedBox from '@/components/(SVG_component)/(message)/(chat)/OpenedBox';
-import UploadVideo from '@/components/(SVG_component)/(message)/(chat)/UploadVideo';
 
 import Money from '@/components/(SVG_component)/(message)/(chat)/Money';
 import useProcessButtonEventModal from '@/hooks/message/chat/useProcessButtonEventModal';
@@ -25,7 +24,7 @@ const buttonStyle: string =
 
 const ProcessButton: FC<ProcessButtonParam> = ({ isOwner, hasContract }) => {
   // context가 없으면 로딩 또는 대체 UI 표시
-
+  const router = useRouter();
   const context = useContext(ProcessContext);
   const { modalType, modalOpen, modalClose, modalTrigger } = useProcessButtonEventModal();
 
@@ -93,7 +92,7 @@ const ProcessButton: FC<ProcessButtonParam> = ({ isOwner, hasContract }) => {
       )}
       {modalType === 'paid' && <ChatPayModal isOpen={modalOpen} onRequestClose={modalClose} />}
       {process >= PROCESSTYPES.SIGNED_DIRECT && (
-        <button type="button" className={buttonStyle} onClick={() => modalTrigger('download')}>
+        <button type="button" className={buttonStyle} onClick={() => router.push('/contract')}>
           <DownloadDocument />
           <span>&nbsp; 계약서다운</span>
         </button>
