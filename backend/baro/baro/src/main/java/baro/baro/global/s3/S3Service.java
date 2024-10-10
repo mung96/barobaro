@@ -30,7 +30,7 @@ public abstract class S3Service {
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentType(contentType);
         objectMetadata.setContentLength(content.length);
-
+        objectMetadata.setCacheControl("no-cache");
         log.info("업로드 파일 들어옴~~~~~~!");
 
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(content);
