@@ -21,12 +21,12 @@ const ContractDurationInput = ({
   };
 
   return (
-    <div className="flex gap-2 relative">
+    <div className="flex gap-2 relative items-center">
       <Input
         placeholder="대여 날짜"
         value={selected ? format(selected.from!, 'yyyy-MM-dd') : ''}
-        width="108px"
-        height="32px"
+        width="120px"
+        height="40px"
         icon={<IoCalendarClearOutline className="w-4 h-4 mb-[2px]" />}
         readOnly
         onClick={
@@ -41,8 +41,8 @@ const ContractDurationInput = ({
       <Input
         placeholder="반납 날짜"
         value={selected ? format(selected.to!, 'yyyy-MM-dd') : ''}
-        width="108px"
-        height="32px"
+        width="120px"
+        height="40px"
         icon={<IoCalendarClearOutline className="w-4 h-4 mb-[2px]" />}
         readOnly
         onClick={() => setCalendarModalOpen(true)}
