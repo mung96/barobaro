@@ -43,7 +43,7 @@ export const END_POINT = {
 
   SOCKET_PUBLISH: 'wss/pub/chatrooms',
   SOCKET_SUBSCRIBE: 'wss/sub/chatrooms',
-  
+
   BORROW: 'members/me/rental',
   LENT: 'members/me/owner',
   ACCOUNT: 'members/me/accounts',
@@ -56,7 +56,6 @@ export const END_POINT = {
   LOCATION_GET: 'members/me/locations',
   LOCATION_MAIN_CHANGE: 'members/me/default-location',
   ALERT: 'notifications',
-
 } as const;
 
 export const HTTP_STATUS_CODE = {

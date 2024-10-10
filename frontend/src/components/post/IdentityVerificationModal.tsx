@@ -5,7 +5,6 @@ import ReactModal from 'react-modal';
 
 import VerificationButton from '@/components/user/VerificationButton';
 import Button from '@/components/shared/Button';
-import { useRouter } from 'next/navigation';
 
 type Props = {
     isOpen: boolean;
