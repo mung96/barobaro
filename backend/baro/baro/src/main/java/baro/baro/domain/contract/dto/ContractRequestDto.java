@@ -1,6 +1,5 @@
 package baro.baro.domain.contract.dto;
 
-import baro.baro.domain.product.entity.ReturnType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,14 +19,14 @@ public class ContractRequestDto {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate desiredEndDate;
 
-    private ReturnType returnType;
+    private String returnType;
 
     public static ContractRequestDto from(ContractApplicationDto contractApplicationDto) {
         return ContractRequestDto.builder()
                 .chatRoomId(contractApplicationDto.getChatRoomId())
                 .desiredStartDate(contractApplicationDto.getDesiredStartDate())
                 .desiredEndDate(contractApplicationDto.getDesiredEndDate())
-                .returnType(contractApplicationDto.getReturnType())
+                .returnType(String.valueOf(contractApplicationDto.getReturnType()))
                 .build();
     }
 
