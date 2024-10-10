@@ -1,6 +1,11 @@
 package baro.baro.global.utils;
 
+import baro.baro.domain.contract.entity.Contract;
+import baro.baro.domain.contract.entity.SignatureInformation;
+import baro.baro.domain.contract.repository.ContractRepository;
+import baro.baro.domain.contract.repository.SignatureInformationRepository;
 import baro.baro.global.dto.PdfCreateDto;
+import baro.baro.global.exception.CustomException;
 import baro.baro.global.s3.PdfS3Service;
 import com.itextpdf.forms.PdfAcroForm;
 import com.itextpdf.forms.fields.PdfSignatureFormField;
@@ -12,6 +17,7 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.kernel.pdf.StampingProperties;
+import com.itextpdf.kernel.pdf.canvas.parser.PdfTextExtractor;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.AreaBreak;
 import com.itextpdf.layout.element.Paragraph;
@@ -23,8 +29,12 @@ import com.itextpdf.signatures.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.security.GeneralSecurityException;
 import java.security.PrivateKey;
 import java.security.cert.Certificate;
@@ -33,7 +43,10 @@ import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
+import java.util.List;
 import java.util.Locale;
+
+import static baro.baro.global.statuscode.ErrorCode.NOT_MADE_FROM_BAROBARO;
 
 @Slf4j
 @Component
@@ -43,6 +56,7 @@ public class PdfUtils {
     private static final String BAROBARO_ALIAS = "barobaro";
     private static final String BAROBARO_PASSWORD = "ssafya401";
 
+    private final SignatureInformationRepository signatureInformationRepository;
     private final PdfS3Service pdfS3Service;
     private final CertificateUtils certificateUtils;
     private final String[] units = {
@@ -54,6 +68,7 @@ public class PdfUtils {
             "오", "육", "칠", "팔", "구"
     };
     private final PdfFont koreanFont;
+    private final ContractRepository contractRepository;
 
     private String convert2Korean(Long price) {
         if (price == 0) {
@@ -102,11 +117,13 @@ public class PdfUtils {
     }
 
     public String createPdf(PdfCreateDto pdfCreateDto) throws IOException, GeneralSecurityException {
+        // 문서 상단에 ID 추가
+
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         PdfWriter writer = new PdfWriter(byteArrayOutputStream);
         PdfDocument pdfDocument = new PdfDocument(writer);
         Document document = new Document(pdfDocument).setFont(koreanFont);
-
+        document.add(new Paragraph("문서 ID: " + pdfCreateDto.getDocumentSerialNumber()).setFontSize(10).setTextAlignment(TextAlignment.RIGHT));
         document.add(new Paragraph("임대계약서").setTextAlignment(TextAlignment.CENTER).setFontSize(20));
         document.add(new Paragraph(pdfCreateDto.getOwnerName() + "(이하 ‘갑’이라 함)과(와) " + pdfCreateDto.getRentalName() + "(이하 ‘을’이라 함)과(와) 바로바로(이하 '병'이라 함)은 다음과 같이 임대계약을 체결한다."));
         document.add(new Paragraph(""));
@@ -162,8 +179,8 @@ public class PdfUtils {
         document.add(new Paragraph(""));
         document.add(new Paragraph("[제 8조] (무단 연체)").setFontSize(12));
         document.add(new Paragraph("①‘을’은 대여 기간 종료 후 " + pdfCreateDto.getOverdueCriteria() + "일 안에 대여 제품을 ‘갑’에게 반환해야 한다. 이를 어길 시에, 대여 기간에 따른 무단 연체료가 발생한다. 무단 연체료는 연체된 날마다 대여 제품 1일 가격의 " +
-                pdfCreateDto.getOverdueFee() + "배로 계산한다. 예를 들어, 1일 가격이 1만 5천원일 때, 1일 연체되었을 경우 " + convert2Korean(15000L * pdfCreateDto.getOverdueFee()) + "의 연체료가 발생한다.\n"+
-                "②무단 연체료는 정상 반납이 될 때까지 부과되는 요금이지만, ‘을’이 무단 연체를 " + pdfCreateDto.getTheftCriteria() + "일 이상 지속할 경우 도난으로 취급하고 새 제품 구매 비용을 청구한다. 이는 새제품 구매 비용보다 연체료가 크게 나오는 것을 방지하기 위함이다.\n"+
+                pdfCreateDto.getOverdueFee() + "배로 계산한다. 예를 들어, 1일 가격이 1만 5천원일 때, 1일 연체되었을 경우 " + convert2Korean(15000L * pdfCreateDto.getOverdueFee()) + "의 연체료가 발생한다.\n" +
+                "②무단 연체료는 정상 반납이 될 때까지 부과되는 요금이지만, ‘을’이 무단 연체를 " + pdfCreateDto.getTheftCriteria() + "일 이상 지속할 경우 도난으로 취급하고 새 제품 구매 비용을 청구한다. 이는 새제품 구매 비용보다 연체료가 크게 나오는 것을 방지하기 위함이다.\n" +
                 "③‘을’과 연락이 지속되는 경우라도, " + pdfCreateDto.getTheftCriteria() + "일 이상 무단 연체를 지속한다면 해당 사안을 도난으로 취급한다. 이는 ‘을’이 악의적으로 연락만 지속하고 반납을 하지않아 ‘갑’에게 더 큰 영업 손실을 안기는 것을 방지하기 위함이다."
 
         ));
@@ -176,9 +193,9 @@ public class PdfUtils {
         document.add(new Paragraph(""));
         document.add(new Paragraph("[제 11조] (거래 기록 및 데이터 보관)").setFontSize(12));
         document.add(new Paragraph(""));
-        document.add(new Paragraph("①'병'은 ‘갑’과 ‘을’ 간의 거래 내역을 포함한 데이터(거래 일시, 금액, 계약서 사본 등)를 보관하며, 이는 계약 종료 후 1년 동안 저장된다.\n"+
+        document.add(new Paragraph("①'병'은 ‘갑’과 ‘을’ 간의 거래 내역을 포함한 데이터(거래 일시, 금액, 계약서 사본 등)를 보관하며, 이는 계약 종료 후 1년 동안 저장된다.\n" +
                 "②거래 내역은 법적 분쟁 발생 시 증거로 활용될 수 있으며, 당사자가 요청하는 경우 해당 기록을 제공할 수 있다."
-                ));
+        ));
         document.add(new Paragraph(""));
         document.add(new Paragraph("[제 12조] (전자 서명 및 효력)").setFontSize(12));
         document.add(new Paragraph("""
@@ -191,7 +208,7 @@ public class PdfUtils {
                 ④ 전자 서명의 법적 효력
                 본 계약서에 사용된 전자 서명은 전자 문서 및 전자 거래 기본법에 의거하여 법적 효력을 가지며, 본 계약서에 서명한 당사자들은 전자 서명이 본인의 서명임을 인정한다. 전자 서명은 자필 서명과 동일한 법적 효력을 가지며, 계약 당사자들은 이를 법적 분쟁 시 증거로 제출할 수 있다.
                 """
-                ));
+        ));
         document.add(new Paragraph("[제 13조] (전자 서명 시스템의 안정성)").setFontSize(12));
         document.add(new Paragraph("본 계약에 사용되는 전자 서명 시스템은 안정적이고 신뢰할 수 있는 방식으로 운영되며, 서명 절차 중 발생하는 오류나 문제에 대해서는 ‘병’이 그 시스템의 안정성을 보장한다. 전자 서명 중 발생한 기술적 오류가 있을 경우, ‘갑’, ‘을’은 즉시 ‘병’에게 알리고, 문제를 해결한 후 다시 서명 절차를 진행한다."));
 
@@ -252,7 +269,7 @@ public class PdfUtils {
         //서명하기 위해 불러오기
         ByteArrayOutputStream signedOutputStream = new ByteArrayOutputStream();
         PdfReader pdfReader = new PdfReader(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
-        PdfSigner signer = new PdfSigner(pdfReader, signedOutputStream, new StampingProperties());
+        PdfSigner signer = new PdfSigner(pdfReader, signedOutputStream, new StampingProperties().useAppendMode());
 
         //바로바로 측 PrivateKey,인증서 가져오기
         PrivateKey companyPK = certificateUtils.getPrivateKey(BAROBARO_ALIAS, BAROBARO_PASSWORD);
@@ -268,21 +285,64 @@ public class PdfUtils {
 
 
         //전자서명 추가
-        PrivateKeySignature pkSignature = new PrivateKeySignature(companyPK, "SHA-256", "BC");
+        PrivateKeySignature pkSignature = new PrivateKeySignature(companyPK, DigestAlgorithms.SHA256, "BC");
         IExternalDigest digest = new BouncyCastleDigest();
         Certificate[] certificateChain = new Certificate[]{companyCertificate};
         signer.signDetached(digest, pkSignature, certificateChain,
                 null, null, null, 0, PdfSigner.CryptoStandard.CMS);
 
-        //파일 byteArray 화
-        byte[] pdfBytes = signedOutputStream.toByteArray();
 
-        //테스트로 파일시스템에 저장하려고 하는 것. 완성된 뒤에는 제거.
-        try (FileOutputStream fos = new FileOutputStream("src/main/resources/res.pdf")) {
-            fos.write(pdfBytes);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        ByteArrayOutputStream ownerSignedOutputStream = new ByteArrayOutputStream();
+        PdfReader ownerPdfReader = new PdfReader(new ByteArrayInputStream(signedOutputStream.toByteArray()));
+        PdfSigner ownerSigner = new PdfSigner(ownerPdfReader, ownerSignedOutputStream, new StampingProperties().useAppendMode());
+
+        //바로바로 측 PrivateKey,인증서 가져오기
+        PrivateKey ownerPK = certificateUtils.getPrivateKey(BAROBARO_ALIAS, BAROBARO_PASSWORD);
+        Certificate ownerCertificate = certificateUtils.getCertificate(BAROBARO_ALIAS);
+
+        ownerSigner.setFieldName("ownerSignature");
+
+        PdfSignatureAppearance ownerAppearance = ownerSigner.getSignatureAppearance();
+        // 서명 이미지 추가
+        ownerAppearance.setRenderingMode(PdfSignatureAppearance.RenderingMode.GRAPHIC);
+        ownerAppearance.setSignatureGraphic(imageData);
+
+
+        //전자서명 추가
+        PrivateKeySignature ownerPkSignature = new PrivateKeySignature(ownerPK, DigestAlgorithms.SHA256, "BC");
+        IExternalDigest ownerDigest = new BouncyCastleDigest();
+        Certificate[] ownerCertificateChain = new Certificate[]{ownerCertificate};
+        ownerSigner.signDetached(ownerDigest, ownerPkSignature, ownerCertificateChain,
+                null, null, null, 0, PdfSigner.CryptoStandard.CMS);
+
+
+        ByteArrayOutputStream rentalSignedOutputStream = new ByteArrayOutputStream();
+        PdfReader rentalPdfReader = new PdfReader(new ByteArrayInputStream(ownerSignedOutputStream.toByteArray()));
+        PdfSigner rentalSigner = new PdfSigner(rentalPdfReader, rentalSignedOutputStream, new StampingProperties().useAppendMode());
+
+        //바로바로 측 PrivateKey,인증서 가져오기
+        PrivateKey rentalPK = certificateUtils.getPrivateKey(BAROBARO_ALIAS, BAROBARO_PASSWORD);
+        Certificate rentalCertificate = certificateUtils.getCertificate(BAROBARO_ALIAS);
+
+        rentalSigner.setFieldName("rentalSignature");
+
+        PdfSignatureAppearance rentalAppearance = rentalSigner.getSignatureAppearance();
+        // 서명 이미지 추가
+        rentalAppearance.setRenderingMode(PdfSignatureAppearance.RenderingMode.GRAPHIC);
+        rentalAppearance.setSignatureGraphic(imageData);
+
+
+        //전자서명 추가
+        PrivateKeySignature rentalPkSignature = new PrivateKeySignature(rentalPK, DigestAlgorithms.SHA256, "BC");
+        IExternalDigest rentalDigest = new BouncyCastleDigest();
+        Certificate[] rentalCertificateChain = new Certificate[]{rentalCertificate};
+        rentalSigner.signDetached(rentalDigest, rentalPkSignature, rentalCertificateChain,
+                null, null, null, 0, PdfSigner.CryptoStandard.CMS);
+
+
+        //파일 byteArray 화
+//        byte[] pdfBytes = signedOutputStream.toByteArray();
+        byte[] pdfBytes = rentalSignedOutputStream.toByteArray();
         //s3 업로드 후, 저장되는 url 반환
         return pdfS3Service.upload(pdfBytes);
     }
@@ -300,7 +360,7 @@ public class PdfUtils {
         String s3FileName = s3FileUrl.substring(s3FileUrl.lastIndexOf("/") + 1);
         InputStream pdfInputStream = pdfS3Service.download(s3FileName);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        PdfSigner signer = new PdfSigner(new PdfReader(pdfInputStream), new PdfWriter(byteArrayOutputStream), new StampingProperties());
+        PdfSigner signer = new PdfSigner(new PdfReader(pdfInputStream), new PdfWriter(byteArrayOutputStream), new StampingProperties().useAppendMode());
 
         //서명할 필드네임 설정.
         //이미 있는 필드네임이며, 해당 필드에 서명이 이미 있는 경우 -> 에러 발생
@@ -343,4 +403,94 @@ public class PdfUtils {
         byte[] imageBytes = Base64.getDecoder().decode(prefixRemovedBase64);
         return ImageDataFactory.create(imageBytes);
     }
+
+    public boolean verifySignatures(String pdfPath) throws Exception {
+        // 서명 검증을 위한 PDF 문서 열기
+        String s3FileName = pdfPath.substring(pdfPath.lastIndexOf("/") + 1);
+        InputStream pdfInputStream = pdfS3Service.download(s3FileName);
+        PdfDocument pdfDocument = new PdfDocument(new PdfReader(pdfInputStream));
+
+        // 서명 유틸리티 생성
+        SignatureUtil signatureUtil = new SignatureUtil(pdfDocument);
+
+        // PDF 문서의 모든 서명 필드 가져오기
+        List<String> signatureNames = signatureUtil.getSignatureNames();
+
+        // 각 서명 필드를 순차적으로 검증
+        for (String name : signatureNames) {
+            // 서명 객체 가져오기
+            PdfPKCS7 pkcs7 = signatureUtil.verifySignature(name);
+            System.out.println(name);
+
+            // 서명이 유효한지 확인
+            boolean isSignatureValid = pkcs7.verifySignatureIntegrityAndAuthenticity();
+            if (!isSignatureValid) {
+                System.out.println("서명이 유효하지 않습니다: " + name);
+                return false;
+            }
+
+            // 서명한 인증서 확인
+            Certificate[] certificates = pkcs7.getSignCertificateChain();
+            X509Certificate signingCertificate = (X509Certificate) certificates[0];
+            System.out.println("서명자: " + signingCertificate.getSubjectDN());
+        }
+
+        System.out.println("모든 서명이 유효합니다.");
+        return true;
+    }
+
+    public boolean verifySignatures(MultipartFile file) throws Exception {
+        // 서명 검증을 위한 PDF 문서 열기
+
+        PdfReader reader = new PdfReader(file.getInputStream());
+        PdfDocument pdfDocument = new PdfDocument(reader);
+        String documentId = "";
+        String firstPageText = PdfTextExtractor.getTextFromPage(pdfDocument.getPage(1));
+
+        documentId = extractDocumentId(firstPageText);
+        System.out.println("문서 ID: " + documentId);
+        SignatureUtil signatureUtil = new SignatureUtil(pdfDocument);
+        Contract contract = contractRepository.findByInitialDocumentSerialNum(documentId)
+                .orElseThrow(() -> new CustomException(NOT_MADE_FROM_BAROBARO));
+        List<SignatureInformation> signatureInformations = signatureInformationRepository.findByContractId(contract.getId());
+        for (String name : signatureUtil.getSignatureNames()) {
+            PdfPKCS7 pkcs7 = signatureUtil.readSignatureData(name);
+
+            boolean isVerified = pkcs7.verifySignatureIntegrityAndAuthenticity();
+            System.out.println(name + " Is signature verified? " + isVerified);
+
+            Certificate[] certificates = pkcs7.getSignCertificateChain();
+            X509Certificate signCert = (X509Certificate) certificates[0];
+            signatureInformations.stream()
+                    .filter(signatureInformation -> {
+                        Long memberId = signatureInformation.getMemberId();
+                        try {
+                            X509Certificate certificate = certificateUtils.getCertificate(Long.toString(memberId));
+                            // signCert와 일치하는지 확인
+                            return signCert.equals(certificate);
+                        } catch (Exception e) {
+                            throw new CustomException(NOT_MADE_FROM_BAROBARO);
+                        }
+                    })
+                    .findFirst()
+                    .orElseThrow(() -> new CustomException(NOT_MADE_FROM_BAROBARO));
+        }
+        System.out.println("모든 서명이 유효합니다.");
+        return true;
+    }
+
+    private static String extractDocumentId(String text) {
+        // 문서 ID가 "문서 ID: " 뒤에 있다고 가정하고 추출
+        String prefix = "문서 ID: ";
+        if (text.contains(prefix)) {
+            int startIndex = text.indexOf(prefix) + prefix.length();
+            int endIndex = text.indexOf("\n", startIndex); // 다음 줄로 끝나는 경우
+            if (endIndex == -1) { // 다음 줄이 없으면 끝까지 읽음
+                endIndex = text.length();
+            }
+            return text.substring(startIndex, endIndex).trim();
+        }
+        return null; // 문서 ID를 찾지 못한 경우
+    }
+
 }
