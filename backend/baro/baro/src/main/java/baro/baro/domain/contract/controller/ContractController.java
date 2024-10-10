@@ -132,14 +132,13 @@ public class ContractController {
     @GetMapping("/verify")
     public ResponseEntity<?> verifySignature(@RequestPart("file") MultipartFile file) throws Exception {
         pdfUtils.verifySignatures(file);
-        return new ResponseEntity<>(ResponseDto.success(PDF_GENERATE_OK, null), OK);
+        return new ResponseEntity<>(ResponseDto.success(PDF_FROM_BAROBARO_OK, null), OK);
     }
 
     @GetMapping("/{chatRoomId}")
     public ResponseEntity<?> getPresentPdf(@PathVariable Long chatRoomId) {
         Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
         PresentPdfRes result = contractService.findPresentPdf(chatRoomId, memberId);
-
         return new ResponseEntity<>(ResponseDto.success(PRESENT_PDF_OK, result), OK);
     }
 }
