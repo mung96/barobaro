@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { getLocation } from "@/apis/profileApi";
 import { postDefaultLocation } from "@/apis/locationApi"
-import {useSetLocations, useLocations, useSetMain} from '@/store/useLocationStore';
+import {useSetLocations, useLocations, useSetMain, useMain} from '@/store/useLocationStore';
 import Location from "@/components/(SVG_component)/Location";
 
 interface LocationInfo {
@@ -17,6 +17,7 @@ export default function UserTown() {
   const locations = useLocations();
   const setLocations = useSetLocations();
   const setMainLocation = useSetMain();
+  // const mainLocation = useMain();
   const [isOpen, setIsOpen] = useState(false);
   const [main, setMain] = useState(0);
 
@@ -54,11 +55,17 @@ export default function UserTown() {
     }
   };
 
-  const mainLocation = locations.find(location => location.isMain) || locations[0];
+  let mainLocation;
+  if (locations === undefined) {
+    mainLocation = {dong : 'null'}
+  } else {
+    mainLocation = locations.find(location => location.isMain) || locations[0];
+    console.log('locations', locations)
+  }
 
   return (
     <div className="relative">
-      {locations.length > 0 ? (
+      {locations !== undefined  && locations.length > 0 ? (
         <>
           <button
             onClick={() => setIsOpen(!isOpen)}
