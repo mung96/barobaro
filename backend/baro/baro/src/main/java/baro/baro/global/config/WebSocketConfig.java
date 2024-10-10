@@ -38,7 +38,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry
                 .addEndpoint("/ws") // /ws 경로를 통해 클라이언트는 WebSocket 연결을 시도
-                .setAllowedOrigins("*") // 모든 도메인에서 이 WebSocket 엔드포인트로 접속할 수 있도록 허용
+                .setAllowedOrigins("http://localhost:3000", "ws://localhost:3000",
+                        "https://j11a401.p.ssafy.io", "wss://j11a401.p.ssafy.io")
                 .withSockJS(); // SockJS를 사용하도록 설정
 
         log.info("WebSocketConfig registerStompEndpoints");
