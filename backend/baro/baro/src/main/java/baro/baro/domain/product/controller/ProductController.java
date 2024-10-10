@@ -1,6 +1,5 @@
 package baro.baro.domain.product.controller;
 
-import baro.baro.domain.product.dto.KeywordDto;
 import baro.baro.domain.product.dto.ProductDetails;
 import baro.baro.domain.product.dto.request.ProductAddReq;
 import baro.baro.domain.product.dto.request.ProductModifyReq;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import static baro.baro.global.statuscode.SuccessCode.*;
@@ -74,6 +72,9 @@ public class ProductController {
 
     @DeleteMapping("/products/{productId}")
     public ResponseEntity<?> productRemove(@PathVariable Long productId) {
+        Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
+        productService.deleteProduct(productId, memberId);
+
         return new ResponseEntity<>(ResponseDto.success(PRODUCT_DELETED, null), NO_CONTENT);
     }
 

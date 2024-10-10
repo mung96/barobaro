@@ -3,8 +3,11 @@ package baro.baro.domain.product.service;
 import baro.baro.domain.chat_room.repository.ChatRoomRepository;
 import baro.baro.domain.contract.dto.ContractConditionDto;
 import baro.baro.domain.contract.dto.request.ContractConditionReq;
+import baro.baro.domain.contract.entity.Contract;
 import baro.baro.domain.contract.entity.ContractCondition;
 import baro.baro.domain.contract.repository.ContractConditionRepository;
+import baro.baro.domain.contract.repository.ContractRepository;
+import baro.baro.domain.contract.repository.SignatureInformationRepository;
 import baro.baro.domain.location.entity.Location;
 import baro.baro.domain.location.repository.LocationRepository;
 import baro.baro.domain.member.entity.Member;
@@ -72,6 +75,8 @@ public class ProductServiceImpl implements ProductService {
     private final ContractConditionRepository contractConditionRepository;
     private final WishListRepository wishListRepository;
     private final ChatRoomRepository chatRoomRepository;
+    private final ContractRepository contractRepository;
+    private final SignatureInformationRepository signatureInformationRepository;
     private final ApplicationEventPublisher eventPublisher;
     private final EsProductService esProductService;
     private final EsKeywordService esKeywordService;
@@ -180,7 +185,7 @@ public class ProductServiceImpl implements ProductService {
             contractConditionDto = ContractConditionDto.toDto(contractCondition);
         }
 
-        Boolean isMine = Objects.equals(member.getId(), product.getMember().getId());
+        Boolean isMine = product.getMember().getId().equals(memberId);
 
         redisUtils.productRecentlySave(memberId, id);
 
@@ -479,6 +484,40 @@ public class ProductServiceImpl implements ProductService {
                 .toList();
 
         return new KeywordListRes(keywords);
+    }
+    
+    @Override
+    @Transactional
+    public void deleteProduct(Long productId, Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
+
+        if (!redisUtils.lock("contract_" + product.getId(), 3000L)) {
+            throw new CustomException(CONFLICT_WITH_OTHER);
+        }
+
+        if(product.getProductStatus() != ProductStatus.AVAILABLE) {
+            throw new CustomException(PRODUCT_NOT_DELETED);
+        }
+
+        chatRoomRepository.deleteByProductId(productId);
+        productImageRepository.deleteByProductId(productId);
+        wishListRepository.deleteWishListByProductId(productId);
+
+        Contract contract = contractRepository.findContractByProductId(productId);
+
+        if(contract != null) {
+            contractConditionRepository.deleteContractConditionByProductId(productId);
+            signatureInformationRepository.deleteByContractId(contract.getId());
+            contractRepository.delete(contract);
+        }
+
+        productRepository.delete(product);
+
+        eventPublisher.publishEvent(new UnlockEvent(this, "contract_" + product.getId()));
     }
 
 }
