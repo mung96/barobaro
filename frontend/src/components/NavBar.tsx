@@ -6,10 +6,9 @@ import FavoriteButton from './(SVG_component)/FavoriteButton';
 import PostButton from './(SVG_component)/PostButton';
 import MessageButton from './(SVG_component)/MessageButton';
 import MyPageButton from './(SVG_component)/MyPageButton';
-import { usePathname, useRouter } from 'next/navigation';
-import { usePathStore, usePrevPathStore, useSetPathStore, useSetPrevPathStore } from '@/store/usePath';
+import { usePathname, } from 'next/navigation';
+import { usePathStore, useSetPathStore, useSetPrevPathStore } from '@/store/usePath';
 import { useEffect } from 'react';
-import { useProfileObject } from '@/store/useMyProfile';
 
 const NavBarItemList = [
   { id: 0, icon: (currentPath: string) => <HomeButton width='32' height='32' fill={currentPath === '/home' ? '#1A1E27' : '#B6BDC8'} />, label: '홈', path: '/home' },
