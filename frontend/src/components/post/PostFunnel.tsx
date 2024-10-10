@@ -1,7 +1,7 @@
 'use client';
 
 import { useFunnel } from '@use-funnel/browser';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import PostInfoInput from '@/components/post/PostInfoInput';
 import RentalInfoInput from '@/components/post/RentalInfoInput';
 import {
@@ -19,8 +19,11 @@ import convertRegistStepToStepNumber from '@/services/post/regist';
 import ContractInfoInput from '@/components/post/ContractInfoInput';
 import ContractPreview from '@/components/post/ContractPreview';
 import usePostFormModel from '@/hooks/post/usePostFormModel';
+import { useProfileObject } from '@/store/useMyProfile';
+import IdentityVerificationModal from '@/components/post/IdentityVerificationModal';
 
 function PostFunnel() {
+  const [isIdentityVerificationModalOpen, setIsIdentityVerificationModalOpen] = useState(true);
   const [direction, setDirection] = useState<DirectionType>('forward');
   const [totalStep, setTotalStep] = useState(4);
   const { step: registStep, history, context } = useFunnel<{
@@ -38,8 +41,25 @@ function PostFunnel() {
 
   const { postFieldList, rentalFieldList, contractFieldList, errors, isFormValid, getValues, postProductWithoutContract, postProductWithContract, isFieldValid, isSubmitting } = usePostFormModel(context);
 
+
+  //TODO: 게시글 등록 눌렀을 때 본인인증 여부파악해서 모달 띄우기
+  const profileState = useProfileObject();
+
+  useEffect(() => {
+    openModal(window.location.pathname);
+  }, []);
+
+  const openModal = (moveLink: string) => {
+    if (moveLink === '/post/regist' && !profileState.isAuthenticated) {
+      setIsIdentityVerificationModalOpen(true);
+    }
+  }
+
+
   return (
     <div className="flex flex-col gap-4">
+
+      {/* <IdentityVerificationModal isOpen={isIdentityVerificationModalOpen} /> */}
       <StepBar
         totalStep={totalStep}
         currentStep={convertRegistStepToStepNumber(registStep)}
