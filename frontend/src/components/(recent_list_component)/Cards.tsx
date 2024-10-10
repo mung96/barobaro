@@ -29,7 +29,7 @@ export default function Cards({ CardsData }: { CardsData: CardsType }) {
     }
     if (data.length === 0) {
         // TODO : 임의 데이터가 추가된 경우, 이를 재확인 해야함.
-        return <p>Api로 온 데이터가 없습니당</p>;
+        return <p>Api로 온 데이터가 없습니다.</p>;
     }
 
   return (

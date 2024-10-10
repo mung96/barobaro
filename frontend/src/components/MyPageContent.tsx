@@ -9,11 +9,11 @@ import ChangePasswordSVG from '@/components/(SVG_component)/(mypage)/ChangePassw
 import AlarmSVG from '@/components/(SVG_component)/(mypage)/Alarm';
 import AccountBottomSheet from '@/components/(bottomsheet)/AccountBottomSheet';
 import useGetUserInfoInit from "@/hooks/user/useGetUserInfoInit";
+import {useBottomSheetAction, useBottomSheetState} from "@/store/useBottomSheetStore";
 
 export default function MyPageContent() {
-  const [isBottomSheetOpen, SetIsBottomSheetOpen] = useState(false);
-  const openBottomSheet = () => SetIsBottomSheetOpen(true);
-  const closeBottomSheet = () => SetIsBottomSheetOpen(false);
+  const setBottomSheetAction = useBottomSheetAction();
+  const bottomSheetState = useBottomSheetState();
   useGetUserInfoInit()
   return (
     <>
@@ -51,7 +51,7 @@ export default function MyPageContent() {
             <button
               type="button"
               className="flex flex-row justify-center items-center my-1"
-              onClick={openBottomSheet}
+              onClick={setBottomSheetAction.setIsOpen}
             >
               <ConnectAccountSVG />
               <p className="text-xs text-black-100">계좌 설정</p>
@@ -83,8 +83,8 @@ export default function MyPageContent() {
         </div>
       </section>
       <AccountBottomSheet
-        isBottomSheetOpen={isBottomSheetOpen}
-        closeBottomSheet={closeBottomSheet}
+        isBottomSheetOpen={bottomSheetState}
+        closeBottomSheet={setBottomSheetAction.setIsClose}
         BottomSheetType="selectMainAccount"
       />
     </>
