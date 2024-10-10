@@ -293,7 +293,7 @@ public class ContractServiceImpl implements ContractService {
 			}
 			log.info("여기까지 잘 들옴 ㅇㅇ");
 			LocalDateTime lastModified = pdfS3Service.lastModified(generatedS3PdfUrl);
-
+			log.info("lastModified 성공");
 			Contract newContract = Contract.builder()
 					.product(product)
 					.createdAt(lastModified)
@@ -304,7 +304,7 @@ public class ContractServiceImpl implements ContractService {
 			contractRepository.save(newContract);
 
 			log.info("계약 생성완료");
-			
+
 			result = ContractApproveRes.builder()
 					.chatRoomId(contractApproveReq.getChatRoomId())
 					.fileUrl(generatedS3PdfUrl)
