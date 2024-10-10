@@ -1,7 +1,9 @@
 package baro.baro.domain.contract.service;
 
 import baro.baro.domain.contract.dto.ContractRequestDto;
-import baro.baro.domain.contract.dto.request.*;
+import baro.baro.domain.contract.dto.request.ContractApproveReq;
+import baro.baro.domain.contract.dto.request.ProductTakeBackReq;
+import baro.baro.domain.contract.dto.request.SignatureAddReq;
 import baro.baro.domain.contract.dto.response.*;
 import baro.baro.global.dto.PdfCreateDto;
 
@@ -9,9 +11,9 @@ public interface ContractService {
 
     void addContractRequest(ContractRequestDto contractRequestDto,Long rentalId);
 
-    ContractRequestDto findContractRequestDetail(ContractRequestDetailReq contractRequestDetailReq, Long ownerId);
+    ContractRequestDto findContractRequestDetail(Long chatRoomId, Long ownerId);
 
-    ContractOptionDetailRes findContractOptionDetail(ContractOptionDetailReq contractOptionDetailReq, Long memberId);
+    ContractOptionDetailRes findContractOptionDetail(Long chatRoomId, Long memberId);
 
     ContractApproveRes approveRequestWithoutContract(ContractApproveReq contractApproveReq, Long ownerId);
 
