@@ -28,6 +28,7 @@ export default function Chat() {
     chatRoomId,
     ownerUuid,
     initProcess,
+    originBoardParams,
   } = useChatPageModel();
 
   // webSocket Client
@@ -47,15 +48,20 @@ export default function Chat() {
             <div className="flex flex-col h-screen">
               {/* 상단 헤더 + 원본 게시글 미리보기 영역 (Header + OriginBoard) */}
               <Suspense>
-                <div className="fixed top-0 w-full bg-white z-10 max-w-[500px]">
+                <div className="fixed top-0 w-full bg-white z-50 max-w-[500px]">
                   <Header pageName={roomName} hasPrevBtn hasSearchBtn hasAlertBtn />
-                  <OriginBoard />
+                </div>
+              </Suspense>
+
+              <Suspense>
+                <div className="fixed top-[6vh] w-full bg-white z-50 max-w-[500px]">
+                  <OriginBoard originBoardParams={originBoardParams} />
                 </div>
               </Suspense>
 
               {/* 대화 내용 (Dialogs) */}
               <Suspense>
-                <div className="flex-1 mt-[25vh] overflow-y-scroll" ref={scrollRef}>
+                <div className="flex flex-col pt-[25vh] overflow-y-auto" ref={scrollRef}>
                   <Dialogs messages={messages} />
                 </div>
               </Suspense>

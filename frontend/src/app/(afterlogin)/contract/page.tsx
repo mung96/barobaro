@@ -7,8 +7,8 @@ import axios from "axios";
 import {getContractPdf} from "@/apis/contractPdfApi";
 
 const PdfViewer = dynamic(
-    () => import('@naverpay/react-pdf').then((mod) => mod.PdfViewer),
-    { ssr: false } // This will only import the component on the client side
+  () => import('@naverpay/react-pdf').then((mod) => mod.PdfViewer),
+  { ssr: false }, // This will only import the component on the client side
 );
 
 export default function ContractPDFPage() {
