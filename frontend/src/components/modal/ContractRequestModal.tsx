@@ -18,6 +18,8 @@ import { useParams } from 'next/navigation';
 import Button from '@/components/shared/Button';
 import { getContractRequest } from '@/apis/contractApi';
 import { formatDate } from '@/utils/dayUtil';
+import { IoCalendarClearOutline } from 'react-icons/io5';
+import Input from '@/components/shared/Input';
 
 type ContractRequestParams = {
   isOpen: boolean;
@@ -124,16 +126,30 @@ const ContractRequestModal = ({ isOpen, onRequestClose, isFromStatusMessage, mod
             {
               !disabled ?
                 <ContractDurationInput selected={rentalDuration.field.value as DateRange} onSelect={rentalDuration.field.onChange} />
-                : <input
-                  className={`text-sm text-center bg-gray-500 outline-none`}
-                  value={data.desiredStartDate + ' ~ ' + data.desiredEndDate}
-                  disabled={true}
-                />
+                :
+                <div className="flex gap-2 relative">
+                  <Input
+                    placeholder="대여 날짜"
+                    value={data.desiredStartDate}
+                    width="120px"
+                    height="40px"
+                    icon={<IoCalendarClearOutline className="w-4 h-4 mb-[2px]" />}
+                    disabled
+                  />
+                  <p>~</p>
+                  <Input
+                    placeholder="반납 날짜"
+                    value={data.desiredEndDate}
+                    width="120px"
+                    height="40px"
+                    icon={<IoCalendarClearOutline className="w-4 h-4 mb-[2px]" />}
+                    disabled
+                  />
+                </div>
             }
           </div>
           <div className="flex flex-col gap-1">
             <h3 className="text-base">반납 방법 선택</h3>
-
             <Radio.Group
               fieldSetName="반납 방법"
               value={!disabled ? returnType.field.value as string : data.returnType}
@@ -143,19 +159,8 @@ const ContractRequestModal = ({ isOpen, onRequestClose, isFromStatusMessage, mod
               <SelectableItem disabled={disabled} type="radio" value="DIRECT" label="직거래" />
               <SelectableItem disabled={disabled} type="radio" value="DELIVERY" label="택배거래" />
             </Radio.Group>
-
-
-
           </div>
         </section>
-        {/* <Button
-            width='100%'
-            height='40px'
-            color='gray'
-            onClick={isFromStatusMessage ? () => approveLogic(false) : onRequestClose}
-          >
-            <p className='text-sm'> {isFromStatusMessage ? '거절' : '취소'}</p>
-          </Button> */}
         <div className='mt-3'>
           <Button
             type="submit"
