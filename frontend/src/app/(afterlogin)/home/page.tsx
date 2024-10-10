@@ -9,7 +9,7 @@ const Cards = lazy(() => import('@/components/(recent_list_component)/Cards'));
 
 
 function Home() {
-    return (
+  return (
     <>
       <br />
       <Suspense>
@@ -31,10 +31,10 @@ function Home() {
       <Suspense>
         <Cards CardsData="recentlyUploaded" />
       </Suspense>
-      <h1 className="text-xs font-bold ml-4">최근 본 목록</h1>
-      <Suspense>
+      {/* <h1 className="text-xs font-bold ml-4">최근 본 목록</h1> */}
+      {/* <Suspense>
         <Cards CardsData="recentlyView" />
-      </Suspense>
+      </Suspense> */}
       <div className="h-12" />
     </>
   );
