@@ -28,10 +28,10 @@ export default function AlertPage() {
   return (
     <div>
       <Header pageName="알람" hasPrevBtn hasSearchBtn={false} hasAlertBtn={false} />
-      <section className="flex flex-col items-center w-full mb-10">
+      <section className="flex flex-col items-center w-full mb-10 mt-[80px]">
         {/*TODO : alarm data가 정상적으로 들어온다면, 해당 컴포넌트를 반복적으로 만들면 된다!*/}
         {alertData.map((data : any, index) => (
-            <AlertComponent key={index} nickname={data.fromMemberNickName} message={data.message} orderType={data.notiType} profileUrl={data.fromMemberImage} timeData='1' chatId='2'/>
+            <AlertComponent key={index} nickname={data.fromMemberNickName} message={data.message} orderType={data.notiType} profileUrl={data.fromMemberImage} timeData='' chatId='2'/>
         ))}
       </section>
     </div>
