@@ -57,9 +57,9 @@ const ChatAlertModal = ({ isOpen, onRequestClose, type }: ChatAlertModalParams) 
     // 6(signed_direct) 이후 대여자 수령확인
     // 8(paid_direct) 이후 소유자 수령확인
     if (process === ProcessTypes.SIGNED_DIRECT) {
-      processSetter(ProcessTypes.RECEIVED_DIRECT);
+      //   processSetter(ProcessTypes.RECEIVED_DIRECT);
     } else if (process === ProcessTypes.PAID_DIRECT) {
-      processSetter(ProcessTypes.FINISHED);
+      //    processSetter(ProcessTypes.FINISHED);
     }
 
     const message: MessageFormType = {
