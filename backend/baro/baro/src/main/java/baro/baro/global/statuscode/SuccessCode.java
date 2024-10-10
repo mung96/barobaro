@@ -27,6 +27,7 @@ public enum SuccessCode {
     PRODUCT_VIDEO_DETAILS_OK(OK.value(), "등록된 영상 정보 조회에 성공했습니다."),
     PDF_GENERATE_OK(OK.value(), "pdf 생성에 성공했습니다."),
     PRESENT_PDF_OK(OK.value(), "현재 계약서 조회에 성공했습니다."),
+    PDF_FROM_BAROBARO_OK(OK.value(),"원본 문서와 일치합니다."),
 
     //채팅
     CHATROOM_CREATED(CREATED.value(), "채팅방 생성에 성공했습니다."),
