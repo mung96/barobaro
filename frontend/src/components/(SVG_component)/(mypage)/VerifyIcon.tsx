@@ -1,0 +1,18 @@
+export default function VerifyIcon() {
+    return (
+        <>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6 4.6665L8.66667 4.6665" stroke="#33373F" strokeWidth="0.5" strokeLinecap="round"/>
+                <path d="M6 10L8 10" stroke="#33373F" strokeWidth="0.5" strokeLinecap="round"/>
+                <path d="M6 7.3335L10 7.3335" stroke="#33373F" strokeWidth="0.5" strokeLinecap="round"/>
+                <path
+                    d="M12.6663 7.33333V6.66667C12.6663 5.11217 12.6663 4.33492 12.3853 3.73215C12.0872 3.09292 11.5734 2.57915 10.9342 2.28108C10.3314 2 9.55417 2 7.99967 2V2C6.44517 2 5.66792 2 5.06515 2.28108C4.42593 2.57915 3.91216 3.09292 3.61408 3.73215C3.33301 4.33492 3.33301 5.11217 3.33301 6.66667V9.33333C3.33301 10.8878 3.33301 11.6651 3.61408 12.2679C3.91216 12.9071 4.42593 13.4208 5.06515 13.7189C5.66792 14 6.44517 14 7.99967 14V14"
+                    stroke="#33373F" strokeWidth="0.5" strokeLinecap="round"/>
+                <circle cx="11.6667" cy="11.6667" r="1.66667" stroke="#33373F" strokeWidth="0.5"
+                        strokeLinecap="round"/>
+                <path d="M14 14L13 13" stroke="#33373F" strokeWidth="0.5" strokeLinecap="round"/>
+            </svg>
+
+        </>
+    )
+}
