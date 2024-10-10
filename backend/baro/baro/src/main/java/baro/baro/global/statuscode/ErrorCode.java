@@ -20,6 +20,9 @@ public enum ErrorCode {
     ALREADY_EXIST_PIN(BAD_REQUEST.value(), "이미 PIN번호가 등록되어 있습니다."),
     PRIVATE_CREATED_FAIL(BAD_REQUEST.value(), "비밀키가 생성되지 않았습니다."),
 
+    //계좌
+    ACCOUNT_NOT_FOUND(NOT_FOUND.value(), "존재하지 않는 계좌입니다."),
+
     //토큰
     EXPIRED_TOKEN(BAD_REQUEST.value(), "만료된 토큰입니다."),
     NOT_VALID_TOKEN(BAD_REQUEST.value(), "유효하지 않은 토큰입니다."),
