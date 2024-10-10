@@ -11,6 +11,7 @@ import baro.baro.domain.contract.dto.request.ProductTakeBackReq;
 import baro.baro.domain.contract.dto.request.SignatureAddReq;
 import baro.baro.domain.contract.dto.response.*;
 import baro.baro.domain.contract.entity.Contract;
+import baro.baro.domain.contract.entity.ContractCondition;
 import baro.baro.domain.contract.entity.SignatureInformation;
 import baro.baro.domain.contract.repository.ContractRepository;
 import baro.baro.domain.contract.repository.SignatureInformationRepository;
@@ -32,6 +33,7 @@ import baro.baro.global.utils.PdfUtils;
 import baro.baro.global.utils.RedisUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -216,6 +218,10 @@ public class ContractServiceImpl implements ContractService {
 			throw new CustomException(CONFLICT_WITH_OTHER);
 		}
 
+		if (product.getContractCondition() == null) {
+			throw new CustomException(CONTRACT_TYPE_NOT_VALID);
+		}
+
 		//이미 해당 상품에 진행중인 계약이 있음
 		Contract contract = product.getContract();
 
@@ -258,7 +264,7 @@ public class ContractServiceImpl implements ContractService {
 		String uuid = UUID.randomUUID().toString();
 		try {
 			PdfCreateDto pdfCreateDto = PdfCreateDto.toDto(contractApproveReq.getChatRoomId(),
-					uuid, me, opponent, product, contractApplicationDto, product.getContractCondition());
+				uuid, me, opponent, product, contractApplicationDto, product.getContractCondition());
 			generatedS3PdfUrl = pdfUtils.createPdf(pdfCreateDto);
 		} catch (Exception e) {
 			log.info(Arrays.toString(e.getStackTrace()));
@@ -308,6 +314,10 @@ public class ContractServiceImpl implements ContractService {
 		//분산락 획득
 		if (!redisUtils.lock("contract_" + product.getId(), 3000L)) {
 			throw new CustomException(CONFLICT_WITH_OTHER);
+		}
+
+		if (product.getContractCondition() != null) {
+			throw new CustomException(CONTRACT_TYPE_NOT_VALID);
 		}
 
 		if (!product.getProductStatus().equals(ProductStatus.AVAILABLE)) {
@@ -575,13 +585,13 @@ public class ContractServiceImpl implements ContractService {
 	@Override
 	public PresentPdfRes findPresentPdf(Long chatRoomId, Long memberId) {
 		ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
-				.orElseThrow(() -> new CustomException(CHATROOM_NOT_FOUND));
+			.orElseThrow(() -> new CustomException(CHATROOM_NOT_FOUND));
 
-		if(chatRoom.getProduct().getContract() == null) {
+		if (chatRoom.getProduct().getContract() == null) {
 			throw new CustomException(CONTRACT_NOT_FOUND);
 		}
 
-		if(!chatRoom.getOwner().getId().equals(memberId) ||
+		if (!chatRoom.getOwner().getId().equals(memberId) ||
 			!chatRoom.getRental().getId().equals(memberId)) {
 			throw new CustomException(PDF_NOT_MINE);
 		}
