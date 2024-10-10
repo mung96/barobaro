@@ -1,16 +1,31 @@
 import { FC } from 'react';
-import { neverExpected } from '@/utils/typeGuard';
+import MessageFormType from './MessageFormType';
 
+
+import { neverExpected } from '@/utils/typeGuard';
 import useStatusMessageModel from '@/hooks/message/chat/useStatusMessageModel';
 import SignatureModal from '@/components/modal/SignatureModal';
 import ContractRequestModal from '@/components/modal/ContractRequestModal';
-import MessageFormType from './MessageFormType';
 import MessageCommonStyles from './MessageStyles';
 import PasswordCheckModal from '@/components/modal/PasswordCheckModal';
+import Button from '@/components/shared/Button';
+import { UUID } from 'crypto';
 
 type BodyType = 'contract' | 'signature' | 'finished';
 
-const StatusMessage: FC<MessageFormType> = ({ body, timestamp, isMine }) => {
+type Props = {
+  id?: number;
+  type: number;
+  user: UUID | string; // API 연결 후 UUID로 바꾸어 주세요
+  nickname?: string;
+  body: string;
+  timestamp: string;
+  isMine?: boolean; // 하위 메시지 컴포넌트에서만 사용함
+  isImg?: boolean; // UserMessage 컴포넌트에만 사용함
+  otherUuid?: UUID | string; // 상대방의 uuid (Message 컴포에서만 사용)
+  onClick?: () => void;
+};
+const StatusMessage = ({ body, timestamp, isMine, onClick }: Props) => {
   const { modalOpen, modalClose, modalTrigger, modalType, modalChanger } =
     useStatusMessageModel();
 
@@ -92,7 +107,7 @@ const StatusMessage: FC<MessageFormType> = ({ body, timestamp, isMine }) => {
 
           {!isMine && (body === 'signature' || body === 'contract') && (
             <>
-              <button
+              {/* <button
                 type="button"
                 className="bg-blue-100 text-white text-center rounded-md pt-[1vh] pb-[1vh] mt-[1vh] active:bg-blue-500"
                 onClick={
@@ -103,7 +118,17 @@ const StatusMessage: FC<MessageFormType> = ({ body, timestamp, isMine }) => {
               >
                 {body === 'signature' && '서명하기'}
                 {body === 'contract' && '상세보기'}
-              </button>
+              </button> */}
+              <Button
+                // onClick={body === 'signature'
+                //   ? () => modalTrigger('password')
+                //   : () => modalTrigger('request')}
+                onClick={onClick && onClick}
+                width="100%"
+                height="32px">
+                <p>{body === 'signature' && '서명하기'}
+                  {body === 'contract' && '상세보기'}</p>
+              </Button>
 
               {modalType === 'signature' && ( // '서명하기' 모달
                 <SignatureModal
@@ -133,12 +158,14 @@ const StatusMessage: FC<MessageFormType> = ({ body, timestamp, isMine }) => {
           )}
         </div>
       </div>
-      {isMine || (
-        <div className={`${MessageCommonStyles.timestampStyle} pl-[1vh]`}>
-          {timestamp}
-        </div>
-      )}
-    </div>
+      {
+        isMine || (
+          <div className={`${MessageCommonStyles.timestampStyle} pl-[1vh]`}>
+            {timestamp}
+          </div>
+        )
+      }
+    </div >
   );
 };
 

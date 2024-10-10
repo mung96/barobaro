@@ -1,5 +1,6 @@
 import { UUID } from 'crypto';
 
+//TODO: 지워도됨.
 type MessageFormType = {
   id?: number;
   type: number;
