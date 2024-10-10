@@ -94,7 +94,16 @@ public class ChatControllerTest {
     @Test
     public void 채팅방_채팅_상세_조회_성공() throws Exception {
         // given
-        ChatRoomDto chatRoomDto = new ChatRoomDto(1L, 1L, "ownerUuid", "opponentUuid", "nickname", "profileImage", AVAILABLE);
+        ChatRoomDto chatRoomDto = ChatRoomDto.builder()
+                .chatRoomId(1L)
+                .productId(1L)
+                .ownerUuid("ownerUuid")
+                .opponentUuid("opponentUuid")
+                .opponentNickname("opponentNickname")
+                .opponentProfileImage("opponentProfileImage")
+                .rentalStatus(AVAILABLE)
+                .pdfSrc("pdfSrc")
+                .build();
         List<ChatDto> chatDtos = List.of(
                 new ChatDto("uuid", "message", "image", LocalDateTime.now(), USER));
         ChatRoomAndChatsDetailsRes res = new ChatRoomAndChatsDetailsRes(chatRoomDto, chatDtos);
@@ -144,6 +153,8 @@ public class ChatControllerTest {
                                                         .description("상대방 프로필 이미지"),
                                                 fieldWithPath("body.chatRoomDto.rentalStatus").type(STRING)
                                                         .description("채팅방 상태"),
+                                                fieldWithPath("body.chatRoomDto.pdfSrc").type(STRING)
+                                                        .description("전자계약서 S3 주소"),
                                                 fieldWithPath("body.chatDtos[].uuid").type(STRING)
                                                         .description("채팅 유저 UUID"),
                                                 fieldWithPath("body.chatDtos[].message").type(STRING)
