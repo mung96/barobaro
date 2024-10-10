@@ -3,7 +3,7 @@
 import { MouseEvent, useState } from 'react';
 import colors from '@/components/colors';
 import HeartIcon from './HeartIcon';
-import {getWishDeleteApi, getWishPostApi} from "@/apis/wishListApi";
+import {getWishAddApi, getWishDeleteApi, getWishPostApi} from "@/apis/wishListApi";
 
 export default function LikeButton({ isWished, productId }: { isWished: boolean, productId: string }) {
   // 좋아요 목록에 있는 것을 파악하고, 하트를 누른 상태로 하도록!
@@ -17,7 +17,7 @@ export default function LikeButton({ isWished, productId }: { isWished: boolean,
       getWishDeleteApi(productId)
       setClicked(false)
     } else {
-      getWishPostApi(productId)
+      getWishAddApi(productId)
       setClicked(true)
     }
   };
