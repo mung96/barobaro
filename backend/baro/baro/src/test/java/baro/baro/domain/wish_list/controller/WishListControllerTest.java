@@ -1,7 +1,6 @@
 package baro.baro.domain.wish_list.controller;
 
 import baro.baro.domain.product.dto.SearchProductDto;
-import baro.baro.domain.product.dto.response.SearchProductRes;
 import baro.baro.domain.wish_list.dto.WishDto;
 import baro.baro.domain.wish_list.dto.response.MyWishListRes;
 import baro.baro.domain.wish_list.service.WishListService;
@@ -34,20 +33,20 @@ import java.util.List;
 
 import static baro.baro.global.ResponseFieldUtils.getCommonResponseFields;
 import static baro.baro.global.formatter.DateFormatter.calculateTime;
-import static baro.baro.global.statuscode.SuccessCode.*;
+import static baro.baro.global.statuscode.SuccessCode.WISH_LIST_OK;
+import static baro.baro.global.statuscode.SuccessCode.WISH_OK;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static com.fasterxml.jackson.databind.jsonFormatVisitors.JsonFormatTypes.BOOLEAN;
 import static com.fasterxml.jackson.databind.jsonFormatVisitors.JsonFormatTypes.NUMBER;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.payload.JsonFieldType.NULL;
-import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -89,62 +88,15 @@ public class WishListControllerTest {
     }
 
     @Test
-    public void 관심내역_추가_성공() throws Exception {
+    public void 관심내역_상태_반영_성공() throws Exception {
         //given
         WishDto result = new WishDto(true, 3);
 
-        when(wishListService.addWishList(anyLong(), anyLong())).thenReturn(result);
+        when(wishListService.wishList(anyLong(), anyLong(), any())).thenReturn(result);
 
         //when
         ResultActions actions = mockMvc.perform(
-                post("/wish-list/{productId}", 1L)
-                        .header("Authorization", jwtToken)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .with(csrf())
-        );
-
-        // then
-        actions
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.header.httpStatusCode").value(WISH_LIST_CREATED.getHttpStatusCode()))
-                .andExpect(jsonPath("$.header.message").value(WISH_LIST_CREATED.getMessage()))
-                .andDo(document(
-                        "관심 내역 추가",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        resource(ResourceSnippetParameters.builder()
-                                .tag("WishList API")
-                                .summary("관심 내역 추가 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization")
-                                                .description("JWT 토큰")
-                                )
-                                .responseFields(
-                                        getCommonResponseFields(
-                                                fieldWithPath("body.isWished").type(BOOLEAN)
-                                                        .description("찜 여부"),
-                                                fieldWithPath("body.wishCount").type(NUMBER)
-                                                        .description("찜한 사람 수")
-                                        )
-                                )
-                                .requestSchema(Schema.schema("관심 내역 추가 Request"))
-                                .responseSchema(Schema.schema("관심 내역 추가 Response"))
-                                .build()
-                        ))
-                );
-    }
-
-    @Test
-    public void 관심내역_삭제_성공() throws Exception {
-        //given
-        WishDto result = new WishDto(false, 3);
-
-        when(wishListService.deleteWishList(anyLong(), anyLong())).thenReturn(result);
-
-        //when
-        ResultActions actions = mockMvc.perform(
-                delete("/wish-list/{productId}", 1L)
+                post("/wish-list/{productId}?isWished={isWished}", 1L, true)
                         .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -154,18 +106,26 @@ public class WishListControllerTest {
         // then
         actions
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.header.httpStatusCode").value(WISH_LIST_DELETED.getHttpStatusCode()))
-                .andExpect(jsonPath("$.header.message").value(WISH_LIST_DELETED.getMessage()))
+                .andExpect(jsonPath("$.header.httpStatusCode").value(WISH_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(WISH_OK.getMessage()))
                 .andDo(document(
-                        "관심 내역 삭제",
+                        "관심 내역 상태 반영",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         resource(ResourceSnippetParameters.builder()
                                 .tag("WishList API")
-                                .summary("관심 내역 삭제 API")
+                                .summary("관심 내역 상태 반영 API")
                                 .requestHeaders(
                                         headerWithName("Authorization")
                                                 .description("JWT 토큰")
+                                )
+                                .pathParameters(
+                                        parameterWithName("productId")
+                                                .description("물품 ID")
+                                )
+                                .queryParameters(
+                                        parameterWithName("isWished")
+                                                .description("찜 여부")
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
@@ -175,13 +135,13 @@ public class WishListControllerTest {
                                                         .description("찜한 사람 수")
                                         )
                                 )
-                                .requestSchema(Schema.schema("관심 내역 삭제 Request"))
-                                .responseSchema(Schema.schema("관심 내역 삭제 Response"))
+                                .requestSchema(Schema.schema("관심 내역 상태 반영 Request"))
+                                .responseSchema(Schema.schema("관심 내역 상태 반영 Response"))
                                 .build()
                         ))
                 );
     }
-
+    
     @Test
     public void 관심내역_조회_성공() throws Exception {
         // given
