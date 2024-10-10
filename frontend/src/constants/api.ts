@@ -30,6 +30,20 @@ export const END_POINT = {
   MY_PASSWORD: 'members/me/password',
   MY_PROFILE: 'members/me/profile',
   SIGN_UP_INFO: 'members/signup/info',
+
+  CHATROOM: 'chatrooms',
+  CHAT_IMAGE: 'chatrooms/image',
+
+  CONTRACT: 'contracts',
+  CONTRACT_APPROVE: 'contracts/approve',
+  CONTRACT_REQUEST: 'contracts/request',
+  CONTRACT_TERMINATE: 'contracts/terminate',
+  CONTRACT_SIGN_OWNER: 'contracts/sign/owner',
+  CONTRACT_SIGN_RENTAL: 'contracts/sign/rental',
+
+  SOCKET_PUBLISH: 'wss/pub/chatrooms',
+  SOCKET_SUBSCRIBE: 'wss/sub/chatrooms',
+  
   BORROW: 'members/me/rental',
   LENT: 'members/me/owner',
   ACCOUNT: 'members/me/accounts',

@@ -1,25 +1,27 @@
 'use client';
 
 import Image from 'next/image';
-import React from 'react';
+import React, { useContext } from 'react';
 import ProcessButton from './ProcessButton';
-import ProcessTypes from './ProcessTypes';
+import { OpponentContext } from '@/contexts/ChatOpponentUserInfoContext';
+import { useProfileObject } from '@/store/useMyProfile';
 
 // 채팅창 상단에 뜨는 원본 글 미리보기 영역
 export default function OriginBoard() {
+  const context = useContext(OpponentContext);
+  if (!context) return <div></div>;
+  const { ownerUuid } = context;
+
+  const profile = useProfileObject();
+
+  const isOwner = profile.id == ownerUuid;
   return (
     <div className="bg-white">
       <div className="flex flex-col p-[2vh]">
         <div className="h-3/4 flex flex-row">
           {/* 이미지, p 태그 들어감 */}
           <div className="w-3/12 flex flex-row">
-            <Image
-              src="https://loremflickr.com/320/240"
-              alt="cat"
-              width={100}
-              height={100}
-              className="rounded-lg"
-            />
+            <Image src="https://loremflickr.com/320/240" alt="cat" width={100} height={100} className="rounded-lg" />
           </div>
           <div className="w-9/12 flex flex-col pt-[1vh] pl-[2vh] items-start">
             <p className="text-xs text-gray-300">24.09.05 ~ 24.09.29</p>
@@ -29,8 +31,7 @@ export default function OriginBoard() {
         </div>
         <div className="h-1/4 flex flex-row justify-start space-x-1 pt-[1.4vh] overflow-x-auto whitespace-nowrap">
           <ProcessButton
-            process={ProcessTypes.RECEIVED_DIRECT}
-            isOwner={false}
+            isOwner={isOwner} // 여기도 api response로 받아서 끼워넣기
             hasContract
           />
         </div>

@@ -1,7 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import ReactModal from 'react-modal';
 
 import ModalWarningSVG from '@/components/(SVG_component)/ModalWarning';
+import { ProcessContext } from '@/contexts/ChatProcessContext';
+import { ProcessTypes } from '../message/chat/ProcessTypes';
+import { SocketClientContext } from '@/contexts/SocketClientContext';
+import MessageFormType from '../message/chat/MessageFormType';
+import currentTime from '@/utils/currentTime';
+import { useProfileObject } from '@/store/useMyProfile';
 
 type ChatAlertModalParams = {
   isOpen: boolean;
@@ -35,14 +41,35 @@ const modalStyle: ReactModal.Styles = {
   },
 };
 
-const ChatAlertModal = ({
-  isOpen,
-  onRequestClose,
-  type,
-}: ChatAlertModalParams) => {
+const ChatAlertModal = ({ isOpen, onRequestClose, type }: ChatAlertModalParams) => {
+  const processContext = useContext(ProcessContext);
+  const socketClientContext = useContext(SocketClientContext);
+  if (!processContext || !socketClientContext) return null;
+  const { process, processSetter } = processContext;
+  const { sendChat } = socketClientContext;
+  const profile = useProfileObject();
+
   const onReceived = () => {
     // 수령확인 버튼 누른 후의 로직 작성
     // 프로세스 바뀌어야 함
+
+    // 수령확인 ?
+    // 6(signed_direct) 이후 대여자 수령확인
+    // 8(paid_direct) 이후 소유자 수령확인
+    if (process === ProcessTypes.SIGNED_DIRECT) {
+      processSetter(ProcessTypes.RECEIVED_DIRECT);
+    } else if (process === ProcessTypes.PAID_DIRECT) {
+      processSetter(ProcessTypes.FINISHED);
+    }
+
+    const message: MessageFormType = {
+      type: 3,
+      user: profile.id,
+      body: 'received',
+      timestamp: currentTime(),
+    };
+
+    sendChat(message);
     onRequestClose();
   };
   return (
@@ -61,9 +88,7 @@ const ChatAlertModal = ({
         </div>
 
         {/* alert 영역 */}
-        <div className="font-bold self-center mb-[1vh]">
-          {type === 'received' && '상품을 받으셨나요?'}
-        </div>
+        <div className="font-bold self-center mb-[1vh]">{type === 'received' && '상품을 받으셨나요?'}</div>
 
         {/* notice 영역 */}
         <div className="flex flex-col text-center text-sm text-gray-300 mb-[1vh]">
@@ -91,11 +116,7 @@ const ChatAlertModal = ({
         </button>
 
         {type === 'received' && (
-          <button
-            type="button"
-            className="bg-blue-100 text-white rounded-lg w-[50%] p-2 text-sm"
-            onClick={onReceived}
-          >
+          <button type="button" className="bg-blue-100 text-white rounded-lg w-[50%] p-2 text-sm" onClick={onReceived}>
             수령 확인
           </button>
         )}

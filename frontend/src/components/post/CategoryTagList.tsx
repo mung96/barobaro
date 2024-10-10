@@ -62,7 +62,7 @@ function CategoryTagList({
   value,
   disabled,
   isInvalid,
-  message
+  message,
 }: Props) {
   return (
     <div className="flex gap-2 flex-col relative">

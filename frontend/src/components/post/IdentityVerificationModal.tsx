@@ -6,12 +6,11 @@ import ReactModal from 'react-modal';
 import VerificationButton from '@/components/user/VerificationButton';
 import Button from '@/components/shared/Button';
 import { useRouter } from 'next/navigation';
-import { useProfileObject, useProfileSet } from '@/store/useMyProfile';
-import { getProfile } from '@/apis/profileApi';
-import { AxiosError } from 'axios';
 
 type Props = {
     isOpen: boolean;
+    onConfirm: () => void;
+    onPrev: () => void;
 };
 
 const modalStyle: ReactModal.Styles = {
@@ -41,27 +40,8 @@ const modalStyle: ReactModal.Styles = {
 };
 
 const IdentityVerificationModal = ({
-    isOpen,
+    isOpen, onConfirm, onPrev
 }: Props) => {
-    const router = useRouter();
-    const profile = useProfileObject();
-    const setProfile = useProfileSet();
-
-    const fetchProfile = async () => {
-        try {
-            const profileResponse = await getProfile();
-            setProfile({
-                id: profile.id,
-                ...profileResponse.data.body
-            })
-            router.replace('/post/regist');
-        } catch (error) {
-            if (error instanceof AxiosError) {
-                alert(error.response?.data.header.message)
-            }
-        }
-    }
-
     return (
         <ReactModal
             isOpen={isOpen}
@@ -75,11 +55,11 @@ const IdentityVerificationModal = ({
                     <p>게시글 등록을 위해 본인인증을 진행해주세요.</p>
                 </div>
                 <div className='flex justify-between w-full gap-2'>
-                    <Button onClick={() => router.back()} color='gray' width='100%' height='40px'>
+                    <Button onClick={onPrev} color='gray' width='100%' height='40px'>
                         <p className="text-base">뒤로</p>
                     </Button>
                     <div className='w-full'>
-                        <VerificationButton onSuccess={fetchProfile} width='100%' height='40px' ><p className="text-base">확인</p></VerificationButton>
+                        <VerificationButton onSuccess={onConfirm} width='100%' height='40px' ><p className="text-base">확인</p></VerificationButton>
                     </div>
                 </div>
             </div>

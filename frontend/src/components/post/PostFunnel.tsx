@@ -21,9 +21,10 @@ import ContractPreview from '@/components/post/ContractPreview';
 import usePostFormModel from '@/hooks/post/usePostFormModel';
 import { useProfileObject } from '@/store/useMyProfile';
 import IdentityVerificationModal from '@/components/post/IdentityVerificationModal';
+import { useRouter } from 'next/navigation';
 
 function PostFunnel() {
-  const [isIdentityVerificationModalOpen, setIsIdentityVerificationModalOpen] = useState(true);
+  const [isIdentityVerificationModalOpen, setIsIdentityVerificationModalOpen] = useState(false);
   const [direction, setDirection] = useState<DirectionType>('forward');
   const [totalStep, setTotalStep] = useState(4);
   const { step: registStep, history, context } = useFunnel<{
@@ -55,11 +56,16 @@ function PostFunnel() {
     }
   }
 
+  const router = useRouter();
+  const pushPasswordNew = () => {
+    router.push('/mypage/user/password/new');
+    setIsIdentityVerificationModalOpen(false);
+  }
+
 
   return (
     <div className="flex flex-col gap-4">
-
-      {/* <IdentityVerificationModal isOpen={isIdentityVerificationModalOpen} /> */}
+      <IdentityVerificationModal isOpen={isIdentityVerificationModalOpen} onPrev={() => router.back()} onConfirm={pushPasswordNew} />
       <StepBar
         totalStep={totalStep}
         currentStep={convertRegistStepToStepNumber(registStep)}

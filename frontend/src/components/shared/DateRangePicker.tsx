@@ -3,6 +3,7 @@ import 'react-day-picker/style.css';
 import './calendar.css';
 import { ko } from 'react-day-picker/locale';
 import Button from '@/components/shared/Button';
+import { useEffect } from 'react';
 
 type DateRangePickerProps = {
   selected: DateRange | undefined;
@@ -16,6 +17,10 @@ function DateRangePicker({
   onSelect,
   onClose,
 }: DateRangePickerProps) {
+  useEffect(() => {
+    console.log('selected', selected);
+
+  }, [selected])
   return (
     <div className="rounded-xl bg-white relative flex flex-col items-center h-96 justify-center shadow-md border-gray-300 border-[1px] w-[300px]">
       <button
