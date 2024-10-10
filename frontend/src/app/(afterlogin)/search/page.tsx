@@ -1,5 +1,6 @@
-import { Suspense } from 'react';
-import CategoryDetailContent from '@/components/SearchParams';
+import { lazy, Suspense } from 'react';
+
+const CategoryDetailContent = lazy(() => import('@/components/SearchParams'));
 
 export default function CategoryDetailPage() {
   return (
