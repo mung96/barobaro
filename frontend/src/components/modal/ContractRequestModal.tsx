@@ -16,10 +16,11 @@ import { useProfileObject } from '@/store/useMyProfile';
 import useContractRequestModel from '@/hooks/contract/useContractRequestModel';
 import { useParams } from 'next/navigation';
 import Button from '@/components/shared/Button';
-import { getContractRequest } from '@/apis/contractApi';
+import { getContractRequest, postContractApprove } from '@/apis/contractApi';
 import { formatDate } from '@/utils/dayUtil';
 import { IoCalendarClearOutline } from 'react-icons/io5';
 import Input from '@/components/shared/Input';
+import { useForm } from 'react-hook-form';
 
 type ContractRequestParams = {
   isOpen: boolean;
@@ -28,6 +29,7 @@ type ContractRequestParams = {
   modalChanger?: (modal: StatusModalType) => void;
   data?: any;
   disabled?: boolean;
+  onChange?: (value: string) => void
 };
 
 const modalStyle: ReactModal.Styles = {
@@ -56,10 +58,17 @@ const modalStyle: ReactModal.Styles = {
   },
 };
 
+type ChatInfo = {
+  charRoomId: number;
+
+}
+
 const ContractRequestModal = ({ isOpen, onRequestClose, isFromStatusMessage, modalChanger, data, disabled }: ContractRequestParams) => {
   const { chat_id: chatRoomId } = useParams();
   const { rentalDuration, returnType, requestContract, isSubmitting } = useContractRequestModel(Number(chatRoomId as string))
+  const { handleSubmit } = useForm<ChatInfo>();
   const socketContext = useContext(SocketClientContext);
+
 
   if (!socketContext) {
     return <div> Loading ... </div>; // 두 context가 모두 필요한 경우
@@ -110,6 +119,18 @@ const ContractRequestModal = ({ isOpen, onRequestClose, isFromStatusMessage, mod
     onRequestClose();
   };
 
+  const approveContract = async () => {
+    try {
+      const response = await postContractApprove(Number(chatRoomId))
+      console.log(response)
+
+      approveLogic(true);
+    } catch (error) {
+      console.log(error);
+    }
+
+  }
+
   return (
     <ReactModal
       isOpen={isOpen}
@@ -118,7 +139,7 @@ const ContractRequestModal = ({ isOpen, onRequestClose, isFromStatusMessage, mod
       ariaHideApp={false}
       style={modalStyle}
     >
-      <form className="flex flex-col gap-4 justify-center" onSubmit={isFromStatusMessage ? () => approveLogic(true) : requestContract(handleRequestSuccess)}>
+      <form className="flex flex-col gap-4 justify-center" onSubmit={isFromStatusMessage ? handleSubmit(approveContract) : requestContract(handleRequestSuccess)}>
         <h2 className="font-bold text-center text-xl">계약 요청서</h2>
         <section className='flex flex-col gap-3'>
           <div className="flex flex-col gap-1">
