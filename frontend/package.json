@@ -15,6 +15,7 @@
     "@faker-js/faker": "^8.4.1",
     "@firebase/app": "^0.10.12",
     "@firebase/messaging": "^0.12.11",
+    "@naverpay/react-pdf": "^0.3.4",
     "@stomp/stompjs": "^7.0.0",
     "@types/react-beautiful-dnd": "^13.1.8",
     "@types/react-modal": "^3.16.3",

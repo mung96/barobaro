@@ -26,8 +26,7 @@ const ProcessButton: FC<ProcessButtonParam> = ({ isOwner, hasContract }) => {
   // context가 없으면 로딩 또는 대체 UI 표시
 
   const context = useContext(ProcessContext);
-  const { modalType, modalOpen, modalClose, modalTrigger } =
-    useProcessButtonEventModal();
+  const { modalType, modalOpen, modalClose, modalTrigger } = useProcessButtonEventModal();
 
   if (!context) return <div>Loading...</div>;
 
@@ -35,86 +34,47 @@ const ProcessButton: FC<ProcessButtonParam> = ({ isOwner, hasContract }) => {
   return (
     <>
       {/* 계약 프로세스와 사용자 역할(파라메터 값)에 따라 노출되는 버튼 결정 */}
-      <button
-        type="button"
-        className={buttonStyle}
-        onClick={() => modalTrigger('condition')}
-      >
+      <button type="button" className={buttonStyle} onClick={() => modalTrigger('condition')}>
         <Clipboard />
         <span>&nbsp;{hasContract ? '계약조건' : '반납방법'}</span>
       </button>
-      {modalType === 'condition' && (
-        <ContractConditionModal
-          isOpen={modalOpen}
-          onRequestClose={modalClose}
-        />
-      )}
-      {!isOwner &&
-        process >= PROCESSTYPES.CONTACT &&
-        process <= PROCESSTYPES.ACCEPTED_PACK && (
-          <button
-            type="button"
-            className={buttonStyle}
-            disabled={process >= PROCESSTYPES.REQUESTED}
-            onClick={() => modalTrigger('request')}
-          >
-            <AddMessage />
-            <span>
-              &nbsp;
-              {process === PROCESSTYPES.CONTACT ? '계약요청' : '요청완료'}
-            </span>
-          </button>
-        )}
-      {!isOwner &&
-        process === PROCESSTYPES.CONTACT &&
-        modalType === 'request' && (
-          <ContractRequestModal
-            isOpen={modalOpen}
-            onRequestClose={modalClose}
-            isFromStatusMessage={false}
-          />
-        )}
-      {((!isOwner && process === PROCESSTYPES.PAID_PACK) ||
-        (isOwner && process === PROCESSTYPES.SIGNED_PACK)) && (
-        <button type="button" className={buttonStyle}>
-          <UploadVideo />
-          <span>&nbsp;영상제출</span>
+      {modalType === 'condition' && <ContractConditionModal isOpen={modalOpen} onRequestClose={modalClose} />}
+      {!isOwner && process >= PROCESSTYPES.CONTACT && process <= PROCESSTYPES.ACCEPTED_PACK && (
+        <button
+          type="button"
+          className={buttonStyle}
+          disabled={process >= PROCESSTYPES.REQUESTED}
+          onClick={() => modalTrigger('request')}
+        >
+          <AddMessage />
+          <span>
+            &nbsp;
+            {process === PROCESSTYPES.CONTACT ? '계약요청' : '요청완료'}
+          </span>
         </button>
       )}
-      {((!isOwner && process >= PROCESSTYPES.SIGNED_DIRECT) ||
-        (isOwner && process >= PROCESSTYPES.PAID_DIRECT)) && (
+      {!isOwner && process === PROCESSTYPES.CONTACT && modalType === 'request' && (
+        <ContractRequestModal isOpen={modalOpen} onRequestClose={modalClose} isFromStatusMessage={false} />
+      )}
+
+      {((!isOwner && process >= PROCESSTYPES.SIGNED_DIRECT) || (isOwner && process >= PROCESSTYPES.PAID_DIRECT)) && (
         <>
           <button
             type="button"
             className={buttonStyle}
-            disabled={
-              (!isOwner && process > PROCESSTYPES.SIGNED_PACK) ||
-              (isOwner && process > PROCESSTYPES.PAID_PACK)
-            }
+            disabled={(!isOwner && process > PROCESSTYPES.SIGNED_PACK) || (isOwner && process > PROCESSTYPES.PAID_PACK)}
             onClick={() => modalTrigger('received')}
           >
             <Checked />
             <span>
               &nbsp;수령
-              {(!isOwner && process <= PROCESSTYPES.SIGNED_PACK) ||
-              (isOwner && process <= PROCESSTYPES.PAID_PACK)
+              {(!isOwner && process <= PROCESSTYPES.SIGNED_PACK) || (isOwner && process <= PROCESSTYPES.PAID_PACK)
                 ? '확인'
                 : '완료'}
             </span>
           </button>
           {modalType === 'received' && (
-            <ChatAlertModal
-              isOpen={modalOpen}
-              onRequestClose={modalClose}
-              type={modalType}
-            />
-          )}
-          {((!isOwner && process === PROCESSTYPES.SIGNED_PACK) ||
-            (isOwner && process === PROCESSTYPES.PAID_PACK)) && (
-            <button type="button" className={buttonStyle}>
-              <OpenedBox />
-              <span>&nbsp;택배조회</span>
-            </button>
+            <ChatAlertModal isOpen={modalOpen} onRequestClose={modalClose} type={modalType} />
           )}
         </>
       )}
@@ -129,9 +89,7 @@ const ProcessButton: FC<ProcessButtonParam> = ({ isOwner, hasContract }) => {
           <span>&nbsp;송금{process >= PROCESSTYPES.PAID_DIRECT && '완료'}</span>
         </button>
       )}
-      {modalType === 'paid' && (
-        <ChatPayModal isOpen={modalOpen} onRequestClose={modalClose} />
-      )}
+      {modalType === 'paid' && <ChatPayModal isOpen={modalOpen} onRequestClose={modalClose} />}
     </>
   );
 };
