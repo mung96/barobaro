@@ -6,6 +6,7 @@ import baro.baro.domain.noti.service.NotiService;
 import baro.baro.global.dto.ResponseDto;
 import baro.baro.global.oauth.jwt.service.JwtService;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -23,30 +24,33 @@ import static org.springframework.http.HttpStatus.OK;
 @RequiredArgsConstructor
 @RequestMapping("/notifications")
 public class NotiController {
-    private final JwtService jwtService;
-    private final NotiService notiService;
+	private final JwtService jwtService;
+	private final NotiService notiService;
 
-    @GetMapping("")
-    public ResponseEntity<?> notificationList() {
-        List<NotiDto> notis = new ArrayList<>();
-        for (int i = 1; i <= 3; i++) {
-            String fromMemberId = UUID.randomUUID().toString();
-            NotiDto dto = NotiDto.builder()
-                    .message("ㅇㅇㅇ" + "님이 계약 요청을 했습니다.")
-                    .fromMemberId(fromMemberId)
-                    .notiType(CONTRACT_REQUEST)
-                    .build();
-            notis.add(dto);
-        }
-        NotiListRes result = new NotiListRes(notis);
-        return new ResponseEntity<>(ResponseDto.success(NOTIFICATION_LIST_OK, result), OK);
-    }
+	@GetMapping("")
+	public ResponseEntity<?> notificationList() {
+		List<NotiDto> notis = new ArrayList<>();
+		for (int i = 1; i <= 3; i++) {
+			String fromMemberId = UUID.randomUUID().toString();
+			NotiDto dto = NotiDto.builder()
+				.message("ㅇㅇㅇ" + "님이 계약 요청을 했습니다.")
+				.fromMemberId(fromMemberId)
+				.fromMemberImage(
+					"https://static.coupangcdn.com/image/coupang/common/pc_header_img_sprite_new_gnb.svg#person")
+				.fromMemberNickName("멤버 닉네임")
+				.notiType(CONTRACT_REQUEST)
+				.build();
+			notis.add(dto);
+		}
+		NotiListRes result = new NotiListRes(notis);
+		return new ResponseEntity<>(ResponseDto.success(NOTIFICATION_LIST_OK, result), OK);
+	}
 
-    @PatchMapping("/fcm-register")
-    public ResponseEntity<?> addMemberFcmToken(@RequestParam("token") String token) {
-        Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
-        notiService.addMemberFcmToken(token, memberId);
-        return new ResponseEntity<>(ResponseDto.success(FCM_TOKEN_UPDATE_OK, null), OK);
-    }
+	@PatchMapping("/fcm-register")
+	public ResponseEntity<?> addMemberFcmToken(@RequestParam("token") String token) {
+		Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
+		notiService.addMemberFcmToken(token, memberId);
+		return new ResponseEntity<>(ResponseDto.success(FCM_TOKEN_UPDATE_OK, null), OK);
+	}
 
 }
