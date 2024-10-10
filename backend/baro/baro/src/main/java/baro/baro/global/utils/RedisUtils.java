@@ -21,7 +21,7 @@ public interface RedisUtils {
 
     Boolean lock(String key, Long timeout);
 
-    Boolean lock(String key, Object value, Long expireTime);
+    Boolean lock(String key, String value, Long expireTime);
 
     void unlock(String key);
 
