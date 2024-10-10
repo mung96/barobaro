@@ -29,4 +29,8 @@ public class Account {
     private String accountPassword;
 
     private Boolean main;
+
+    public void updateMain(Boolean main) {
+        this.main = main;
+    }
 }

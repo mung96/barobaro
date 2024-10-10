@@ -9,6 +9,8 @@ import lombok.Data;
 @Builder
 @AllArgsConstructor
 public class AccountAddMainRes {
+    private String bank;
+
     private String accountNumber;
 
     private Long accountId;
@@ -17,6 +19,7 @@ public class AccountAddMainRes {
 
     public static AccountAddMainRes toDto(Account account) {
         return AccountAddMainRes.builder()
+                .bank(account.getBank())
                 .accountNumber(account.getAccountNumber())
                 .accountId(account.getId())
                 .main(account.getMain())

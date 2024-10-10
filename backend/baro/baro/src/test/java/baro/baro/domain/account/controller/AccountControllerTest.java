@@ -2,8 +2,10 @@ package baro.baro.domain.account.controller;
 
 import baro.baro.domain.account.dto.AccountDto;
 import baro.baro.domain.account.dto.request.AccountAddReq;
+import baro.baro.domain.account.dto.response.AccountAddMainRes;
 import baro.baro.domain.account.dto.response.AccountListRes;
 import baro.baro.domain.account.service.AccountService;
+import baro.baro.global.exception.CustomException;
 import baro.baro.global.oauth.jwt.service.JwtService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
@@ -29,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static baro.baro.global.ResponseFieldUtils.getCommonResponseFields;
+import static baro.baro.global.statuscode.ErrorCode.ACCOUNT_NOT_FOUND;
 import static baro.baro.global.statuscode.SuccessCode.*;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
@@ -240,11 +243,19 @@ class AccountControllerTest {
     @Test
     public void 대표_계좌_설정_성공() throws Exception {
         // given
-        Long accountId = 10000L;
+        AccountAddMainRes res = AccountAddMainRes.builder()
+                .bank("카카오뱅크")
+                .accountNumber("3333-05-681789")
+                .accountId(1L)
+                .main(true)
+                .build();
+
+        when(accountService.addMainAccount(anyLong(), anyLong()))
+                .thenReturn(res);
 
         // when
         ResultActions actions = mockMvc.perform(
-                post("/members/me/accounts/{accountId}", 10000L)
+                patch("/members/me/accounts/{accountId}", 1L)
                         .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -273,12 +284,62 @@ class AccountControllerTest {
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
+                                                fieldWithPath("body.bank").type(STRING)
+                                                        .description("은행"),
                                                 fieldWithPath("body.accountNumber").type(STRING)
                                                         .description("계좌 번호"),
                                                 fieldWithPath("body.accountId").type(NUMBER)
                                                         .description("계좌 식별자"),
                                                 fieldWithPath("body.main").type(BOOLEAN)
                                                         .description("대표 계좌 여부")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("대표 계좌 설정 Request"))
+                                .responseSchema(Schema.schema("대표 계좌 설정 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 대표_계좌_설정_실패_존재하지_않는_계좌를_대표_계좌로_설정() throws Exception {
+        // given
+        when(accountService.addMainAccount(anyLong(), anyLong()))
+                .thenThrow(new CustomException(ACCOUNT_NOT_FOUND));
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                patch("/members/me/accounts/{accountId}", 1L)
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
+        );
+
+        // then
+        actions
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(ACCOUNT_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(ACCOUNT_NOT_FOUND.getMessage()))
+                .andDo(document(
+                        "대표 계좌 설정 실패 - 존재하지 않는 계좌를 대표 계좌로 설정한 경우",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Account API")
+                                .summary("대표 계좌 설정 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .pathParameters(
+                                        parameterWithName("accountId")
+                                                .description("계좌 식별자")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(NULL)
+                                                        .description("내용 없음")
                                         )
                                 )
                                 .requestSchema(Schema.schema("대표 계좌 설정 Request"))
