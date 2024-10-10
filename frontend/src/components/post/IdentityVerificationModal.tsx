@@ -6,7 +6,7 @@ import ReactModal from 'react-modal';
 import VerificationButton from '@/components/user/VerificationButton';
 import Button from '@/components/shared/Button';
 import { useRouter } from 'next/navigation';
-import { useProfileSet } from '@/store/useMyProfile';
+import { useProfileObject, useProfileSet } from '@/store/useMyProfile';
 import { getProfile } from '@/apis/profileApi';
 import { AxiosError } from 'axios';
 
@@ -44,12 +44,14 @@ const IdentityVerificationModal = ({
     isOpen,
 }: Props) => {
     const router = useRouter();
+    const profile = useProfileObject();
     const setProfile = useProfileSet();
 
     const fetchProfile = async () => {
         try {
             const profileResponse = await getProfile();
             setProfile({
+                id: profile.id,
                 ...profileResponse.data.body
             })
             router.replace('/post/regist');
