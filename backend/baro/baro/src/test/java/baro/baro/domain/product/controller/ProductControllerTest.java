@@ -49,7 +49,6 @@ import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithNam
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static com.fasterxml.jackson.databind.jsonFormatVisitors.JsonFormatTypes.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
@@ -2093,6 +2092,7 @@ class ProductControllerTest {
                         .endDate(LocalDate.of(2024, 10, 14))
                         .rentalFee(10000)
                         .productStatus(IN_PROGRESS)
+                        .contractSrc("https://contract.src")
                         .build()
         );
         when(productService.findRentalProducts(anyLong()))
@@ -2137,7 +2137,9 @@ class ProductControllerTest {
                                                 fieldWithPath("body.*[].rentalFee").type(NUMBER)
                                                         .description("대여비"),
                                                 fieldWithPath("body.*[].productStatus").type(STRING)
-                                                        .description("대여 상태")
+                                                        .description("대여 상태"),
+                                                fieldWithPath("body.*[].contractSrc").type(STRING)
+                                                        .description("계약서 url")
 
                                         )
                                 )
@@ -2160,6 +2162,7 @@ class ProductControllerTest {
                         .endDate(LocalDate.of(2024, 10, 14))
                         .rentalFee(10000)
                         .productStatus(IN_PROGRESS)
+                        .contractSrc("http://contract.src")
                         .build()
         );
         when(productService.findOwnerProducts(anyLong()))
@@ -2204,7 +2207,9 @@ class ProductControllerTest {
                                                 fieldWithPath("body.*[].rentalFee").type(NUMBER)
                                                         .description("대여비"),
                                                 fieldWithPath("body.*[].productStatus").type(STRING)
-                                                        .description("대여 상태")
+                                                        .description("대여 상태"),
+                                                fieldWithPath("body.*[].contractSrc").type(STRING)
+                                                        .description("계약서 url")
 
                                         )
                                 )
