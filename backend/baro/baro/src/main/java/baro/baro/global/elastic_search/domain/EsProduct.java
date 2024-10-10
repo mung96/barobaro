@@ -9,7 +9,7 @@ import org.springframework.data.elasticsearch.annotations.Setting;
 
 @Getter
 @Builder
-@Document(indexName = "product")
+@Document(indexName = "esproduct")
 @Setting(settingPath = "elastic/product-setting.json")
 @Mapping(mappingPath = "elastic/product-mapping.json")
 public class EsProduct {

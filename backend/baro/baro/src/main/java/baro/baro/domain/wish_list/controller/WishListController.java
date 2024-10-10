@@ -1,7 +1,5 @@
 package baro.baro.domain.wish_list.controller;
 
-import baro.baro.domain.product.dto.SearchProductDto;
-import baro.baro.domain.product.dto.response.SearchProductRes;
 import baro.baro.domain.wish_list.dto.WishDto;
 import baro.baro.domain.wish_list.dto.response.MyWishListRes;
 import baro.baro.domain.wish_list.service.WishListService;
@@ -12,14 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import static baro.baro.global.formatter.DateFormatter.calculateTime;
-import static baro.baro.global.statuscode.SuccessCode.*;
-import static org.springframework.http.HttpStatus.*;
+import static baro.baro.global.statuscode.SuccessCode.WISH_LIST_OK;
+import static baro.baro.global.statuscode.SuccessCode.WISH_OK;
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,19 +21,12 @@ public class WishListController {
     private final JwtService jwtService;
 
     @PostMapping("/wish-list/{productId}")
-    public ResponseEntity<?> wishListAdd(@PathVariable("productId") Long productId) {
+    public ResponseEntity<?> wishListAdd(@PathVariable("productId") Long productId,
+                                         @RequestParam("isWished") Boolean isWished) {
         Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
-        WishDto result = wishListService.addWishList(productId, memberId);
+        WishDto result = wishListService.wishList(productId, memberId, isWished);
 
-        return new ResponseEntity<>(ResponseDto.success(WISH_LIST_CREATED, result), CREATED);
-    }
-
-    @DeleteMapping("/wish-list/{productId}")
-    public ResponseEntity<?> wishListRemove(@PathVariable("productId") Long productId) {
-        Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
-        WishDto result = wishListService.deleteWishList(productId, memberId);
-
-        return new ResponseEntity<>(ResponseDto.success(WISH_LIST_DELETED, result), OK);
+        return new ResponseEntity<>(ResponseDto.success(WISH_OK, result), OK);
     }
 
     @GetMapping("/wish-list")

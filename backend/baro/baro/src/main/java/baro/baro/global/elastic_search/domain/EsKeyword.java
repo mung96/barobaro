@@ -9,7 +9,7 @@ import org.springframework.data.elasticsearch.annotations.Setting;
 
 @Getter
 @Builder
-@Document(indexName = "keyword")
+@Document(indexName = "eskeyword")
 @Setting(settingPath = "elastic/keyword-setting.json")
 @Mapping(mappingPath = "elastic/keyword-mapping.json")
 public class EsKeyword {
