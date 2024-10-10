@@ -4,32 +4,43 @@ import Card from '@/components/(recent_list_component)/Card';
 import { CardsType } from '@/types/products/products';
 import { productListSelector } from '@/services/products/productselector';
 import {useEffect, useState} from "react";
+import { useRecentlyViewed, useRecentlyUploaded, useRecentlyActions } from "@/store/useRecentlyStore";
 
 export default function Cards({ CardsData }: { CardsData: CardsType }) {
-    const [data, setData] = useState([]);
+    const dataController = useRecentlyActions();
+    let data;
+    if (CardsData === 'recentlyUploaded') {
+        data = useRecentlyUploaded();
+    } else {
+        data = useRecentlyViewed();
+    }
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
+        console.log('hello')
         async function fetchData() {
             try {
                 const result = await productListSelector(CardsData);
-                console.log('DATA', result);
-                setData(result);
+                if (CardsData === 'recentlyUploaded') {
+                    dataController.setRecentlyUploadedProducts(result);
+                } else {
+                    dataController.setRecentlyViewedProducts(result);
+                }
             } catch (error) {
                 console.error('Error fetching data:', error);
-                setData([]);
             } finally {
                 setIsLoading(false);
             }
         }
         fetchData();
     }, [CardsData]);
+
     if (isLoading) {
         return <p>Loading...</p>;
     }
     if (data === undefined || data.length === 0) {
         // TODO : 임의 데이터가 추가된 경우, 이를 재확인 해야함.
-        return <p>Api로 온 데이터가 없습니다.</p>;
+        return <p>...</p>;
     }
 
   return (
