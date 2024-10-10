@@ -57,7 +57,7 @@ export default function ContractPDFPage() {
                     {isDownloading ? '다운로드 중...' : 'PDF 다운로드'}
                 </button>
             </div>
-            <div className="flex-grow overflow-auto">
+            <div className="flex-grow overflow-auto mt-[80px]">
                 {isClient && (
                     <PdfViewer
                         pdfUrl={pdfUrl}
