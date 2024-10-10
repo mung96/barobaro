@@ -22,7 +22,7 @@ const NavBarItemList = [
 const excludePathList = [
   '/post/regist',
   '/post/:id',  // 동적 세그먼트를 나타내는 패턴
-  '/mypage/user/password'
+  '/mypage/user/password/new'
 ];
 
 function isPathExcluded(path: string): boolean {
