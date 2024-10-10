@@ -21,6 +21,7 @@ import ContractPreview from '@/components/post/ContractPreview';
 import usePostFormModel from '@/hooks/post/usePostFormModel';
 import { useProfileObject } from '@/store/useMyProfile';
 import IdentityVerificationModal from '@/components/post/IdentityVerificationModal';
+import DisplayPassword from '@/components/user/DisplayPassword';
 
 function PostFunnel() {
   const [isIdentityVerificationModalOpen, setIsIdentityVerificationModalOpen] = useState(true);
@@ -58,7 +59,7 @@ function PostFunnel() {
 
   return (
     <div className="flex flex-col gap-4">
-
+      <DisplayPassword length={6} />
       {/* <IdentityVerificationModal isOpen={isIdentityVerificationModalOpen} /> */}
       <StepBar
         totalStep={totalStep}
