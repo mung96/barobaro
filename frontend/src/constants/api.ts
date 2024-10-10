@@ -40,6 +40,7 @@ export const END_POINT = {
   CONTRACT_TERMINATE: 'contracts/terminate',
   CONTRACT_SIGN_OWNER: 'contracts/sign/owner',
   CONTRACT_SIGN_RENTAL: 'contracts/sign/rental',
+  CONTRACT_VERIFY: 'contracts/verify',
 
   SOCKET_PUBLISH: 'wss/pub/chatrooms',
   SOCKET_SUBSCRIBE: 'wss/sub/chatrooms',
