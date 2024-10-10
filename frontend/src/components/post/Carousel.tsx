@@ -58,6 +58,7 @@ export default function PictureCarousel({data}:{data:string[]}) {
               alt={`image-${index}`}
               width={imageSize}
               height={imageSize}
+              unoptimized={true}
             />
           </SwiperSlide>
         ))}

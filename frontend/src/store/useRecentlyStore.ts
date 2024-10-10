@@ -13,3 +13,5 @@ const useRecentlyStore = create<RecentlyStoreState>((set) => ({
 }));
 
 export const useRecentlyActions = () => useRecentlyStore((store) => store.actions);
+export const useRecentlyViewed = () => useRecentlyStore((store) => store.recentlyViewedProducts);
+export const useRecentlyUploaded = () => useRecentlyStore((store) => store.recentlyUploadedProducts);
