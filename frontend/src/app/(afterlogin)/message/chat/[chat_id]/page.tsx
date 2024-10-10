@@ -28,6 +28,7 @@ export default function Chat() {
     chatRoomId,
     ownerUuid,
     initProcess,
+    originBoardParams,
   } = useChatPageModel();
 
   // webSocket Client
@@ -54,7 +55,7 @@ export default function Chat() {
 
               <Suspense>
                 <div className="fixed top-[6vh] w-full bg-white z-50 max-w-[500px]">
-                  <OriginBoard />
+                  <OriginBoard originBoardParams={originBoardParams} />
                 </div>
               </Suspense>
 
