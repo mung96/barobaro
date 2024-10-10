@@ -61,9 +61,11 @@ public class MemberController {
 
     @PatchMapping("/members/me/password")
     public ResponseEntity<?> passwordModify(@RequestBody @Valid PasswordModifyReq passwordModifyReq) {
-        PasswordModifyRes result = new PasswordModifyRes("654321");
+        Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
 
-        return new ResponseEntity<>(ResponseDto.success(PASSWORD_MODIFIED, result), OK);
+        memberService.modifyPassword(memberId, passwordModifyReq);
+
+        return new ResponseEntity<>(ResponseDto.success(PASSWORD_MODIFIED, null), OK);
     }
 
     @GetMapping("/members/me/password/verify")
