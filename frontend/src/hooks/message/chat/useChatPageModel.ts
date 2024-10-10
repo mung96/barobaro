@@ -19,7 +19,6 @@ const useChatPageModel = () => {
   const [roomName, setRoomName] = useState(``);
   const [ownerUuid, setOwnerUuid] = useState('');
   const [initProcess, setInitProcess] = useState<ProcessType>(ProcessTypes.CONTACT);
-  const profile = useProfileObject();
   // message list
   const [messages, setMessages] = useState<MessageFormType[]>([]);
   const handleAddMessages = (message: MessageFormType): void => {
@@ -73,6 +72,11 @@ const useChatPageModel = () => {
 
     getResponse();
   }, []);
+
+  useEffect(() => {
+    console.log(`ownerUuid was changed : ${ownerUuid} - useChatPageModel line 78`);
+    console.log(ownerUuid);
+  }, [ownerUuid]);
 
   // !
   useEffect(() => {
