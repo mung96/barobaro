@@ -19,9 +19,10 @@ import convertRegistStepToStepNumber from '@/services/post/regist';
 import ContractInfoInput from '@/components/post/ContractInfoInput';
 import ContractPreview from '@/components/post/ContractPreview';
 import usePostFormModel from '@/hooks/post/usePostFormModel';
-import { useProfileObject } from '@/store/useMyProfile';
+import { useProfileObject, useProfileSet } from '@/store/useMyProfile';
 import IdentityVerificationModal from '@/components/post/IdentityVerificationModal';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { useSetPrevPathStore } from '@/store/usePath';
 
 function PostFunnel() {
   const [isIdentityVerificationModalOpen, setIsIdentityVerificationModalOpen] = useState(false);
@@ -41,24 +42,25 @@ function PostFunnel() {
   });
 
   const { postFieldList, rentalFieldList, contractFieldList, errors, isFormValid, getValues, postProductWithoutContract, postProductWithContract, isFieldValid, isSubmitting } = usePostFormModel(context);
-
-
+  const setPrevPath = useSetPrevPathStore();
+  const currentPath = usePathname();
   //TODO: 게시글 등록 눌렀을 때 본인인증 여부파악해서 모달 띄우기
   const profileState = useProfileObject();
-
+  const setProfile = useProfileSet();
   useEffect(() => {
     openModal(window.location.pathname);
   }, []);
 
   const openModal = (moveLink: string) => {
     if (moveLink === '/post/regist' && !profileState.isAuthenticated) {
+      setPrevPath(currentPath);
       setIsIdentityVerificationModalOpen(true);
     }
   }
 
   const router = useRouter();
   const pushPasswordNew = () => {
-    router.push('/mypage/user/password/new');
+    // router.push('/mypage/user/password/new');
     setIsIdentityVerificationModalOpen(false);
   }
 

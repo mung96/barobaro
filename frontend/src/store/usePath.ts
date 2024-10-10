@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { createJSONStorage, persist } from 'zustand/middleware';
 
 type State = {
   prevPath: string;
@@ -10,12 +11,24 @@ type Action = {
   setPrevPath: (path: string) => void;
 };
 
-const usePath = create<State & Action>((set) => ({
-  prevPath: '/',
-  path: '/',
-  setPath: (path) => set({ path }),
-  setPrevPath: (prevPath) => set({ prevPath: prevPath }),
-}));
+const usePath = create(
+  persist<State & Action>(
+    (set) => ({
+      prevPath: '/',
+      path: '/',
+      setPath: (path) => set({ path }),
+      setPrevPath: (prevPath) => set({ prevPath: prevPath }),
+    }),
+    { name: 'socialMember', storage: createJSONStorage(() => localStorage) },
+  ),
+);
+
+// const usePath = create<State & Action>((set) => ({
+//   prevPath: '/',
+//   path: '/',
+//   setPath: (path) => set({ path }),
+//   setPrevPath: (prevPath) => set({ prevPath: prevPath }),
+// }));
 
 export const usePathStore = () => usePath((state) => state.path);
 export const useSetPathStore = () => usePath((state) => state.setPath);

@@ -5,7 +5,7 @@ import PictureCarousel from '@/components/post/Carousel';
 import Profile from '@/components/user/Profile';
 import PostContent from '@/components/post/PostContent';
 import ContractCondition from '@/components/post/ContractCondition';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, use } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import PostCheckModal from '@/components/modal/PostCheckModal';
 import Header from '@/components/Header';
@@ -14,13 +14,15 @@ import { postMessageRoomList } from '@/apis/message/chat/messageRoomListApi';
 import { getProductsDetail, deleteProductsDetail } from "@/apis/productDetailApi";
 import Button from '@/components/shared/Button';
 import { IoCalendarClearOutline } from 'react-icons/io5';
-import { useProfileObject } from '@/store/useMyProfile';
+import { useProfileObject, useProfileSet } from '@/store/useMyProfile';
 import IdentityVerificationModal from '@/components/post/IdentityVerificationModal';
+import { useSetPrevPathStore } from '@/store/usePath';
 
 export default function PostDetail() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [postInfo, setPostInfo] = useState<any>(null);
   const currentPath = usePathname();
+  const setPrevPath = useSetPrevPathStore();
 
   /*TODO : 로그인X => 화면 접근시 ReactModal, 완료된 거래인경우 ReactModal */
   const router = useRouter();
@@ -43,7 +45,7 @@ export default function PostDetail() {
 
   const [isIdentityVerificationModalOpen, setIsIdentityVerificationModalOpen] = useState(false);
   const profileState = useProfileObject();
-
+  const setProfile = useProfileSet();
   if (!postInfo) {
     return <div></div>;
   }
@@ -58,12 +60,14 @@ export default function PostDetail() {
   };
 
   const pushPasswordNew = () => {
-    router.push('/mypage/user/password/new');
+    // router.push('/mypage/user/password/new');
+    setProfile({ ...profileState, isAuthenticated: true });
     setIsIdentityVerificationModalOpen(false);
   }
 
   const handleChattingButtonClick = async () => {
     if (!profileState.isAuthenticated) {
+      setPrevPath(currentPath);
       setIsIdentityVerificationModalOpen(true);
     } else {
       await createChatRoom();

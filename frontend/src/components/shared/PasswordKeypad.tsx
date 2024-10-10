@@ -5,6 +5,7 @@ import DisplayPassword from "@/components/user/DisplayPassword"
 import useKeypad from "@/hooks/keypad/useKeyPadModel";
 import usePasswordChange from "@/hooks/user/usePasswordModel";
 import { useProfileObject, useProfileSet } from "@/store/useMyProfile";
+import { usePrevPathStore } from "@/store/usePath";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -19,7 +20,7 @@ const PasswordKeypad = ({ isNewPassword }: Props) => {
     const realPassword = '112233';
     const keys = [1, 2, 3, 4, 5, 6, 7, 8, 9, 'empty', 0, 'delete'];
     const router = useRouter();
-
+    const prevPath = usePrevPathStore();
     const profile = useProfileObject();
     const setProfile = useProfileSet();
     const fetchProfile = async () => {
@@ -44,8 +45,6 @@ const PasswordKeypad = ({ isNewPassword }: Props) => {
     const successPostPIN = async () => {
         try {
             await postPINApi({ password: newPassword, checkPassword: inputPassword })
-            await fetchProfile();
-            router.back();
         } catch (error) {
             console.error("비밀번호 등록에 실패했습니다:", error)
         }
@@ -54,7 +53,7 @@ const PasswordKeypad = ({ isNewPassword }: Props) => {
     const { newPassword, inputPassword, setInputPassword, passwordMessage, isFinished } =
         usePasswordChange(
             isNewPassword,
-            isNewPassword ? undefined : realPassword, successPostPIN
+            isNewPassword ? undefined : realPassword
         );
     const { passwordHandler, deleteHandler } = useKeypad(setInputPassword);
 
