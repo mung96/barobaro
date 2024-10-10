@@ -15,8 +15,8 @@ type PasswordCheckModalParams = {
   onRequestClose: () => void;
   modalChanger?: (modal: StatusModalType) => void;
   purpose: string; // 모달 활용 목적
-  onChange: (value: number) => void
-  value: number;
+  onChange?: (value: number) => void
+  value?: number;
 };
 
 const modalStyle: ReactModal.Styles = {
@@ -72,7 +72,7 @@ const PasswordCheckModal = ({ isOpen, onRequestClose, modalChanger, purpose, val
   };
 
   useEffect(() => {
-    if (value.toString().length === 6) modalFinish();
+    if (value?.toString().length === 6) modalFinish();
   }, [value]);
 
   return (
