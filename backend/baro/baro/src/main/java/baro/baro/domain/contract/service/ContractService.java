@@ -15,7 +15,7 @@ public interface ContractService {
 
     ContractOptionDetailRes findContractOptionDetail(Long chatRoomId, Long memberId);
 
-    ContractApproveRes approveRequestWithoutContract(ContractApproveReq contractApproveReq, Long ownerId);
+//    ContractApproveRes approveRequestWithoutContract(ContractApproveReq contractApproveReq, Long ownerId);
 
     ContractApproveRes approveRequestWithContract(ContractApproveReq contractApproveReq, Long ownerId);
 

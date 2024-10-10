@@ -245,102 +245,115 @@ public class ContractServiceImpl implements ContractService {
 		//상품 대여 상태 업데이트
 		product.updateProductStatus(ProductStatus.IN_PROGRESS);
 
-		//채팅방의 거래 상태 업데이트
-		chatRoom.updateRentalStatus(RentalStatus.NEED_OWNER_SIGN);
+		ContractApproveRes result;
 
-		//내 정보 불러오기
-		Member me = chatRoom.getOwner();
+		if(product.getContract() == null) {
+			chatRoom.updateRentalStatus(RentalStatus.APPROVED);
 
-		//상대 정보 불러오기
-		Member opponent = chatRoom.getRental();
+			redisUtils.deleteData("contract_" + product.getId());
 
-		String generatedS3PdfUrl;
-		String uuid = UUID.randomUUID().toString();
-		try {
-			PdfCreateDto pdfCreateDto = PdfCreateDto.toDto(contractApproveReq.getChatRoomId(),
-					uuid, me, opponent, product, contractApplicationDto, product.getContractCondition());
-			generatedS3PdfUrl = pdfUtils.createPdf(pdfCreateDto);
-		} catch (Exception e) {
-			log.info(Arrays.toString(e.getStackTrace()));
-			log.info("에러에러" + e.getMessage());
-			throw new CustomException(PDF_GENERATE_FAILED);
+			result = ContractApproveRes.builder()
+					.chatRoomId(contractApproveReq.getChatRoomId())
+					.fileUrl(null)
+					.build();
+		} else {
+			//내 정보 불러오기
+			Member me = chatRoom.getOwner();
+
+			//상대 정보 불러오기
+			Member opponent = chatRoom.getRental();
+
+			String generatedS3PdfUrl;
+			String uuid = UUID.randomUUID().toString();
+			try {
+				PdfCreateDto pdfCreateDto = PdfCreateDto.toDto(contractApproveReq.getChatRoomId(),
+						uuid, me, opponent, product, contractApplicationDto, product.getContractCondition());
+				generatedS3PdfUrl = pdfUtils.createPdf(pdfCreateDto);
+			} catch (Exception e) {
+				log.info(Arrays.toString(e.getStackTrace()));
+				log.info("에러에러" + e.getMessage());
+				throw new CustomException(PDF_GENERATE_FAILED);
+			}
+
+			LocalDateTime lastModified = pdfS3Service.lastModified(generatedS3PdfUrl);
+
+			Contract newContract = Contract.builder()
+					.product(product)
+					.createdAt(lastModified)
+					.contractUrl(generatedS3PdfUrl)
+					.rental(chatRoom.getRental())
+					.build();
+
+			//채팅방의 거래 상태 업데이트
+			chatRoom.updateRentalStatus(RentalStatus.NEED_OWNER_SIGN);
+
+			contractRepository.save(newContract);
+
+			result = ContractApproveRes.builder()
+					.chatRoomId(contractApproveReq.getChatRoomId())
+					.fileUrl(generatedS3PdfUrl)
+					.build();
 		}
 
-		LocalDateTime lastModified = pdfS3Service.lastModified(generatedS3PdfUrl);
-
-		Contract newContract = Contract.builder()
-			.product(product)
-			.createdAt(lastModified)
-			.contractUrl(generatedS3PdfUrl)
-			.rental(chatRoom.getRental())
-			.build();
-
-		contractRepository.save(newContract);
-
 		eventPublisher.publishEvent(new FcmEvent(this, chatRoom.getOwner(), chatRoom.getRental(),
-			NotiType.CONTRACT_ACCEPTANCE, "계약 요청이 수락되었습니다!", "님이 계약 요청을 수락하셨습니다."));
+				NotiType.CONTRACT_ACCEPTANCE, "계약 요청이 수락되었습니다!", "님이 계약 요청을 수락하셨습니다."));
 		//분산락 해제
 		eventPublisher.publishEvent(new UnlockEvent(this, "contract_" + product.getId()));
-		return ContractApproveRes.builder()
-			.chatRoomId(contractApproveReq.getChatRoomId())
-			.fileUrl(generatedS3PdfUrl)
-			.build();
+
+		return result;
 	}
 
-	@Transactional
-	public ContractApproveRes approveRequestWithoutContract(ContractApproveReq contractApproveReq, Long ownerId) {
-		//존재하지 않는 채팅방
-		ChatRoom chatRoom = chatRoomRepository.findById(contractApproveReq.getChatRoomId())
-			.orElseThrow(() -> new CustomException(CHATROOM_NOT_FOUND));
-
-		//대여물품 소유자가 아님
-		if (!Objects.equals(chatRoom.getOwner().getId(), ownerId)) {
-			throw new CustomException(CHATROOM_NOT_ENROLLED);
-		}
-
-		Product product = chatRoom.getProduct();
-
-		//상품이 존재하지 않음
-		if (product == null) {
-			throw new CustomException(PRODUCT_NOT_FOUND);
-		}
-
-		//분산락 획득
-		if (!redisUtils.lock("contract_" + product.getId(), 3000L)) {
-			throw new CustomException(CONFLICT_WITH_OTHER);
-		}
-
-		if (!product.getProductStatus().equals(ProductStatus.AVAILABLE)) {
-			throw new CustomException(CONTRACT_IN_PROGRESS_BY_OTHERS);
-		}
-
-		//계약 요청을 찾을 수 없는 경우 처리
-		ContractApplicationDto contractApplicationDto = redisUtils.getListData("contract_" + product.getId())
-			.stream()
-			.map(item -> (ContractApplicationDto)item)
-			.filter(contractRequest ->
-				contractRequest.getChatRoomId()
-					.equals(contractApproveReq.getChatRoomId())
-			)
-			.findFirst()
-			.orElseThrow(() -> new CustomException(CONTRACT_REQUEST_NOT_FOUND));
-
-		//상품 대여 상태 업데이트
-		product.updateProductStatus(ProductStatus.APPROVED);
-
-		//채팅방의 거래 상태 업데이트
-		chatRoom.updateRentalStatus(RentalStatus.APPROVED);
-
-		redisUtils.deleteData("contract_" + product.getId());
-
-		eventPublisher.publishEvent(new FcmEvent(this, chatRoom.getOwner(), chatRoom.getRental(),
-			NotiType.CONTRACT_ACCEPTANCE, "계약 요청이 수락되었습니다!", "님이 계약 요청을 수락하셨습니다."));
-		eventPublisher.publishEvent(new UnlockEvent(this, "contract_" + product.getId()));
-		return ContractApproveRes.builder()
-			.chatRoomId(contractApproveReq.getChatRoomId())
-			.fileUrl(null)
-			.build();
-	}
+//	@Transactional
+//	public ContractApproveRes approveRequestWithoutContract(ContractApproveReq contractApproveReq, Long ownerId) {
+//		//존재하지 않는 채팅방
+//		ChatRoom chatRoom = chatRoomRepository.findById(contractApproveReq.getChatRoomId())
+//			.orElseThrow(() -> new CustomException(CHATROOM_NOT_FOUND));
+//
+//		//대여물품 소유자가 아님
+//		if (!Objects.equals(chatRoom.getOwner().getId(), ownerId)) {
+//			throw new CustomException(CHATROOM_NOT_ENROLLED);
+//		}
+//
+//		Product product = chatRoom.getProduct();
+//
+//		//상품이 존재하지 않음
+//		if (product == null) {
+//			throw new CustomException(PRODUCT_NOT_FOUND);
+//		}
+//
+//		//분산락 획득
+//		if (!redisUtils.lock("contract_" + product.getId(), 3000L)) {
+//			throw new CustomException(CONFLICT_WITH_OTHER);
+//		}
+//
+//		if (!product.getProductStatus().equals(ProductStatus.AVAILABLE)) {
+//			throw new CustomException(CONTRACT_IN_PROGRESS_BY_OTHERS);
+//		}
+//
+//		//계약 요청을 찾을 수 없는 경우 처리
+//		ContractApplicationDto contractApplicationDto = redisUtils.getListData("contract_" + product.getId())
+//			.stream()
+//			.map(item -> (ContractApplicationDto)item)
+//			.filter(contractRequest ->
+//				contractRequest.getChatRoomId()
+//					.equals(contractApproveReq.getChatRoomId())
+//			)
+//			.findFirst()
+//			.orElseThrow(() -> new CustomException(CONTRACT_REQUEST_NOT_FOUND));
+//
+//		//상품 대여 상태 업데이트
+//		product.updateProductStatus(ProductStatus.APPROVED);
+//
+//		//채팅방의 거래 상태 업데이트
+//		chatRoom.updateRentalStatus(RentalStatus.APPROVED);
+//
+//		redisUtils.deleteData("contract_" + product.getId());
+//
+//		eventPublisher.publishEvent(new FcmEvent(this, chatRoom.getOwner(), chatRoom.getRental(),
+//			NotiType.CONTRACT_ACCEPTANCE, "계약 요청이 수락되었습니다!", "님이 계약 요청을 수락하셨습니다."));
+//		eventPublisher.publishEvent(new UnlockEvent(this, "contract_" + product.getId()));
+//
+//	}
 
 	@Transactional
 	public String generatePdf(PdfCreateDto pdfCreateDto) {
