@@ -63,7 +63,10 @@ export const POST_FIELD_CONFIG = {
   },
   RETURN_TYPE_LIST: {
     defaultValue: [],
-    rules: {},
+    rules: {
+      required: '반납 방법을 선택해주세요.',
+      max: { value: 1, message: '최소 1개의 방법을 골라주세요' },
+    },
   },
   RETURN_ADDRESS: {
     defaultValue: '',

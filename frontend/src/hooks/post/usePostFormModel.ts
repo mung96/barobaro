@@ -17,6 +17,7 @@ import { postProduct } from '@/apis/productApi';
 import { isAxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import { ContractConditionRequest } from '@/types/apis/productRequest';
+import { fi } from '@faker-js/faker';
 
 const usePostFormModel = (context: PostInfoStep | RentalInfoStep | ContractInfoStep | ContractPreviewStep) => {
   const router = useRouter();
@@ -139,8 +140,19 @@ const usePostFormModel = (context: PostInfoStep | RentalInfoStep | ContractInfoS
     refundDeadline,
   };
 
+  // const fieldMapInvalid = (fieldList: PostFormFields | RentalFormFields | ContractFormFields) =>
+  //   Object.values(fieldList).every((field) => !field.fieldState.invalid && field.field.value);
+
   const fieldMapInvalid = (fieldList: PostFormFields | RentalFormFields | ContractFormFields) =>
-    Object.values(fieldList).every((field) => !field.fieldState.invalid && field.field.value);
+    Object.values(fieldList).every((field) => {
+      if (field.field.name === 'returnAddress') {
+        return true; // returnAddress는 검사에서 제외
+      }
+      if (Array.isArray(field.field.value)) {
+        return field.field.value.length > 0;
+      }
+      return !field.fieldState.invalid && field.field.value;
+    });
 
   const isFieldValid = useMemo(
     () => ({
@@ -151,24 +163,11 @@ const usePostFormModel = (context: PostInfoStep | RentalInfoStep | ContractInfoS
         (images.field.value as File[]).length <= IMAGE_MAX_LENGTH,
       rentalFieldList: fieldMapInvalid(rentalFieldList),
       contractFieldList: fieldMapInvalid(contractFieldList),
-      // postFieldList: true,
-      // rentalFieldList: true,
-      // contractFieldList: true,
     }),
     [postFieldList, rentalFieldList, contractFieldList],
   );
 
   const convertProductDataToRequest = () => {
-    const a = formatDate(context.rentalDuration?.from!);
-    const b = formatDate(context.rentalDuration?.to!);
-
-    console.group('convertProductDataToRequest');
-    console.log('원본데이터 from', context.rentalDuration?.from!);
-    console.log('원본데이터 to', context.rentalDuration?.to!);
-    console.log('from', a);
-    console.log('to', b);
-    console.groupEnd();
-
     return {
       title: context.title!,
       startDate: formatDate(context.rentalDuration?.from!),
