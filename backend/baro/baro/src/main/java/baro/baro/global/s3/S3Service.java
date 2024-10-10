@@ -71,6 +71,7 @@ public abstract class S3Service {
         if (!bucketUrl.endsWith("/")) {
             bucketUrl += "/";
         }
+        log.info("만들어진 파일" + bucketUrl + s3FileName);
         return bucketUrl + s3FileName;
     }
 }
