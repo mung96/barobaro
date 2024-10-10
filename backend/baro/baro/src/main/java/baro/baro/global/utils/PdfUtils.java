@@ -7,7 +7,6 @@ import baro.baro.domain.contract.repository.SignatureInformationRepository;
 import baro.baro.global.dto.PdfCreateDto;
 import baro.baro.global.exception.CustomException;
 import baro.baro.global.s3.PdfS3Service;
-
 import com.itextpdf.forms.PdfAcroForm;
 import com.itextpdf.forms.fields.PdfSignatureFormField;
 import com.itextpdf.io.image.ImageData;
@@ -28,10 +27,8 @@ import com.itextpdf.layout.element.TabStop;
 import com.itextpdf.layout.property.TabAlignment;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.signatures.*;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -325,6 +322,7 @@ public class PdfUtils {
 			byteArrayOutputStream.close();
 
 			pdfUrl = pdfS3Service.upload(pdfBytes);
+			log.info("업로드 성공");
 		} finally {
 			if (document != null) {
 				document.close();
@@ -337,6 +335,7 @@ public class PdfUtils {
 			}
 		}
 
+		log.info("createPdf 끝");
 		return pdfUrl;
 	}
 
