@@ -22,11 +22,10 @@ public class ChatProcessReq {
     @NotNull
     private String chatType;
 
-    public Chat toEntity(Long chatId, Long chatRoomId, String uuid, LocalDateTime chatTime) {
+    public Chat toEntity(Long chatRoomId, String uuid, LocalDateTime chatTime) {
         ChatType chatTypeEnum = ChatType.valueOf(chatType.toUpperCase());
 
         return Chat.builder()
-                .chatId(chatId)
                 .chatRoomId(chatRoomId)
                 .uuid(uuid)
                 .message(message)

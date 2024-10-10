@@ -13,7 +13,5 @@ public interface ChatService {
 
     ChatProcessRes processChat(Long chatRoomId, ChatProcessReq chatProcessReq, Long memberId);
 
-    Long createSequence(String seqName);
-
     ChatImageUploadRes uploadChatImage(MultipartFile file) throws IOException;
 }
