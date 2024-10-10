@@ -1,17 +1,19 @@
 import { ChatRoomDto, ChatRoomInfoResponse } from './../../../types/apis/chatRoomResponse';
 import { getMessageRoomInfo } from '@/apis/message/chat/messageRoomInfoApi';
+import { getProductsDetail } from '@/apis/productDetailApi';
 import MessageFormType from '@/components/message/chat/MessageFormType';
 import { ProcessType, ProcessTypes } from '@/components/message/chat/ProcessTypes';
 import { chatConverterFromBe } from '@/services/message/chat/chatConverter';
 import chatProcessConverter from '@/services/message/chat/chatProcessConverter';
 import { useProfileObject } from '@/store/useMyProfile';
+import { OriginBoardType } from '@/types/message/chat/OriginBoardType';
 import { useParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 
 const useChatPageModel = () => {
   // room PK
-  const { chat_id: chatId } = useParams();
-  const chatRoomId: number = Number(chatId); // 무조건 숫자로 넘어옴
+  const { chat_id } = useParams<{ chat_id: string }>(); // 파라미터 타입 지정
+  const chatRoomId: number = Number(chat_id); // 문자열을 숫자로 변환
 
   const [response, setResponse] = useState<ChatRoomInfoResponse>();
   const [otherNickname, setOtherNickname] = useState('');
@@ -19,6 +21,8 @@ const useChatPageModel = () => {
   const [roomName, setRoomName] = useState(``);
   const [ownerUuid, setOwnerUuid] = useState('');
   const [initProcess, setInitProcess] = useState<ProcessType>(ProcessTypes.CONTACT);
+
+  const [originBoardParams, setOriginBoardParams] = useState<OriginBoardType>();
   // message list
   const [messages, setMessages] = useState<MessageFormType[]>([]);
   const handleAddMessages = (message: MessageFormType): void => {
@@ -46,14 +50,13 @@ const useChatPageModel = () => {
     // API
     const getResponse = async () => {
       try {
-        const apiResponse = await getMessageRoomInfo(chatId[0]);
+        const apiResponse = await getMessageRoomInfo(chat_id);
         console.log(apiResponse);
         setResponse(apiResponse);
 
         setOtherNickname(apiResponse.chatRoomDto.opponentNickname);
         setOtherUuid(apiResponse.chatRoomDto.opponentUuid);
         setOwnerUuid(apiResponse.chatRoomDto.ownerUuid);
-
         const parsedMessages: MessageFormType[] = [];
 
         apiResponse.chatDtos.map((each) => {
@@ -65,6 +68,18 @@ const useChatPageModel = () => {
         });
 
         setMessages(parsedMessages);
+
+        const productResponse = await getProductsDetail(String(apiResponse.chatRoomDto.productId));
+        console.log('productResponse 도착');
+        console.log(productResponse);
+        const originBoardParams: OriginBoardType = {
+          startDate: productResponse?.startDate,
+          endDate: productResponse?.endDate,
+          title: productResponse?.title,
+          thumbnail: productResponse?.imageList[0],
+          rentalFee: productResponse?.rentalFee,
+        };
+        setOriginBoardParams(originBoardParams);
       } catch (e) {
         console.error('API 요청 중 오류 발생:', e);
       }
@@ -100,6 +115,7 @@ const useChatPageModel = () => {
     otherUuid,
     ownerUuid, // 상품 소유자
     initProcess,
+    originBoardParams,
   };
 };
 
