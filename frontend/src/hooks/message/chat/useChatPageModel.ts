@@ -2,6 +2,9 @@ import { ChatRoomDto, ChatRoomInfoResponse } from './../../../types/apis/chatRoo
 import { getMessageRoomInfo } from '@/apis/message/chat/messageRoomInfoApi';
 import MessageFormType from '@/components/message/chat/MessageFormType';
 import { ProcessType, ProcessTypes } from '@/components/message/chat/ProcessTypes';
+import { chatConverterFromBe } from '@/services/message/chat/chatConverter';
+import chatProcessConverter from '@/services/message/chat/chatProcessConverter';
+import { useProfileObject } from '@/store/useMyProfile';
 import { useParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 
@@ -15,31 +18,16 @@ const useChatPageModel = () => {
   const [otherUuid, setOtherUuid] = useState('');
   const [roomName, setRoomName] = useState(``);
   const [ownerUuid, setOwnerUuid] = useState('');
+  const [initProcess, setInitProcess] = useState<ProcessType>(ProcessTypes.CONTACT);
+  // message list
+  const [messages, setMessages] = useState<MessageFormType[]>([]);
+  const handleAddMessages = (message: MessageFormType): void => {
+    // client 객체에 props로 넘기는 message setter
+    setMessages((_messageList) => [..._messageList, message]);
+  };
 
   // 계약 진행 단계를 나타내는 process
   const [process, setProcess] = useState<ProcessType>(ProcessTypes.CONTACT); // apiResponse 도착한 후 초기화
-  const processConverter = (step: string) => {
-    // 백에서 넘어오는 계약 진행 상태를 프론트 버전으로 변경
-    switch (step) {
-      case 'AVAILABLE':
-        return ProcessTypes.CONTACT;
-      case 'APPLICATION':
-        return ProcessTypes.REQUESTED;
-      case 'NEED_OWNER_SIGN':
-        return ProcessTypes.REQUESTED;
-      case 'OWNER_SIGNED':
-        return ProcessTypes.ACCEPTED_DIRECT;
-      case 'APPROVED':
-        return ProcessTypes.SIGNED_DIRECT; // 택배 진행하지 않음
-
-      // 이 사이는 ? RECEIVED(대여자 물품 수령) / PAID (대여자 송금)
-
-      case 'FINISHED':
-        return ProcessTypes.FINISHED;
-      default: // 나타날 일이 없는 수치
-        return ProcessTypes.MODIFIED;
-    }
-  };
 
   // useContext(ChatProcessContext)
   const processSetter = (step: ProcessType) => {
@@ -65,26 +53,40 @@ const useChatPageModel = () => {
         setOtherNickname(apiResponse.chatRoomDto.opponentNickname);
         setOtherUuid(apiResponse.chatRoomDto.opponentUuid);
         setOwnerUuid(apiResponse.chatRoomDto.ownerUuid);
+
+        const parsedMessages: MessageFormType[] = [];
+
+        apiResponse.chatDtos.map((each) => {
+          const isOwner: boolean = apiResponse.chatRoomDto.ownerUuid === each.uuid;
+          const parsedMessage: MessageFormType = chatConverterFromBe(each);
+          const convertedType = chatProcessConverter(parsedMessage, isOwner);
+          if (convertedType) setInitProcess(convertedType);
+          parsedMessages.push(parsedMessage);
+        });
+
+        setMessages(parsedMessages);
       } catch (e) {
         console.error('API 요청 중 오류 발생:', e);
       }
     };
 
     getResponse();
-    //  이거 말고 채팅 읽어서 세팅해 !! MODMOD
-    if (response) setProcess(processConverter(response.chatRoomDto.rentalStatus));
   }, []);
+
+  useEffect(() => {
+    console.log(`ownerUuid was changed : ${ownerUuid} - useChatPageModel line 78`);
+    console.log(ownerUuid);
+  }, [ownerUuid]);
+
+  // !
+  useEffect(() => {
+    if (initProcess) processSetter(initProcess);
+    else processSetter(ProcessTypes.REQUESTED);
+  }, [initProcess]);
 
   useEffect(() => {
     setRoomName(`${otherNickname}님과의 대화`);
   }, [otherNickname]);
-
-  // message list
-  const [messages, setMessages] = useState<MessageFormType[]>([]);
-  const handleAddMessages = (message: MessageFormType[]): void => {
-    // client 객체에 props로 넘기는 message setter
-    setMessages(message);
-  };
 
   return {
     process,
@@ -97,6 +99,7 @@ const useChatPageModel = () => {
     otherNickname,
     otherUuid,
     ownerUuid, // 상품 소유자
+    initProcess,
   };
 };
 

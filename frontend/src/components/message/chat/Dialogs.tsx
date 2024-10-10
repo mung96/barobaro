@@ -10,9 +10,8 @@ import { UUID } from 'crypto';
 
 type DialogParams = {
   messages: MessageFormType[];
-  otherNickname: string;
 };
-export default function Dialogs({ messages, otherNickname }: DialogParams) {
+export default function Dialogs({ messages }: DialogParams) {
   const { wholeMessages, endOfPageRef } = useChatDialogsModel(messages);
 
   return (
