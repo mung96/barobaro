@@ -16,6 +16,7 @@ import java.time.temporal.ChronoUnit;
 @AllArgsConstructor
 public class PdfCreateDto {
     private Long chatRoomId;
+    private String documentSerialNumber;
     private String ownerName;
     private String ownerTel;
     private String ownerEmail;
@@ -32,9 +33,10 @@ public class PdfCreateDto {
     private Integer theftCriteria;
     private Integer refundDeadline;
 
-    public static PdfCreateDto toDto(Long chatRoomId, Member owner, Member rental, Product product, ContractApplicationDto contractApplicationDto, ContractCondition contractCondition) {
+    public static PdfCreateDto toDto(Long chatRoomId,String documentSerialNumber ,Member owner, Member rental, Product product, ContractApplicationDto contractApplicationDto, ContractCondition contractCondition) {
         return PdfCreateDto.builder()
                 .chatRoomId(chatRoomId)
+                .documentSerialNumber(documentSerialNumber)
                 .ownerName(owner.getName())
                 .ownerTel(owner.getPhoneNumber())
                 .ownerEmail(owner.getEmail())
@@ -55,5 +57,7 @@ public class PdfCreateDto {
                 .refundDeadline(contractCondition.getRefundDeadline())
                 .build();
     }
+
+
 }
 

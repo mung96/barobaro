@@ -43,6 +43,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 import static baro.baro.domain.contract.validator.ContractValidator.validateContractRequestDto;
 import static baro.baro.global.statuscode.ErrorCode.*;

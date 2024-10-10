@@ -28,8 +28,6 @@ public class KeyStoreConfig {
         Security.addProvider(new BouncyCastleProvider());
         KeyStore keyStore;
 
-
-
         ClassPathResource fontResource = new ClassPathResource("keystore.p12");
         String keyStorePath = fontResource.getPath();
         File keyStoreFile = new File(keyStorePath);

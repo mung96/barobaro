@@ -21,7 +21,7 @@ public class CertificateGeneratorUtils {
 
     public static KeyPair generateKeyPair() throws Exception {
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-        keyPairGenerator.initialize(2048);
+        keyPairGenerator.initialize(512);
         return keyPairGenerator.generateKeyPair();
     }
 
