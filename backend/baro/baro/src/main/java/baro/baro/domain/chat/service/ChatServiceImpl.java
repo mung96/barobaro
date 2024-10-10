@@ -10,6 +10,8 @@ import baro.baro.domain.chat.dto.response.ChatRoomAndChatsDetailsRes;
 import baro.baro.domain.chat.repository.ChatRepository;
 import baro.baro.domain.chat_room.entity.ChatRoom;
 import baro.baro.domain.chat_room.repository.ChatRoomRepository;
+import baro.baro.domain.contract.entity.Contract;
+import baro.baro.domain.contract.repository.ContractRepository;
 import baro.baro.domain.member.entity.Member;
 import baro.baro.domain.member.repository.MemberRepository;
 import baro.baro.global.exception.CustomException;
@@ -34,6 +36,7 @@ public class ChatServiceImpl implements ChatService {
     private final ChatRepository chatRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final MemberRepository memberRepository;
+    private final ContractRepository contractRepository;
     private final Images3Service images3Service;
 
     @Override
@@ -59,7 +62,13 @@ public class ChatServiceImpl implements ChatService {
                 .map(chat -> ChatDto.toDto(chat, memberRepository.findByUuid(chat.getUuid())))
                 .collect(Collectors.toList());
 
-        return new ChatRoomAndChatsDetailsRes(ChatRoomDto.toDto(chatRoom, member), chatDtos);
+        Contract contract = contractRepository.findContractByProductId(chatRoom.getProduct().getId());
+        String pdfSrc = null; // 전자 계약서가 없는 계약의 경우
+        if(contract != null) { // 전자 계약서가 있는 게약의 경우 
+            pdfSrc = contract.getContractUrl();
+        }
+
+        return new ChatRoomAndChatsDetailsRes(ChatRoomDto.toDto(chatRoom, member, pdfSrc), chatDtos);
     }
 
     @Override
