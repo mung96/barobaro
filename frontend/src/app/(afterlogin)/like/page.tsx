@@ -1,11 +1,11 @@
 'use client';
 
+import Header from '@/components/Header';
+import ItemList from '@/components/ItemList';
 import { getFavoriteProducts } from "@/apis/productApi";
-import { lazy, Suspense, useEffect } from "react";
+import { useEffect } from "react";
 import { useCurrentActions } from "@/store/useCurrentStore";
-
-const Header = lazy(() => import('@/components/Header'));
-const ItemList = lazy(() => import('@/components/ItemList'));
+import {Suspense} from "react";
 
 export default function Like() {
     const currentStoreState = useCurrentActions()
