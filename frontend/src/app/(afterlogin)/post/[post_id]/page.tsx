@@ -12,7 +12,9 @@ import Header from '@/components/Header';
 import LikeButton from '@/components/(SVG_component)/LikeButton';
 import CalendarSVG from '@/components/(SVG_component)/Calendar';
 import { postMessageRoomList } from '@/apis/message/chat/messageRoomListApi';
-import {getProductsDetail, deleteProductsDetail} from "@/apis/productDetailApi";
+import { getProductsDetail, deleteProductsDetail } from "@/apis/productDetailApi";
+import Button from '@/components/shared/Button';
+import { IoCalendarClearOutline } from 'react-icons/io5';
 
 export default function PostDetail() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -31,23 +33,13 @@ export default function PostDetail() {
       const productId = currentPath.slice(6);
       const res = await getProductsDetail(productId);
       setPostInfo(res);
-      console.log('Updated postInfo:', res);
     } catch (err) {
-      console.log('ERR', err);
     }
   }, [currentPath]);
 
   useEffect(() => {
     fetchPostDetails();
   }, [fetchPostDetails]);
-
-  // test
-  useEffect(() => {
-    console.log('------------');
-    console.log(postInfo);
-    console.log(postInfo?.title);
-    console.log(postInfo?.isMine);
-  }, [postInfo]);
 
   if (!postInfo) {
     return <div></div>;
@@ -83,7 +75,7 @@ export default function PostDetail() {
             email=""
           />
           <div className="flex-1" />
-          {postInfo.isMine ? (
+          {postInfo.isMine && (
             <div className="flex">
               <button
                 type="button"
@@ -100,7 +92,7 @@ export default function PostDetail() {
                 삭제
               </button>
             </div>
-          ) : null}
+          )}
         </div>
         <PictureCarousel data={postInfo.imageList} />
         <div className="bg-gray-500 w-[90%] h-[1px] my-3" />
@@ -113,37 +105,26 @@ export default function PostDetail() {
         />
         <ContractCondition data={postInfo} />
       </div>
-      <div className="-z-0 fixed bottom-0 -z-0 max-w-[500px] w-[100%] h-[60px] bg-white flex items-center">
-        <div className="flex items-center justify-center w-full">
-          <div className="mx-5">
-            <LikeButton isWished={postInfo.isWished} productId={postInfo.productId} />
-          </div>
-          <div className="h-[42px] w-[1px] bg-gray-500" />
-          <div className="flex flex-col flex-1 mx-3">
-            <div className="flex items-center">
-              <CalendarSVG />
-              <p className="text-gray-300 text-[12px]">
-                {postInfo.startDate}~{postInfo.endDate}
-              </p>
-            </div>
-            <p className="text-black-100 text-[16px] font-bold">
-              {postInfo.rentalFee}원/일
+      <footer className="fixed left-0 bottom-0 -z-0 flex items-center justify-between w-full px-4 h-[60px] bg-white">
+        <div className="pr-3 border-r-2  border-gray-500 flex items-center justify-center h-9">
+          <LikeButton isWished={postInfo.isWished} productId={postInfo.productId} />
+        </div>
+        <div className="flex flex-col flex-1 mx-3">
+          <div className="flex items-center">
+            <IoCalendarClearOutline className='text-base' />
+            <p className="text-gray-300 text-[12px]">
+              {postInfo.startDate}~{postInfo.endDate}
             </p>
           </div>
-          <button
-            type="button"
-            className={`mx-3 text-[12px] rounded-[3px] w-[69px] h-[28px] ${
-              postInfo.isMine
-                ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
-                : 'bg-blue-100 text-white'
-            }`}
-            onClick={createChatRoom}
-            disabled={postInfo.isMine}
-          >
-            채팅하기
-          </button>
+          <p className="text-black-100 text-[16px] font-bold">
+            {postInfo.rentalFee}원/일
+          </p>
         </div>
-      </div>
+
+        {!postInfo.isMine && <Button width='80px' height='40px' onClick={createChatRoom}>
+          <p className='text-sm'>채팅하기</p>
+        </Button>}
+      </footer>
     </>
   );
 }
