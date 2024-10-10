@@ -30,7 +30,7 @@ export default function Header({
   // hasLogInfo && 사용자가 등록한 위치 가져오기
 
   return (
-    <header className="bg-white w-full h-[7vh] flex items-center p-4">
+    <header className="w-full h-[7vh] flex items-center p-4 fixed top-0 left-0 bg-white z-50">
       <div className="flex flex-grow">
         {hasPrevBtn && (
           <div onClick={handleGoBack} role="presentation">

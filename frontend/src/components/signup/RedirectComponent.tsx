@@ -28,8 +28,6 @@ const RedirectComponent = () => {
     const fetchData = async () => {
       try {
         const profileResponse = await getProfile();
-        console.log(profileResponse);
-        console.log(setProfile);
         setProfile({
           id: decoded.sub!,
           profileImage: profileResponse.data.body.profileImage,

@@ -42,7 +42,7 @@ export default function AlertComponent( {nickname, profileUrl, orderType, messag
         </div>
         <div className="flex mx-3 items-start">
           <div className="text-black-100 text-[14px]">
-            <span className="font-bold">{nickname}</span>
+            {/*<span className="font-bold">{nickname}</span>*/}
             {message}
           </div>
         </div>
