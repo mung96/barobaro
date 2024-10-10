@@ -1,18 +1,17 @@
 package baro.baro.domain.account.controller;
 
-import baro.baro.domain.account.dto.AccountDto;
 import baro.baro.domain.account.dto.request.AccountAddReq;
 import baro.baro.domain.account.dto.response.AccountAddMainRes;
 import baro.baro.domain.account.dto.response.AccountAddRes;
 import baro.baro.domain.account.dto.response.AccountListRes;
+import baro.baro.domain.account.service.AccountService;
 import baro.baro.global.dto.ResponseDto;
+import baro.baro.global.oauth.jwt.service.JwtService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static baro.baro.global.statuscode.SuccessCode.*;
 import static org.springframework.http.HttpStatus.*;
@@ -21,33 +20,14 @@ import static org.springframework.http.HttpStatus.*;
 @RequiredArgsConstructor
 @RequestMapping("/members/me/accounts")
 public class AccountController {
+    private final AccountService accountService;
+    private final JwtService jwtService;
+
     @GetMapping
     public ResponseEntity<?> accountList() {
-        List<AccountDto> accounts = new ArrayList<>();
+        Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
 
-        AccountDto dto = AccountDto.builder()
-                .bank("카카오뱅크")
-                .accountNumber("3333-05-681789")
-                .accountId(10000L)
-                .main(true)
-                .build();
-
-        accounts.add(dto);
-
-        for(int i = 1; i < 10; i++) {
-            Long id = 10000L + i;
-
-            dto = AccountDto.builder()
-                    .bank("카카오뱅크")
-                    .accountNumber("3333-05-681789")
-                    .accountId(id)
-                    .main(false)
-                    .build();
-
-            accounts.add(dto);
-        }
-
-        AccountListRes result = new AccountListRes(accounts);
+        AccountListRes result = accountService.findAccounts(memberId);
 
         return new ResponseEntity<>(ResponseDto.success(ACCOUNT_LIST_OK, result), OK);
     }
