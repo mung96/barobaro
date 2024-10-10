@@ -5,9 +5,20 @@ import React, { useContext } from 'react';
 import ProcessButton from './ProcessButton';
 import { OpponentContext } from '@/contexts/ChatOpponentUserInfoContext';
 import { useProfileObject } from '@/store/useMyProfile';
+import { OriginBoardType } from '@/types/message/chat/OriginBoardType';
 
 // 채팅창 상단에 뜨는 원본 글 미리보기 영역
-export default function OriginBoard() {
+type OriginBoardParams = {
+  originBoardParams: OriginBoardType | undefined;
+};
+
+// 날짜 formatter (여기에서만 씀)
+const formatDate = (str: string) => {
+  const [year, month, day] = str.split('-');
+  return `${year.slice(-2)}.${month}.${day}`;
+};
+
+export default function OriginBoard({ originBoardParams }: OriginBoardParams) {
   const context = useContext(OpponentContext);
   if (!context) return <div></div>;
   const { ownerUuid } = context;
@@ -24,6 +35,8 @@ export default function OriginBoard() {
             <Image src="https://loremflickr.com/320/240" alt="cat" width={100} height={100} className="rounded-lg" />
           </div>
           <div className="w-9/12 flex flex-col pt-[1vh] pl-[2vh] items-start">
+            <p className="text-xs text-gray-300">{originBoardParams?.startDate}</p>
+            {/* 여기부터 작업 */}
             <p className="text-xs text-gray-300">24.09.05 ~ 24.09.29</p>
             <p className="text-black-100">고양이 쓰다듬고 가세요</p>
             <p className="font-bold text-black-100">100,000원/일</p>
