@@ -1,34 +1,56 @@
 import { postPINApi } from "@/apis/passwordApi";
+import { getProfile } from "@/apis/profileApi";
 import KeyPadDelete from "@/components/(SVG_component)/(mypage)/KeyPadDelete";
 import DisplayPassword from "@/components/user/DisplayPassword"
 import useKeypad from "@/hooks/keypad/useKeyPadModel";
 import usePasswordChange from "@/hooks/user/usePasswordModel";
+import { useProfileObject, useProfileSet } from "@/store/useMyProfile";
+import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 type Props = {
     isNewPassword: boolean
 }
+
+
 const BUTTON_ACTIVE_TIME = 120;
 const PasswordKeypad = ({ isNewPassword }: Props) => {
     const realPassword = '112233';
     const keys = [1, 2, 3, 4, 5, 6, 7, 8, 9, 'empty', 0, 'delete'];
     const router = useRouter();
-    const registPINPassword = async (passwordData: { password: string, checkPassword: string }) => {
+
+    const profile = useProfileObject();
+    const setProfile = useProfileSet();
+    const fetchProfile = async () => {
         try {
-            await postPINApi(passwordData);
+            const profileResponse = await getProfile();
+            setProfile({
+                id: profile.id!,
+                profileImage: profileResponse.data.body.profileImage!,
+                nickname: profileResponse.data.body.nickname,
+                phoneNumber: profileResponse.data.body.phoneNumber,
+                email: profileResponse.data.body.email,
+                name: profileResponse.data.body.name,
+                isAuthenticated: profileResponse.data.body.isAuthenticated,
+            })
+        } catch (error) {
+            console.log(error)
+            if (error instanceof AxiosError) {
+                alert(error.response?.data.header.message)
+            }
+        }
+    }
+    const successPostPIN = async () => {
+        try {
+            await postPINApi({ password: newPassword, checkPassword: inputPassword })
+            await fetchProfile();
+            router.back();
         } catch (error) {
             console.error("비밀번호 등록에 실패했습니다:", error)
         }
     }
-    const successPostPIN = async () => {
-        await registPINPassword({ password: newPassword, checkPassword: inputPassword })
-        router.back();
-    }
     const [activatedKeys, setActivatedKeys] = useState<number[]>([]);
-
-
-
     const { newPassword, inputPassword, setInputPassword, passwordMessage, isFinished } =
         usePasswordChange(
             isNewPassword,

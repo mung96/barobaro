@@ -19,12 +19,14 @@ import convertRegistStepToStepNumber from '@/services/post/regist';
 import ContractInfoInput from '@/components/post/ContractInfoInput';
 import ContractPreview from '@/components/post/ContractPreview';
 import usePostFormModel from '@/hooks/post/usePostFormModel';
-import { useProfileObject } from '@/store/useMyProfile';
+import { useProfileObject, useProfileSet } from '@/store/useMyProfile';
 import IdentityVerificationModal from '@/components/post/IdentityVerificationModal';
-import DisplayPassword from '@/components/user/DisplayPassword';
+import { getProfile } from '@/apis/profileApi';
+import { useRouter } from 'next/navigation';
+import { AxiosError } from 'axios';
 
 function PostFunnel() {
-  const [isIdentityVerificationModalOpen, setIsIdentityVerificationModalOpen] = useState(true);
+  const [isIdentityVerificationModalOpen, setIsIdentityVerificationModalOpen] = useState(false);
   const [direction, setDirection] = useState<DirectionType>('forward');
   const [totalStep, setTotalStep] = useState(4);
   const { step: registStep, history, context } = useFunnel<{
@@ -56,11 +58,17 @@ function PostFunnel() {
     }
   }
 
+  const router = useRouter();
+  const pushPasswordNew = () => {
+    router.push('/mypage/user/password/new');
+    setIsIdentityVerificationModalOpen(false);
+  }
+
+
 
   return (
     <div className="flex flex-col gap-4">
-      <DisplayPassword length={6} />
-      {/* <IdentityVerificationModal isOpen={isIdentityVerificationModalOpen} /> */}
+      <IdentityVerificationModal isOpen={isIdentityVerificationModalOpen} onConfirm={pushPasswordNew} />
       <StepBar
         totalStep={totalStep}
         currentStep={convertRegistStepToStepNumber(registStep)}
