@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,7 +29,8 @@ public class AccountServiceImpl implements AccountService {
         List<AccountDto> accountDtos = accountRepository.findAllByMemberId(memberId)
                 .stream()
                 .map(AccountDto::toDto)
-                .sorted((dto1, dto2) -> Boolean.compare(dto2.getMain(), dto1.getMain())) // 주계좌가 맨 앞에 오도록 정렬
+                .sorted(Comparator.comparing(AccountDto::getMain).reversed() // 1. 주계좌 우선 정렬
+                        .thenComparing(AccountDto::getAccountId)) // 2. id 오름차순 정렬
                 .collect(Collectors.toList());
         
         return new AccountListRes(accountDtos);
