@@ -13,6 +13,7 @@ import com.itextpdf.forms.fields.PdfSignatureFormField;
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.geom.Rectangle;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
@@ -31,6 +32,7 @@ import com.itextpdf.signatures.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -70,7 +72,7 @@ public class PdfUtils {
 		"영", "일", "이", "삼", "사",
 		"오", "육", "칠", "팔", "구"
 	};
-	private final PdfFont koreanFont;
+	// private final PdfFont koreanFont;
 	private final ContractRepository contractRepository;
 
 	private String convert2Korean(Long price) {
@@ -120,8 +122,11 @@ public class PdfUtils {
 	}
 
 	public String createPdf(PdfCreateDto pdfCreateDto) throws IOException, GeneralSecurityException {
-		// 문서 상단에 ID 추가
 
+		ClassPathResource fontResource = new ClassPathResource("PretendardVariable.ttf");
+		String fontPath = fontResource.getPath();
+		PdfFont koreanFont = PdfFontFactory.createFont(fontPath, "Identity-H",true);
+		// 문서 상단에 ID 추가
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		PdfWriter writer = new PdfWriter(byteArrayOutputStream);
 		PdfDocument pdfDocument = new PdfDocument(writer);
