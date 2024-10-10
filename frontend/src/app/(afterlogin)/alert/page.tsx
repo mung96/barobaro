@@ -13,7 +13,7 @@ export default function AlertPage() {
     const getAlertFunction = async () => {
       try {
         setIsLoading(true);
-        const res = await getAlerts();
+        const res : any = await getAlerts();
         console.log('@@',res);
         setAlertData(res.data.body.notifications || []);
       } catch (error) {
@@ -30,7 +30,7 @@ export default function AlertPage() {
       <Header pageName="알람" hasPrevBtn hasSearchBtn={false} hasAlertBtn={false} />
       <section className="flex flex-col items-center w-full mb-10">
         {/*TODO : alarm data가 정상적으로 들어온다면, 해당 컴포넌트를 반복적으로 만들면 된다!*/}
-        {alertData.map((data, index) => (
+        {alertData.map((data : any, index) => (
             <AlertComponent key={index} nickname={data.fromMemberNickName} message={data.message} orderType={data.notiType} profileUrl={data.fromMemberImage} timeData='1' chatId='2'/>
         ))}
       </section>
