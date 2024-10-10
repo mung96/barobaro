@@ -10,7 +10,6 @@ import org.springframework.core.io.ClassPathResource;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.security.KeyPair;
 import java.security.KeyStore;
 import java.security.Security;
@@ -54,18 +53,6 @@ public class KeyStoreConfig {
             // 키스토어에 키와 인증서를 저장
             keyStore.setKeyEntry("barobaro", keyPair.getPrivate(), KEYSTORE_PASSWORD.toCharArray(), new Certificate[]{certificate});
 
-            // 디렉토리가 없으면 생성
-            File keyStoreDir = keyStoreFile.getParentFile();
-            if (!keyStoreDir.exists()) {
-                keyStoreDir.mkdirs(); // 부모 디렉토리 생성
-            }
-
-            // 키스토어 파일 저장
-            try (FileOutputStream fos = new FileOutputStream(keyStoreFile)) {
-                keyStore.store(fos, KEYSTORE_PASSWORD.toCharArray());
-            } catch (Exception e) {
-                log.warn("Failed to store keystore", e);
-            }
         }
 
         return keyStore;
