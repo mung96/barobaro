@@ -14,9 +14,13 @@ export default function ChatRoomEach({ chatRoomId, profileImage, nickname, lastC
       <div className="w-2/12 flex items-center justify-center">
         <div className="relative w-full h-full aspect-square">
           <img
-            src={profileImage}
-            alt="profImg"
-            className="rounded-full w-full h-full object-cover" // 원형으로 만들기 및 부모 div에 맞게 채우기
+
+            //     unoptimized={true}
+            src={profileImage} // public 폴더 내의 이미지 경로
+            alt="profImg" // 이미지 설명 추가
+            //     layout="fill" // 부모 div의 크기에 맞게 이미지가 채워지도록 설정
+            //     objectFit="cover" // 이미지 비율 유지하면서 부모 div에 맞게 채움
+            className="rounded-full" // 원형으로 만들기
           />
         </div>
       </div>
@@ -33,6 +37,7 @@ export default function ChatRoomEach({ chatRoomId, profileImage, nickname, lastC
       <div className="w-2/12 flex items-center justify-center">
         <div className="relative w-full h-full">
           <img
+            // unoptimized={true}
             src={productMainImage} // public 폴더 내의 이미지 경로
             alt="thumb" // 이미지 설명 추가
             className="rounded-lg w-full h-full object-cover" // 모서리 둥글게 및 부모 div에 맞게 채우기

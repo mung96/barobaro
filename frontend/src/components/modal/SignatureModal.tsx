@@ -10,6 +10,7 @@ import currentTime from '@/utils/currentTime';
 import MessageFormType from '../message/chat/MessageFormType';
 import { SocketClientContext } from '@/contexts/SocketClientContext';
 import { useProfileObject } from '@/store/useMyProfile';
+import ContractPaperModal from '@/components/modal/ContractPaperModal';
 
 type SignatureModalParam = {
   onRequestClose: () => void;
@@ -146,7 +147,9 @@ const SignatureModal = ({ isOpen, onRequestClose, onChange }: SignatureModalPara
         <div className="flex h-[4vh] text-base font-bold mt-3 mb-3">전자계약서 확인 및 서명</div>
         <div className="flex h-[45vh] w-[98vw] overflow-y-auto rounded-xl border border-gray-500">
           {/* 계약서 영역 */}
-          <ContractContent />
+          {/* <ContractContent /> */}
+
+          <ContractPaperModal />
         </div>
         <div className="flex h-[30vh] w-[98vw] rounded-xl border border-gray-500 mt-3">
           {/* 서명 라이브러리 영역 */}

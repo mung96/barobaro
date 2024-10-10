@@ -12,9 +12,7 @@ type Props = {
 }
 
 export default function PasswordChange({ params }: Props) {
-  // useEffect(() => {
-  //   getPINApi()
-  // }, [])
+
   const isNewPassword = params.passwordChangeStep === 'new';
 
   return (
