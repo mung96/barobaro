@@ -94,4 +94,4 @@ cloud:
 
 server:
   tomcat:
-    max-http-form-post-size: 20MB
+    max-http-form-post-size: 30MB
