@@ -1,21 +1,23 @@
 'use client';
 
-import KakaoMap from '@/components/map/KakaoMap';
-import PictureCarousel from '@/components/post/Carousel';
-import Profile from '@/components/user/Profile';
-import PostContent from '@/components/post/PostContent';
-import ContractCondition from '@/components/post/ContractCondition';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import PostCheckModal from '@/components/modal/PostCheckModal';
-import Header from '@/components/Header';
-import LikeButton from '@/components/(SVG_component)/LikeButton';
 import { postMessageRoomList } from '@/apis/message/chat/messageRoomListApi';
 import { getProductsDetail, deleteProductsDetail } from "@/apis/productDetailApi";
-import Button from '@/components/shared/Button';
 import { IoCalendarClearOutline } from 'react-icons/io5';
 import { useProfileObject } from '@/store/useMyProfile';
-import IdentityVerificationModal from '@/components/post/IdentityVerificationModal';
+
+const KakaoMap = lazy(() => import('@/components/map/KakaoMap'));
+const PictureCarousel = lazy(() => import('@/components/post/Carousel'));
+const Profile = lazy(() => import('@/components/user/Profile'));
+const PostContent = lazy(() => import('@/components/post/PostContent'));
+const ContractCondition = lazy(() => import('@/components/post/ContractCondition'));
+const PostCheckModal = lazy(() => import('@/components/modal/PostCheckModal'));
+const Header = lazy(() => import('@/components/Header'));
+const LikeButton = lazy(() => import('@/components/(SVG_component)/LikeButton'));
+const Button = lazy(() => import('@/components/shared/Button'));
+const IdentityVerificationModal = lazy(() => import('@/components/post/IdentityVerificationModal'));
+
 
 export default function PostDetail() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -71,24 +73,33 @@ export default function PostDetail() {
   }
   return (
     <>
-      <IdentityVerificationModal isOpen={isIdentityVerificationModalOpen} onPrev={(() => setIsIdentityVerificationModalOpen(false))} onConfirm={pushPasswordNew} />
-      <Header pageName="게시글 목록" hasPrevBtn hasSearchBtn hasAlertBtn />
+      <Suspense>
+        <IdentityVerificationModal isOpen={isIdentityVerificationModalOpen} onPrev={(() => setIsIdentityVerificationModalOpen(false))} onConfirm={pushPasswordNew} />
+      </Suspense>
+      
+      <Suspense>
+        <Header pageName="게시글 목록" hasPrevBtn hasSearchBtn hasAlertBtn />
+      </Suspense>
       <div className="flex flex-col items-center w-full mb-20">
         <div className="z-50">
-          <PostCheckModal
-            modalType={modalType}
-            isOpen={isModalOpen}
-            onRequestClose={closeModal}
-          />
+        <Suspense>
+            <PostCheckModal
+              modalType={modalType}
+              isOpen={isModalOpen}
+              onRequestClose={closeModal}
+            />
+          </Suspense>
         </div>
         <div className="flex w-full">
-          <Profile
-            hasEmail={false}
-            hasEditBtn={false}
-            url={postInfo.writerProfileImage}
-            nickname={postInfo.writerNickname}
-            email=""
-          />
+          <Suspense>
+            <Profile
+              hasEmail={false}
+              hasEditBtn={false}
+              url={postInfo.writerProfileImage}
+              nickname={postInfo.writerNickname}
+              email=""
+            />
+          </Suspense>
           <div className="flex-1" />
           {postInfo.isMine && (
             <div className="flex">
@@ -109,24 +120,36 @@ export default function PostDetail() {
             </div>
           )}
         </div>
-        <PictureCarousel data={postInfo.imageList} />
+        <Suspense>
+          <PictureCarousel data={postInfo.imageList} />
+        </Suspense>
         <div className="bg-gray-500 w-[90%] h-[1px] my-3" />
-        <PostContent data={postInfo} />
-        <KakaoMap
-          width="85%"
-          height="20dvh"
-          lat={postInfo.latitude}
-          lng={postInfo.longitude}
-        />
-        <ContractCondition data={postInfo} />
+        <Suspense>
+          <PostContent data={postInfo} />
+        </Suspense>
+        <Suspense>  
+          <KakaoMap
+            width="85%"
+            height="20dvh"
+            lat={postInfo.latitude}
+            lng={postInfo.longitude}
+          />
+        </Suspense>
+        <Suspense>
+          <ContractCondition data={postInfo} />
+        </Suspense>
       </div>
       <footer className="fixed left-0 bottom-0 -z-0 flex border-t-[1px] items-center justify-between w-full px-4 h-[60px] bg-white">
         <div className="pr-3 border-r-2  border-gray-500 flex items-center justify-center h-9">
-          <LikeButton isWished={postInfo.isWished} productId={postInfo.productId} />
+          <Suspense>
+            <LikeButton isWished={postInfo.isWished} productId={postInfo.productId} />
+          </Suspense>
         </div>
         <div className="flex flex-col flex-1 mx-3">
           <div className="flex items-center">
-            <IoCalendarClearOutline className='text-base' />
+            <Suspense>
+              <IoCalendarClearOutline className='text-base' />
+            </Suspense>
             <p className="text-gray-300 text-[12px]">
               {postInfo.startDate}~{postInfo.endDate}
             </p>
@@ -135,7 +158,6 @@ export default function PostDetail() {
             {postInfo.rentalFee}원/일
           </p>
         </div>
-
         {!postInfo.isMine && <Button width='80px' height='40px' onClick={handleChattingButtonClick}>
           <p className='text-sm'>채팅하기</p>
         </Button>}
