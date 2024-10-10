@@ -22,8 +22,8 @@ const chatProcessConverter = (message: MessageFormType, isOwners?: boolean) => {
       case 'finished':
         return ProcessTypes.SIGNED_DIRECT;
       case 'received': {
-        if (isOwners) return ProcessTypes.RECEIVED_DIRECT;
-        else return ProcessTypes.FINISHED;
+        if (isOwners) return ProcessTypes.FINISHED;
+        else return ProcessTypes.RECEIVED_DIRECT;
       }
       case 'paid':
         return ProcessTypes.PAID_DIRECT;
@@ -33,7 +33,7 @@ const chatProcessConverter = (message: MessageFormType, isOwners?: boolean) => {
   } else if (message.type === 1) {
     switch (message.body) {
       case 'trigger':
-        return ProcessTypes.PAID_DIRECT;
+        return ProcessTypes.CONTACT;
     }
   }
 

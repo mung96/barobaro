@@ -29,7 +29,7 @@ export default function Chat() {
   } = useChatPageModel();
 
   // webSocket Client
-  const { socketClient, sendChat, eventedProcess } = useSocketClientModel(handleAddMessages, chatRoomId);
+  const { socketClient, sendChat, eventedProcess } = useSocketClientModel(handleAddMessages, chatRoomId, ownerUuid);
 
   // socketClient가 null일 때 렌더링
   if (!socketClient) {
