@@ -26,6 +26,7 @@ public class ContractConditionDto {
                 .overdueFee(contractCondition.getOverdueFee())
                 .theftCriteria(contractCondition.getTheftCriteria())
                 .repairVendor(contractCondition.getRepairVendor())
+                .refundDeadline(contractCondition.getRefundDeadline())
                 .build();
     }
 }
