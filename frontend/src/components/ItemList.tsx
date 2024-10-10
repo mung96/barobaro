@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import CalendarSVG from '@/components/(SVG_component)/Calendar';
 import ContractIcon from '@/components/(SVG_component)/(mypage)/Contract';
-import MeatBallsButton from '@/components/(SVG_component)/(mypage)/MeatBallsButton';
+import {useRouter} from 'next/navigation';
 import HeartIcon from '@/components/(SVG_component)/HeartIcon';
 import Link from 'next/link';
 import {useBorrowProducts, useLentProducts, useLikeProducts, useSearchProducts} from '@/store/useCurrentStore';
@@ -11,6 +11,10 @@ import {useBorrowProducts, useLentProducts, useLikeProducts, useSearchProducts} 
 export default function ItemList({ data }: { data: string }) {
   // 주어진 data에 맞게 List를 받고, 이를 하단의 return 에 맞춰 들어가도록 해야함.
   // let 으로 정의한건 추후 수정예정.
+  const router = useRouter();
+  const goContract = () => {
+    router.push('/contract')
+  }
   const borrowProducts = useBorrowProducts();
   const lentProducts = useLentProducts();
   const likeProducts = useLikeProducts();
@@ -68,6 +72,7 @@ export default function ItemList({ data }: { data: string }) {
                 <div className="flex flex-row w-full">
                   <button
                     type="button"
+                    onClick={goContract}
                     className="w-[68px] h-[22px] bg-gray-400 rounded-[3px] flex flex-row justify-center items-center mt-4"
                   >
                     <ContractIcon />
@@ -81,7 +86,7 @@ export default function ItemList({ data }: { data: string }) {
                     <p className="text-[12px] text-gray-200 mt-[1px]">{item.wishCount}</p>
                   </div>
                 </div>
-                <MeatBallsButton data={item.id} />
+                {/*<MeatBallsButton data={item.id} />*/}
               </div>
             </div>
             <div className="flex justify-center my-5">

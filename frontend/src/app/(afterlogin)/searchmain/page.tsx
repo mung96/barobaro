@@ -29,7 +29,7 @@ export default function SearchMain(){
             <Suspense>
                 <Header pageName="홈" hasPrevBtn hasSearchBtn hasAlertBtn/>
             </Suspense>
-            <section className="flex flex-col items-center w-full mb-20">
+            <section className="flex flex-col items-center w-full mb-20 mt-[80px]">
                 <div className="w-[90%] h-[35px] rounded-[5px] bg-gray-400 flex justify-start items-center">
                     <div className="mx-1">
                         <Suspense>
