@@ -21,7 +21,9 @@ export default function Like() {
     return (
     <>
       <Header pageName="관심내역" hasPrevBtn hasSearchBtn={false} hasAlertBtn />
-      <ItemList data="like" />
+      <div className="mt-[80px]">
+        <ItemList data="like" />
+      </div>
     </>
   );
 }

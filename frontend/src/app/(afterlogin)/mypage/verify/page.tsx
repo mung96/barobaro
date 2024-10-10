@@ -6,6 +6,7 @@ import usePdfFileModel from '@/hooks/shared/usePdfUploadModel';
 
 export default function VerifyPage() {
     const [paperId, setPaperId] = useState<string>('');
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const { file, fileName, fileInputRef, handlePdfFile, handleButtonClick, errorMessage, clearFile } = usePdfFileModel();
 
     const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,8 +27,16 @@ export default function VerifyPage() {
         // 여기에 실제 검증 로직을 추가하세요
     };
 
+    const openModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
+
     return (
-        <div>
+        <div className="relative">
             <Header pageName="마이페이지" hasPrevBtn hasSearchBtn={false} hasAlertBtn />
             <section className="mt-[80px] flex flex-col items-center">
                 <div className="flex flex-col items-center">
@@ -41,7 +50,7 @@ export default function VerifyPage() {
                     <div className="w-[85%]">
                         <div className="flex justify-between">
                             <div className="text-[12px] font-bold">문서 ID</div>
-                            <div className="font-bold text-[8px] text-gray-600 underline">문서 ID 확인 방법</div>
+                            <div className="font-bold text-[8px] text-gray-600 underline cursor-pointer" onClick={openModal}>문서 ID 확인 방법</div>
                         </div>
                     </div>
                     <div className="bg-gray-400 rounded-[5px] text-gray-600 text-[10px] w-[300px] h-[35px] flex flex-col justify-center my-3">
@@ -91,6 +100,27 @@ export default function VerifyPage() {
                     </button>
                 </section>
             </section>
+
+            {isModalOpen && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-[8px] p-5 w-[320px] h-[260px] flex flex-col">
+                        <h2 className="text-[15px] font-bold mb-4 text-center">문서 ID 확인 방법</h2>
+                        <div className="text-[10px] text-gray-600 mb-4">
+                            <p>PDF 파일의 왼쪽 아래에서 문자 ID를 확인할 수 있습니다.</p>
+                            <p>숫자+영문 조합의 ID를 드래그 후 복사해보세요.</p>
+                        </div>
+                        <div className="bg-gray-300 w-full h-[100px] mb-4 flex items-center justify-center">
+                            이미지 예시
+                        </div>
+                        <button
+                            className="mt-auto bg-blue-500 text-white w-[126px] h-[30px] rounded-[8px] self-center"
+                            onClick={closeModal}
+                        >
+                            확인
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

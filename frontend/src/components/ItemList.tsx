@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import CalendarSVG from '@/components/(SVG_component)/Calendar';
 import ContractIcon from '@/components/(SVG_component)/(mypage)/Contract';
-import MeatBallsButton from '@/components/(SVG_component)/(mypage)/MeatBallsButton';
+// import MeatBallsButton from '@/components/(SVG_component)/(mypage)/MeatBallsButton';
 import HeartIcon from '@/components/(SVG_component)/HeartIcon';
 import Link from 'next/link';
 import {useBorrowProducts, useLentProducts, useLikeProducts, useSearchProducts} from '@/store/useCurrentStore';
@@ -81,7 +81,7 @@ export default function ItemList({ data }: { data: string }) {
                     <p className="text-[12px] text-gray-200 mt-[1px]">{item.wishCount}</p>
                   </div>
                 </div>
-                <MeatBallsButton data={item.id} />
+                {/*<MeatBallsButton data={item.id} />*/}
               </div>
             </div>
             <div className="flex justify-center my-5">
