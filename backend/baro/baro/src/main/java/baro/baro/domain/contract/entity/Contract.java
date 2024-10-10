@@ -28,6 +28,8 @@ public class Contract {
 
     private LocalDateTime createdAt;
 
+    private String initialDocumentSerialNum;
+
     private String contractUrl;
 
     @OneToOne(fetch = FetchType.LAZY)

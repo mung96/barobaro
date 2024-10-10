@@ -8,6 +8,7 @@ import baro.baro.global.dto.PdfCreateDto;
 import baro.baro.global.dto.ResponseDto;
 import baro.baro.global.exception.CustomException;
 import baro.baro.global.oauth.jwt.service.JwtService;
+import baro.baro.global.utils.PdfUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 import static baro.baro.global.statuscode.ErrorCode.INVALID_APPROVE_TYPE;
 import static baro.baro.global.statuscode.SuccessCode.*;
@@ -30,7 +32,7 @@ public class ContractController {
 
     private final JwtService jwtService;
     private final ContractService contractService;
-
+    private final PdfUtils pdfUtils;
     @PostMapping("/request")
     public ResponseEntity<?> contractRequestAdd(@RequestBody final ContractRequestDto contractRequestDto) {
         Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
@@ -40,7 +42,7 @@ public class ContractController {
     }
 
     @GetMapping("/request")
-    public ResponseEntity<?> contractRequestDetail(@RequestBody ContractRequestDetailReq contractRequestDetailReq) {
+    public ResponseEntity<?> contractRequestDetail(@ModelAttribute ContractRequestDetailReq contractRequestDetailReq) {
         Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
         ContractRequestDto result = contractService.findContractRequestDetail(contractRequestDetailReq, memberId);
 
@@ -48,7 +50,7 @@ public class ContractController {
     }
 
     @GetMapping("")
-    public ResponseEntity<?> contractOptionDetail(@RequestBody ContractOptionDetailReq contractOptionDetailReq) {
+    public ResponseEntity<?> contractOptionDetail(@ModelAttribute ContractOptionDetailReq contractOptionDetailReq) {
         Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
         ContractOptionDetailRes result = contractService.findContractOptionDetail(contractOptionDetailReq, memberId);
 
@@ -124,6 +126,7 @@ public class ContractController {
                 .rentalEmail("rental@naver.com")
                 .productName("테스트물품")
                 .productSerialNumber("serialNo")
+                .documentSerialNumber(UUID.randomUUID().toString())
                 .totalRentalPrice(10000L)
                 .rentalStartDate(LocalDate.now())
                 .rentalEndDate(LocalDate.now().plusDays(2))
@@ -134,6 +137,10 @@ public class ContractController {
                 .build();
         String url = contractService.generatePdf(tmp);
         return new ResponseEntity<>(ResponseDto.success(PDF_GENERATE_OK, url), OK);
-
+    }
+    @GetMapping("/verify")
+    public ResponseEntity<?> verifySignature(@RequestPart("file") MultipartFile file) throws Exception {
+        pdfUtils.verifySignatures(file);
+        return new ResponseEntity<>(ResponseDto.success(PDF_GENERATE_OK, null), OK);
     }
 }
