@@ -1,4 +1,4 @@
-import { FC, useContext, useState } from 'react';
+import { FC, useContext, useEffect, useState } from 'react';
 import { neverExpected } from '@/utils/typeGuard';
 import useStatusMessageModel from '@/hooks/message/chat/useStatusMessageModel';
 import SignatureModal from '@/components/modal/SignatureModal';
@@ -70,8 +70,16 @@ const StatusMessage: FC<MessageFormType> = ({ body, timestamp, isMine }) => {
   const { chat_id: charRoomId } = useParams();
 
   const [pinNumber, setPinNumber] = useState(0);
-  const [signData, setSignData] = useState<File | null>();
+  const [signData, setSignData] = useState<string>('');
   const [s3FileUrl, setS3FileUrl] = useState('');
+
+  useEffect(() => {
+    const data = {
+      charRoomId, pinNumber, signData, s3FileUrl
+    }
+    console.log(data);
+
+  }, [pinNumber, signData, s3FileUrl])
 
 
   return (
