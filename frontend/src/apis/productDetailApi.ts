@@ -10,3 +10,12 @@ export const getProductsDetail = async (productId:string) => {
         console.error(err);
     }
 }
+
+export const deleteProductsDetail = async (productId:string) => {
+    try {
+        const response = await axiosInstance.delete(`/products/${productId}`);
+        return response;
+    } catch (error) {
+        console.error('Delete Err', error);
+    }
+}

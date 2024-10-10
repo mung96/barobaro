@@ -5,9 +5,8 @@ import Cards from '@/components/(recent_list_component)/Cards';
 import Logo from '@/../public/assets/png/barobaro_logo.png';
 import UserTown from "@/components/user/UserTown";
 
-
 function Home() {
-  return (
+    return (
     <>
       <br />
       <UserTown />

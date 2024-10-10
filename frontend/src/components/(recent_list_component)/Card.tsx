@@ -3,9 +3,8 @@
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import LikeButton from '@/components/(SVG_component)/LikeButton';
-import { CurrentProduct } from '@/types/products/products';
 
-export default function Card({ cardInfo }: { cardInfo: CurrentProduct }) {
+export default function Card({ cardInfo }: { cardInfo: any }) {
   const router = useRouter();
   const cardHandler = () => {
     router.push(`/post/${cardInfo.productId}`);
