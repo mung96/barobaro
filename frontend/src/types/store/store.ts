@@ -46,7 +46,5 @@ type Profile = {
 export type ProfileStoreState = {
   profileObject: Profile;
   isInit: boolean;
-  actions: {
-    setProfileObject: (profileObject: Profile) => void;
-  };
+  setProfileObject: (profileObject: Profile) => void;
 };

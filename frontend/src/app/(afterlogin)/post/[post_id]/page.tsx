@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect, useCallback, lazy, Suspense } from 'react';
+import { useState, useEffect, useCallback, lazy, Suspense, use } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { postMessageRoomList } from '@/apis/message/chat/messageRoomListApi';
 import { getProductsDetail, deleteProductsDetail } from "@/apis/productDetailApi";
 import { IoCalendarClearOutline } from 'react-icons/io5';
-import { useProfileObject } from '@/store/useMyProfile';
+import { useProfileObject, useProfileSet } from '@/store/useMyProfile';
 
 const KakaoMap = lazy(() => import('@/components/map/KakaoMap'));
 const PictureCarousel = lazy(() => import('@/components/post/Carousel'));
@@ -18,11 +18,13 @@ const LikeButton = lazy(() => import('@/components/(SVG_component)/LikeButton'))
 const Button = lazy(() => import('@/components/shared/Button'));
 const IdentityVerificationModal = lazy(() => import('@/components/post/IdentityVerificationModal'));
 
+import { useSetPrevPathStore } from '@/store/usePath';
 
 export default function PostDetail() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [postInfo, setPostInfo] = useState<any>(null);
   const currentPath = usePathname();
+  const setPrevPath = useSetPrevPathStore();
 
   /*TODO : 로그인X => 화면 접근시 ReactModal, 완료된 거래인경우 ReactModal */
   const router = useRouter();
@@ -45,7 +47,7 @@ export default function PostDetail() {
 
   const [isIdentityVerificationModalOpen, setIsIdentityVerificationModalOpen] = useState(false);
   const profileState = useProfileObject();
-
+  const setProfile = useProfileSet();
   if (!postInfo) {
     return <div></div>;
   }
@@ -60,12 +62,14 @@ export default function PostDetail() {
   };
 
   const pushPasswordNew = () => {
-    router.push('/mypage/user/password/new');
+    // router.push('/mypage/user/password/new');
+    setProfile({ ...profileState, isAuthenticated: true });
     setIsIdentityVerificationModalOpen(false);
   }
 
   const handleChattingButtonClick = async () => {
     if (!profileState.isAuthenticated) {
+      setPrevPath(currentPath);
       setIsIdentityVerificationModalOpen(true);
     } else {
       await createChatRoom();
@@ -76,13 +80,13 @@ export default function PostDetail() {
       <Suspense>
         <IdentityVerificationModal isOpen={isIdentityVerificationModalOpen} onPrev={(() => setIsIdentityVerificationModalOpen(false))} onConfirm={pushPasswordNew} />
       </Suspense>
-      
+
       <Suspense>
         <Header pageName="게시글 목록" hasPrevBtn hasSearchBtn hasAlertBtn />
       </Suspense>
       <div className="flex flex-col items-center w-full mb-20">
         <div className="z-50">
-        <Suspense>
+          <Suspense>
             <PostCheckModal
               modalType={modalType}
               isOpen={isModalOpen}
@@ -127,7 +131,7 @@ export default function PostDetail() {
         <Suspense>
           <PostContent data={postInfo} />
         </Suspense>
-        <Suspense>  
+        <Suspense>
           <KakaoMap
             width="85%"
             height="20dvh"
