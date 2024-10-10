@@ -6,7 +6,9 @@ import baro.baro.domain.chat_room.repository.ChatRoomRepository;
 import baro.baro.domain.contract.dto.ContractApplicationDto;
 import baro.baro.domain.contract.dto.ContractConditionDto;
 import baro.baro.domain.contract.dto.ContractRequestDto;
-import baro.baro.domain.contract.dto.request.*;
+import baro.baro.domain.contract.dto.request.ContractApproveReq;
+import baro.baro.domain.contract.dto.request.ProductTakeBackReq;
+import baro.baro.domain.contract.dto.request.SignatureAddReq;
 import baro.baro.domain.contract.dto.response.*;
 import baro.baro.domain.contract.entity.Contract;
 import baro.baro.domain.contract.entity.SignatureInformation;
@@ -117,11 +119,10 @@ public class ContractServiceImpl implements ContractService {
 	}
 
 	@Transactional(readOnly = true)
-	public ContractRequestDto findContractRequestDetail(ContractRequestDetailReq contractRequestDetailReq,
-		Long ownerId) {
+	public ContractRequestDto findContractRequestDetail(Long chatRoomId, Long ownerId) {
 
 		//존재하지 않는 채팅방
-		ChatRoom chatRoom = chatRoomRepository.findById(contractRequestDetailReq.getChatRoomId())
+		ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
 			.orElseThrow(() -> new CustomException(CHATROOM_NOT_FOUND));
 
 		//채팅방의 참여자가 아님
@@ -141,7 +142,7 @@ public class ContractServiceImpl implements ContractService {
 		//redis에서 ContractRequest 못찾을 때
 		ContractApplicationDto contractApplicationDto = contractRequestList.stream()
 			.map(item -> (ContractApplicationDto)item)
-			.filter(contractRequest -> contractRequest.getChatRoomId().equals(contractRequestDetailReq.getChatRoomId()))
+			.filter(contractRequest -> contractRequest.getChatRoomId().equals(chatRoomId))
 			.findFirst()
 			.orElseThrow(() -> new CustomException(CONTRACT_REQUEST_NOT_FOUND));
 
@@ -149,11 +150,10 @@ public class ContractServiceImpl implements ContractService {
 	}
 
 	@Transactional(readOnly = true)
-	public ContractOptionDetailRes findContractOptionDetail(ContractOptionDetailReq contractOptionDetailReq,
-		Long memberId) {
+	public ContractOptionDetailRes findContractOptionDetail(Long chatRoomId, Long memberId) {
 
 		//존재하지 않는 채팅방
-		ChatRoom chatRoom = chatRoomRepository.findById(contractOptionDetailReq.getChatRoomId())
+		ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
 			.orElseThrow(() -> new CustomException(CHATROOM_NOT_FOUND));
 
 		//채팅방의 참여자가 아님
