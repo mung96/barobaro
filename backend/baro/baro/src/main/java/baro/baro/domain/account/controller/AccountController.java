@@ -44,9 +44,11 @@ public class AccountController {
         return new ResponseEntity<>(ResponseDto.success(ACCOUNT_DELETED, null), NO_CONTENT);
     }
 
-    @PostMapping("/{accountId}")
+    @PatchMapping("/{accountId}")
     public ResponseEntity<?> accountAddMain(@PathVariable("accountId") Long accountId) {
-        AccountAddMainRes result = new AccountAddMainRes("3333-05-681789", 10000L, true);
+        Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
+
+        AccountAddMainRes result = accountService.addMainAccount(memberId, accountId);
 
         return new ResponseEntity<>(ResponseDto.success(ACCOUNT_ADD_MAIN_OK, result), OK);
     }
