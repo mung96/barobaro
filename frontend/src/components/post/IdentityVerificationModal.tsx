@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 type Props = {
     isOpen: boolean;
     onConfirm: () => void;
+    onPrev: () => void;
 };
 
 const modalStyle: ReactModal.Styles = {
@@ -39,12 +40,8 @@ const modalStyle: ReactModal.Styles = {
 };
 
 const IdentityVerificationModal = ({
-    isOpen, onConfirm
+    isOpen, onConfirm, onPrev
 }: Props) => {
-    const router = useRouter();
-
-
-
     return (
         <ReactModal
             isOpen={isOpen}
@@ -58,7 +55,7 @@ const IdentityVerificationModal = ({
                     <p>게시글 등록을 위해 본인인증을 진행해주세요.</p>
                 </div>
                 <div className='flex justify-between w-full gap-2'>
-                    <Button onClick={() => router.back()} color='gray' width='100%' height='40px'>
+                    <Button onClick={onPrev} color='gray' width='100%' height='40px'>
                         <p className="text-base">뒤로</p>
                     </Button>
                     <div className='w-full'>
