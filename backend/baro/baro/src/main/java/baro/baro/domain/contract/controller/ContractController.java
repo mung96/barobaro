@@ -1,7 +1,9 @@
 package baro.baro.domain.contract.controller;
 
 import baro.baro.domain.contract.dto.ContractRequestDto;
-import baro.baro.domain.contract.dto.request.*;
+import baro.baro.domain.contract.dto.request.ContractApproveReq;
+import baro.baro.domain.contract.dto.request.ProductTakeBackReq;
+import baro.baro.domain.contract.dto.request.SignatureAddReq;
 import baro.baro.domain.contract.dto.response.*;
 import baro.baro.domain.contract.service.ContractService;
 import baro.baro.global.dto.PdfCreateDto;
@@ -42,17 +44,17 @@ public class ContractController {
     }
 
     @GetMapping("/request")
-    public ResponseEntity<?> contractRequestDetail(@ModelAttribute ContractRequestDetailReq contractRequestDetailReq) {
+    public ResponseEntity<?> contractRequestDetail(@RequestParam("chatRoomId") Long chatRoomId) {
         Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
-        ContractRequestDto result = contractService.findContractRequestDetail(contractRequestDetailReq, memberId);
+        ContractRequestDto result = contractService.findContractRequestDetail(chatRoomId, memberId);
 
         return new ResponseEntity<>(ResponseDto.success(CONTRACT_REQUEST_OK, result), OK);
     }
 
     @GetMapping("")
-    public ResponseEntity<?> contractOptionDetail(@ModelAttribute ContractOptionDetailReq contractOptionDetailReq) {
+    public ResponseEntity<?> contractOptionDetail(@RequestParam("chatRoomId") Long chatRoomId) {
         Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
-        ContractOptionDetailRes result = contractService.findContractOptionDetail(contractOptionDetailReq, memberId);
+        ContractOptionDetailRes result = contractService.findContractOptionDetail(chatRoomId, memberId);
 
         return new ResponseEntity<>(ResponseDto.success(CONTRACT_REQUEST_OK, result), OK);
     }
@@ -142,5 +144,13 @@ public class ContractController {
     public ResponseEntity<?> verifySignature(@RequestPart("file") MultipartFile file) throws Exception {
         pdfUtils.verifySignatures(file);
         return new ResponseEntity<>(ResponseDto.success(PDF_GENERATE_OK, null), OK);
+    }
+
+    @GetMapping("/{chatRoomId}")
+    public ResponseEntity<?> getPresentPdf(@PathVariable Long chatRoomId) {
+        Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
+        PresentPdfRes result = contractService.findPresentPdf(chatRoomId, memberId);
+
+        return new ResponseEntity<>(ResponseDto.success(PRESENT_PDF_OK, result), OK);
     }
 }

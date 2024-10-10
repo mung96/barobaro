@@ -105,7 +105,7 @@ class ContractControllerTest {
                 1L,
                 LocalDate.now().plusDays(1),
                 LocalDate.now().plusDays(4),
-                ReturnType.DELIVERY
+                "DELIVERY"
         );
         String content = objectMapper.writeValueAsString(contractRequestDto);
         //when
@@ -162,7 +162,7 @@ class ContractControllerTest {
                 1L,
                 LocalDate.now().plusDays(1),
                 LocalDate.now().plusDays(4),
-                ReturnType.DELIVERY
+                "DELIVERY"
         );
         String content = objectMapper.writeValueAsString(contractRequestDto);
         doThrow(new CustomException(CHATROOM_NOT_FOUND)).when(contractService).addContractRequest(any(), anyLong());
@@ -220,7 +220,7 @@ class ContractControllerTest {
                 1L,
                 LocalDate.now().plusDays(1),
                 LocalDate.now().plusDays(4),
-                ReturnType.DELIVERY
+                "DELIVERY"
         );
         String content = objectMapper.writeValueAsString(contractRequestDto);
         doThrow(new CustomException(CHATROOM_NOT_ENROLLED)).when(contractService).addContractRequest(any(), anyLong());
@@ -278,7 +278,7 @@ class ContractControllerTest {
                 1L,
                 LocalDate.now().plusDays(1),
                 LocalDate.now().plusDays(4),
-                ReturnType.DELIVERY
+                "DELIVERY"
         );
         String content = objectMapper.writeValueAsString(contractRequestDto);
         doThrow(new CustomException(PRODUCT_NOT_FOUND)).when(contractService).addContractRequest(any(), anyLong());
@@ -336,7 +336,7 @@ class ContractControllerTest {
                 1L,
                 LocalDate.now().plusDays(1),
                 LocalDate.now().plusDays(4),
-                ReturnType.DELIVERY
+                "DELIVERY"
         );
         String content = objectMapper.writeValueAsString(contractRequestDto);
         doThrow(new CustomException(CONFLICT_WITH_OTHER)).when(contractService).addContractRequest(any(), anyLong());
@@ -394,7 +394,7 @@ class ContractControllerTest {
                 1L,
                 LocalDate.now().plusDays(1),
                 LocalDate.now().plusDays(4),
-                ReturnType.DELIVERY
+                "DELIVERY"
         );
         String content = objectMapper.writeValueAsString(contractRequestDto);
         doThrow(new CustomException(CONTRACT_IN_PROGRESS_BY_OTHERS)).when(contractService).addContractRequest(any(), anyLong());
@@ -448,30 +448,24 @@ class ContractControllerTest {
     @Test
     public void 계약_요청_조회_성공() throws Exception {
         //given
-        ContractRequestDetailReq contractRequestDetailReq = new ContractRequestDetailReq(
-                1L
-        );
-
-        String content = objectMapper.writeValueAsString(contractRequestDetailReq);
         ContractRequestDto res = new ContractRequestDto(1L, LocalDate.now().plusDays(1),
                 LocalDate.now().plusDays(4),
-                ReturnType.DELIVERY);
+                "DELIVERY");
+
         when(contractService.findContractRequestDetail(any(), anyLong()))
                 .thenReturn(res);
         //when
         ResultActions actions = mockMvc.perform(
-                get("/contracts/request")
+                get("/contracts/request?chatRoomId={chatRoomId}", 1L)
                         .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content)
         );
         // then
         actions
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(CONTRACT_REQUEST_OK.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(CONTRACT_REQUEST_OK.getMessage()))
-                .andExpect(jsonPath("$.body.chatRoomId").value(contractRequestDetailReq.getChatRoomId()))
                 .andDo(document(
                         "계약 요청 조회 성공",
                         preprocessRequest(prettyPrint()),
@@ -483,10 +477,8 @@ class ContractControllerTest {
                                         headerWithName("Authorization")
                                                 .description("JWT 토큰")
                                 )
-                                .requestFields(
-                                        List.of(
-                                                fieldWithPath("chatRoomId").type(NUMBER).description("채팅방 Id")
-                                        )
+                                .queryParameters(
+                                        parameterWithName("chatRoomId").description("채팅방 Id")
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
@@ -510,20 +502,14 @@ class ContractControllerTest {
     @Test
     public void 계약_요청_조회_실패_존재하지_않는_채팅방() throws Exception {
         //given
-        ContractRequestDetailReq contractRequestDetailReq = new ContractRequestDetailReq(
-                1L
-        );
-
-        String content = objectMapper.writeValueAsString(contractRequestDetailReq);
         when(contractService.findContractRequestDetail(any(), anyLong()))
                 .thenThrow(new CustomException(CHATROOM_NOT_FOUND));
         //when
         ResultActions actions = mockMvc.perform(
-                get("/contracts/request")
+                get("/contracts/request?chatRoomId={chatRoomId}", 1L)
                         .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content)
         );
         // then
         actions
@@ -541,10 +527,8 @@ class ContractControllerTest {
                                         headerWithName("Authorization")
                                                 .description("JWT 토큰")
                                 )
-                                .requestFields(
-                                        List.of(
-                                                fieldWithPath("chatRoomId").type(NUMBER).description("채팅방 Id")
-                                        )
+                                .queryParameters(
+                                        parameterWithName("chatRoomId").description("채팅방 Id")
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
@@ -562,21 +546,16 @@ class ContractControllerTest {
     @Test
     public void 계약_요청_조회_실패_참여하지_않는_채팅방() throws Exception {
         //given
-        ContractRequestDetailReq contractRequestDetailReq = new ContractRequestDetailReq(
-                1L
-        );
-
-        String content = objectMapper.writeValueAsString(contractRequestDetailReq);
         when(contractService.findContractRequestDetail(any(), anyLong()))
                 .thenThrow(new CustomException(CHATROOM_NOT_ENROLLED));
         //when
         ResultActions actions = mockMvc.perform(
-                get("/contracts/request")
+                get("/contracts/request?chatRoomId={chatRoomId}", 8L)
                         .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content)
         );
+
         // then
         actions
                 .andExpect(status().isForbidden())
@@ -593,10 +572,8 @@ class ContractControllerTest {
                                         headerWithName("Authorization")
                                                 .description("JWT 토큰")
                                 )
-                                .requestFields(
-                                        List.of(
-                                                fieldWithPath("chatRoomId").type(NUMBER).description("채팅방 Id")
-                                        )
+                                .queryParameters(
+                                        parameterWithName("chatRoomId").description("채팅방 Id")
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
@@ -614,20 +591,14 @@ class ContractControllerTest {
     @Test
     public void 계약_요청_조회_실패_존재하지_않는_상품() throws Exception {
         //given
-        ContractRequestDetailReq contractRequestDetailReq = new ContractRequestDetailReq(
-                1L
-        );
-
-        String content = objectMapper.writeValueAsString(contractRequestDetailReq);
         when(contractService.findContractRequestDetail(any(), anyLong()))
                 .thenThrow(new CustomException(PRODUCT_NOT_FOUND));
         //when
         ResultActions actions = mockMvc.perform(
-                get("/contracts/request")
+                get("/contracts/request?chatRoomId={chatRoomId}", 1L)
                         .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content)
         );
         // then
         actions
@@ -645,10 +616,8 @@ class ContractControllerTest {
                                         headerWithName("Authorization")
                                                 .description("JWT 토큰")
                                 )
-                                .requestFields(
-                                        List.of(
-                                                fieldWithPath("chatRoomId").type(NUMBER).description("채팅방 Id")
-                                        )
+                                .queryParameters(
+                                        parameterWithName("chatRoomId").description("채팅방 Id")
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
@@ -675,12 +644,12 @@ class ContractControllerTest {
                 .thenThrow(new CustomException(CONTRACT_REQUEST_NOT_FOUND));
         //when
         ResultActions actions = mockMvc.perform(
-                get("/contracts/request")
+                get("/contracts/request?chatRoomId={chatRoomId}", 1L)
                         .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content)
         );
+
         // then
         actions
                 .andExpect(status().isNotFound())
@@ -697,10 +666,8 @@ class ContractControllerTest {
                                         headerWithName("Authorization")
                                                 .description("JWT 토큰")
                                 )
-                                .requestFields(
-                                        List.of(
-                                                fieldWithPath("chatRoomId").type(NUMBER).description("채팅방 Id")
-                                        )
+                                .queryParameters(
+                                        parameterWithName("chatRoomId").description("채팅방 Id")
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
@@ -718,9 +685,6 @@ class ContractControllerTest {
     @Test
     public void 계약_조건_상세_조회_성공() throws Exception {
         //given
-        ContractOptionDetailReq contractOptionDetailReq = new ContractOptionDetailReq(
-                1L
-        );
         List<ReturnType> returnTypes = new ArrayList<>();
         returnTypes.add(DIRECT);
         returnTypes.add(DELIVERY);
@@ -731,16 +695,15 @@ class ContractControllerTest {
         ContractOptionDetailRes res = new ContractOptionDetailRes(
                 TRUE, returnTypes, contractConditionDto
         );
-        String content = objectMapper.writeValueAsString(contractOptionDetailReq);
+
         when(contractService.findContractOptionDetail(any(), anyLong()))
                 .thenReturn(res);
         //when
         ResultActions actions = mockMvc.perform(
-                get("/contracts")
+                get("/contracts?chatRoomId={chatRoomId}", 1L)
                         .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content)
         );
         // then
         actions
@@ -758,10 +721,8 @@ class ContractControllerTest {
                                         headerWithName("Authorization")
                                                 .description("JWT 토큰")
                                 )
-                                .requestFields(
-                                        List.of(
-                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id")
-                                        )
+                                .queryParameters(
+                                        parameterWithName("chatRoomId").description("채팅방 Id")
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
@@ -801,12 +762,12 @@ class ContractControllerTest {
                 .thenThrow(new CustomException(CHATROOM_NOT_FOUND));
         //when
         ResultActions actions = mockMvc.perform(
-                get("/contracts")
+                get("/contracts?chatRoomId={chatRoomId}", 1L)
                         .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content)
         );
+
         // then
         actions
                 .andExpect(status().isNotFound())
@@ -823,10 +784,8 @@ class ContractControllerTest {
                                         headerWithName("Authorization")
                                                 .description("JWT 토큰")
                                 )
-                                .requestFields(
-                                        List.of(
-                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id")
-                                        )
+                                .queryParameters(
+                                        parameterWithName("chatRoomId").description("채팅방 Id")
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
@@ -852,12 +811,12 @@ class ContractControllerTest {
                 .thenThrow(new CustomException(CHATROOM_NOT_ENROLLED));
         //when
         ResultActions actions = mockMvc.perform(
-                get("/contracts")
+                get("/contracts?chatRoomId={chatRoomId}", 1L)
                         .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content)
         );
+
         // then
         actions
                 .andExpect(status().isForbidden())
@@ -874,10 +833,8 @@ class ContractControllerTest {
                                         headerWithName("Authorization")
                                                 .description("JWT 토큰")
                                 )
-                                .requestFields(
-                                        List.of(
-                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id")
-                                        )
+                                .queryParameters(
+                                        parameterWithName("chatRoomId").description("채팅방 Id")
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
@@ -903,11 +860,10 @@ class ContractControllerTest {
                 .thenThrow(new CustomException(PRODUCT_NOT_FOUND));
         //when
         ResultActions actions = mockMvc.perform(
-                get("/contracts")
+                get("/contracts?chatRoomId={chatRoomId}", 1L)
                         .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content)
         );
         // then
         actions
@@ -925,10 +881,8 @@ class ContractControllerTest {
                                         headerWithName("Authorization")
                                                 .description("JWT 토큰")
                                 )
-                                .requestFields(
-                                        List.of(
-                                                fieldWithPath("chatRoomId").type(NUMBER).description("현재 대화중인 채팅방 Id")
-                                        )
+                                .queryParameters(
+                                        parameterWithName("chatRoomId").description("채팅방 Id")
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
