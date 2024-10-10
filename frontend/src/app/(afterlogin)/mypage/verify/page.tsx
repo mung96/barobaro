@@ -7,11 +7,25 @@ import usePdfFileModel from '@/hooks/shared/usePdfUploadModel';
 export default function VerifyPage() {
     const [paperId, setPaperId] = useState<string>('');
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [isInputError, setIsInputError] = useState<boolean>(false);
     const { file, fileName, fileInputRef, handlePdfFile, handleButtonClick, errorMessage, clearFile } = usePdfFileModel();
 
+    // Id값으로 입력되어야 하는 값이 정해져있음.
+    const isValidPaperId = (inputString: string) => {
+        const regex = /^[a-zA-Z0-9\-]+$/;
+        return regex.test(inputString);
+    }
+
+    // 유효한 값이 input되어야만 paperId를 저장한다.
     const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setPaperId(e.target.value);
-        console.log(paperId);
+        const newValue = e.target.value;
+        if (isValidPaperId(newValue)|| newValue === '') {
+            setPaperId(newValue)
+            setIsInputError(false);
+        } else {
+            setIsInputError(true);
+        }
+        console.log(paperId)
     };
 
     const handleVerify = () => {
@@ -53,7 +67,7 @@ export default function VerifyPage() {
                             <div className="font-bold text-[8px] text-gray-600 underline cursor-pointer" onClick={openModal}>문서 ID 확인 방법</div>
                         </div>
                     </div>
-                    <div className="bg-gray-400 rounded-[5px] text-gray-600 text-[10px] w-[300px] h-[35px] flex flex-col justify-center my-3">
+                    <div className="bg-gray-400 rounded-[5px] text-gray-600 text-[10px] w-[300px] h-[35px] flex flex-col justify-center mt-3">
                         <input
                             name="search_paper"
                             type="search"
@@ -61,10 +75,12 @@ export default function VerifyPage() {
                             placeholder="영문과 숫자, -만 입력"
                             className="w-full outline-none [&::-webkit-search-cancel-button]:appearance-none bg-transparent"
                             onChange={changeHandler}
+                            pattern="^[a-zA-Z0-9\-가-힣]+$"
                             value={paperId}
                             required
                         />
                     </div>
+                    <div className="text-red-500 text-[8px] h-[30px] items-start w-[90%]">{isInputError ? '영문과 숫자, -만 입력 가능합니다.' : ''}</div>
                     <div className="mt-3 w-[85%]">
                         <h2 className="text-[12px] font-bold">검증 대상 문서</h2>
                     </div>
