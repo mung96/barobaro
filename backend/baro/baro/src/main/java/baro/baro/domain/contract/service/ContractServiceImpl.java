@@ -265,7 +265,8 @@ public class ContractServiceImpl implements ContractService {
 					.chatRoomId(contractApproveReq.getChatRoomId())
 					.fileUrl(null)
 					.build();
-		} else {
+		}
+		else {
 			//상품 대여 상태 업데이트
 			product.updateProductStatus(ProductStatus.IN_PROGRESS);
 
