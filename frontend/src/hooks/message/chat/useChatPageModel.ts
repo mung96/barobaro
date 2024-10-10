@@ -93,6 +93,7 @@ const useChatPageModel = () => {
     otherNickname,
     otherUuid,
     ownerUuid, // 상품 소유자
+    initProcess,
   };
 };
 
