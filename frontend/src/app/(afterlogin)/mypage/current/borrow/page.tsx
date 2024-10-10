@@ -1,12 +1,12 @@
 'use client';
 
-// import ItemList from '@/components/ItemList';
-import Header from '@/components/Header';
-import ItemList from '@/components/ItemList';
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import {axiosInstance} from "@/apis/axiosInstance";
 import {END_POINT} from "@/constants/api";
 import {ProductResponse} from "@/types/apis/productResponse";
+
+const Header = lazy(() => import('@/components/Header'));
+const ItemList = lazy(() => import('@/components/ItemList'));
 
 export default function List() {
     useEffect(() => {
@@ -23,15 +23,19 @@ export default function List() {
     return (
         <>
       <header>
-        <Header
-          pageName="마이페이지"
-          hasPrevBtn
-          hasSearchBtn={false}
-          hasAlertBtn
-        />
+        <Suspense>
+          <Header
+            pageName="마이페이지"
+            hasPrevBtn
+            hasSearchBtn={false}
+            hasAlertBtn
+          />
+        </Suspense>
       </header>
       <main>
-        <ItemList data="borrow" />
+        <Suspense>
+          <ItemList data="borrow" />
+        </Suspense>
       </main>
     </>
   );
