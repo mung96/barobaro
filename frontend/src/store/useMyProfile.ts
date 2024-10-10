@@ -10,6 +10,7 @@ const initialProfile: UserProfile = {
   email: '',
   name: '',
   isAuthenticated: false,
+  id: '',
 };
 
 const useMyProfileStore = create(
