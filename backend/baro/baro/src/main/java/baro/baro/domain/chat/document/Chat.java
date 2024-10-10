@@ -17,10 +17,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Chat {
-    public static final String CHAT_MESSAGE_SEQUENCE = "chat_message_sequence";
-
     @Id
-    private Long chatId;
+    private String chatId;
 
     private Long chatRoomId;
 
