@@ -50,6 +50,7 @@ const useChatPageModel = () => {
 
     // API
     const getResponse = async () => {
+      console.log('채팅방요청');
       try {
         const apiResponse = await getMessageRoomInfo(chat_id);
         console.log(apiResponse);
