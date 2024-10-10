@@ -27,7 +27,9 @@ public class ChatRoomDto {
 
     private String pdfSrc;
 
-    public static ChatRoomDto toDto(ChatRoom chatRoom, Member member, String pdfSrc) {
+    private Boolean isContract;
+
+    public static ChatRoomDto toDto(ChatRoom chatRoom, Member member, String pdfSrc, Boolean isContract) {
         return ChatRoomDto.builder()
                 .chatRoomId(chatRoom.getId())
                 .productId(chatRoom.getProduct().getId())
@@ -37,6 +39,7 @@ public class ChatRoomDto {
                 .opponentProfileImage(member.getProfileImage())
                 .rentalStatus(chatRoom.getRentalStatus())
                 .pdfSrc(pdfSrc)
+                .isContract(isContract)
                 .build();
     }
 }
