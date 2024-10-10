@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Profile from './Profile';
-// import { useProfileSet, useProfileObject, useProfileInit } from "@/store/useMyProfile";
 import {getProfile} from "@/apis/profileApi";
 
 export default function ProfileContainer() {

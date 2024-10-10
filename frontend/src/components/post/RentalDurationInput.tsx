@@ -24,9 +24,7 @@ function RentalDurationInput({ value, onSelect, isInvalid, message }: Props) {
       <div className="flex gap-2 relative">
         <Input
           placeholder="대여 날짜"
-          value={
-            value ? format(value.from!, 'yyyy-MM-dd') : ''
-          }
+          value={value ? format(value.from!, 'yyyy-MM-dd') : ''}
           width="120px"
           height="40px"
           icon={<IoCalendarClearOutline className="w-4 h-4 mb-[2px]" />}
@@ -45,11 +43,7 @@ function RentalDurationInput({ value, onSelect, isInvalid, message }: Props) {
         />
       </div>
       <DropDownAnimation isOpen={isOpenCalendar}>
-        <DateRangePicker
-          selected={value}
-          onSelect={onSelect}
-          onClose={() => setIsOpenCalendar(false)}
-        />
+        <DateRangePicker selected={value} onSelect={onSelect} onClose={() => setIsOpenCalendar(false)} />
       </DropDownAnimation>
       <ErrorMessage isInvalid={isInvalid}>{message}</ErrorMessage>
     </div>
