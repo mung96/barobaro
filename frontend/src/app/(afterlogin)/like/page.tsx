@@ -22,7 +22,9 @@ export default function Like() {
     return (
     <>
       <Suspense>
-        <Header pageName="관심내역" hasPrevBtn hasSearchBtn={false} hasAlertBtn />
+        <div className="mb-[60px]">
+          <Header pageName="관심내역" hasPrevBtn hasSearchBtn={false} hasAlertBtn />
+        </div>
       </Suspense>
       <Suspense>
         <ItemList data="like" />
