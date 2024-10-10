@@ -54,7 +54,7 @@ public class ChatServiceImpl implements ChatService {
             throw new CustomException(CHATROOM_NOT_ENROLLED);
         }
 
-        List<ChatDto> chatDtos = chatRepository.findByChatRoomIdOrderByChatTimeDesc(chatRoomId)
+        List<ChatDto> chatDtos = chatRepository.findByChatRoomIdOrderByChatTime(chatRoomId)
                 .stream()
                 .map(chat -> ChatDto.toDto(chat, memberRepository.findByUuid(chat.getUuid())))
                 .collect(Collectors.toList());
