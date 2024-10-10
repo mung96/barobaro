@@ -3,7 +3,6 @@ package baro.baro.domain.product.service;
 import baro.baro.domain.chat_room.repository.ChatRoomRepository;
 import baro.baro.domain.contract.dto.ContractConditionDto;
 import baro.baro.domain.contract.dto.request.ContractConditionReq;
-import baro.baro.domain.contract.entity.Contract;
 import baro.baro.domain.contract.entity.ContractCondition;
 import baro.baro.domain.contract.repository.ContractConditionRepository;
 import baro.baro.domain.contract.repository.ContractRepository;
@@ -191,7 +190,7 @@ public class ProductServiceImpl implements ProductService {
 
         Boolean isWish = wishListRepository.existsByMemberIdAndProductId(memberId, id);
 
-        return ProductDetails.toDto(product, member, imageUrls, contractConditionDto, isMine, isWish);
+        return ProductDetails.toDto(product, product.getMember(), imageUrls, contractConditionDto, isMine, isWish);
     }
 
     @Override
@@ -495,25 +494,28 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
 
-        if (!redisUtils.lock("contract_" + product.getId(), 3000L)) {
+        if(!member.getId().equals(product.getMember().getId())) {
+            throw new CustomException(PRODUCT_NOT_DELETED);
+        }
+
+        log.info("1111111111111111111111111111");
+
+        if (!redisUtils.lock("contract_" + product.getId(), 20000L)) {
             throw new CustomException(CONFLICT_WITH_OTHER);
         }
 
-        if(product.getProductStatus() != ProductStatus.AVAILABLE) {
+        log.info("redis 키상태찍어보자");
+
+        if(product.getProductStatus() == ProductStatus.IN_PROGRESS ||
+            product.getProductStatus() == ProductStatus.APPROVED) {
             throw new CustomException(PRODUCT_NOT_DELETED);
         }
+
+        log.info("redis 키상태찍어보자111111111111111");
 
         chatRoomRepository.deleteByProductId(productId);
         productImageRepository.deleteByProductId(productId);
         wishListRepository.deleteWishListByProductId(productId);
-
-        Contract contract = contractRepository.findContractByProductId(productId);
-
-        if(contract != null) {
-            contractConditionRepository.deleteContractConditionByProductId(productId);
-            signatureInformationRepository.deleteByContractId(contract.getId());
-            contractRepository.delete(contract);
-        }
 
         productRepository.delete(product);
 
