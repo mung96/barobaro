@@ -45,8 +45,7 @@ public enum SuccessCode {
     FCM_TOKEN_UPDATE_OK(OK.value(),"FCM 토큰 갱신에 성공했습니다."),
 
     //찜
-    WISH_LIST_CREATED(CREATED.value(), "관심내역 추가에 성공했습니다."),
-    WISH_LIST_DELETED(NO_CONTENT.value(), "관심내역 삭제에 성공했습니다."),
+    WISH_OK(OK.value(), "관심내역 상태 반영에 성공했습니다."),
     WISH_LIST_OK(OK.value(), "관심내역 리스트 조회에 성공했습니다."),
 
     //마이페이지

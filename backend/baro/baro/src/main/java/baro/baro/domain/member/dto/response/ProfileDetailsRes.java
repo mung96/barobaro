@@ -11,6 +11,8 @@ import lombok.Data;
 public class ProfileDetailsRes {
     private String profileImage;
 
+    private String uuid;
+
     private String nickname;
 
     private String phoneNumber;
@@ -24,6 +26,7 @@ public class ProfileDetailsRes {
     public static ProfileDetailsRes toDto(Member member) {
         return ProfileDetailsRes.builder()
                 .profileImage(member.getProfileImage())
+                .uuid(member.getUuid())
                 .nickname(member.getNickname())
                 .phoneNumber(member.getPhoneNumber())
                 .email(member.getEmail())

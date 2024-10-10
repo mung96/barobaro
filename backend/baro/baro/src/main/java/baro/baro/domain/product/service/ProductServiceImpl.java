@@ -25,7 +25,6 @@ import baro.baro.domain.product_image.repository.ProductImageRepository;
 import baro.baro.domain.wish_list.repository.WishListRepository;
 import baro.baro.global.elastic_search.domain.EsKeyword;
 import baro.baro.global.elastic_search.domain.EsProduct;
-import baro.baro.global.elastic_search.repository.EsKeywordRepository;
 import baro.baro.global.elastic_search.service.EsKeywordService;
 import baro.baro.global.elastic_search.service.EsProductService;
 import baro.baro.global.event.UnlockEvent;
@@ -106,6 +105,7 @@ public class ProductServiceImpl implements ProductService {
         ContractConditionDto contractConditionDto = null;
 
         if(productAddReq.getContractConditionReq() != null) {
+            validateContractCondition(productAddReq.getContractConditionReq());
             contractCondition = productAddReq.getContractConditionReq().toEntity(product);
             contractConditionRepository.save(contractCondition);
 
@@ -130,6 +130,36 @@ public class ProductServiceImpl implements ProductService {
                 product.getLocationId(), product.getCategory().name());
 
         return ProductDetails.toDto(product, member, imageUrls, contractConditionDto, true, false);
+    }
+
+    void validateContractCondition(ContractConditionReq req) {
+        if(req.getOverdueCriteria() == null) {
+            throw new CustomException(INVALID_CONTRACT_CONDITION);
+        }
+
+        if(req.getOverdueFee() == null) {
+            throw new CustomException(INVALID_CONTRACT_CONDITION);
+        }
+
+        if(req.getRefundDeadline() == null) {
+            throw new CustomException(INVALID_CONTRACT_CONDITION);
+        }
+
+        if(req.getRepairVendor() == null) {
+            throw new CustomException(INVALID_CONTRACT_CONDITION);
+        }
+
+        if(req.getTheftCriteria() == null) {
+            throw new CustomException(INVALID_CONTRACT_CONDITION);
+        }
+
+        if(req.getProductName() == null) {
+            throw new CustomException(INVALID_CONTRACT_CONDITION);
+        }
+
+        if(req.getSerialNumber() == null) {
+            throw new CustomException(INVALID_CONTRACT_CONDITION);
+        }
     }
 
     @Override
@@ -274,6 +304,8 @@ public class ProductServiceImpl implements ProductService {
         } else {
             imageUrls = productImageRepository.findSrcByProductId(product.getId());
         }
+
+        validateContractCondition(productModifyReq.getContractConditionReq());
 
         ContractConditionDto contractConditionDto = updateContractCondition(productModifyReq.getContractConditionReq(), product);
 

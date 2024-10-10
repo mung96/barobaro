@@ -77,6 +77,7 @@ public class ChatServiceImpl implements ChatService {
         String uuid = memberRepository.findById(memberId).get().getUuid();
 
         Chat chat = chatProcessReq.toEntity(chatId, chatRoomId, uuid, LocalDateTime.now());
+        chatRepository.save(chat);
 
         return ChatProcessRes.toDto(chat);
     }
