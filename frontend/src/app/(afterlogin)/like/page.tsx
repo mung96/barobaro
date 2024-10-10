@@ -5,6 +5,7 @@ import ItemList from '@/components/ItemList';
 import { getFavoriteProducts } from "@/apis/productApi";
 import { useEffect } from "react";
 import { useCurrentActions } from "@/store/useCurrentStore";
+import {Suspense} from "react";
 
 export default function Like() {
     const currentStoreState = useCurrentActions()
@@ -20,10 +21,12 @@ export default function Like() {
 
     return (
     <>
-      <Header pageName="관심내역" hasPrevBtn hasSearchBtn={false} hasAlertBtn />
-      <div className="mt-[80px]">
+      <Suspense>
+        <Header pageName="관심내역" hasPrevBtn hasSearchBtn={false} hasAlertBtn />
+      </Suspense>
+      <Suspense>
         <ItemList data="like" />
-      </div>
+      </Suspense>
     </>
   );
 }

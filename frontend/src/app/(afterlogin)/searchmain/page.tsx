@@ -1,9 +1,10 @@
 'use client';
 
-import Header from "@/components/Header";
 import useSearchModel from "@/hooks/products/useSearchModel";
-import {useState, useEffect} from "react";
-import Search from "@/components/(SVG_component)/Search";
+import {useState, useEffect, lazy, Suspense} from "react";
+
+const Header = lazy(() => import('@/components/Header'));
+const Search = lazy(() => import('@/components/(SVG_component)/Search'));
 
 export default function SearchMain(){
     const { handleSearch, goSearchWord, search, goSearch, recommendData } = useSearchModel();
@@ -25,11 +26,15 @@ export default function SearchMain(){
     // TODO : 추천 검색어를 표시하는 타이밍이 다소 늦음
     return (
         <>
-            <Header pageName="홈" hasPrevBtn hasSearchBtn hasAlertBtn/>
+            <Suspense>
+                <Header pageName="홈" hasPrevBtn hasSearchBtn hasAlertBtn/>
+            </Suspense>
             <section className="flex flex-col items-center w-full mb-20 mt-[80px]">
                 <div className="w-[90%] h-[35px] rounded-[5px] bg-gray-400 flex justify-start items-center">
                     <div className="mx-1">
-                        <Search/>
+                        <Suspense>
+                            <Search/>
+                        </Suspense>
                     </div>
                     <form onSubmit={handleSubmit}>
                         <input
@@ -49,7 +54,9 @@ export default function SearchMain(){
                             {recommendKeyword.map((keyword : any, index : any) => (
                                 <div key={index} onClick={() => goSearchWord("all", keyword.name)} className="flex m-5">
                                     <div className="mx-1">
-                                        <Search/>
+                                        <Suspense>
+                                            <Search/>
+                                        </Suspense>
                                     </div>
                                     <div>
                                         {keyword.name}
