@@ -31,7 +31,6 @@ public abstract class S3Service {
         objectMetadata.setContentType(contentType);
         objectMetadata.setContentLength(content.length);
         objectMetadata.setCacheControl("no-cache");
-        log.info("업로드 파일 들어옴~~~~~~!");
 
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(content);
 
@@ -57,13 +56,8 @@ public abstract class S3Service {
     }
 
     protected Date getlastModified(String fullUrl){
-        log.info("getlastModified 시작" + fullUrl);
         String fileName = fullUrl.substring(fullUrl.indexOf("contract/"));
-        log.info("fileName " + fileName);
         ObjectMetadata objectMetadata = amazonS3Client.getObjectMetadata(bucket, fileName);
-        log.info("getlastModified 들옴");
-        log.info(objectMetadata.getLastModified().toString());
-        
         return objectMetadata.getLastModified();
     }
 
@@ -71,7 +65,6 @@ public abstract class S3Service {
         if (!bucketUrl.endsWith("/")) {
             bucketUrl += "/";
         }
-        log.info("만들어진 파일" + bucketUrl + s3FileName);
         return bucketUrl + s3FileName;
     }
 }

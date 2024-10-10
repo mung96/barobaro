@@ -29,7 +29,6 @@ public class PdfS3Service extends S3Service {
         objectMetadata.setContentType("application/pdf");
         UUID uuid = UUID.randomUUID();
 
-        log.info("upload성공!!");
         String s3FileName = "contract/" + uuid.toString() + "_" + convertToDateFormat() + ".pdf";
         return uploadFile(pdfBytes, s3FileName, "application/pdf");
     }
@@ -40,8 +39,6 @@ public class PdfS3Service extends S3Service {
 
     public LocalDateTime lastModified(String fileName){
         Date date = getlastModified(fileName);
-        log.info("여기서에러남?" + fileName);
-        log.info(date.toString());
         return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
     private void validatePdfExtension(String extension) {
