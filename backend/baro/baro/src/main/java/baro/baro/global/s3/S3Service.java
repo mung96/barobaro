@@ -60,7 +60,7 @@ public abstract class S3Service {
         log.info("getlastModified 시작" + fullUrl);
         String fileName = fullUrl.substring(fullUrl.indexOf("contract/"));
         log.info("fileName " + fileName);
-        ObjectMetadata objectMetadata = amazonS3Client.getObjectMetadata(bucket, "contract/"+fileName);
+        ObjectMetadata objectMetadata = amazonS3Client.getObjectMetadata(bucket, fileName);
         log.info("getlastModified 들옴");
         log.info(objectMetadata.getLastModified().toString());
         
