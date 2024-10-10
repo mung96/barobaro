@@ -13,6 +13,7 @@ import ChatAlertModal from '@/components/modal/ChatAlertModal';
 import ChatPayModal from '@/components/modal/ChatPayModal';
 import { ProcessContext } from '@/contexts/ChatProcessContext';
 import { ProcessTypes as PROCESSTYPES } from './ProcessTypes';
+import DownloadDocument from '@/components/(SVG_component)/(message)/(chat)/DownloadDocument';
 
 type ProcessButtonParam = {
   hasContract: boolean; // 계약서가 있는 거래인가
@@ -53,6 +54,7 @@ const ProcessButton: FC<ProcessButtonParam> = ({ isOwner, hasContract }) => {
           </span>
         </button>
       )}
+
       {!isOwner && process === PROCESSTYPES.CONTACT && modalType === 'request' && (
         <ContractRequestModal isOpen={modalOpen} onRequestClose={modalClose} isFromStatusMessage={false} />
       )}
@@ -90,6 +92,12 @@ const ProcessButton: FC<ProcessButtonParam> = ({ isOwner, hasContract }) => {
         </button>
       )}
       {modalType === 'paid' && <ChatPayModal isOpen={modalOpen} onRequestClose={modalClose} />}
+      {process >= PROCESSTYPES.SIGNED_DIRECT && (
+        <button type="button" className={buttonStyle} onClick={() => modalTrigger('download')}>
+          <DownloadDocument />
+          <span>&nbsp; 계약서다운</span>
+        </button>
+      )}
     </>
   );
 };
