@@ -5,20 +5,26 @@ import { useEffect } from 'react';
 import { getPINApi } from "@/apis/passwordApi";
 import PasswordKeypad from '@/components/shared/PasswordKeypad';
 
-export default function PasswordChange() {
+type Props = {
+  params: {
+    passwordChangeStep: string;
+  }
+}
+
+export default function PasswordChange({ params }: Props) {
   useEffect(() => {
     getPINApi()
   }, [])
-  const needNewPassword = true;
+  const isNewPassword = params.passwordChangeStep === 'new';
 
   return (
     <div className="flex flex-col h-[93dvh]">
       <header className="flex flex-col text-center font-bold">
         <Header pageName="" hasPrevBtn hasSearchBtn={false} hasAlertBtn />
-        {needNewPassword ? `비밀번호 등록` : `비밀번호 변경`}
+        {isNewPassword ? `비밀번호 등록` : `비밀번호 변경`}
 
       </header>
-      <PasswordKeypad needNewPassword={needNewPassword} />
+      <PasswordKeypad isNewPassword={isNewPassword} />
     </div>
   );
 }
