@@ -27,7 +27,7 @@ export default function Cards({ CardsData }: { CardsData: CardsType }) {
     if (isLoading) {
         return <p>Loading...</p>;
     }
-    if (data.length === 0) {
+    if (data === undefined || data.length === 0) {
         // TODO : 임의 데이터가 추가된 경우, 이를 재확인 해야함.
         return <p>Api로 온 데이터가 없습니다.</p>;
     }

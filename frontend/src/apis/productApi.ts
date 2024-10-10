@@ -15,15 +15,25 @@ export const getBorrowProducts = async () => {
 };
 
 export const getRecentlyUploaded = async () => {
-  const response = await axiosInstance.get(END_POINT.RECENTLY_UPLOADED);
-  console.log('RECENTLY UPLOADED', response.data.body['products']);
-  return response.data.body['products'];
+  try {
+    const response = await axiosInstance.get(END_POINT.RECENTLY_UPLOADED);
+    console.log('RECENTLY UPLOADED', response.data.body['products']);
+    return response.data.body['products'];
+  } catch (err) {
+    console.log('RECENTLY GET ERR (UPLOADED)', err)
+  }
+
 };
 
 export const getRecentlyViewed = async () => {
-  const response = await axiosInstance.get(END_POINT.RECENTLY_VIEWED);
-  console.log('RECENTLY VIEWED', response.data.body['products']);
-  return response.data.body['products'];
+  try{
+    const response = await axiosInstance.get(END_POINT.RECENTLY_VIEWED);
+    console.log('RECENTLY VIEWED', response.data.body['products']);
+    return response.data.body['products'];
+  } catch (err) {
+    console.log('RECENTLY GET ERR (UPLOADED)', err)
+  }
+
 };
 
 export const postProduct = async (product: ProductAddRequest, images: File[]) => {
