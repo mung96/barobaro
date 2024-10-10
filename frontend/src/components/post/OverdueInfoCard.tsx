@@ -2,9 +2,9 @@ import ContractCardBox from '@/components/post/ContractCardBox';
 import ContractWidget from '@/components/post/ContractWidget';
 import { InputProps } from '@/components/post/ContractInfoInput';
 
-function OverdueInfoCard({ fields, context, errors }: InputProps) {
+function OverdueInfoCard({ fields, context, errors, isValid }: InputProps) {
   return (
-    <ContractCardBox title="무단 연체" step={3}>
+    <ContractCardBox title="무단 연체" step={3} hasInput={true} isCardValid={!fields.overdueFee.fieldState.invalid && !fields.overdueCriteria.fieldState.invalid && !fields.theftCriteria.fieldState.invalid}>
       <ContractWidget
         title="무단 연체 기준"
         name="대여 기간 종료 후"
@@ -14,6 +14,7 @@ function OverdueInfoCard({ fields, context, errors }: InputProps) {
         message={errors.overdueCriteria?.message}
         type="number"
         end="일"
+        hasInput={true}
       />
       <ContractWidget
         title="무단 연체 가격"
@@ -24,6 +25,7 @@ function OverdueInfoCard({ fields, context, errors }: InputProps) {
         message={errors.overdueFee?.message}
         type="number"
         end="배"
+        hasInput={true}
       />
       <ContractWidget
         title="도난 취급 기준"
@@ -34,6 +36,7 @@ function OverdueInfoCard({ fields, context, errors }: InputProps) {
         message={errors.theftCriteria?.message}
         type="number"
         end="일 후"
+        hasInput={true}
       />
     </ContractCardBox>
   );

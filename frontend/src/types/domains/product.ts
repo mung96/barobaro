@@ -44,6 +44,7 @@ export type StepProps<T> = {
   fields: T;
   errors: FieldErrors<PostFunnelStep>;
   context: PostInfoStep | RentalInfoStep | ContractInfoStep | ContractPreviewStep;
+  isValid: boolean;
 };
 export type PostFunnelStep = PostInfo & RentalInfo & ContractInfo;
 export type PostFormFields = {
