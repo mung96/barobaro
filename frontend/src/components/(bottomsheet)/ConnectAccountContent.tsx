@@ -10,6 +10,10 @@ type Props = {
 export default function ConnectAccountContent({ BottomSheetTitle }: Props) {
   const pivot = useSelectedAccount();
   const cancleEvent = useBottomSheetAction().setIsClose;
+  const mainAccountRequest = () => {
+      console.log('gogogogo');
+      cancleEvent();
+  }
   return (
     <section className="flex flex-col h-[360px]">
       <section className="mb-3">
@@ -39,6 +43,7 @@ export default function ConnectAccountContent({ BottomSheetTitle }: Props) {
           <button
             type="button"
             className={`w-[40%] h-[50px] rounded-[10px] text-white ${pivot === 0 ? 'bg-gray-500 disabled' : 'bg-blue-500'}`}
+            onClick={mainAccountRequest}
           >
             적용
           </button>

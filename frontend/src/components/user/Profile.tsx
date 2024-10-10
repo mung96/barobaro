@@ -34,6 +34,7 @@ export default function Profile({
             alt={url}
             width={47}
             height={47}
+            unoptimized={true}
           />
         </div>
         <div className="ms-3.5 flex flex-col justify-center">
