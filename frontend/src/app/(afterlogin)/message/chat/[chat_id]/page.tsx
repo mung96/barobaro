@@ -51,7 +51,7 @@ export default function Chat() {
 
               {/* 대화 내용 (Dialogs) */}
               <div className="flex-1 mt-[25vh] overflow-y-scroll" ref={scrollRef}>
-                <Dialogs messages={messages} otherNickname={otherNickname} />
+                <Dialogs messages={messages} />
               </div>
 
               {/* 메시지 입력창 (ChatWindow) */}

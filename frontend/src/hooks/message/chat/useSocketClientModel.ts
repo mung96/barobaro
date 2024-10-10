@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import WebSocketClient from '@/utils/webSocketClient';
 import MessageFormType from '@/components/message/chat/MessageFormType';
 import { chatConverterFromBe, chatConverterToBe } from '@/services/message/chat/chatConverter';
@@ -16,7 +16,7 @@ export default function useSocketClientModel(
 ) {
   const [socketClient, setSocketClient] = useState<WebSocketClient | null>(null);
   const [eventedProcess, setEventedProcess] = useState<ProcessType>();
-  const profile = useProfileObject();
+  const ownerUuidRef = useRef(ownerUuid);
 
   const sendChat = (message: MessageFormType) => {
     if (!socketClient) return;
@@ -30,11 +30,16 @@ export default function useSocketClientModel(
   useEffect(() => {
     const client = new WebSocketClient();
     setSocketClient(client);
-
     return () => {
       if (client) client.disconnect();
     };
   }, []);
+
+  useEffect(() => {
+    console.log(`ownerUuid was changed : ${ownerUuid} - usesocketClientModel line 41`);
+    ownerUuidRef.current = ownerUuid;
+    console.log(ownerUuid);
+  }, [ownerUuid]);
 
   useEffect(() => {
     const connectWebSocket = async () => {
@@ -49,7 +54,15 @@ export default function useSocketClientModel(
           // 메시지 타입으로 반환하기
           const toMessageFormType: MessageFormType = chatConverterFromBe(parsedMessage);
           messageAddHandler(toMessageFormType);
-          const convertedType = chatProcessConverter(toMessageFormType, ownerUuid === toMessageFormType.user);
+          console.log('---------------------------------');
+          console.log(ownerUuidRef.current);
+          console.log(toMessageFormType.user);
+          console.log(ownerUuid === toMessageFormType.user);
+          console.log('---------------------------------');
+          const convertedType = chatProcessConverter(
+            toMessageFormType,
+            ownerUuidRef.current === toMessageFormType.user,
+          );
 
           // !
           if (convertedType) setEventedProcess(convertedType);
