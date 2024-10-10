@@ -28,7 +28,9 @@ public class MyProductDto {
 
     private ProductStatus productStatus;
 
-    public static MyProductDto toDto(Product product, String productMainImage) {
+    private String contractSrc;
+
+    public static MyProductDto toDto(Product product, String productMainImage, String contractSrc) {
         return MyProductDto.builder()
                 .productId(product.getId())
                 .productMainImage(productMainImage)
@@ -37,6 +39,7 @@ public class MyProductDto {
                 .endDate(product.getEndDate())
                 .rentalFee(product.getRentalFee())
                 .productStatus(product.getProductStatus())
+                .contractSrc(contractSrc)
                 .build();
     }
 }

@@ -5,6 +5,7 @@ import baro.baro.domain.contract.dto.ContractConditionDto;
 import baro.baro.domain.contract.dto.request.ContractConditionReq;
 import baro.baro.domain.contract.entity.ContractCondition;
 import baro.baro.domain.contract.repository.ContractConditionRepository;
+import baro.baro.domain.contract.repository.SignatureInformationRepository;
 import baro.baro.domain.location.entity.Location;
 import baro.baro.domain.location.repository.LocationRepository;
 import baro.baro.domain.member.entity.Member;
@@ -76,6 +77,7 @@ public class ProductServiceImpl implements ProductService {
     private final EsProductService esProductService;
     private final EsKeywordService esKeywordService;
     private final SearchFeignClientCustom searchFeignClient;
+    private final SignatureInformationRepository signatureInformationRepository;
 
     @Value("${NAVER_ID}")
     private String naverId;
@@ -104,7 +106,7 @@ public class ProductServiceImpl implements ProductService {
         ContractCondition contractCondition = null;
         ContractConditionDto contractConditionDto = null;
 
-        if(productAddReq.getContractConditionReq() != null) {
+        if (productAddReq.getContractConditionReq() != null) {
             validateContractCondition(productAddReq.getContractConditionReq());
             contractCondition = productAddReq.getContractConditionReq().toEntity(product);
             contractConditionRepository.save(contractCondition);
@@ -116,7 +118,7 @@ public class ProductServiceImpl implements ProductService {
 
         productRepository.save(product);
 
-        List<String> imageUrls = images3Service.uploadMultipleFiles(files, "products/"+product.getId());
+        List<String> imageUrls = images3Service.uploadMultipleFiles(files, "products/" + product.getId());
 
         IntStream.range(0, imageUrls.size())
                 .forEach(i -> {
@@ -133,31 +135,31 @@ public class ProductServiceImpl implements ProductService {
     }
 
     void validateContractCondition(ContractConditionReq req) {
-        if(req.getOverdueCriteria() == null) {
+        if (req.getOverdueCriteria() == null) {
             throw new CustomException(INVALID_CONTRACT_CONDITION);
         }
 
-        if(req.getOverdueFee() == null) {
+        if (req.getOverdueFee() == null) {
             throw new CustomException(INVALID_CONTRACT_CONDITION);
         }
 
-        if(req.getRefundDeadline() == null) {
+        if (req.getRefundDeadline() == null) {
             throw new CustomException(INVALID_CONTRACT_CONDITION);
         }
 
-        if(req.getRepairVendor() == null) {
+        if (req.getRepairVendor() == null) {
             throw new CustomException(INVALID_CONTRACT_CONDITION);
         }
 
-        if(req.getTheftCriteria() == null) {
+        if (req.getTheftCriteria() == null) {
             throw new CustomException(INVALID_CONTRACT_CONDITION);
         }
 
-        if(req.getProductName() == null) {
+        if (req.getProductName() == null) {
             throw new CustomException(INVALID_CONTRACT_CONDITION);
         }
 
-        if(req.getSerialNumber() == null) {
+        if (req.getSerialNumber() == null) {
             throw new CustomException(INVALID_CONTRACT_CONDITION);
         }
     }
@@ -176,7 +178,7 @@ public class ProductServiceImpl implements ProductService {
         ContractCondition contractCondition = product.getContractCondition();
 
         ContractConditionDto contractConditionDto = null;
-        if(contractCondition != null) {
+        if (contractCondition != null) {
             contractConditionDto = ContractConditionDto.toDto(contractCondition);
         }
 
@@ -222,15 +224,21 @@ public class ProductServiceImpl implements ProductService {
                 .stream()
                 .map(chatRoom -> {
                     Optional<Product> product = productRepository.findById(chatRoom.getProduct().getId());
-                    if(product.isEmpty()) {
+                    if (product.isEmpty()) {
                         return null;
+                    }
+
+                    String contractSrc = "";
+
+                    if (product.get().getContract() != null) {
+                        contractSrc = product.get().getContract().getContractUrl();
                     }
 
                     Product existedProduct = product.get();
                     List<String> imageUrls = productImageRepository.findSrcByProductId(existedProduct.getId());
                     String productMainImage = imageUrls.getFirst();
 
-                    return MyProductDto.toDto(existedProduct, productMainImage);
+                    return MyProductDto.toDto(existedProduct, productMainImage, contractSrc.isEmpty() ? null : contractSrc);
                 })
                 .filter(Objects::nonNull)
                 .toList();
@@ -244,15 +252,21 @@ public class ProductServiceImpl implements ProductService {
                 .stream()
                 .map(chatRoom -> {
                     Optional<Product> product = productRepository.findById(chatRoom.getProduct().getId());
-                    if(product.isEmpty()) {
+                    if (product.isEmpty()) {
                         return null;
+                    }
+
+                    String contractSrc = "";
+
+                    if (product.get().getContract() != null) {
+                        contractSrc = product.get().getContract().getContractUrl();
                     }
 
                     Product existedProduct = product.get();
                     List<String> imageUrls = productImageRepository.findSrcByProductId(existedProduct.getId());
                     String productMainImage = imageUrls.getFirst();
 
-                    return MyProductDto.toDto(existedProduct, productMainImage);
+                    return MyProductDto.toDto(existedProduct, productMainImage, contractSrc.isEmpty() ? null : contractSrc);
                 })
                 .filter(Objects::nonNull)
                 .toList();
@@ -279,7 +293,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
 
-        if(!member.getId().equals(product.getMember().getId())) {
+        if (!member.getId().equals(product.getMember().getId())) {
             throw new CustomException(PRODUCT_MODIFY_FORBIDDEN);
         }
 
@@ -288,7 +302,7 @@ public class ProductServiceImpl implements ProductService {
             throw new CustomException(CONFLICT_WITH_OTHER);
         }
 
-        if(product.getProductStatus() != ProductStatus.AVAILABLE) {
+        if (product.getProductStatus() != ProductStatus.AVAILABLE) {
             throw new CustomException(PRODUCT_NOT_MODIFIABLE);
         }
 
@@ -298,7 +312,7 @@ public class ProductServiceImpl implements ProductService {
 
         List<String> imageUrls;
 
-        if(files != null || !files.isEmpty()) {
+        if (files != null || !files.isEmpty()) {
             validateFiles(files);
             imageUrls = updateProductImages(files, product, member);
         } else {
@@ -311,7 +325,7 @@ public class ProductServiceImpl implements ProductService {
 
         Boolean isWish = wishListRepository.existsByMemberIdAndProductId(memberId, productId);
 
-        ProductDetails result = ProductDetails.toDto(product, member, imageUrls, contractConditionDto , true, isWish);
+        ProductDetails result = ProductDetails.toDto(product, member, imageUrls, contractConditionDto, true, isWish);
 
         eventPublisher.publishEvent(new UnlockEvent(this, "contract_" + product.getId()));
 
@@ -319,43 +333,43 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private void updateProduct(ProductModifyReq productModifyReq, Product product) {
-        if(productModifyReq.getTitle() != null) {
+        if (productModifyReq.getTitle() != null) {
             product.updateTitle(productModifyReq.getTitle());
         }
 
-        if(productModifyReq.getContent() != null) {
+        if (productModifyReq.getContent() != null) {
             product.updateContent(productModifyReq.getContent());
         }
 
-        if(productModifyReq.getStartDate() != null) {
+        if (productModifyReq.getStartDate() != null) {
             product.updateStartDate(productModifyReq.getStartDate());
         }
 
-        if(productModifyReq.getEndDate() != null) {
+        if (productModifyReq.getEndDate() != null) {
             product.updateEndDate(productModifyReq.getEndDate());
         }
 
-        if(productModifyReq.getRentalFee() != null) {
+        if (productModifyReq.getRentalFee() != null) {
             product.updateRentalFee(productModifyReq.getRentalFee());
         }
 
-        if(productModifyReq.getCategory() != null) {
+        if (productModifyReq.getCategory() != null) {
             Category categoryEnum = Category.valueOf(productModifyReq.getCategory().toUpperCase());
 
             product.updateCategory(categoryEnum);
         }
 
-        if(productModifyReq.getPlace() != null) {
+        if (productModifyReq.getPlace() != null) {
             product.updatePlace(productModifyReq.getPlace());
         }
 
-        if(productModifyReq.getLatitude() != null && productModifyReq.getLongitude() != null) {
-            Location location =  locationRepository.findLocation(productModifyReq.getLatitude(), productModifyReq.getLongitude());
+        if (productModifyReq.getLatitude() != null && productModifyReq.getLongitude() != null) {
+            Location location = locationRepository.findLocation(productModifyReq.getLatitude(), productModifyReq.getLongitude());
 
             product.updateLocation(productModifyReq.getLatitude(), productModifyReq.getLongitude(), location.getId(), location.getDong());
         }
 
-        if(productModifyReq.getReturnTypeList() != null) {
+        if (productModifyReq.getReturnTypeList() != null) {
             List<ReturnType> returnTypeEnums = productModifyReq.getReturnTypeList().stream()
                     .map(returnType -> ReturnType.valueOf(returnType.toUpperCase()))
                     .toList();
@@ -363,7 +377,7 @@ public class ProductServiceImpl implements ProductService {
             product.UpdateReturnTypes(returnTypeEnums);
         }
 
-        if(productModifyReq.getReturnAddress() != null) {
+        if (productModifyReq.getReturnAddress() != null) {
             product.updateReturnAddress(productModifyReq.getReturnAddress());
         }
 
@@ -374,12 +388,12 @@ public class ProductServiceImpl implements ProductService {
         ContractCondition contractCondition = contractConditionRepository.findByProductId(product.getId());
 
         //계약조건이 없다가 있으면 만들어주기
-        if(contractCondition == null && contractConditionReq != null) {
-            ContractCondition newContractCondition =  contractCondition = contractConditionReq.toEntity(product);
+        if (contractCondition == null && contractConditionReq != null) {
+            ContractCondition newContractCondition = contractCondition = contractConditionReq.toEntity(product);
             contractConditionRepository.save(contractCondition);
 
             return ContractConditionDto.toDto(newContractCondition);
-        } else if(contractCondition != null && contractConditionReq != null) {
+        } else if (contractCondition != null && contractConditionReq != null) {
             contractCondition.updateProductName(contractConditionReq.getProductName());
             contractCondition.updateSerialNumber(contractConditionReq.getSerialNumber());
             contractCondition.updateRepairVendor(contractConditionReq.getRepairVendor());
@@ -398,9 +412,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private List<String> updateProductImages(List<MultipartFile> files, Product product, Member member) throws IOException {
-        images3Service.deleteFolder("products/"+product.getId());
+        images3Service.deleteFolder("products/" + product.getId());
 
-        List<String> imageUrls = images3Service.uploadMultipleFiles(files, "products/"+product.getId());
+        List<String> imageUrls = images3Service.uploadMultipleFiles(files, "products/" + product.getId());
 
         IntStream.range(0, imageUrls.size())
                 .forEach(i -> {
@@ -429,7 +443,7 @@ public class ProductServiceImpl implements ProductService {
         List<Long> esProducts;
         List<SearchProductTmpDto> tmpProducts;
 
-        if(Category.valueOf(searchProductsReq.getCategory().toUpperCase()) == ALL) {
+        if (Category.valueOf(searchProductsReq.getCategory().toUpperCase()) == ALL) {
             esProducts = esProductService.searchProduct(keyword,
                             searchProductsReq.getLocationId(), searchProductsReq.getCategory())
                     .stream()
