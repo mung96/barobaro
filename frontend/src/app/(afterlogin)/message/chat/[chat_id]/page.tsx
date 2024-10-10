@@ -29,6 +29,7 @@ export default function Chat() {
     ownerUuid,
     initProcess,
     originBoardParams,
+    boardTitle,
   } = useChatPageModel();
 
   // webSocket Client
@@ -41,7 +42,7 @@ export default function Chat() {
 
   return (
     <SocketClientProvider value={{ socketClient, sendChat, chatRoomId }}>
-      <OpponentProvider value={{ otherNickname, otherUuid, ownerUuid }}>
+      <OpponentProvider value={{ otherNickname, otherUuid, ownerUuid, boardTitle }}>
         <ProcessProvider value={{ process, processSetter }}>
           <PageTransition direction="forward" step="g">
             <ChatProcessSetter fromChatPageModel={initProcess} fromSocketClientModel={eventedProcess} />
