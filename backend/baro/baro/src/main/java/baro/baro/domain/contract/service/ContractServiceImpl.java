@@ -255,9 +255,10 @@ public class ContractServiceImpl implements ContractService {
 		Member opponent = chatRoom.getRental();
 
 		String generatedS3PdfUrl;
+		String uuid = UUID.randomUUID().toString();
 		try {
 			PdfCreateDto pdfCreateDto = PdfCreateDto.toDto(contractApproveReq.getChatRoomId(),
-				me, opponent, product, contractApplicationDto, product.getContractCondition());
+					uuid, me, opponent, product, contractApplicationDto, product.getContractCondition());
 			generatedS3PdfUrl = pdfUtils.createPdf(pdfCreateDto);
 		} catch (Exception e) {
 			log.info(Arrays.toString(e.getStackTrace()));
