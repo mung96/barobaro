@@ -1,27 +1,40 @@
 import Image from 'next/image';
-import Category from '@/components/Category';
-import SearchBar from '@/components/SearchBar';
-import Cards from '@/components/(recent_list_component)/Cards';
 import Logo from '@/../public/assets/png/barobaro_logo.png';
-import UserTown from "@/components/user/UserTown";
+import { lazy, Suspense } from 'react';
+
+const UserTown = lazy(() => import('@/components/user/UserTown'));
+const SearchBar = lazy(() => import('@/components/SearchBar'));
+const Category = lazy(() => import('@/components/Category'));
+const Cards = lazy(() => import('@/components/(recent_list_component)/Cards'));
+
 
 function Home() {
     return (
     <>
       <br />
-      <UserTown />
+      <Suspense>
+        <UserTown />
+      </Suspense>
       <br />
       <div className="flex justify-center">
         <Image src={Logo} alt="baro" width={150} height={150} />
       </div>
-      <SearchBar />
+      <Suspense>
+        <SearchBar />
+      </Suspense>
       <br />
-      <Category />
+      <Suspense>
+        <Category />
+      </Suspense>
       <br />
       <h1 className="text-xs font-bold ml-4">최근 올라온 목록</h1>
-      <Cards CardsData="recentlyUploaded" />
+      <Suspense>
+        <Cards CardsData="recentlyUploaded" />
+      </Suspense>
       <h1 className="text-xs font-bold ml-4">최근 본 목록</h1>
-      <Cards CardsData="recentlyView" />
+      <Suspense>
+        <Cards CardsData="recentlyView" />
+      </Suspense>
       <div className="h-12" />
     </>
   );
