@@ -19,9 +19,11 @@ import baro.baro.domain.member.entity.Member;
 import baro.baro.domain.member.entity.Pin;
 import baro.baro.domain.member.repository.MemberRepository;
 import baro.baro.domain.member.repository.PinRepository;
+import baro.baro.domain.noti.entity.NotiType;
 import baro.baro.domain.product.entity.Product;
 import baro.baro.domain.product.entity.ProductStatus;
 import baro.baro.global.dto.PdfCreateDto;
+import baro.baro.global.event.FcmEvent;
 import baro.baro.global.event.UnlockEvent;
 import baro.baro.global.exception.CustomException;
 import baro.baro.global.s3.PdfS3Service;
@@ -110,6 +112,8 @@ public class ContractServiceImpl implements ContractService {
 			.returnType(contractRequestDto.getReturnType()).build();
 		redisUtils.addListData("contract_" + product.getId(), contractApplicationDto); //거래정보);
 
+		eventPublisher.publishEvent(new FcmEvent(this, chatRoom.getRental(), chatRoom.getOwner(),
+			NotiType.CONTRACT_REQUEST, "새로운 계약 요청이 있어요!", "님이 계약 요청을 하셨습니다."));
 		//분산락 풀기. Transaction 내부에 unlock이 있을 경우, 동시성 이슈 발생 가능.
 		//after_completion을 통해 트랜젝션이 종료된 후, 락 해제를 보장
 		eventPublisher.publishEvent(new UnlockEvent(this, "contract_" + product.getId()));
@@ -218,7 +222,7 @@ public class ContractServiceImpl implements ContractService {
 		Contract contract = product.getContract();
 
 		if (contract != null) {
-			if(contract.getRental().getId().equals(chatRoom.getRental().getId())){
+			if (contract.getRental().getId().equals(chatRoom.getRental().getId())) {
 				return ContractApproveRes.builder()
 					.chatRoomId(contractApproveReq.getChatRoomId())
 					.fileUrl(contract.getContractUrl())
@@ -274,6 +278,8 @@ public class ContractServiceImpl implements ContractService {
 
 		contractRepository.save(newContract);
 
+		eventPublisher.publishEvent(new FcmEvent(this, chatRoom.getOwner(), chatRoom.getRental(),
+			NotiType.CONTRACT_ACCEPTANCE, "계약 요청이 수락되었습니다!", "님이 계약 요청을 수락하셨습니다."));
 		//분산락 해제
 		eventPublisher.publishEvent(new UnlockEvent(this, "contract_" + product.getId()));
 		return ContractApproveRes.builder()
@@ -328,6 +334,8 @@ public class ContractServiceImpl implements ContractService {
 
 		redisUtils.deleteData("contract_" + product.getId());
 
+		eventPublisher.publishEvent(new FcmEvent(this, chatRoom.getOwner(), chatRoom.getRental(),
+			NotiType.CONTRACT_ACCEPTANCE, "계약 요청이 수락되었습니다!", "님이 계약 요청을 수락하셨습니다."));
 		eventPublisher.publishEvent(new UnlockEvent(this, "contract_" + product.getId()));
 		return ContractApproveRes.builder()
 			.chatRoomId(contractApproveReq.getChatRoomId())
@@ -426,6 +434,8 @@ public class ContractServiceImpl implements ContractService {
 		//redis 에서 계약 요청들 삭제
 		redisUtils.deleteData("contract_" + product.getId());
 
+		eventPublisher.publishEvent(new FcmEvent(this, chatRoom.getOwner(), chatRoom.getRental(),
+			NotiType.SIGNATURE_REQUEST, "계약서 서명 요청이 있습니다!", "님이 계약서 서명을 요청하셨습니다."));
 		//분산락 해제
 		eventPublisher.publishEvent(new UnlockEvent(this, "contract_" + product.getId()));
 		return ContractSignedRes.builder()
@@ -508,6 +518,8 @@ public class ContractServiceImpl implements ContractService {
 		signatureInformationRepository.save(signatureInformation);
 		contract.updateContractUrl(signedPdfUrl);
 		contractRepository.save(contract);
+		eventPublisher.publishEvent(new FcmEvent(this, chatRoom.getRental(), chatRoom.getOwner(),
+			NotiType.SIGNATURE_REQUEST, "계약서 서명이 완료되었습니다.", "님이 계약서 서명을 완료했습니다."));
 		//분산락 해제
 		eventPublisher.publishEvent(new UnlockEvent(this, "contract_" + product.getId()));
 		return ContractSignedRes.builder()
@@ -551,6 +563,8 @@ public class ContractServiceImpl implements ContractService {
 		chatRoom.updateRentalStatus(RentalStatus.FINISH);
 		product.updateProductStatus(ProductStatus.FINISH);
 
+		eventPublisher.publishEvent(new FcmEvent(this, chatRoom.getOwner(), chatRoom.getRental(),
+			NotiType.RECEIPT_CONFIRMATION, "물품 수령확인이 완료되었습니다.", "님이 물품 수령확인을 하셨습니다."));
 		//분산락 해제
 		eventPublisher.publishEvent(new UnlockEvent(this, "contract_" + product.getId()));
 

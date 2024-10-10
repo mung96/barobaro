@@ -3,6 +3,7 @@ package baro.baro.global.config;
 import baro.baro.global.interceptor.WebSocketAuthInterceptor;
 import baro.baro.global.oauth.jwt.service.JwtService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -17,6 +18,7 @@ import org.springframework.web.socket.config.annotation.WebSocketTransportRegist
 @RequiredArgsConstructor
 @EnableWebSocketMessageBroker
 @Order(Ordered.HIGHEST_PRECEDENCE + 99) // 우선순위
+@Slf4j
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     private final JwtService jwtService;
 
@@ -28,6 +30,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         // 메시지 브로커를 활성화하여, 특정 주제(/sub)로 전달된 메시지를 클라이언트가 구독할 수 있도록 함
         // 서버에서 해당 주제로 메시지를 발행하면, 구독 중인 클라이언트가 메시지를 수신함
         registry.enableSimpleBroker("/sub");
+
+        log.info("WebSocketConfig configureMessageBroker");
     }
 
     @Override
@@ -36,6 +40,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 .addEndpoint("/ws") // /ws 경로를 통해 클라이언트는 WebSocket 연결을 시도
                 .setAllowedOrigins("*") // 모든 도메인에서 이 WebSocket 엔드포인트로 접속할 수 있도록 허용
                 .withSockJS(); // SockJS를 사용하도록 설정
+
+        log.info("WebSocketConfig registerStompEndpoints");
     }
 
     @Override
