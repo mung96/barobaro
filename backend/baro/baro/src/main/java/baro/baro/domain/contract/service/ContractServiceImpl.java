@@ -11,7 +11,6 @@ import baro.baro.domain.contract.dto.request.ProductTakeBackReq;
 import baro.baro.domain.contract.dto.request.SignatureAddReq;
 import baro.baro.domain.contract.dto.response.*;
 import baro.baro.domain.contract.entity.Contract;
-import baro.baro.domain.contract.entity.ContractCondition;
 import baro.baro.domain.contract.entity.SignatureInformation;
 import baro.baro.domain.contract.repository.ContractRepository;
 import baro.baro.domain.contract.repository.SignatureInformationRepository;
@@ -33,7 +32,6 @@ import baro.baro.global.utils.PdfUtils;
 import baro.baro.global.utils.RedisUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -253,7 +251,7 @@ public class ContractServiceImpl implements ContractService {
 
 		ContractApproveRes result;
 
-		if(product.getContract() == null) {
+		if(product.getContractCondition() == null) {
 			chatRoom.updateRentalStatus(RentalStatus.APPROVED);
 
 			redisUtils.deleteData("contract_" + product.getId());
