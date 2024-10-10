@@ -33,48 +33,33 @@ public class WishListServiceImpl implements WishListService {
 
     @Override
     @Transactional
-    public WishDto addWishList(Long productId, Long memberId) {
+    public WishDto wishList(Long productId, Long memberId, Boolean isWished) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
 
-        boolean isWish = wishListRepository.existsByMemberIdAndProductId(member.getId(), product.getId());
+        boolean wish = wishListRepository.existsByMemberIdAndProductId(member.getId(), product.getId());
 
-        if(isWish) {
-            throw new CustomException(WISHLIST_IS_PRESENT);
+        if(isWished) {
+            if(wish) {
+                throw new CustomException(WISHLIST_IS_PRESENT);
+            }
+            WishList wishList = WishDto.toEntity(member, product);
+
+            wishListRepository.save(wishList);
+        } else {
+            if(!wish) {
+                throw new CustomException(WISHLIST_IS_NOT_PRESENT);
+            }
+
+            wishListRepository.deleteByMemberIdAndProductId(member.getId(), product.getId());
         }
-
-        WishList wishList = WishDto.toEntity(member, product);
-
-        wishListRepository.save(wishList);
 
         Integer count = wishListRepository.countWishList(product.getId());
 
-        return WishDto.toDto(true, count);
-    }
-
-    @Override
-    @Transactional
-    public WishDto deleteWishList(Long productId, Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
-
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
-
-        boolean isWish = wishListRepository.existsByMemberIdAndProductId(member.getId(), product.getId());
-
-        if(!isWish) {
-            throw new CustomException(WISHLIST_IS_NOT_PRESENT);
-        }
-
-        wishListRepository.deleteByMemberIdAndProductId(member.getId(), product.getId());
-
-        Integer count = wishListRepository.countWishList(product.getId());
-
-        return WishDto.toDto(false, count);
+        return WishDto.toDto(isWished, count);
     }
 
     @Override
