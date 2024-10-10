@@ -1,6 +1,7 @@
 package baro.baro.global.utils;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -9,11 +10,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class RedisUtilsImpl implements RedisUtils {
 
     private final RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, String> redisStringTemplate;
 
     public void setData(String key, Object value) {
         redisTemplate.opsForValue().set(key, value);
@@ -56,15 +59,28 @@ public class RedisUtilsImpl implements RedisUtils {
     }
 
     public Boolean lock(String key, Long timeout) {
-        return this.lock(key, "", timeout);
+        return this.lock(key, "lock", timeout);
     }
 
-    public Boolean lock(String key, Object value, Long timeout) {
-        Boolean success =  redisTemplate.opsForValue().setIfAbsent("lock_" + key, value, Duration.ofMillis(timeout));
-        return success !=null && success;
+    public Boolean lock(String key, String value, Long timeout) {
+//        Boolean success =  redisTemplate.opsForValue().setIfAbsent("lock_" + key, value, Duration.ofMillis(timeout));
+//        log.info("lock info : "+success);
+//        return success !=null && success;
+        try {
+            Boolean success = redisStringTemplate.opsForValue().setIfAbsent("lock_" + key, value, Duration.ofMillis(timeout));
+            if (success == null) {
+                log.warn("Redis setIfAbsent returned null. Key: " + key);
+                return false; // null인 경우 false 반환
+            }
+            log.info("Lock info: " + success);
+            return success;
+        } catch (Exception e) {
+            log.error("Error while trying to acquire lock: ", e);
+            return false; // 예외 발생 시 false 반환
+        }
     }
 
     public void unlock(String key) {
-        redisTemplate.delete("lock_" + key);
+        redisStringTemplate.delete("lock_" + key);
     }
 }
