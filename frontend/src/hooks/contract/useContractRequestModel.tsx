@@ -41,20 +41,18 @@ const useContractRequestModel = (charRoomId: number) => {
         }
     };
 
-    const requestContract = useCallback(
-        handleSubmit(async () => {
-            try {
-                const response = await postContractRequest(convertContractDataToRequest(getValues()));
-                console.log(response);
-            } catch (error) {
-                console.log(error);
-                if (isAxiosError(error)) {
-                    alert(error.response?.data.message);
-                }
+    const requestContract = (onSuccess: () => void) => handleSubmit(async () => {
+        try {
+            const response = await postContractRequest(convertContractDataToRequest(getValues()));
+            console.log(response);
+            onSuccess();
+        } catch (error) {
+            if (isAxiosError(error)) {
+                alert(error.response?.data.message);
             }
-        }),
-        [],
-    );
+        }
+    })
+
     return {
         rentalDuration, returnType, requestContract, isSubmitting
     };
