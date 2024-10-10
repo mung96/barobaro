@@ -20,7 +20,10 @@ export default function AlertComponent( {nickname, profileUrl, orderType, messag
     console.log(chatId)
     // router.push({`/chat/${chatId}`})
   }
-
+  const orderConverter = {
+    'CONTRACT_REQUEST' : '계약요청'
+  }
+  // @ts-ignore
   return (
     <div className="flex bg-gray-500 w-[90%] h-[100px] rounded-[10px] my-2">
       <div className="flex justify-center items-center w-[70px]">
@@ -31,7 +34,7 @@ export default function AlertComponent( {nickname, profileUrl, orderType, messag
       <div className="flex flex-col flex-1 mt-3">
         <div className="flex w-full">
           <div className="text-blue-300 font-bold ml-3">
-            {orderType}
+            {orderConverter[orderType]}
           {/* TODO : 오는 값에 따라 다른 값 */}
           </div>
           <div className="flex-1"/>
