@@ -51,6 +51,7 @@ public enum ErrorCode {
     PDF_GENERATE_FAILED(INTERNAL_SERVER_ERROR.value(), "PDF 생성 및 업로드 과정에서 오류가 발생했습니다."),
     CONTRACT_NOT_FOUND(NOT_FOUND.value(), "진행중인 계약 정보가 없습니다."),
     EXCEPTION_DURING_SIGNING(INTERNAL_SERVER_ERROR.value(), "서명 진행 중 오류가 발생했습니다"),
+    NOT_MADE_FROM_BAROBARO(NOT_FOUND.value(), "바로바로에서 생성된 계약서가 아닙니다."),
     PDF_NOT_MINE(FORBIDDEN.value(), "본인이 포함하지 않은 PDF는 열람할 수 없습니다."),
 
 
