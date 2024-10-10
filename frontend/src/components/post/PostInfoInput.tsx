@@ -54,7 +54,7 @@ function PostInfoInput({ onNext, fields, errors, isValid, getValues }: Props) {
         isInvalid={fields.body.fieldState.invalid}
         message={errors.body?.message!}
       />
-      <div className="fixed bottom-4 left-0 w-[100vw] px-4">
+      <div className="fixed left-0 w-[100vw] bottom-0 px-4 py-3 border-t-[1px] bg-white z-50">
         <Button disabled={!isValid} onClick={onNext} width="100%" height="48px">
           <p className="text-base text-white">다음</p>
         </Button>

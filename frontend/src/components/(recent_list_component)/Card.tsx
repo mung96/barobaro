@@ -32,7 +32,7 @@ export default function Card({ cardInfo }: { cardInfo: CurrentProduct }) {
         />
       </div>
       <div>
-        <p className="text-xs font-bold">{cardInfo.title}</p>
+        <p className="text-xs font-bold">{cardInfo.title.length > 10 ? `${cardInfo.title.slice(0, 9)}...` : cardInfo.title}</p>
       </div>
       <div>
         <p className="text-[10px]">

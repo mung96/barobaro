@@ -2,6 +2,8 @@ export const IMAGE_MAX_LENGTH = 5;
 export const IMAGE_MIN_LENGTH = 1;
 export const BODY_MAX_LENGTH = 1000;
 export const POST_TITLE_MAX_LENGTH = 20;
+export const RENTAL_FEE_PER_DAY_MAX_VALUE = 100_000;
+export const RENTAL_FEE_PER_DAY_MIN_VALUE = 100;
 
 export const POST_FIELD_CONFIG = {
   TITLE: {
@@ -49,6 +51,14 @@ export const POST_FIELD_CONFIG = {
     defaultValue: '',
     rules: {
       required: '대여 금액을 입력해주세요.',
+      min: {
+        value: RENTAL_FEE_PER_DAY_MIN_VALUE,
+        message: `대여 금액은 ${RENTAL_FEE_PER_DAY_MIN_VALUE}원 이상으로 입력해주세요.`,
+      },
+      max: {
+        value: RENTAL_FEE_PER_DAY_MAX_VALUE,
+        message: `대여 금액은 ${RENTAL_FEE_PER_DAY_MAX_VALUE}원 이하로 입력해주세요.`,
+      },
     },
   },
   RETURN_TYPE_LIST: {
@@ -64,49 +74,49 @@ export const POST_FIELD_CONFIG = {
   PRODUCT_NAME: {
     defaultValue: '',
     rules: {
-      // required: '제품 이름을 입력해주세요.',
+      required: '제품 이름을 입력해주세요.',
     },
   },
 
   SERIAL_NUMBER: {
     defaultValue: '',
     rules: {
-      // required: '일련 번호를 입력해주세요.',
+      required: '일련 번호를 입력해주세요.',
     },
   },
 
   REPAIR_VENDOR: {
     defaultValue: '',
     rules: {
-      // required: '수리업체를 선택해주세요.',
+      required: '수리업체를 선택해주세요.',
     },
   },
 
   OVERDUE_CRITERIA: {
     defaultValue: '',
     rules: {
-      // required: '무단연체 기준을 입력해주세요.',
+      required: '무단연체 기준을 입력해주세요.',
     },
   },
 
   OVERDUE_FEE: {
     defaultValue: '',
     rules: {
-      // required: '무단연체시 가격을 입력해주세요.',
+      required: '무단연체시 가격을 입력해주세요.',
     },
   },
 
   THEFT_CRITERIA: {
     defaultValue: '',
     rules: {
-      // required: '도난 취급 기준을 입력해주세요.',
+      required: '도난 취급 기준을 입력해주세요.',
     },
   },
 
   REFUND_DEADLINE: {
     defaultValue: '',
     rules: {
-      // required: '청구 비용 일수를 입려갷주세요.',
+      required: '청구 비용 일수를 입려갷주세요.',
     },
   },
 };
