@@ -18,15 +18,13 @@ const useMyProfileStore = create(
     (set) => ({
       profileObject: initialProfile,
       isInit: true,
-      actions: {
-        setProfileObject: (profileObject) => set({ profileObject: profileObject }),
-      },
+      setProfileObject: (profileObject) => set({ profileObject: profileObject }),
     }),
     { name: 'profile', storage: createJSONStorage(() => localStorage) },
   ),
 );
 
-export const useProfileSet = () => useMyProfileStore((store) => store.actions.setProfileObject);
+export const useProfileSet = () => useMyProfileStore((store) => store.setProfileObject);
 export const useProfileObject = () => useMyProfileStore((state) => state.profileObject);
 export const useProfileInit = () => useMyProfileStore((state) => state.isInit);
 
