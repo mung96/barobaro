@@ -250,9 +250,6 @@ public class ContractServiceImpl implements ContractService {
 
 		//상품 대여 상태 업데이트
 		product.updateProductStatus(ProductStatus.IN_PROGRESS);
-		product.updateStartDate(contractApplicationDto.getDesiredStartDate());
-		product.updateEndDate(contractApplicationDto.getDesiredEndDate());
-		product.updateReturnType(contractApplicationDto.getReturnType());
 
 		//채팅방의 거래 상태 업데이트
 		chatRoom.updateRentalStatus(RentalStatus.NEED_OWNER_SIGN);
@@ -340,9 +337,6 @@ public class ContractServiceImpl implements ContractService {
 
 		//상품 대여 상태 업데이트
 		product.updateProductStatus(ProductStatus.APPROVED);
-		product.updateStartDate(contractApplicationDto.getDesiredStartDate());
-		product.updateEndDate(contractApplicationDto.getDesiredEndDate());
-		product.updateReturnType(contractApplicationDto.getReturnType());
 
 		//채팅방의 거래 상태 업데이트
 		chatRoom.updateRentalStatus(RentalStatus.APPROVED);
