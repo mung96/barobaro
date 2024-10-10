@@ -47,7 +47,7 @@ const PasswordCheckModal = ({ isOpen, onRequestClose, modalChanger, purpose }: P
   const processContext = useContext(ProcessContext);
   if (!socketClientContext || !processContext) return null;
   const { sendChat } = socketClientContext;
-  const { processSetter } = processContext;
+  // const { processSetter } = processContext;
   const profile = useProfileObject();
 
   const modalFinish = () => {
@@ -56,7 +56,7 @@ const PasswordCheckModal = ({ isOpen, onRequestClose, modalChanger, purpose }: P
     else if (purpose === 'beforePay') {
       // 송금 액션 들어가야 함(axios 등)
 
-      processSetter(ProcessTypes.PAID_DIRECT);
+      //    processSetter(ProcessTypes.PAID_DIRECT);
 
       const payFinishedMessage: MessageFormType = {
         type: 3,
