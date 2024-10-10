@@ -10,21 +10,21 @@ import { usePathname, useRouter } from 'next/navigation';
 import PostCheckModal from '@/components/modal/PostCheckModal';
 import Header from '@/components/Header';
 import LikeButton from '@/components/(SVG_component)/LikeButton';
-import CalendarSVG from '@/components/(SVG_component)/Calendar';
 import { postMessageRoomList } from '@/apis/message/chat/messageRoomListApi';
 import { getProductsDetail, deleteProductsDetail } from "@/apis/productDetailApi";
 import Button from '@/components/shared/Button';
 import { IoCalendarClearOutline } from 'react-icons/io5';
+import { useProfileObject } from '@/store/useMyProfile';
+import IdentityVerificationModal from '@/components/post/IdentityVerificationModal';
 
 export default function PostDetail() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [postInfo, setPostInfo] = useState<any>(null);
   const currentPath = usePathname();
 
+  /*TODO : 로그인X => 화면 접근시 ReactModal, 완료된 거래인경우 ReactModal */
   const router = useRouter();
-  {
-    /*TODO : 로그인X => 화면 접근시 ReactModal, 완료된 거래인경우 ReactModal */
-  }
+
   const modalType = 'needPassword';
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -41,10 +41,12 @@ export default function PostDetail() {
     fetchPostDetails();
   }, [fetchPostDetails]);
 
+  const [isIdentityVerificationModalOpen, setIsIdentityVerificationModalOpen] = useState(false);
+  const profileState = useProfileObject();
+
   if (!postInfo) {
     return <div></div>;
   }
-
   const createChatRoom = async () => {
     try {
       const response = await postMessageRoomList(currentPath.slice(6));
@@ -55,8 +57,21 @@ export default function PostDetail() {
     }
   };
 
+  const pushPasswordNew = () => {
+    router.push('/mypage/user/password/new');
+    setIsIdentityVerificationModalOpen(false);
+  }
+
+  const handleChattingButtonClick = async () => {
+    if (!profileState.isAuthenticated) {
+      setIsIdentityVerificationModalOpen(true);
+    } else {
+      await createChatRoom();
+    }
+  }
   return (
     <>
+      <IdentityVerificationModal isOpen={isIdentityVerificationModalOpen} onPrev={(() => setIsIdentityVerificationModalOpen(false))} onConfirm={pushPasswordNew} />
       <Header pageName="게시글 목록" hasPrevBtn hasSearchBtn hasAlertBtn />
       <div className="flex flex-col items-center w-full mb-20">
         <div className="z-50">
@@ -105,7 +120,7 @@ export default function PostDetail() {
         />
         <ContractCondition data={postInfo} />
       </div>
-      <footer className="fixed left-0 bottom-0 -z-0 flex items-center justify-between w-full px-4 h-[60px] bg-white">
+      <footer className="fixed left-0 bottom-0 -z-0 flex border-t-[1px] items-center justify-between w-full px-4 h-[60px] bg-white">
         <div className="pr-3 border-r-2  border-gray-500 flex items-center justify-center h-9">
           <LikeButton isWished={postInfo.isWished} productId={postInfo.productId} />
         </div>
@@ -121,10 +136,11 @@ export default function PostDetail() {
           </p>
         </div>
 
-        {!postInfo.isMine && <Button width='80px' height='40px' onClick={createChatRoom}>
+        {!postInfo.isMine && <Button width='80px' height='40px' onClick={handleChattingButtonClick}>
           <p className='text-sm'>채팅하기</p>
         </Button>}
       </footer>
     </>
   );
 }
+
