@@ -2,6 +2,7 @@ package baro.baro.domain.member.service;
 
 import baro.baro.domain.location.repository.LocationRepository;
 import baro.baro.domain.member.dto.request.PasswordAddReq;
+import baro.baro.domain.member.dto.request.ProfileModifyReq;
 import baro.baro.domain.member.dto.request.SignupReq;
 import baro.baro.domain.member.dto.response.ProfileDetailsRes;
 import baro.baro.domain.member.dto.response.SignUpInfoRes;
@@ -30,6 +31,7 @@ import java.util.UUID;
 import java.util.stream.IntStream;
 
 import static baro.baro.domain.location.validator.LocationValidator.validateLocationAddRequest;
+import static baro.baro.domain.member.validator.MemberValidator.isInvalidNickname;
 import static baro.baro.global.statuscode.ErrorCode.*;
 
 @Slf4j
@@ -143,6 +145,28 @@ public class MemberServiceImpl implements MemberService {
         if(privateKey == null) {
             throw new CustomException(PRIVATE_CREATED_FAIL);
         }
+    }
+
+    @Override
+    @Transactional
+    public ProfileDetailsRes modifyProfie(Long memberId, ProfileModifyReq profileModifyReq, MultipartFile file) throws IOException {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
+        // 닉네임 변경
+        String newNickname = profileModifyReq.getNickname();
+        if(newNickname != null && !newNickname.isEmpty()) {
+            isInvalidNickname(newNickname);
+            member.updateNickname(newNickname);
+        }
+
+        // 프로필 사진 변경
+        if(file != null && !file.isEmpty()) {
+            String image = images3Service.upload(file, "profile");
+            member.updateProfileImage(image);
+        }
+
+        return ProfileDetailsRes.toDto(member);
     }
 
     public Boolean verifyPassword(String key, Long memberId) {
