@@ -1,7 +1,6 @@
 package baro.baro.domain.chat.service;
 
 import baro.baro.domain.chat.document.Chat;
-import baro.baro.domain.chat.document.DatabaseSequence;
 import baro.baro.domain.chat.dto.ChatDto;
 import baro.baro.domain.chat.dto.ChatRoomDto;
 import baro.baro.domain.chat.dto.request.ChatProcessReq;
@@ -16,11 +15,6 @@ import baro.baro.domain.member.repository.MemberRepository;
 import baro.baro.global.exception.CustomException;
 import baro.baro.global.s3.Images3Service;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.mongodb.core.FindAndModifyOptions;
-import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,10 +22,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static baro.baro.domain.chat.document.Chat.CHAT_MESSAGE_SEQUENCE;
 import static baro.baro.global.statuscode.ErrorCode.CHATROOM_NOT_ENROLLED;
 import static baro.baro.global.statuscode.ErrorCode.CHATROOM_NOT_FOUND;
 
@@ -42,7 +34,6 @@ public class ChatServiceImpl implements ChatService {
     private final ChatRepository chatRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final MemberRepository memberRepository;
-    private final MongoOperations mongoOperations;
     private final Images3Service images3Service;
 
     @Override
@@ -73,22 +64,12 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public ChatProcessRes processChat(Long chatRoomId, ChatProcessReq chatProcessReq, Long memberId) {
-        Long chatId = createSequence(CHAT_MESSAGE_SEQUENCE);
         String uuid = memberRepository.findById(memberId).get().getUuid();
 
-        Chat chat = chatProcessReq.toEntity(chatId, chatRoomId, uuid, LocalDateTime.now());
+        Chat chat = chatProcessReq.toEntity(chatRoomId, uuid, LocalDateTime.now());
         chatRepository.save(chat);
 
         return ChatProcessRes.toDto(chat);
-    }
-
-    @Override
-    public Long createSequence(String seqName) {
-        DatabaseSequence counter = mongoOperations.findAndModify(Query.query(Criteria.where("_id").is(seqName)),
-                new Update().inc("seq", 1), FindAndModifyOptions.options().returnNew(true).upsert(true),
-                DatabaseSequence.class);
-
-        return !Objects.isNull(counter) ? counter.getSeq() : 1;
     }
 
     @Override
