@@ -4,17 +4,16 @@ import SockJS from 'sockjs-client';
 import { SERVER_BASE_URL } from '@/constants/api';
 
 const API_URL = 'http://localhost:8080';
-// const API_URL = 'ws://localhost:8080';
-const SOCKET_URL = `${API_URL}/ws`; // 로컬 테스트 시 사용
-// const API_URL = SERVER_BASE_URL;
-// const SOCKET_URL = `ws://j11a401.p.ssafy.io:8080/api/ws`;
+//const SOCKET_URL = `${API_URL}/ws`; // 로컬 테스트 시 사용
+
+const SOCKET_URL = `https://j11a401.p.ssafy.io/ws`; // 서버 엔드포인트
 
 export default class WebSocketClient {
   private client: Client;
 
   private isConnected: boolean = false;
 
-  constructor(private userIdVal: string) {
+  constructor() {
     this.client = new Client({
       webSocketFactory: () => new SockJS(SOCKET_URL),
       connectHeaders: {
