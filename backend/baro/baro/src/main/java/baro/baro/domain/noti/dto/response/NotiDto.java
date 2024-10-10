@@ -2,11 +2,15 @@ package baro.baro.domain.noti.dto.response;
 
 import baro.baro.domain.noti.entity.Noti;
 import baro.baro.domain.noti.entity.NotiType;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class NotiDto {
 	private String message;
 
