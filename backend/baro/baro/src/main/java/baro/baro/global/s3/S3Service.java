@@ -57,7 +57,7 @@ public abstract class S3Service {
     }
 
     protected Date getlastModified(String fileName){
-        log.info("getlastModified 시작");
+        log.info("getlastModified 시작" + fileName);
         ObjectMetadata objectMetadata = amazonS3Client.getObjectMetadata(bucket, fileName);
         log.info("getlastModified 들옴");
         log.info(objectMetadata.getLastModified().toString());
