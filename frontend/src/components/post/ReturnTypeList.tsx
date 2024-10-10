@@ -6,18 +6,18 @@ import { RETURN_TYPE } from '@/constants/product';
 type Props = {
   value: string[];
   onChange: (values: string[]) => void;
-  isInvalid:boolean;
-  message:string;
+  isInvalid: boolean;
+  message: string;
 };
 
-function ReturnTypeList({ value, onChange ,isInvalid,message}: Props) {
+function ReturnTypeList({ value, onChange, isInvalid, message }: Props) {
   return (
-    <div className="flex gap-1 flex-col relative">
+    <div className="flex gap-2 flex-col relative">
       <p className="text-base text-black">반납 희망 방법</p>
       <CheckBox.Group
         values={value}
         onChange={onChange}
-        className="flex gap-1"
+        className="flex gap-2"
       >
         {RETURN_TYPE.map((returnType) => (
           <SelectableItem
