@@ -137,4 +137,8 @@ public class Product {
     public void updateWishCount(Integer wishCount) {
         this.wishCount = wishCount;
     }
+    public void updateReturnType(ReturnType returnType){
+        this.returnTypes.clear();
+        this.returnTypes.add(returnType);
+    }
 }
