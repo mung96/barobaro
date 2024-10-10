@@ -31,10 +31,6 @@ const ContractDurationInput = ({
         readOnly
         onClick={
           () => setCalendarModalOpen(true)
-          // onFocus => onClick으로 변경한 이유
-          // 날짜 선택 캘린더를 별도의 모달로 구현했는데
-          // onFocus에서 캘린더모달을 열어놓도록 지정하면
-          // Focus가 되어있는 동안에는 캘린더가 계속 열려 있게 됨(닫기 눌러도 안 닫힘)
         }
       />
       <p>~</p>

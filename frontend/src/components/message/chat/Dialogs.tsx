@@ -8,6 +8,7 @@ import StatusMessage from '@/components/message/chat/StatusMessage';
 import SystemMessage from '@/components/message/chat/SystemMessage';
 import { useProfileObject } from '@/store/useMyProfile';
 import MessageTypes from '@/components/message/chat/MessageTypes';
+import useStatusMessageModel from '@/hooks/message/chat/useStatusMessageModel';
 
 type DialogParams = {
   messages: MessageFormType[];
@@ -15,6 +16,7 @@ type DialogParams = {
 export default function Dialogs({ messages }: DialogParams) {
   const { wholeMessages, endOfPageRef } = useChatDialogsModel(messages);
   const profile = useProfileObject();
+
   return (
     <>
       {wholeMessages.map((each) => (

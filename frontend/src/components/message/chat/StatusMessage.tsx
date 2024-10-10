@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 import MessageFormType from './MessageFormType';
 
 
@@ -10,6 +10,8 @@ import MessageCommonStyles from './MessageStyles';
 import PasswordCheckModal from '@/components/modal/PasswordCheckModal';
 import Button from '@/components/shared/Button';
 import { UUID } from 'crypto';
+import { getContractRequest, postContractApprove } from '@/apis/contractApi';
+import { useParams } from 'next/navigation';
 
 type BodyType = 'contract' | 'signature' | 'finished';
 
@@ -23,11 +25,28 @@ type Props = {
   isMine?: boolean; // 하위 메시지 컴포넌트에서만 사용함
   isImg?: boolean; // UserMessage 컴포넌트에만 사용함
   otherUuid?: UUID | string; // 상대방의 uuid (Message 컴포에서만 사용)
-  onClick?: () => void;
+
 };
-const StatusMessage = ({ body, timestamp, isMine, onClick }: Props) => {
+const StatusMessage = ({ body, timestamp, isMine }: Props) => {
   const { modalOpen, modalClose, modalTrigger, modalType, modalChanger } =
     useStatusMessageModel();
+
+  const [data, setData] = useState();
+
+  const { chat_id: chatRoomId } = useParams();
+  const handleRequestModalOpen = async () => {
+    try {
+      const response = await getContractRequest(Number(chatRoomId));
+      setData(response.data.body);
+      console.log(response);
+      modalTrigger('request');
+    } catch (error) {
+      console.log(error);
+    }
+
+    // return postContractApprove;
+  }
+
 
   const messageBody = (bodyProp: BodyType) => {
     if (bodyProp === 'contract') {
@@ -107,23 +126,10 @@ const StatusMessage = ({ body, timestamp, isMine, onClick }: Props) => {
 
           {!isMine && (body === 'signature' || body === 'contract') && (
             <>
-              {/* <button
-                type="button"
-                className="bg-blue-100 text-white text-center rounded-md pt-[1vh] pb-[1vh] mt-[1vh] active:bg-blue-500"
-                onClick={
-                  body === 'signature'
-                    ? () => modalTrigger('password')
-                    : () => modalTrigger('request')
-                }
-              >
-                {body === 'signature' && '서명하기'}
-                {body === 'contract' && '상세보기'}
-              </button> */}
               <Button
-                // onClick={body === 'signature'
-                //   ? () => modalTrigger('password')
-                //   : () => modalTrigger('request')}
-                onClick={onClick && onClick}
+                onClick={body === 'signature'
+                  ? () => modalTrigger('password')
+                  : handleRequestModalOpen}
                 width="100%"
                 height="32px">
                 <p>{body === 'signature' && '서명하기'}
@@ -139,6 +145,8 @@ const StatusMessage = ({ body, timestamp, isMine, onClick }: Props) => {
 
               {modalType === 'request' && ( // '상세보기' 모달 (대여자가 요청한 계약 요청서를 봄)
                 <ContractRequestModal
+                  disabled={true}
+                  data={data}
                   isOpen={modalOpen}
                   onRequestClose={modalClose}
                   isFromStatusMessage
