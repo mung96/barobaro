@@ -6,6 +6,7 @@ import useProfilePhotoModel from '@/hooks/user/useProfilePhotoModel';
 import useProfileNicknameModel from '@/hooks/user/useProfileNicknameModel';
 import { signnUp, updateProfile } from '@/services/user/profile';
 import nicknameInput from "@/components/signup/NicknameInput";
+import Header from "@/components/Header";
 
 export default function ProfilePhoto({ isSignup }: { isSignup: boolean }) {
   const { file, fileInputRef, handleProfileImage, handleButtonClick } =
