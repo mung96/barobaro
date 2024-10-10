@@ -3,6 +3,7 @@ package baro.baro.global.s3;
 import baro.baro.global.exception.CustomException;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -15,6 +16,7 @@ import java.util.UUID;
 import static baro.baro.global.formatter.DateFormatter.convertToDateFormat;
 import static baro.baro.global.statuscode.ErrorCode.FILE_EXTENSION_FAIL;
 
+@Slf4j
 @Service
 public class PdfS3Service extends S3Service {
     public PdfS3Service(final AmazonS3Client amazonS3Client) {
@@ -36,6 +38,8 @@ public class PdfS3Service extends S3Service {
 
     public LocalDateTime lastModified(String fileName){
         Date date = getlastModified("contract/"+fileName);
+        log.info("여기서에러남?" + fileName);
+        log.info(date.toString());
         return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
     private void validatePdfExtension(String extension) {
