@@ -371,6 +371,7 @@ class MemberControllerTest {
         // given
         ProfileDetailsRes result = ProfileDetailsRes.builder()
                 .profileImage("테스트 이미지")
+                .uuid("테스트 uuid")
                 .nickname("테스트 닉네임")
                 .phoneNumber("테스트 전화번호")
                 .email("테스트이메일")
@@ -407,6 +408,8 @@ class MemberControllerTest {
                                         getCommonResponseFields(
                                                 fieldWithPath("body.profileImage").type(STRING)
                                                         .description("프로필 이미지"),
+                                                fieldWithPath("body.uuid").type(STRING)
+                                                        .description("UUID"),
                                                 fieldWithPath("body.nickname").type(STRING)
                                                         .description("닉네임"),
                                                 fieldWithPath("body.phoneNumber").type(STRING)
@@ -465,6 +468,8 @@ class MemberControllerTest {
                                         getCommonResponseFields(
                                                 fieldWithPath("body.profileImage").type(STRING)
                                                         .description("프로필 이미지"),
+                                                fieldWithPath("body.uuid").type(STRING)
+                                                        .description("UUID"),
                                                 fieldWithPath("body.nickname").type(STRING)
                                                         .description("닉네임"),
                                                 fieldWithPath("body.phoneNumber").type(STRING)
