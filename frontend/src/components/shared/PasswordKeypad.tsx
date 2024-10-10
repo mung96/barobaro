@@ -19,8 +19,7 @@ const BUTTON_ACTIVE_TIME = 120;
 const PasswordKeypad = ({ isNewPassword }: Props) => {
     const realPassword = '112233';
     const keys = [1, 2, 3, 4, 5, 6, 7, 8, 9, 'empty', 0, 'delete'];
-    const router = useRouter();
-    const prevPath = usePrevPathStore();
+
     const profile = useProfileObject();
     const setProfile = useProfileSet();
     const fetchProfile = async () => {
@@ -80,8 +79,6 @@ const PasswordKeypad = ({ isNewPassword }: Props) => {
     return <><main className="flex flex-col justify-center items-center flex-1">
         <p className="text-[14px] text-black-100">{passwordMessage}</p>
         <p className="text-[14px] text-black-100">{newPassword}</p>
-
-        <p>{inputPassword}</p>
         <div className="mt-9">
             {!isFinished ? (
                 <DisplayPassword length={inputPassword.length} />

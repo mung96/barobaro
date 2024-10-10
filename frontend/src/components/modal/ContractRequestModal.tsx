@@ -16,12 +16,16 @@ import { useProfileObject } from '@/store/useMyProfile';
 import useContractRequestModel from '@/hooks/contract/useContractRequestModel';
 import { useParams } from 'next/navigation';
 import Button from '@/components/shared/Button';
+import { getContractRequest } from '@/apis/contractApi';
+import { formatDate } from '@/utils/dayUtil';
 
 type ContractRequestParams = {
   isOpen: boolean;
   onRequestClose: () => void;
   isFromStatusMessage?: boolean;
   modalChanger?: (modal: StatusModalType) => void;
+  data?: any;
+  disabled?: boolean;
 };
 
 const modalStyle: ReactModal.Styles = {
@@ -50,7 +54,7 @@ const modalStyle: ReactModal.Styles = {
   },
 };
 
-const ContractRequestModal = ({ isOpen, onRequestClose, isFromStatusMessage, modalChanger }: ContractRequestParams) => {
+const ContractRequestModal = ({ isOpen, onRequestClose, isFromStatusMessage, modalChanger, data, disabled }: ContractRequestParams) => {
   const { chat_id: chatRoomId } = useParams();
   const { rentalDuration, returnType, requestContract, isSubmitting } = useContractRequestModel(Number(chatRoomId as string))
   const socketContext = useContext(SocketClientContext);
@@ -60,11 +64,10 @@ const ContractRequestModal = ({ isOpen, onRequestClose, isFromStatusMessage, mod
   }
   const { sendChat } = socketContext;
   const profile = useProfileObject();
+  // const use
+
 
   const approveLogic = (isApproved: boolean) => {
-    // 소유자가 '상세보기' 버튼을 눌렀을 때 창 처리
-    // 대여자의 계약 요청서를 거절할 때
-    // 프로세스 contact로 바꾸고 / 시스템메시지 찍고 /
     if (isApproved) {
       const approveMessage: MessageFormType = {
         type: 3,
@@ -118,19 +121,31 @@ const ContractRequestModal = ({ isOpen, onRequestClose, isFromStatusMessage, mod
         <section className='flex flex-col gap-3'>
           <div className="flex flex-col gap-1">
             <h3 className="text-base">희망 대여 기간</h3>
-            <ContractDurationInput selected={rentalDuration.field.value as DateRange} onSelect={rentalDuration.field.onChange} />
+            {
+              !disabled ?
+                <ContractDurationInput selected={rentalDuration.field.value as DateRange} onSelect={rentalDuration.field.onChange} />
+                : <input
+                  className={`text-sm text-center bg-gray-500 outline-none`}
+                  value={data.desiredStartDate + ' ~ ' + data.desiredEndDate}
+                  disabled={true}
+                />
+            }
           </div>
           <div className="flex flex-col gap-1">
             <h3 className="text-base">반납 방법 선택</h3>
+
             <Radio.Group
               fieldSetName="반납 방법"
-              value={returnType.field.value as string}
+              value={!disabled ? returnType.field.value as string : data.returnType}
               onChange={returnType.field.onChange}
               className="flex gap-4"
             >
-              <SelectableItem type="radio" value="DIRECT" label="직거래" />
-              <SelectableItem type="radio" value="DELIVERY" label="택배거래" />
+              <SelectableItem disabled={disabled} type="radio" value="DIRECT" label="직거래" />
+              <SelectableItem disabled={disabled} type="radio" value="DELIVERY" label="택배거래" />
             </Radio.Group>
+
+
+
           </div>
         </section>
         {/* <Button
