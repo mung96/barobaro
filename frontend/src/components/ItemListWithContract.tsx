@@ -6,26 +6,30 @@ import ContractIcon from '@/components/(SVG_component)/(mypage)/Contract';
 import {useRouter} from 'next/navigation';
 import HeartIcon from '@/components/(SVG_component)/HeartIcon';
 import Link from 'next/link';
-import {useBorrowProducts, useLentProducts, useLikeProducts, useSearchProducts} from '@/store/useCurrentStore';
+import {useBorrowProducts, useLentProducts} from '@/store/useCurrentStore';
+import {useContractActions} from '@/store/useContractPaperStore';
 
 export default function ItemList({ data }: { data: string }) {
   // 주어진 data에 맞게 List를 받고, 이를 하단의 return 에 맞춰 들어가도록 해야함.
   // let 으로 정의한건 추후 수정예정.
   const router = useRouter();
-  // const goContract = () => {
-  //   router.push('/contract')
-  // }
-  // const borrowProducts = useBorrowProducts();
-  // const lentProducts = useLentProducts();
-  const likeProducts = useLikeProducts();
-  const searchProducts = useSearchProducts();
+  const contractController = useContractActions();
+  const goContract = async (contractSrc: string) => {
+    // TODO : contractSrc를 담고, 해당 경로로 보낸다.
+    console.log(contractSrc)
+    await contractController.setContractUrl(contractSrc);
+    router.push('/contract')
+  }
+  const borrowProducts = useBorrowProducts();
+  const lentProducts = useLentProducts();
   let result;
   let title;
-  if (data === 'like') {
-    result = likeProducts;
-  } else if (data === 'search') {
-    result = searchProducts;
-    console.log(result);
+  if (data === 'borrow') {
+    result = borrowProducts;
+    title = '빌린 물품 내역';
+  } else if (data === 'lent') {
+    result = lentProducts;
+    title = '빌려준 물품 내역';
   }
   return (
     <section>
@@ -64,17 +68,14 @@ export default function ItemList({ data }: { data: string }) {
                   </p>
                 </Link>
                 <div className="flex flex-row w-full">
-                  {/*TODO : 좋아요, 일반 검색 목록인 경우, 전자계약서를 표시할 필요성 낮음*/}
-                  {/*TODO : Lent, Borrow 의 ItemList만 해당 내용을 표시함*/}
-                  {/*TODO : 임시조치로, ItemListWithContract라는 컴포넌트를 사용함(mypage-lent and borrow).*/}
-                  {/*<button*/}
-                  {/*  type="button"*/}
-                  {/*  onClick={goContract}*/}
-                  {/*  className="w-[68px] h-[22px] bg-gray-400 rounded-[3px] flex flex-row justify-center items-center mt-4"*/}
-                  {/*>*/}
-                  {/*  <ContractIcon />*/}
-                  {/*  <p className="text-[10px] text-gray-600">계약서보기</p>*/}
-                  {/*</button>*/}
+                  <button
+                    type="button"
+                    onClick={() => goContract(item.contractSrc)}
+                    className="w-[68px] h-[22px] bg-gray-400 rounded-[3px] flex flex-row justify-center items-center mt-4"
+                  >
+                    <ContractIcon />
+                    <p className="text-[10px] text-gray-600">계약서보기</p>
+                  </button>
                   <div className="flex flex-1" />
                   <div className="flex flex-row mr-4 mt-4 items-center">
                     <div className="mx-1">
