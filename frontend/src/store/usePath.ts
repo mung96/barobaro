@@ -23,13 +23,6 @@ const usePath = create(
   ),
 );
 
-// const usePath = create<State & Action>((set) => ({
-//   prevPath: '/',
-//   path: '/',
-//   setPath: (path) => set({ path }),
-//   setPrevPath: (prevPath) => set({ prevPath: prevPath }),
-// }));
-
 export const usePathStore = () => usePath((state) => state.path);
 export const useSetPathStore = () => usePath((state) => state.setPath);
 

@@ -15,6 +15,8 @@ import { ProcessTypes } from '../message/chat/ProcessTypes';
 import MessageFormType from '../message/chat/MessageFormType';
 import { StatusModalType } from '@/types/message/chat/statusModalType';
 import { useProfileObject } from '@/store/useMyProfile';
+import useContractRequestModel from '@/hooks/contract/useContractRequestModel';
+import { useParams } from 'next/navigation';
 
 type ContractRequestParams = {
   isOpen: boolean;
@@ -50,16 +52,13 @@ const modalStyle: ReactModal.Styles = {
 };
 
 const ContractRequestModal = ({ isOpen, onRequestClose, isFromStatusMessage, modalChanger }: ContractRequestParams) => {
-  const [range, setRange] = useState<DateRange | undefined>(undefined);
-  const [ways, setWays] = useState<string>('');
-
-  const processContext = useContext(ProcessContext);
+  const { chat_id: chatRoomId } = useParams();
+  const { rentalDuration, returnType, requestContract } = useContractRequestModel(Number(chatRoomId as string))
   const socketContext = useContext(SocketClientContext);
 
-  if (!processContext || !socketContext) {
+  if (!socketContext) {
     return <div> Loading ... </div>; // 두 context가 모두 필요한 경우
   }
-  const { processSetter } = processContext;
   const { sendChat } = socketContext;
   const profile = useProfileObject();
 
@@ -74,10 +73,8 @@ const ContractRequestModal = ({ isOpen, onRequestClose, isFromStatusMessage, mod
         body: 'accept',
         timestamp: currentTime(),
       };
-
       sendChat(approveMessage);
       // 비밀번호 모달 띄우기
-
       if (modalChanger) modalChanger('password');
     } else {
       const rejectMessage: MessageFormType = {
@@ -87,7 +84,6 @@ const ContractRequestModal = ({ isOpen, onRequestClose, isFromStatusMessage, mod
         timestamp: currentTime(),
       };
       sendChat(rejectMessage);
-      processSetter(ProcessTypes.CONTACT);
       onRequestClose();
     }
   };
@@ -96,8 +92,7 @@ const ContractRequestModal = ({ isOpen, onRequestClose, isFromStatusMessage, mod
     // '대여자가 계약 요청' 버튼을 눌렀을 때의 창 처리
     if (!isSubmit) {
       // 대여자가 계약 요청 창을 열었다가 취소한 경우
-      setRange(undefined);
-      setWays('');
+
     } else {
       // submit하는 경우
       // axios로 데이터 보내고
@@ -111,8 +106,6 @@ const ContractRequestModal = ({ isOpen, onRequestClose, isFromStatusMessage, mod
       };
       sendChat(requestMessage);
 
-      // 프로세스 바꾸기
-      processSetter(ProcessTypes.REQUESTED);
     }
     // 대여자가 요청 submit을 했을 경우
     // axios로 데이터 보내고 / 상태메시지 찍고 / 프로세스 requested로 바꾸고
@@ -132,33 +125,25 @@ const ContractRequestModal = ({ isOpen, onRequestClose, isFromStatusMessage, mod
         <div className="font-bold self-center mb-[1.5vh]">계약 요청서</div>
 
         <div className="text-sm self-center">
-          {/* 여기까지 outer div */}
-
           <div className="mb-[1.5vh]">
             <div className="flex mb-1">희망 대여 기간</div>
-            {/* DateRangePicker */}
-            <div className="flex">
-              <ContractDurationInput selected={range} onSelect={setRange} />
-            </div>
+            <ContractDurationInput selected={rentalDuration.field.value as DateRange} onSelect={rentalDuration.field.onChange} />
           </div>
 
           <div className="mb-[2vh]">
             <div className="flex mb-1"> 반납 방법 선택</div>
-            {/* Radio.group -> SelectableItem */}
             <div>
               <Radio.Group
                 fieldSetName="반납 방법"
-                value={ways}
-                onChange={(e) => setWays(e.target.value)}
+                value={returnType.field.value as string}
+                onChange={returnType.field.onChange}
                 className="flex gap-4"
               >
-                <SelectableItem type="radio" value="direct" label="직거래" />
-                <SelectableItem type="radio" value="delivery" label="택배거래" />
+                <SelectableItem type="radio" value="DIRECT" label="직거래" />
+                <SelectableItem type="radio" value="DELIVERY" label="택배거래" />
               </Radio.Group>
             </div>
           </div>
-
-          {/* outer div 닫는 태그 */}
         </div>
 
         {/* 버튼 */}
@@ -173,7 +158,7 @@ const ContractRequestModal = ({ isOpen, onRequestClose, isFromStatusMessage, mod
           <button
             type="button"
             className="bg-blue-100 text-white rounded-lg w-[50%] p-2 text-sm"
-            onClick={isFromStatusMessage ? () => approveLogic(true) : () => requestLogic(true)}
+            onClick={isFromStatusMessage ? () => approveLogic(true) : requestContract}
           >
             {isFromStatusMessage ? '승인 및 서명' : '요청'}
           </button>
