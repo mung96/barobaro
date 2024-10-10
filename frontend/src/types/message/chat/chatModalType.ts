@@ -1,6 +1,1 @@
-export type ChatModalType =
-  | 'condition'
-  | 'request'
-  | 'received'
-  | 'paid'
-  | undefined;
+export type ChatModalType = 'condition' | 'request' | 'received' | 'paid' | 'download' | undefined;

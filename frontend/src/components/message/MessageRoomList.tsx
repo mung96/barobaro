@@ -45,18 +45,20 @@ export default function MessageRoomList({ selectValue }: MessageRoomListParam) {
           />
         ))
       ) : (
-        <ChatRoomEach
-          key={11111}
-          chatRoomId={'11111'}
-          nickname={'dummy 유저'}
-          profileImage={'https://loremflickr.com/320/240'}
-          productMainImage={'https://loremflickr.com/320/240'}
-          lastChat={
-            '저기요 제가 지금 진짜 급해서 그런데 이거 언제 보내주시는 거예요?'
-          }
-          lastChatTime={new Date()}
-          chatRoomStatus={'OWNER'}
-        />
+        // 채팅방 없는데 방 필요하면 여기 주석 해제하고 쓰시면 됩니당
+        // <ChatRoomEach
+        //   key={11111}
+        //   chatRoomId={'11111'}
+        //   nickname={'dummy 유저'}
+        //   profileImage={'https://loremflickr.com/320/240'}
+        //   productMainImage={'https://loremflickr.com/320/240'}
+        //   lastChat={
+        //     '저기요 제가 지금 진짜 급해서 그런데 이거 언제 보내주시는 거예요?'
+        //   }
+        //   lastChatTime={new Date()}
+        //   chatRoomStatus={'OWNER'}
+        // />
+        <div className="flex justify-center items-center pt-[30vh] font-bold">아직 채팅방이 없어요.</div>
       )}
     </div>
   );
