@@ -9,4 +9,5 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
     @Query("SELECT c FROM Contract c " +
             "WHERE c.product.id = :productId")
     Contract findContractByProductId(@Param("productId") Long productId);
+
 }

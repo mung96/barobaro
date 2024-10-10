@@ -2,10 +2,7 @@ package baro.baro.domain.contract.service;
 
 import baro.baro.domain.contract.dto.ContractRequestDto;
 import baro.baro.domain.contract.dto.request.*;
-import baro.baro.domain.contract.dto.response.ContractApproveRes;
-import baro.baro.domain.contract.dto.response.ContractOptionDetailRes;
-import baro.baro.domain.contract.dto.response.ContractSignedRes;
-import baro.baro.domain.contract.dto.response.ContractTerminatedRes;
+import baro.baro.domain.contract.dto.response.*;
 import baro.baro.global.dto.PdfCreateDto;
 
 public interface ContractService {
@@ -27,4 +24,6 @@ public interface ContractService {
     ContractSignedRes addRentalSignature(SignatureAddReq signatureAddReq, Long rentalId);
 
     ContractTerminatedRes confirmProductTakeBack(ProductTakeBackReq productTakeBackReq, Long ownerId);
+
+    PresentPdfRes findPresentPdf(Long chatRoomId, Long memberId);
 }
