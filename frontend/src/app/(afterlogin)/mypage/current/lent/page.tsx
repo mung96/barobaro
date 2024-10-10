@@ -2,7 +2,7 @@
 import { lazy, Suspense } from 'react';
 
 const Header = lazy(() => import('@/components/Header'));
-const ItemList = lazy(() => import('@/components/ItemList'));
+const ItemList = lazy(() => import('@/components/ItemListWithContract'));
 
 export default function List() {
 

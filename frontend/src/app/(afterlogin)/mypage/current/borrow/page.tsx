@@ -6,7 +6,7 @@ import {END_POINT} from "@/constants/api";
 import {ProductResponse} from "@/types/apis/productResponse";
 
 const Header = lazy(() => import('@/components/Header'));
-const ItemList = lazy(() => import('@/components/ItemList'));
+const ItemList = lazy(() => import('@/components/ItemListWithContract'));
 
 export default function List() {
     useEffect(() => {
