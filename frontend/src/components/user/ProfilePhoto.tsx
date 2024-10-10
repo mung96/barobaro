@@ -5,6 +5,7 @@ import CameraBody from '@/components/(SVG_component)/CameraBody';
 import useProfilePhotoModel from '@/hooks/user/useProfilePhotoModel';
 import useProfileNicknameModel from '@/hooks/user/useProfileNicknameModel';
 import { signnUp, updateProfile } from '@/services/user/profile';
+import nicknameInput from "@/components/signup/NicknameInput";
 
 export default function ProfilePhoto({ isSignup }: { isSignup: boolean }) {
   const { file, fileInputRef, handleProfileImage, handleButtonClick } =
@@ -16,7 +17,7 @@ export default function ProfilePhoto({ isSignup }: { isSignup: boolean }) {
       signnUp();
     } else {
       // 프로필 업데이트 로직
-      updateProfile();
+      updateProfile(inputNickname, file);
     }
   };
 
