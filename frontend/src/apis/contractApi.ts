@@ -1,6 +1,20 @@
 import { axiosInstance } from '@/apis/axiosInstance';
 import { END_POINT } from '@/constants/api';
 
+export type ContractRequest = {
+  chatRoomId: number;
+  desiredStartDate: string;
+  desiredEndDate: string;
+  returnType: string;
+};
+
+export type SignRequest = {
+  chatRoomId: number;
+  pinNumber: number;
+  signatureData: string;
+  s3FileUrl: string;
+};
+
 export const getContract = async (chatRoomId: number) => {
   return await axiosInstance.get(END_POINT.CONTRACT, { params: { chatRoomId } });
 };
@@ -15,23 +29,11 @@ export const getContractRequest = async (chatRoomId: number) => {
   return await axiosInstance.get(END_POINT.CONTRACT_REQUEST, { params: { chatRoomId } });
 };
 
-type ContractRequest = {
-  chatRoomId: number;
-  desiredStartDate: Date;
-  desiredEndDate: Date;
-  returnType: string;
-};
-
 export const postContractRequest = async (data: ContractRequest) => {
+  console.log(data);
   return await axiosInstance.post(END_POINT.CONTRACT_REQUEST, data);
 };
 
-type SignRequest = {
-  chatRoomId: number;
-  pinNumber: number;
-  signatureData: string;
-  s3FileUrl: string;
-};
 export const postOwnerSign = async (data: SignRequest) => {
   return await axiosInstance.post(END_POINT.CONTRACT_SIGN_OWNER, data);
 };
