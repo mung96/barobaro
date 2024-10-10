@@ -1,7 +1,9 @@
+import { postPINApi } from "@/apis/passwordApi";
 import KeyPadDelete from "@/components/(SVG_component)/(mypage)/KeyPadDelete";
 import DisplayPassword from "@/components/user/DisplayPassword"
 import useKeypad from "@/hooks/keypad/useKeyPadModel";
 import usePasswordChange from "@/hooks/user/usePasswordModel";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 type Props = {
@@ -11,12 +13,26 @@ const BUTTON_ACTIVE_TIME = 120;
 const PasswordKeypad = ({ isNewPassword }: Props) => {
     const realPassword = '112233';
     const keys = [1, 2, 3, 4, 5, 6, 7, 8, 9, 'empty', 0, 'delete'];
-
+    const router = useRouter();
+    const registPINPassword = async (passwordData: { password: string, checkPassword: string }) => {
+        try {
+            await postPINApi(passwordData);
+        } catch (error) {
+            console.error("비밀번호 등록에 실패했습니다:", error)
+        }
+    }
+    const successPostPIN = async () => {
+        await registPINPassword({ password: newPassword, checkPassword: inputPassword })
+        router.back();
+    }
     const [activatedKeys, setActivatedKeys] = useState<number[]>([]);
-    const { inputPassword, setInputPassword, passwordMessage, isFinished } =
+
+
+
+    const { newPassword, inputPassword, setInputPassword, passwordMessage, isFinished } =
         usePasswordChange(
             isNewPassword,
-            isNewPassword ? undefined : realPassword,
+            isNewPassword ? undefined : realPassword, successPostPIN
         );
     const { passwordHandler, deleteHandler } = useKeypad(setInputPassword);
 
@@ -42,6 +58,8 @@ const PasswordKeypad = ({ isNewPassword }: Props) => {
     };
     return <><main className="flex flex-col justify-center items-center flex-1">
         <p className="text-[14px] text-black-100">{passwordMessage}</p>
+        <p className="text-[14px] text-black-100">{newPassword}</p>
+
         <p>{inputPassword}</p>
         <div className="mt-9">
             {!isFinished ? (
@@ -59,7 +77,7 @@ const PasswordKeypad = ({ isNewPassword }: Props) => {
                             <button
                                 key={index}
                                 type="button"
-                                className="w-full text-2xl h-[10dvh] flex items-center justify-center"
+                                className="w-full text-2xl h-[10dvh] flex items-center justify-center rounded-xl active:bg-gray-100"
                                 onClick={deleteHandler}
                             >
                                 <KeyPadDelete />
@@ -70,7 +88,7 @@ const PasswordKeypad = ({ isNewPassword }: Props) => {
                             <button
                                 key={index}
                                 type="button"
-                                className={`w-full text-2xl h-[10dvh] flex items-center justify-center 
+                                className={`w-full text-2xl h-[10dvh] flex rounded-xl items-center justify-center 
                                     ${activatedKeys.includes(key as number) ? 'bg-gray-100' : ''}`}
                                 onClick={() => handleButtonClick(key as number)}
                             >
