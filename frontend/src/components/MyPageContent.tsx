@@ -9,7 +9,7 @@ import ChangePasswordSVG from '@/components/(SVG_component)/(mypage)/ChangePassw
 import AlarmSVG from '@/components/(SVG_component)/(mypage)/Alarm';
 import AccountBottomSheet from '@/components/(bottomsheet)/AccountBottomSheet';
 import useGetUserInfoInit from "@/hooks/user/useGetUserInfoInit";
-import {useBottomSheetAction, useBottomSheetState} from "@/store/useBottomSheetStore";
+import { useBottomSheetAction, useBottomSheetState } from "@/store/useBottomSheetStore";
 
 export default function MyPageContent() {
   const setBottomSheetAction = useBottomSheetAction();
@@ -61,7 +61,7 @@ export default function MyPageContent() {
         <div className="ml-5 mt-4 mb-4">
           <h2 className="text-[14px] font-bold text-[#6E7074]">회원 관리</h2>
           <div className="flex flex-col items-start m-3">
-            <Link href="/mypage/user/password">
+            <Link href="/mypage/user/password/new">
               <button
                 type="button"
                 className="flex flex-row justify-center items-center my-1"

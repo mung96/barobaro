@@ -3,6 +3,7 @@ import {
   convertAccountColor,
   convertAccountImage,
 } from '@/services/account/accountInfo';
+import BaroMark from '@/../public/assets/png/barobaro_logo.png';
 
 type Props = {
   bank: string;
@@ -22,8 +23,9 @@ export default function AccountCard({
       className="w-[300px] h-[200px] mx-auto rounded-[8px] border-4"
       style={{ borderColor: convertAccountColor(bank) }}
     >
-      <div className="flex flex-row justify-end items-start h-[80px] m-3">
-        {isSelected ? 'Selected!' : null}
+      <div className="flex flex-row justify-end items-start h-[80px] m-3 w-[90%]">
+        {isSelected ? <Image src={BaroMark} alt="select" width={30} height={30} /> : null}
+        <div className="flex flex-1"/>
         <Image
           src={convertAccountImage(bank)}
           alt="bank"
