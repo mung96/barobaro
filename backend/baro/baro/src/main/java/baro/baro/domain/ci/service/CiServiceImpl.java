@@ -9,6 +9,7 @@ import baro.baro.global.exception.CustomException;
 import baro.baro.global.feigin_client.dto.response.PortOneCiRes;
 import baro.baro.global.feigin_client.service.PortOneService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,7 @@ import static baro.baro.global.statuscode.ErrorCode.MEMBER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CiServiceImpl implements CiService{
     private final MemberRepository memberRepository;
     private final CiRepository ciRepository;
@@ -29,7 +31,8 @@ public class CiServiceImpl implements CiService{
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
-        if(!ciRepository.findCiByMember(member)) {
+        if(!ciRepository.existsCiByMember(member.getId())) {
+            log.info("1111" + req.getImpUid());
             PortOneCiRes portOneCiRes = portOneService.getPortOneToken(req.getImpUid());
 
             updateMember(portOneCiRes, member);
