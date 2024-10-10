@@ -292,57 +292,9 @@ public class PdfUtils {
                 null, null, null, 0, PdfSigner.CryptoStandard.CMS);
 
 
-        ByteArrayOutputStream ownerSignedOutputStream = new ByteArrayOutputStream();
-        PdfReader ownerPdfReader = new PdfReader(new ByteArrayInputStream(signedOutputStream.toByteArray()));
-        PdfSigner ownerSigner = new PdfSigner(ownerPdfReader, ownerSignedOutputStream, new StampingProperties().useAppendMode());
-
-        //바로바로 측 PrivateKey,인증서 가져오기
-        PrivateKey ownerPK = certificateUtils.getPrivateKey(BAROBARO_ALIAS, BAROBARO_PASSWORD);
-        Certificate ownerCertificate = certificateUtils.getCertificate(BAROBARO_ALIAS);
-
-        ownerSigner.setFieldName("ownerSignature");
-
-        PdfSignatureAppearance ownerAppearance = ownerSigner.getSignatureAppearance();
-        // 서명 이미지 추가
-        ownerAppearance.setRenderingMode(PdfSignatureAppearance.RenderingMode.GRAPHIC);
-        ownerAppearance.setSignatureGraphic(imageData);
-
-
-        //전자서명 추가
-        PrivateKeySignature ownerPkSignature = new PrivateKeySignature(ownerPK, DigestAlgorithms.SHA256, "BC");
-        IExternalDigest ownerDigest = new BouncyCastleDigest();
-        Certificate[] ownerCertificateChain = new Certificate[]{ownerCertificate};
-        ownerSigner.signDetached(ownerDigest, ownerPkSignature, ownerCertificateChain,
-                null, null, null, 0, PdfSigner.CryptoStandard.CMS);
-
-
-        ByteArrayOutputStream rentalSignedOutputStream = new ByteArrayOutputStream();
-        PdfReader rentalPdfReader = new PdfReader(new ByteArrayInputStream(ownerSignedOutputStream.toByteArray()));
-        PdfSigner rentalSigner = new PdfSigner(rentalPdfReader, rentalSignedOutputStream, new StampingProperties().useAppendMode());
-
-        //바로바로 측 PrivateKey,인증서 가져오기
-        PrivateKey rentalPK = certificateUtils.getPrivateKey(BAROBARO_ALIAS, BAROBARO_PASSWORD);
-        Certificate rentalCertificate = certificateUtils.getCertificate(BAROBARO_ALIAS);
-
-        rentalSigner.setFieldName("rentalSignature");
-
-        PdfSignatureAppearance rentalAppearance = rentalSigner.getSignatureAppearance();
-        // 서명 이미지 추가
-        rentalAppearance.setRenderingMode(PdfSignatureAppearance.RenderingMode.GRAPHIC);
-        rentalAppearance.setSignatureGraphic(imageData);
-
-
-        //전자서명 추가
-        PrivateKeySignature rentalPkSignature = new PrivateKeySignature(rentalPK, DigestAlgorithms.SHA256, "BC");
-        IExternalDigest rentalDigest = new BouncyCastleDigest();
-        Certificate[] rentalCertificateChain = new Certificate[]{rentalCertificate};
-        rentalSigner.signDetached(rentalDigest, rentalPkSignature, rentalCertificateChain,
-                null, null, null, 0, PdfSigner.CryptoStandard.CMS);
-
-
         //파일 byteArray 화
 //        byte[] pdfBytes = signedOutputStream.toByteArray();
-        byte[] pdfBytes = rentalSignedOutputStream.toByteArray();
+        byte[] pdfBytes = signedOutputStream.toByteArray();
         //s3 업로드 후, 저장되는 url 반환
         return pdfS3Service.upload(pdfBytes);
     }
@@ -462,7 +414,6 @@ public class PdfUtils {
             }
 
             boolean isVerified = pkcs7.verifySignatureIntegrityAndAuthenticity();
-            System.out.println(name+" isVerified: " + isVerified);
             if(!isVerified){
                 throw new CustomException(NOT_MADE_FROM_BAROBARO);
             }
