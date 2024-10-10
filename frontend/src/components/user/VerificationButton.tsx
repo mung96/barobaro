@@ -4,9 +4,8 @@ import React, { ReactNode, useEffect, useState } from "react";
 import Script from "next/script";
 import { axiosInstance } from "@/apis/axiosInstance";
 import { AxiosResponse } from "axios";
-import { IMP_CODE } from "@/constants/api";
+import { IMP_CODE, NEXT_BASE_URL } from "@/constants/api";
 import Button from "@/components/shared/Button";
-import { useRouter } from "next/navigation";
 
 // 인증 정보를 위한 타입 정의
 type CertificationResponse = {
@@ -26,6 +25,7 @@ type IMP = {
         options: {
             pg: string;
             merchant_uid: string;
+            m_redirect_url?: string;
         },
         callback: (response: CertificationResponse) => void
     ): void;
@@ -54,11 +54,9 @@ const VerificationButton = ({ width, height, children, onSuccess }: Props) => {
             }
         };
         if (window.IMP) {
-            // 이미 로드되어 있는 경우 바로 설정
-            checkIMP();
+            checkIMP();  // 이미 로드되어 있는 경우 바로 설정
         } else {
-            // 스크립트 로드 후 onload 이벤트를 통해 확인
-            window.addEventListener("load", checkIMP);
+            window.addEventListener("load", checkIMP);   // 스크립트 로드 후 onload 이벤트를 통해 확인
             return () => window.removeEventListener("load", checkIMP);
         }
     }, []);
@@ -68,6 +66,7 @@ const VerificationButton = ({ width, height, children, onSuccess }: Props) => {
         const body = {
             "impUid": imp_uid,
         };
+        console.log(body);
         const response = await axiosInstance.post(`/auth/authentication`, body);
         return response;
     };
@@ -83,12 +82,12 @@ const VerificationButton = ({ width, height, children, onSuccess }: Props) => {
             {
                 pg: `inicis_unified.${MID}`,
                 merchant_uid: `mer_id_${Date.now()}`,
+                m_redirect_url: `${NEXT_BASE_URL}` + "portone",
             },
             async (resp: CertificationResponse) => {
                 if (resp.success) {
                     try {
                         const result = await getCertification(resp.imp_uid);
-                        console.log(`=== 유저 인증정보 조회 결과 ===`);
                         onSuccess();
                     } catch (error) {
                         console.error("인증 정보를 가져오는 중 오류 발생:", error);
