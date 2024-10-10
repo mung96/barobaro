@@ -123,6 +123,7 @@ public class PdfUtils {
         PdfWriter writer = new PdfWriter(byteArrayOutputStream);
         PdfDocument pdfDocument = new PdfDocument(writer);
         Document document = new Document(pdfDocument).setFont(koreanFont);
+
         document.add(new Paragraph("문서 ID: " + pdfCreateDto.getDocumentSerialNumber()).setFontSize(10).setTextAlignment(TextAlignment.RIGHT));
         document.add(new Paragraph("임대계약서").setTextAlignment(TextAlignment.CENTER).setFontSize(20));
         document.add(new Paragraph(pdfCreateDto.getOwnerName() + "(이하 ‘갑’이라 함)과(와) " + pdfCreateDto.getRentalName() + "(이하 ‘을’이라 함)과(와) 바로바로(이하 '병'이라 함)은 다음과 같이 임대계약을 체결한다."));
@@ -296,6 +297,7 @@ public class PdfUtils {
 //        byte[] pdfBytes = signedOutputStream.toByteArray();
         byte[] pdfBytes = signedOutputStream.toByteArray();
         //s3 업로드 후, 저장되는 url 반환
+        log.info("업로드 성공성공!!!!!");
         return pdfS3Service.upload(pdfBytes);
     }
 
