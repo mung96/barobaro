@@ -5,7 +5,6 @@ import baro.baro.domain.contract.dto.ContractConditionDto;
 import baro.baro.domain.contract.dto.request.ContractConditionReq;
 import baro.baro.domain.contract.entity.ContractCondition;
 import baro.baro.domain.contract.repository.ContractConditionRepository;
-import baro.baro.domain.contract.repository.SignatureInformationRepository;
 import baro.baro.domain.location.entity.Location;
 import baro.baro.domain.location.repository.LocationRepository;
 import baro.baro.domain.member.entity.Member;
@@ -73,13 +72,10 @@ public class ProductServiceImpl implements ProductService {
     private final ContractConditionRepository contractConditionRepository;
     private final WishListRepository wishListRepository;
     private final ChatRoomRepository chatRoomRepository;
-    private final ContractRepository contractRepository;
-    private final SignatureInformationRepository signatureInformationRepository;
     private final ApplicationEventPublisher eventPublisher;
     private final EsProductService esProductService;
     private final EsKeywordService esKeywordService;
     private final SearchFeignClientCustom searchFeignClient;
-    private final SignatureInformationRepository signatureInformationRepository;
 
     @Value("${NAVER_ID}")
     private String naverId;
