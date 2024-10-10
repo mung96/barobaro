@@ -21,6 +21,7 @@ const useChatPageModel = () => {
   const [roomName, setRoomName] = useState(``);
   const [ownerUuid, setOwnerUuid] = useState('');
   const [initProcess, setInitProcess] = useState<ProcessType>(ProcessTypes.CONTACT);
+  const [boardTitle, setBoardTitle] = useState('');
 
   const [originBoardParams, setOriginBoardParams] = useState<OriginBoardType>();
   // message list
@@ -57,6 +58,7 @@ const useChatPageModel = () => {
         setOtherNickname(apiResponse.chatRoomDto.opponentNickname);
         setOtherUuid(apiResponse.chatRoomDto.opponentUuid);
         setOwnerUuid(apiResponse.chatRoomDto.ownerUuid);
+
         const parsedMessages: MessageFormType[] = [];
 
         apiResponse.chatDtos.map((each) => {
@@ -80,6 +82,7 @@ const useChatPageModel = () => {
           rentalFee: productResponse?.rentalFee,
         };
         setOriginBoardParams(originBoardParams);
+        setBoardTitle(productResponse?.title);
       } catch (e) {
         console.error('API 요청 중 오류 발생:', e);
       }
@@ -116,6 +119,7 @@ const useChatPageModel = () => {
     ownerUuid, // 상품 소유자
     initProcess,
     originBoardParams,
+    boardTitle,
   };
 };
 

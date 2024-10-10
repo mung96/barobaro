@@ -18,7 +18,7 @@ const StatusMessage: FC<MessageFormType> = ({ body, timestamp, isMine }) => {
 
   const context = useContext(OpponentContext);
   if (!context) return <div></div>;
-  const { otherNickname, ownerUuid, otherUuid } = context;
+  const { otherNickname, ownerUuid, boardTitle } = context;
 
   const profile = useProfileObject();
   const amIOwner: boolean = ownerUuid === profile.id;
@@ -28,8 +28,7 @@ const StatusMessage: FC<MessageFormType> = ({ body, timestamp, isMine }) => {
     if (bodyProp === 'contract') {
       return (
         <div>
-          {isMine ? profile.nickname : otherNickname}님께서 <b>고양이 쓰다듬고 가세요</b>에 대하여 계약을
-          요청하셨습니다.
+          {isMine ? profile.nickname : otherNickname}님께서 <b>{boardTitle}</b>에 대하여 계약을 요청하셨습니다.
         </div>
       );
     }

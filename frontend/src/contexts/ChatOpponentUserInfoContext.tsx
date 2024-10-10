@@ -5,6 +5,7 @@ interface ChatOpponentUserInfoContextType {
   otherNickname: string;
   otherUuid: UUID | string;
   ownerUuid: UUID | string;
+  boardTitle: string;
 }
 
 const OpponentContext = createContext<ChatOpponentUserInfoContextType | null>(null);
@@ -15,10 +16,12 @@ interface ChatOpponentUserInfoContextProps {
 }
 
 const OpponentProvider = ({ children, value }: ChatOpponentUserInfoContextProps) => {
-  const { otherNickname, otherUuid, ownerUuid } = value;
+  const { otherNickname, otherUuid, ownerUuid, boardTitle } = value;
 
   return (
-    <OpponentContext.Provider value={{ otherNickname, otherUuid, ownerUuid }}>{children}</OpponentContext.Provider>
+    <OpponentContext.Provider value={{ otherNickname, otherUuid, ownerUuid, boardTitle }}>
+      {children}
+    </OpponentContext.Provider>
   );
 };
 
