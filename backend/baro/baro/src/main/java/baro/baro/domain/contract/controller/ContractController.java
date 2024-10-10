@@ -40,7 +40,7 @@ public class ContractController {
     }
 
     @GetMapping("/request")
-    public ResponseEntity<?> contractRequestDetail(@RequestBody ContractRequestDetailReq contractRequestDetailReq) {
+    public ResponseEntity<?> contractRequestDetail(@ModelAttribute ContractRequestDetailReq contractRequestDetailReq) {
         Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
         ContractRequestDto result = contractService.findContractRequestDetail(contractRequestDetailReq, memberId);
 
@@ -48,7 +48,7 @@ public class ContractController {
     }
 
     @GetMapping("")
-    public ResponseEntity<?> contractOptionDetail(@RequestBody ContractOptionDetailReq contractOptionDetailReq) {
+    public ResponseEntity<?> contractOptionDetail(@ModelAttribute ContractOptionDetailReq contractOptionDetailReq) {
         Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
         ContractOptionDetailRes result = contractService.findContractOptionDetail(contractOptionDetailReq, memberId);
 
@@ -135,5 +135,13 @@ public class ContractController {
         String url = contractService.generatePdf(tmp);
         return new ResponseEntity<>(ResponseDto.success(PDF_GENERATE_OK, url), OK);
 
+    }
+
+    @GetMapping("/{chatRoomId}")
+    public ResponseEntity<?> getPresentPdf(@PathVariable Long chatRoomId) {
+        Long memberId = jwtService.getUserId(SecurityContextHolder.getContext());
+        PresentPdfRes result = contractService.findPresentPdf(chatRoomId, memberId);
+
+        return new ResponseEntity<>(ResponseDto.success(PRESENT_PDF_OK, result), OK);
     }
 }

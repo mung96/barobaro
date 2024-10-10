@@ -7,10 +7,7 @@ import baro.baro.domain.contract.dto.ContractApplicationDto;
 import baro.baro.domain.contract.dto.ContractConditionDto;
 import baro.baro.domain.contract.dto.ContractRequestDto;
 import baro.baro.domain.contract.dto.request.*;
-import baro.baro.domain.contract.dto.response.ContractApproveRes;
-import baro.baro.domain.contract.dto.response.ContractOptionDetailRes;
-import baro.baro.domain.contract.dto.response.ContractSignedRes;
-import baro.baro.domain.contract.dto.response.ContractTerminatedRes;
+import baro.baro.domain.contract.dto.response.*;
 import baro.baro.domain.contract.entity.Contract;
 import baro.baro.domain.contract.entity.SignatureInformation;
 import baro.baro.domain.contract.repository.ContractRepository;
@@ -22,6 +19,7 @@ import baro.baro.domain.member.repository.PinRepository;
 import baro.baro.domain.noti.entity.NotiType;
 import baro.baro.domain.product.entity.Product;
 import baro.baro.domain.product.entity.ProductStatus;
+import baro.baro.domain.product.entity.ReturnType;
 import baro.baro.global.dto.PdfCreateDto;
 import baro.baro.global.event.FcmEvent;
 import baro.baro.global.event.UnlockEvent;
@@ -32,7 +30,6 @@ import baro.baro.global.utils.PdfUtils;
 import baro.baro.global.utils.RedisUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -109,7 +106,7 @@ public class ContractServiceImpl implements ContractService {
 			.productId(product.getId())
 			.desiredStartDate(contractRequestDto.getDesiredStartDate())
 			.desiredEndDate(contractRequestDto.getDesiredEndDate())
-			.returnType(contractRequestDto.getReturnType()).build();
+			.returnType(ReturnType.valueOf(contractRequestDto.getReturnType())).build();
 		redisUtils.addListData("contract_" + product.getId(), contractApplicationDto); //거래정보);
 
 		eventPublisher.publishEvent(new FcmEvent(this, chatRoom.getRental(), chatRoom.getOwner(),
@@ -571,6 +568,23 @@ public class ContractServiceImpl implements ContractService {
 		return ContractTerminatedRes.builder()
 			.chatRoomId(productTakeBackReq.getChatRoomId())
 			.build();
+	}
+
+	@Override
+	public PresentPdfRes findPresentPdf(Long chatRoomId, Long memberId) {
+		ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+				.orElseThrow(() -> new CustomException(CHATROOM_NOT_FOUND));
+
+		if(chatRoom.getProduct().getContract() == null) {
+			throw new CustomException(CONTRACT_NOT_FOUND);
+		}
+
+		if(!chatRoom.getOwner().getId().equals(memberId) ||
+			!chatRoom.getRental().getId().equals(memberId)) {
+			throw new CustomException(PDF_NOT_MINE);
+		}
+
+		return new PresentPdfRes(chatRoom.getProduct().getContract().getContractUrl());
 	}
 
 }
