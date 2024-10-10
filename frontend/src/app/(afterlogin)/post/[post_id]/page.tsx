@@ -11,8 +11,8 @@ import PostCheckModal from '@/components/modal/PostCheckModal';
 import Header from '@/components/Header';
 import LikeButton from '@/components/(SVG_component)/LikeButton';
 import CalendarSVG from '@/components/(SVG_component)/Calendar';
-import { getProductsDetail } from '@/apis/productDetailApi';
 import { postMessageRoomList } from '@/apis/message/chat/messageRoomListApi';
+import {getProductsDetail, deleteProductsDetail} from "@/apis/productDetailApi";
 
 export default function PostDetail() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -95,6 +95,7 @@ export default function PostDetail() {
               <button
                 type="button"
                 className="text-[10px] underline text-gray-300 w-[30px]"
+                onClick={() => deleteProductsDetail(postInfo.id)}
               >
                 삭제
               </button>

@@ -29,3 +29,7 @@ const useMyProfileStore = create(
 export const useProfileSet = () => useMyProfileStore((store) => store.actions.setProfileObject);
 export const useProfileObject = () => useMyProfileStore((state) => state.profileObject);
 export const useProfileInit = () => useMyProfileStore((state) => state.isInit);
+
+console.group('useMyProfileStore');
+console.log(useProfileSet);
+console.groupEnd();

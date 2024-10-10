@@ -64,7 +64,8 @@ export const POST_FIELD_CONFIG = {
   RETURN_TYPE_LIST: {
     defaultValue: [],
     rules: {
-      required: '반납 방법을 정해주세요.',
+      required: '반납 방법을 선택해주세요.',
+      max: { value: 1, message: '최소 1개의 방법을 골라주세요' },
     },
   },
   RETURN_ADDRESS: {
@@ -73,50 +74,36 @@ export const POST_FIELD_CONFIG = {
 
   PRODUCT_NAME: {
     defaultValue: '',
-    rules: {
-      required: '제품 이름을 입력해주세요.',
-    },
+    rules: {},
   },
 
   SERIAL_NUMBER: {
     defaultValue: '',
-    rules: {
-      required: '일련 번호를 입력해주세요.',
-    },
+    rules: {},
   },
 
   REPAIR_VENDOR: {
     defaultValue: '',
-    rules: {
-      required: '수리업체를 선택해주세요.',
-    },
+    rules: {},
   },
 
   OVERDUE_CRITERIA: {
     defaultValue: '',
-    rules: {
-      required: '무단연체 기준을 입력해주세요.',
-    },
+    rules: {},
   },
 
   OVERDUE_FEE: {
     defaultValue: '',
-    rules: {
-      required: '무단연체시 가격을 입력해주세요.',
-    },
+    rules: {},
   },
 
   THEFT_CRITERIA: {
     defaultValue: '',
-    rules: {
-      required: '도난 취급 기준을 입력해주세요.',
-    },
+    rules: {},
   },
 
   REFUND_DEADLINE: {
     defaultValue: '',
-    rules: {
-      required: '청구 비용 일수를 입려갷주세요.',
-    },
+    rules: {},
   },
 };

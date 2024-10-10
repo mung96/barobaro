@@ -6,6 +6,7 @@ import { axiosInstance } from "@/apis/axiosInstance";
 import { AxiosResponse } from "axios";
 import { IMP_CODE } from "@/constants/api";
 import Button from "@/components/shared/Button";
+import { useRouter } from "next/navigation";
 
 // 인증 정보를 위한 타입 정의
 type CertificationResponse = {
@@ -88,7 +89,6 @@ const VerificationButton = ({ width, height, children, onSuccess }: Props) => {
                     try {
                         const result = await getCertification(resp.imp_uid);
                         console.log(`=== 유저 인증정보 조회 결과 ===`);
-                        console.log(result.data);
                         onSuccess();
                     } catch (error) {
                         console.error("인증 정보를 가져오는 중 오류 발생:", error);

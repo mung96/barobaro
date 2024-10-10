@@ -23,6 +23,7 @@ const excludePathList = [
   '/post/regist',
   '/post/:id', // 동적 세그먼트를 나타내는 패턴
   '/message/chat/:id',
+  '/mypage/user/password/new'
 ];
 
 function isPathExcluded(path: string): boolean {

@@ -3,9 +3,8 @@
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import LikeButton from '@/components/(SVG_component)/LikeButton';
-import { CurrentProduct } from '@/types/products/products';
 
-export default function Card({ cardInfo }: { cardInfo: CurrentProduct }) {
+export default function Card({ cardInfo }: { cardInfo: any }) {
   const router = useRouter();
   const cardHandler = () => {
     router.push(`/post/${cardInfo.productId}`);
@@ -20,15 +19,17 @@ export default function Card({ cardInfo }: { cardInfo: CurrentProduct }) {
         onClick={() => cardHandler()}
         role="button"
         tabIndex={0}
-        className="w-[125px] h-[168px] rounded-[10px] bg-red-50 items-center relative overflow-hidden cursor-pointer"
+        className="w-[125px] h-[168px] rounded-[10px] bg-gray-500 items-center relative overflow-hidden cursor-pointer"
       >
         <div className="z-10 absolute top-2 right-2">
           <LikeButton isWished={cardInfo.isWished} productId={cardInfo.productId.toString()} />
         </div>
+          {/*TODO : unoptimized false로도 이미지를 구현하는 방법 알아보기*/}
         <Image
           src={cardInfo.productMainImage}
           alt={`Product: ${cardInfo.title}`}
           fill
+          unoptimized={true}
         />
       </div>
       <div>
