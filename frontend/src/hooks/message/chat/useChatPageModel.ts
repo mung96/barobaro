@@ -12,8 +12,8 @@ import { useEffect, useRef, useState } from 'react';
 
 const useChatPageModel = () => {
   // room PK
-  const { chat_id: chatId } = useParams();
-  const chatRoomId: number = Number(chatId); // 무조건 숫자로 넘어옴
+  const { chat_id } = useParams<{ chat_id: string }>(); // 파라미터 타입 지정
+  const chatRoomId: number = Number(chat_id); // 문자열을 숫자로 변환
 
   const [response, setResponse] = useState<ChatRoomInfoResponse>();
   const [otherNickname, setOtherNickname] = useState('');
@@ -50,7 +50,7 @@ const useChatPageModel = () => {
     // API
     const getResponse = async () => {
       try {
-        const apiResponse = await getMessageRoomInfo(chatId[0]);
+        const apiResponse = await getMessageRoomInfo(chat_id);
         console.log(apiResponse);
         setResponse(apiResponse);
 
