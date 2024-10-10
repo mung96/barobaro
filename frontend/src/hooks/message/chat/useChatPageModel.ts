@@ -14,6 +14,7 @@ const useChatPageModel = () => {
   const [otherNickname, setOtherNickname] = useState('');
   const [otherUuid, setOtherUuid] = useState('');
   const [roomName, setRoomName] = useState(``);
+  const [ownerUuid, setOwnerUuid] = useState('');
 
   // 계약 진행 단계를 나타내는 process
   const [process, setProcess] = useState<ProcessType>(ProcessTypes.CONTACT); // apiResponse 도착한 후 초기화
@@ -58,17 +59,19 @@ const useChatPageModel = () => {
     const getResponse = async () => {
       try {
         const apiResponse = await getMessageRoomInfo(chatId[0]);
-        // console.log(apiResponse);
+        console.log(apiResponse);
         setResponse(apiResponse);
+
         setOtherNickname(apiResponse.chatRoomDto.opponentNickname);
         setOtherUuid(apiResponse.chatRoomDto.opponentUuid);
+        setOwnerUuid(apiResponse.chatRoomDto.ownerUuid);
       } catch (e) {
         console.error('API 요청 중 오류 발생:', e);
       }
     };
 
     getResponse();
-
+    //  이거 말고 채팅 읽어서 세팅해 !! MODMOD
     if (response) setProcess(processConverter(response.chatRoomDto.rentalStatus));
   }, []);
 
@@ -93,6 +96,7 @@ const useChatPageModel = () => {
     roomName,
     otherNickname,
     otherUuid,
+    ownerUuid, // 상품 소유자
   };
 };
 

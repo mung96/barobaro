@@ -14,6 +14,7 @@ import ContractDurationInput from '../message/chat/ContractDurationInput';
 import { ProcessTypes } from '../message/chat/ProcessTypes';
 import MessageFormType from '../message/chat/MessageFormType';
 import { StatusModalType } from '@/types/message/chat/statusModalType';
+import { useProfileObject } from '@/store/useMyProfile';
 
 type ContractRequestParams = {
   isOpen: boolean;
@@ -48,12 +49,7 @@ const modalStyle: ReactModal.Styles = {
   },
 };
 
-const ContractRequestModal = ({
-  isOpen,
-  onRequestClose,
-  isFromStatusMessage,
-  modalChanger,
-}: ContractRequestParams) => {
+const ContractRequestModal = ({ isOpen, onRequestClose, isFromStatusMessage, modalChanger }: ContractRequestParams) => {
   const [range, setRange] = useState<DateRange | undefined>(undefined);
   const [ways, setWays] = useState<string>('');
 
@@ -65,6 +61,7 @@ const ContractRequestModal = ({
   }
   const { processSetter } = processContext;
   const { sendChat } = socketContext;
+  const profile = useProfileObject();
 
   const approveLogic = (isApproved: boolean) => {
     // 소유자가 '상세보기' 버튼을 눌렀을 때 창 처리
@@ -73,7 +70,7 @@ const ContractRequestModal = ({
     if (isApproved) {
       const approveMessage: MessageFormType = {
         type: 3,
-        user: '김말이',
+        user: profile.id,
         body: 'accept',
         timestamp: currentTime(),
       };
@@ -85,7 +82,7 @@ const ContractRequestModal = ({
     } else {
       const rejectMessage: MessageFormType = {
         type: 3,
-        user: '김말이',
+        user: profile.id,
         body: 'reject',
         timestamp: currentTime(),
       };
@@ -108,7 +105,7 @@ const ContractRequestModal = ({
       // 상태메시지 보내고
       const requestMessage: MessageFormType = {
         type: 2,
-        user: '김말이',
+        user: profile.id,
         body: 'contract',
         timestamp: currentTime(),
       };
@@ -156,11 +153,7 @@ const ContractRequestModal = ({
                 className="flex gap-4"
               >
                 <SelectableItem type="radio" value="direct" label="직거래" />
-                <SelectableItem
-                  type="radio"
-                  value="delivery"
-                  label="택배거래"
-                />
+                <SelectableItem type="radio" value="delivery" label="택배거래" />
               </Radio.Group>
             </div>
           </div>
@@ -173,22 +166,14 @@ const ContractRequestModal = ({
           <button
             type="button"
             className="bg-gray-200 text-white rounded-lg w-[50%] p-2 text-sm"
-            onClick={
-              isFromStatusMessage
-                ? () => approveLogic(false)
-                : () => requestLogic(false)
-            }
+            onClick={isFromStatusMessage ? () => approveLogic(false) : () => requestLogic(false)}
           >
             {isFromStatusMessage ? '거절' : '취소'}
           </button>
           <button
             type="button"
             className="bg-blue-100 text-white rounded-lg w-[50%] p-2 text-sm"
-            onClick={
-              isFromStatusMessage
-                ? () => approveLogic(true)
-                : () => requestLogic(true)
-            }
+            onClick={isFromStatusMessage ? () => approveLogic(true) : () => requestLogic(true)}
           >
             {isFromStatusMessage ? '승인 및 서명' : '요청'}
           </button>

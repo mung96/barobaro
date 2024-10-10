@@ -18,7 +18,7 @@ export default function Dialogs({ messages, otherNickname }: DialogParams) {
   return (
     <>
       {/* axios로 불러온 데이터 map */}
-      <Message type={3} timestamp={currentTime('date')} user="sys" body="datealert" />
+      {/* <Message type={3} timestamp={currentTime('date')} user="sys" body="datealert" />
       <UserNickname profileImgSrc="https://loremflickr.com/320/240" nickname={otherNickname} />
       <Message type={1} timestamp="12:34" user="뗀석기팔아요" body="안녕하세요! 고양이 쓰다듬으러 왔는데요." />
       <Message type={1} timestamp="12:34" user="김말이" body="안녕하세요! 고양이 보여드릴까요? 잠시만요" />
@@ -54,7 +54,7 @@ export default function Dialogs({ messages, otherNickname }: DialogParams) {
       <Message type={2} timestamp="12:34" user="말이" body="signature" />
       <Message type={2} timestamp="12:34" user="말이" body="finished" />
 
-      <Message type={3} timestamp="12:34" user="김말이" body="coffee" />
+      <Message type={3} timestamp="12:34" user="김말이" body="coffee" /> */}
 
       {wholeMessages.map((each) => (
         <Message key={each.id} type={each.type} timestamp={each.timestamp} user={each.user} body={each.body} />

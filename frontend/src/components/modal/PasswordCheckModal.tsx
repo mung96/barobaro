@@ -11,6 +11,7 @@ import currentTime from '@/utils/currentTime';
 import { SocketClientContext } from '@/contexts/SocketClientContext';
 import { ProcessContext } from '@/contexts/ChatProcessContext';
 import { ProcessTypes } from '../message/chat/ProcessTypes';
+import { useProfileObject } from '@/store/useMyProfile';
 
 type PasswordCheckModalParams = {
   isOpen: boolean;
@@ -41,22 +42,17 @@ const modalStyle: ReactModal.Styles = {
   },
 };
 
-const PasswordCheckModal = ({
-  isOpen,
-  onRequestClose,
-  modalChanger,
-  purpose,
-}: PasswordCheckModalParams) => {
+const PasswordCheckModal = ({ isOpen, onRequestClose, modalChanger, purpose }: PasswordCheckModalParams) => {
   const socketClientContext = useContext(SocketClientContext);
   const processContext = useContext(ProcessContext);
   if (!socketClientContext || !processContext) return null;
   const { sendChat } = socketClientContext;
   const { processSetter } = processContext;
+  const profile = useProfileObject();
 
   const modalFinish = () => {
     // 이 모달의 사용이 끝날 때 (비밀번호가 맞았을 때) 작동할 함수
-    if (purpose === 'beforeSignature' && modalChanger)
-      modalChanger('signature');
+    if (purpose === 'beforeSignature' && modalChanger) modalChanger('signature');
     else if (purpose === 'beforePay') {
       // 송금 액션 들어가야 함(axios 등)
 
@@ -64,7 +60,7 @@ const PasswordCheckModal = ({
 
       const payFinishedMessage: MessageFormType = {
         type: 3,
-        user: '김말이',
+        user: profile.id,
         body: 'paid',
         timestamp: currentTime(),
       };
@@ -77,11 +73,10 @@ const PasswordCheckModal = ({
   const needNewPassword = false;
   const realPassword = '112233'; // 비밀번호 확인하고 없으면 모달 띄우지 말고 바로 back
 
-  const { inputPassword, setInputPassword, passwordMessage, isFinished, step } =
-    usePasswordChange(
-      needNewPassword,
-      needNewPassword ? undefined : realPassword,
-    );
+  const { inputPassword, setInputPassword, passwordMessage, isFinished, step } = usePasswordChange(
+    needNewPassword,
+    needNewPassword ? undefined : realPassword,
+  );
 
   const { passwordHandler, deleteHandler } = useKeypad(setInputPassword);
 
@@ -98,22 +93,14 @@ const PasswordCheckModal = ({
       style={modalStyle}
     >
       <div className="flex flex-col w-[100vw] h-[100vh] items-center">
-        <div
-          className="pl-3 pt-3 h-[4vh] self-start"
-          onClick={onRequestClose}
-          role="presentation"
-        >
+        <div className="pl-3 pt-3 h-[4vh] self-start" onClick={onRequestClose} role="presentation">
           <ModalClose />
         </div>
-        <div className="flex h-[4vh] text-base font-bold mt-3 mb-3">
-          비밀번호 확인
-        </div>
+        <div className="flex h-[4vh] text-base font-bold mt-3 mb-3">비밀번호 확인</div>
         <main className="flex flex-col justify-center items-center flex-1">
           <p className="text-[14px] text-black-100">{passwordMessage}</p>
           <div className="mt-9">
-            {!isFinished ? (
-              <DisplayPassword length={inputPassword.length} />
-            ) : null}
+            {!isFinished ? <DisplayPassword length={inputPassword.length} /> : null}
             {/* 비밀번호를 설정하고 완료되었다면 ---이걸 표시하지 않음. */}
           </div>
         </main>

@@ -2,10 +2,12 @@ import React, { ChangeEvent, useContext, useRef, useState } from 'react';
 import MessageFormType from '@/components/message/chat/MessageFormType';
 import currentTime from '@/utils/currentTime';
 import { SocketClientContext } from '@/contexts/SocketClientContext';
+import { useProfileObject } from '@/store/useMyProfile';
 
 const useChatWindowModel = () => {
   const [chatValue, setChatValue] = useState('');
   const messageRef = useRef<HTMLInputElement>(null);
+  const profile = useProfileObject();
 
   const handleChatValue = (e: ChangeEvent<HTMLInputElement>) => {
     setChatValue(e.target.value);
@@ -23,13 +25,11 @@ const useChatWindowModel = () => {
     };
   const { sendChat } = context;
 
-  const UserId = '김말이';
-
   // const sendChat = () => {
   const sendChatExtend = () => {
     const tempMsg: MessageFormType = {
       type: 1,
-      user: UserId,
+      user: profile.id,
       body: chatValue,
       timestamp: currentTime(),
     };
