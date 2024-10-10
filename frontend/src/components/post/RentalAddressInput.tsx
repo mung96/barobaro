@@ -15,21 +15,23 @@ type Props = {
 function RentalAddressInput({ value, onChange, isInvalid, message }: Props) {
   const [isOpenSearch, setIsOpenSearch] = useState(false);
   return (
-    <div className="flex flex-col gap-1 relative">
+    <div className="flex flex-col gap-2 relative">
       <p className="text-base">거래 희망 장소</p>
-      <Input
-        placeholder="위치 추가"
-        width="100%"
-        height="32px"
-        value={value.addressName}
-        onFocus={() => setIsOpenSearch(true)}
-        readOnly
-      />
+      <div className='flex flex-col gap-[2px]'>
+        <Input
+          placeholder="위치 추가"
+          width="100%"
+          height="40px"
+          value={value.addressName}
+          onFocus={() => setIsOpenSearch(true)}
+          readOnly
+        />
 
-      <DropDownAnimation isOpen={isOpenSearch}>
-        <SearchLocationBar open={setIsOpenSearch} onSelect={onChange} />
-      </DropDownAnimation>
-      <ErrorMessage isInvalid={isInvalid}>{message}</ErrorMessage>
+        <DropDownAnimation isOpen={isOpenSearch}>
+          <SearchLocationBar open={setIsOpenSearch} onSelect={onChange} />
+        </DropDownAnimation>
+        <ErrorMessage isInvalid={isInvalid}>{message}</ErrorMessage>
+      </div>
     </div>
   );
 }

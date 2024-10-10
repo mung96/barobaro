@@ -2,9 +2,8 @@
 
 import { Navigation, Pagination, A11y } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { useState } from 'react';
-import {useAccountList} from "@/store/useAccountStore";
-
+import {useAccountList } from "@/store/useAccountStore";
+import { useSetSelectedAccount, useSelectedAccount } from "@/store/useBottomSheetStore"
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -13,15 +12,16 @@ import { Account } from '@/types/apis/accountResquest';
 import AccountCard from '@/components/(bottomsheet)/AccountCard';
 import AddAccountSVG from '@/components/(SVG_component)/(mypage)/AddAccountSVG';
 import accountSort from '@/services/account/accountsort';
-// TODO : main == true 인 경우 맨 앞에 표시되도록
+
 export default function AccountCarousel() {
   const accountsInfo = useAccountList();
   const accounts = accountSort(accountsInfo);
-  const [selectedAccount, setSelectedAccount] = useState<number | null>(null);
+  const selectedStore = useSelectedAccount();
+  const setSelectedStore = useSetSelectedAccount();
   const handleAccountSelect = (accountInfo: Account) => {
-    if (accountInfo.accountId === selectedAccount) setSelectedAccount(null);
+    if (accountInfo.accountId === selectedStore) setSelectedStore(0);
     else if (accountInfo.main === false)
-      setSelectedAccount(accountInfo.accountId);
+      setSelectedStore(accountInfo.accountId);
   };
 
   return (
@@ -43,7 +43,7 @@ export default function AccountCarousel() {
               bank={account.bank}
               accountNumber={account.accountNumber}
               main={account.main}
-              isSelected={account.accountId === selectedAccount}
+              isSelected={account.accountId === selectedStore}
             />
           </div>
         </SwiperSlide>
