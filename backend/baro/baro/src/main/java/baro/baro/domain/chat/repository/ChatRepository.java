@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface ChatRepository extends MongoRepository<Chat, Long> {
-    List<Chat> findByChatRoomIdOrderByChatTimeDesc(Long chatRoomId);
+    List<Chat> findByChatRoomIdOrderByChatTime(Long chatRoomId);
 }
