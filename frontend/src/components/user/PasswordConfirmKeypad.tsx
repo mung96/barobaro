@@ -4,7 +4,7 @@ import useKeypad from "@/hooks/keypad/useKeyPadModel";
 import { useEffect, useState } from "react";
 
 type Props = {
-    value: number
+    value?: number
     onChange?: (value: number) => void
 }
 
