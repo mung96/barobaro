@@ -1,63 +1,22 @@
-import { postPINApi } from "@/apis/passwordApi";
-import { getProfile } from "@/apis/profileApi";
 import KeyPadDelete from "@/components/(SVG_component)/(mypage)/KeyPadDelete";
 import DisplayPassword from "@/components/user/DisplayPassword"
 import useKeypad from "@/hooks/keypad/useKeyPadModel";
-import usePasswordChange from "@/hooks/user/usePasswordModel";
-import { useProfileObject, useProfileSet } from "@/store/useMyProfile";
-import { usePrevPathStore } from "@/store/usePath";
-import { AxiosError } from "axios";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 type Props = {
-    isNewPassword: boolean
-    value?: number
-    onChange?: (v: number) => void
+    value: number
+    onChange?: (value: number) => void
 }
 
 
 const BUTTON_ACTIVE_TIME = 120;
-const PasswordKeypad = ({ isNewPassword, value, onChange }: Props) => {
-    const realPassword = '112233';
+const PasswordConfirmKeypad = ({ value, onChange }: Props) => {
     const keys = [1, 2, 3, 4, 5, 6, 7, 8, 9, 'empty', 0, 'delete'];
+    const [inputPassword, setInputPassword] = useState('');
 
-    const profile = useProfileObject();
-    const setProfile = useProfileSet();
-
-    const fetchProfile = async () => {
-        try {
-            const profileResponse = await getProfile();
-            setProfile({
-                id: profile.id!,
-                profileImage: profileResponse.data.body.profileImage!,
-                nickname: profileResponse.data.body.nickname,
-                phoneNumber: profileResponse.data.body.phoneNumber,
-                email: profileResponse.data.body.email,
-                name: profileResponse.data.body.name,
-                isAuthenticated: profileResponse.data.body.isAuthenticated,
-            })
-        } catch (error) {
-            console.log(error)
-            if (error instanceof AxiosError) {
-                alert(error.response?.data.header.message)
-            }
-        }
-    }
-    const successPostPIN = async () => {
-        try {
-            await postPINApi({ password: newPassword, checkPassword: inputPassword })
-        } catch (error) {
-            console.error("비밀번호 등록에 실패했습니다:", error)
-        }
-    }
     const [activatedKeys, setActivatedKeys] = useState<number[]>([]);
-    const { newPassword, inputPassword, setInputPassword, passwordMessage, isFinished } =
-        usePasswordChange(
-            isNewPassword,
-            isNewPassword ? undefined : realPassword
-        );
-    const { passwordHandler, deleteHandler } = useKeypad(setInputPassword);
+
+    const { passwordHandler, deleteHandler } = useKeypad(setInputPassword!);
 
     useEffect(() => {
         onChange && onChange(Number(inputPassword));
@@ -76,18 +35,14 @@ const PasswordKeypad = ({ isNewPassword, value, onChange }: Props) => {
                 randomKeys.push(randomKey as number);
             }
         }
-
         setActivatedKeys([selectedKey, ...randomKeys]);
-
         setTimeout(() => {
             setActivatedKeys([]);
         }, BUTTON_ACTIVE_TIME);
     };
     return <><main className="flex flex-col justify-center items-center flex-1">
         <div className="mt-9">
-            {!isFinished ? (
-                <DisplayPassword length={inputPassword.length} />
-            ) : null}
+            <DisplayPassword length={inputPassword.length} />
         </div>
     </main>
         <section className="w-full max-w-[500px] mx-auto text-gray-600">
@@ -124,4 +79,4 @@ const PasswordKeypad = ({ isNewPassword, value, onChange }: Props) => {
         </section></>
 }
 
-export default PasswordKeypad;
+export default PasswordConfirmKeypad;

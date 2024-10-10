@@ -16,12 +16,20 @@ import { useProfileObject } from '@/store/useMyProfile';
 import useContractRequestModel from '@/hooks/contract/useContractRequestModel';
 import { useParams } from 'next/navigation';
 import Button from '@/components/shared/Button';
+import { getContractRequest, postContractApprove } from '@/apis/contractApi';
+import { formatDate } from '@/utils/dayUtil';
+import { IoCalendarClearOutline } from 'react-icons/io5';
+import Input from '@/components/shared/Input';
+import { useForm } from 'react-hook-form';
 
 type ContractRequestParams = {
   isOpen: boolean;
   onRequestClose: () => void;
   isFromStatusMessage?: boolean;
   modalChanger?: (modal: StatusModalType) => void;
+  data?: any;
+  disabled?: boolean;
+  onChange?: (value: string) => void
 };
 
 const modalStyle: ReactModal.Styles = {
@@ -50,21 +58,27 @@ const modalStyle: ReactModal.Styles = {
   },
 };
 
-const ContractRequestModal = ({ isOpen, onRequestClose, isFromStatusMessage, modalChanger }: ContractRequestParams) => {
+type ChatInfo = {
+  charRoomId: number;
+
+}
+
+const ContractRequestModal = ({ isOpen, onRequestClose, isFromStatusMessage, modalChanger, data, disabled }: ContractRequestParams) => {
   const { chat_id: chatRoomId } = useParams();
   const { rentalDuration, returnType, requestContract, isSubmitting } = useContractRequestModel(Number(chatRoomId as string))
+  const { handleSubmit } = useForm<ChatInfo>();
   const socketContext = useContext(SocketClientContext);
+
 
   if (!socketContext) {
     return <div> Loading ... </div>; // 두 context가 모두 필요한 경우
   }
   const { sendChat } = socketContext;
   const profile = useProfileObject();
+  // const use
+
 
   const approveLogic = (isApproved: boolean) => {
-    // 소유자가 '상세보기' 버튼을 눌렀을 때 창 처리
-    // 대여자의 계약 요청서를 거절할 때
-    // 프로세스 contact로 바꾸고 / 시스템메시지 찍고 /
     if (isApproved) {
       const approveMessage: MessageFormType = {
         type: 3,
@@ -105,6 +119,18 @@ const ContractRequestModal = ({ isOpen, onRequestClose, isFromStatusMessage, mod
     onRequestClose();
   };
 
+  const approveContract = async () => {
+    try {
+      const response = await postContractApprove(Number(chatRoomId))
+      console.log(response)
+
+      approveLogic(true);
+    } catch (error) {
+      console.log(error);
+    }
+
+  }
+
   return (
     <ReactModal
       isOpen={isOpen}
@@ -113,34 +139,49 @@ const ContractRequestModal = ({ isOpen, onRequestClose, isFromStatusMessage, mod
       ariaHideApp={false}
       style={modalStyle}
     >
-      <form className="flex flex-col gap-4 justify-center" onSubmit={isFromStatusMessage ? () => approveLogic(true) : requestContract(handleRequestSuccess)}>
+      <form className="flex flex-col gap-4 justify-center" onSubmit={isFromStatusMessage ? handleSubmit(approveContract) : requestContract(handleRequestSuccess)}>
         <h2 className="font-bold text-center text-xl">계약 요청서</h2>
         <section className='flex flex-col gap-3'>
           <div className="flex flex-col gap-1">
             <h3 className="text-base">희망 대여 기간</h3>
-            <ContractDurationInput selected={rentalDuration.field.value as DateRange} onSelect={rentalDuration.field.onChange} />
+            {
+              !disabled ?
+                <ContractDurationInput selected={rentalDuration.field.value as DateRange} onSelect={rentalDuration.field.onChange} />
+                :
+                <div className="flex gap-2 relative">
+                  <Input
+                    placeholder="대여 날짜"
+                    value={data.desiredStartDate}
+                    width="120px"
+                    height="40px"
+                    icon={<IoCalendarClearOutline className="w-4 h-4 mb-[2px]" />}
+                    disabled
+                  />
+                  <p>~</p>
+                  <Input
+                    placeholder="반납 날짜"
+                    value={data.desiredEndDate}
+                    width="120px"
+                    height="40px"
+                    icon={<IoCalendarClearOutline className="w-4 h-4 mb-[2px]" />}
+                    disabled
+                  />
+                </div>
+            }
           </div>
           <div className="flex flex-col gap-1">
             <h3 className="text-base">반납 방법 선택</h3>
             <Radio.Group
               fieldSetName="반납 방법"
-              value={returnType.field.value as string}
+              value={!disabled ? returnType.field.value as string : data.returnType}
               onChange={returnType.field.onChange}
               className="flex gap-4"
             >
-              <SelectableItem type="radio" value="DIRECT" label="직거래" />
-              <SelectableItem type="radio" value="DELIVERY" label="택배거래" />
+              <SelectableItem disabled={disabled} type="radio" value="DIRECT" label="직거래" />
+              <SelectableItem disabled={disabled} type="radio" value="DELIVERY" label="택배거래" />
             </Radio.Group>
           </div>
         </section>
-        {/* <Button
-            width='100%'
-            height='40px'
-            color='gray'
-            onClick={isFromStatusMessage ? () => approveLogic(false) : onRequestClose}
-          >
-            <p className='text-sm'> {isFromStatusMessage ? '거절' : '취소'}</p>
-          </Button> */}
         <div className='mt-3'>
           <Button
             type="submit"
