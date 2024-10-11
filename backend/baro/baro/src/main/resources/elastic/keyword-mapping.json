@@ -1,0 +1,6 @@
+{
+  "properties" : {
+    "id" : {"type" :  "keyword"},
+    "keyword": {"type":  "text",  "analyzer":  "korean"}
+  }
+}
