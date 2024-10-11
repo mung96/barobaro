@@ -1,0 +1,16 @@
+// 20241011111819
+// http://j11a401.p.ssafy.io:9090/job/BE/264/execution/node/3/ws/backend/baro/baro/src/main/resources/barobaro-aa63c-2b4f8f5e33c2.json
+
+{
+  "type": "service_account",
+  "project_id": "barobaro-aa63c",
+  "private_key_id": "2b4f8f5e33c27c524d3aac28097cdd1a8051b339",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCq+AHb89FJ+TOF\nbgDfIwZa33rXptQAIgb6k1Gb2VNgzNrczceG4YFW/OKGK6uLYPsuPI/thU/ry/A6\nX5PmzxLb7JC6QBWw9BhRvyTTlJZDOg9WFUmq0l5mctPARer7uKWv6uETcX0apnE0\nwPrx/nmzv7lqO55bFDiBgScCPKkQizEFmFHowoObvw61J6RgO/4A95QVmhXrOywt\n9YFFypyhY1k/wLyRsqFTBdTROSSl0OTFatk8LJjb1MSVNyxOX2HuxjeMTWtyM9O7\nq6kECAVpL1EQ/8nsNDNY9NxBNtwB2+ehScCxJfWgtKLUS7HOBVDLa4NouxHAAXOD\nsJSUnMDHAgMBAAECggEAOZYotif1XjfAiVholcAr4070BxBLxzGu7RbS/a4hffDy\nZT4wzzdExAKQ4EV0VhGX+VZv2j61kURTia3o2Oz1urr/cqSkScKmMF60LkoVpNY5\nFTM9aXrLTjGuLky+ngPvVwZDwrNOwru+VNkNjZY78vYIo4YqTB5O/Bv/AithfM8A\nejyu4jgFqcQ4D2By5Z2H8qosz/yKm4QX7aPMj97lcnOA798mhvk10FcXYkOAddr7\n7G39pDEEcBHjcwNzSXVvpmwFzzCOXAEGcFoFJ2Guo5u+d6nS38aA5XC55Q52bvqh\nfPlWdZUEjO9tZm/GPq3n6uZbmuj/tz5YORwAKBXpkQKBgQDXGx3qgi6s0LBxYwJi\ncv7VqCPkHTaKGOAWnqDpCQt6e/mGyzRlintygzlK5DCzIn0PUGC/Eoe6bv//k27f\nOTMjeqZCj6aM01vcWZEYbSwNUsc08Orktz2o5RzA9P/7tUL4qzy4d/B640oaAxeb\nl4RiYhb6f2XdFioJ6RUEShzg8QKBgQDLeM00q5w7HEjUAX/PbA3OUoFLzeeT9lJk\nkXM4Yqb2G6M5IyojD2f5awnraamWlDam/Rd8AtInbAhvM4MNJ6CD4B1tFvkWLPei\nAz1y4+mIGkaR+GGjfyI4IxMmOwGEn/fYK/BV/Rt0PAcUZsBxu10tJHIzOqIO5Qs9\nhKPjI789NwKBgFVN9bE4a1YxdKeiwiFUxWbpxUIDq8tcThHqWpnP8nNikvQ3xdG2\n93nUPHZMxFtmA/58u8FKkfUHbBJo34E65+LcEu82lLAoabea9YWgVeX6u/Fs0Vpe\nqN8/7QVAo/uoSKThE7V8Kyww0wQ50bTsg52YlNBGkZj53zYK70DCO22hAoGBAIv3\nK2Hh8vSOfmKoLV1n/Q9CngKhP33+4aqgi1vsMOH3HQ6+68t2W5WtVgOEic41Ymr4\niuEZp6rKm/qyuqGf8sEEt/lE5k+k2yutguW3dfvT51ueOrwXRljLd+7ChEbRK9Ke\nVxMvq2UHre8Qx6z0sCHPgmdPHA+W62aECaDEBFd9AoGAPdV8d0/MOpRCNtW0DtHI\n5/w+Um9mUJ+6WowqIOPM5ai8kDPYEEp6QvMPJXIwQHhLQMYAHWb5WBeOQYWFGVr+\n0B2clhzccshd9ES80njcz6OK2j7rtVpPGqeCxbYXig0dGl5Rz8knX2XO1159Y+8l\nXzL1wQ+W7iwtk5AQrhMw5T0=\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-o7xg0@barobaro-aa63c.iam.gserviceaccount.com",
+  "client_id": "109606488771165026765",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-o7xg0%40barobaro-aa63c.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
