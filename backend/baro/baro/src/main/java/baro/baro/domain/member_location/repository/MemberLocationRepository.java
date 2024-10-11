@@ -1,0 +1,35 @@
+package baro.baro.domain.member_location.repository;
+
+import baro.baro.domain.member_location.entity.MemberLocation;
+import baro.baro.domain.member_location.entity.MemberLocationPK;
+import io.lettuce.core.dynamic.annotation.Param;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
+
+public interface MemberLocationRepository extends JpaRepository<MemberLocation, MemberLocationPK> {
+    @Modifying
+    @Transactional
+    @Query(value = "INSERT INTO member_location (member_id, location_id, is_main) " +
+            "VALUES (:memberId, :locationId, :isMain)", nativeQuery = true)
+    void insertMemberLocations(@Param("memberId") Long memberId,
+                               @Param("locationId") Long locationId,
+                               @Param("isMain") boolean isMain);
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM member_location WHERE member_id = :memberId", nativeQuery = true)
+    void deleteMemberLocations(@Param("memberId") Long memberId);
+
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE member_location " +
+            "SET is_main = CASE " +
+            "WHEN location_id = :locationId THEN true " +
+            "ELSE false END " +
+            "WHERE member_id = :memberId", nativeQuery = true)
+    void updateIsMainForMemberLocation(@org.springframework.data.repository.query.Param("memberId") Long memberId, @org.springframework.data.repository.query.Param("locationId") Long locationId);
+
+    @Query("SELECT COUNT(ml) > 0 FROM MemberLocation ml WHERE ml.member.id = :memberId AND ml.location.id = :locationId")
+    boolean existsByMemberIdAndLocationId(@org.springframework.data.repository.query.Param("memberId") Long memberId, @org.springframework.data.repository.query.Param("locationId") Long locationId);
+}
