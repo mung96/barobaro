@@ -32,7 +32,7 @@ public class Contract {
 
     private String contractUrl;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "rental_id")
     private Member rental;
 
