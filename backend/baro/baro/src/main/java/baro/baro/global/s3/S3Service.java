@@ -30,6 +30,7 @@ public abstract class S3Service {
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentType(contentType);
         objectMetadata.setContentLength(content.length);
+        objectMetadata.setCacheControl("no-cache");
 
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(content);
 
@@ -54,11 +55,9 @@ public abstract class S3Service {
         return amazonS3Client.getObject(bucket, fileName).getObjectContent();
     }
 
-    protected Date getlastModified(String fileName){
+    protected Date getlastModified(String fullUrl){
+        String fileName = fullUrl.substring(fullUrl.indexOf("contract/"));
         ObjectMetadata objectMetadata = amazonS3Client.getObjectMetadata(bucket, fileName);
-        log.info("getlastModified 들옴");
-        log.info(objectMetadata.getLastModified().toString());
-        
         return objectMetadata.getLastModified();
     }
 

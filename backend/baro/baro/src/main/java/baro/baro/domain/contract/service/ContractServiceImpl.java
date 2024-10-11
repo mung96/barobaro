@@ -216,10 +216,6 @@ public class ContractServiceImpl implements ContractService {
 			throw new CustomException(CONFLICT_WITH_OTHER);
 		}
 
-		if (product.getContractCondition() == null) {
-			throw new CustomException(CONTRACT_TYPE_NOT_VALID);
-		}
-
 		//이미 해당 상품에 진행중인 계약이 있음
 		Contract contract = product.getContract();
 
@@ -267,7 +263,8 @@ public class ContractServiceImpl implements ContractService {
 					.build();
 		}
 		else {
-			//상품 대여 상태 업데이트
+
+            //상품 대여 상태 업데이트
 			product.updateProductStatus(ProductStatus.IN_PROGRESS);
 
 			//채팅방의 거래 상태 업데이트
@@ -291,9 +288,9 @@ public class ContractServiceImpl implements ContractService {
 				log.info("에러에러" + e.getMessage());
 				throw new CustomException(PDF_GENERATE_FAILED);
 			}
-			log.info("여기까지 잘 들옴 ㅇㅇ");
+
 			LocalDateTime lastModified = pdfS3Service.lastModified(generatedS3PdfUrl);
-			log.info("lastModified 성공");
+
 			Contract newContract = Contract.builder()
 					.product(product)
 					.createdAt(lastModified)
@@ -302,8 +299,6 @@ public class ContractServiceImpl implements ContractService {
 					.build();
 
 			contractRepository.save(newContract);
-
-			log.info("계약 생성완료");
 
 			result = ContractApproveRes.builder()
 					.chatRoomId(contractApproveReq.getChatRoomId())
