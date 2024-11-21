@@ -18,9 +18,10 @@ export default function ContractPaperModal() {
     const pdfUrl = useApproveContractUrl();
     const {chat_id} = useParams();
 
-    useEffect(() => {
-        getContractPdf(Number(chat_id));
-    }, [])
+    // useEffect(() => {
+    //     getContractPdf(Number(chat_id));
+    // }, [])
+
     useEffect(() => {
         setIsClient(true);
     }, []);

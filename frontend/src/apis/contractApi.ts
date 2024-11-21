@@ -11,7 +11,7 @@ export type ContractRequest = {
 export type SignRequest = {
   chatRoomId: number;
   pinNumber: number;
-  signatureData: File | undefined;
+  signatureData: string;
   s3FileUrl: string;
 };
 

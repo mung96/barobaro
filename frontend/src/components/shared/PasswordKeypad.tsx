@@ -25,32 +25,32 @@ const PasswordKeypad = ({ isNewPassword, value, onChange }: Props) => {
     const profile = useProfileObject();
     const setProfile = useProfileSet();
 
-    const fetchProfile = async () => {
-        try {
-            const profileResponse = await getProfile();
-            setProfile({
-                id: profile.id!,
-                profileImage: profileResponse.data.body.profileImage!,
-                nickname: profileResponse.data.body.nickname,
-                phoneNumber: profileResponse.data.body.phoneNumber,
-                email: profileResponse.data.body.email,
-                name: profileResponse.data.body.name,
-                isAuthenticated: profileResponse.data.body.isAuthenticated,
-            })
-        } catch (error) {
-            console.log(error)
-            if (error instanceof AxiosError) {
-                alert(error.response?.data.header.message)
-            }
-        }
-    }
-    const successPostPIN = async () => {
-        try {
-            await postPINApi({ password: newPassword, checkPassword: inputPassword })
-        } catch (error) {
-            console.error("비밀번호 등록에 실패했습니다:", error)
-        }
-    }
+    // const fetchProfile = async () => {
+    //     try {
+    //         const profileResponse = await getProfile();
+    //         setProfile({
+    //             id: profile.id!,
+    //             profileImage: profileResponse.data.body.profileImage!,
+    //             nickname: profileResponse.data.body.nickname,
+    //             phoneNumber: profileResponse.data.body.phoneNumber,
+    //             email: profileResponse.data.body.email,
+    //             name: profileResponse.data.body.name,
+    //             isAuthenticated: profileResponse.data.body.isAuthenticated,
+    //         })
+    //     } catch (error) {
+    //         console.log(error)
+    //         if (error instanceof AxiosError) {
+    //             alert(error.response?.data.header.message)
+    //         }
+    //     }
+    // }
+    // const successPostPIN = async () => {
+    //     try {
+    //         await postPINApi({ password: newPassword, checkPassword: inputPassword })
+    //     } catch (error) {
+    //         console.error("비밀번호 등록에 실패했습니다:", error)
+    //     }
+    // }
     const [activatedKeys, setActivatedKeys] = useState<number[]>([]);
     const { newPassword, inputPassword, setInputPassword, passwordMessage, isFinished } =
         usePasswordChange(

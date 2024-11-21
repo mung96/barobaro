@@ -11,11 +11,17 @@ import MessageFormType from '../message/chat/MessageFormType';
 import { SocketClientContext } from '@/contexts/SocketClientContext';
 import { useProfileObject } from '@/store/useMyProfile';
 import ContractPaperModal from '@/components/modal/ContractPaperModal';
+import {axiosInstance} from "@/apis/axiosInstance";
+import {END_POINT} from "@/constants/api";
+import {postOwnerSign, postRentalSign, SignRequest} from "@/apis/contractApi";
+import {useApproveContractUrl, usePinNumber, useSetPinNumber} from "@/store/useContractPaperStore";
+import {useParams} from "next/navigation";
 
 type SignatureModalParam = {
   onRequestClose: () => void;
   isOpen: boolean;
   onChange?: (data: string) => void
+  isOwner:boolean;
 };
 
 const modalStyle: ReactModal.Styles = {
@@ -40,7 +46,7 @@ const modalStyle: ReactModal.Styles = {
   },
 };
 
-const SignatureModal = ({ isOpen, onRequestClose, onChange }: SignatureModalParam) => {
+const SignatureModal = ({ isOpen, onRequestClose, onChange ,isOwner}: SignatureModalParam) => {
   const [pressed, setPressed] = useState(false); // '확인' 버튼이 눌렸는지
   const [dataUrl, setDataUrl] = useState('');
   const processContext = useContext(ProcessContext);
@@ -55,7 +61,13 @@ const SignatureModal = ({ isOpen, onRequestClose, onChange }: SignatureModalPara
       setContextLoaded(true);
     }
   }, [processContext]);
-
+  const pinNumber = usePinNumber();
+  const {chat_id} = useParams();
+  const pdfUrl = useApproveContractUrl();
+  const sign = async () =>{
+    const data =  {chatRoomId: Number(chat_id),   pinNumber: Number(pinNumber),   signatureData: dataUrl  , s3FileUrl: pdfUrl}
+    return isOwner ? await postOwnerSign(data):await postRentalSign(data);
+  }
   useEffect(() => {
     // 버튼 눌리면 수행할 로직
     // 비동기 -> 서명 그래픽 정보 서버로 보내기
@@ -125,6 +137,7 @@ const SignatureModal = ({ isOpen, onRequestClose, onChange }: SignatureModalPara
 
   const handlePressed = () => {
     setPressed(true);
+    sign();
   };
 
   const handleSignature = (signatureUrl: string) => {
