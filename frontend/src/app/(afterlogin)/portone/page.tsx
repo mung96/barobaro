@@ -11,9 +11,6 @@ const PortOneComponent = dynamic(() => import('@/components/user/PortOneComponen
 
 export default function PortonePage() {
 
-    return (
-        <>
-            <PortOneComponent />
-        </>
+    return (<PortOneComponent />
     );
 }
