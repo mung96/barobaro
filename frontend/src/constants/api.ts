@@ -53,7 +53,7 @@ export const END_POINT = {
   WISH_LIST: 'wish-list',
   PRODUCT: 'products',
   PIN_PATCH: 'members/me/password',
-  PIN_VERIFIED: 'members/me/password/verified',
+  PIN_VERIFIED: 'members/me/password/verify',
   LOCATION_GET: 'members/me/locations',
   LOCATION_MAIN_CHANGE: 'members/me/default-location',
   ALERT: 'notifications',

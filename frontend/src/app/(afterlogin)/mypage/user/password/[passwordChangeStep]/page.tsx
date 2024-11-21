@@ -1,8 +1,6 @@
 'use client';
 
 import Header from '@/components/Header';
-import { useEffect } from 'react';
-import { getPINApi } from "@/apis/passwordApi";
 import PasswordKeypad from '@/components/shared/PasswordKeypad';
 
 type Props = {

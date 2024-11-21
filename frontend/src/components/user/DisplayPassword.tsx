@@ -28,14 +28,14 @@ const DisplayPassword: React.FC<DisplayPasswordProps> = ({
         </div>
       ),
     );
-  // TODO : 비밀번호를 가져오는 과정 오류 발생, 추후 수정 필요.
-  useEffect(() => {
-      const getPasswordFunction = async () => {
-          const res = await getPINApi()
-          console.log(res)
-      }
-      getPasswordFunction()
-  }, [])
+
+  // useEffect(() => {
+  //     const getPasswordFunction = async () => {
+  //         const res = await getPINApi()
+  //         console.log(res)
+  //     }
+  //     getPasswordFunction()
+  // }, [])
   return (
     <section className="flex space-x-2 items-center">
       {passwordDisplay()}

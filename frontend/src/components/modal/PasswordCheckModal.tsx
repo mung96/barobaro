@@ -9,6 +9,7 @@ import { SocketClientContext } from '@/contexts/SocketClientContext';
 import { ProcessContext } from '@/contexts/ChatProcessContext';
 import { useProfileObject } from '@/store/useMyProfile';
 import PasswordConfirmKeypad from '@/components/user/PasswordConfirmKeypad';
+import {getPINApi} from "@/apis/passwordApi";
 
 type PasswordCheckModalParams = {
   isOpen: boolean;
@@ -42,12 +43,14 @@ const modalStyle: ReactModal.Styles = {
 };
 
 const PasswordCheckModal = ({ isOpen, onRequestClose, modalChanger, purpose, value, onChange }: PasswordCheckModalParams) => {
+
   const socketClientContext = useContext(SocketClientContext);
   const processContext = useContext(ProcessContext);
   if (!socketClientContext || !processContext) return null;
   const { sendChat } = socketClientContext;
   // const { processSetter } = processContext;
   const profile = useProfileObject();
+  // TODO : 비밀번호를 가져오는 과정 오류 발생, 추후 수정 필요.
 
   const modalFinish = () => {
     // 이 모달의 사용이 끝날 때 (비밀번호가 맞았을 때) 작동할 함수

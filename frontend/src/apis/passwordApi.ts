@@ -17,9 +17,9 @@ export const patchPINApi = async (passwordData: Props) => {
   }
 };
 
-export const getPINApi = async () => {
+export const getPINApi = async (password:string) => {
   try {
-    const response = await axiosInstance.get(END_POINT.PIN_VERIFIED);
+    const response = await axiosInstance.get(END_POINT.PIN_VERIFIED,{params:{key:password}});
     console.log('SUCCESS', response);
     return response;
   } catch (err) {
