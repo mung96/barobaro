@@ -123,7 +123,7 @@ const StatusMessage: FC<MessageFormType> = ({ body, timestamp, isMine }) => {
                 </Button>
               </div>
               {modalType === 'signature' && ( // '서명하기' 모달
-                <SignatureModal onChange={setSignData} isOpen={modalOpen} onRequestClose={modalClose} />
+                <SignatureModal onChange={setSignData} isOpen={modalOpen} onRequestClose={modalClose} isOwner={amIOwner}/>
               )}
 
               {modalType === 'request' && ( // '상세보기' 모달 (대여자가 요청한 계약 요청서를 봄)

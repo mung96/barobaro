@@ -19,6 +19,7 @@ export default function ContractPaperModal() {
     useEffect(() => {
         getContractPdf(Number(chat_id));
     }, [])
+
     useEffect(() => {
         setIsClient(true);
     }, []);

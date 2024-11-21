@@ -11,11 +11,15 @@ import MessageFormType from '../message/chat/MessageFormType';
 import { SocketClientContext } from '@/contexts/SocketClientContext';
 import { useProfileObject } from '@/store/useMyProfile';
 import ContractPaperModal from '@/components/modal/ContractPaperModal';
+import {axiosInstance} from "@/apis/axiosInstance";
+import {END_POINT} from "@/constants/api";
+import {postOwnerSign, postRentalSign, SignRequest} from "@/apis/contractApi";
 
 type SignatureModalParam = {
   onRequestClose: () => void;
   isOpen: boolean;
   onChange?: (data: string) => void
+  isOwner:boolean;
 };
 
 const modalStyle: ReactModal.Styles = {
@@ -40,7 +44,7 @@ const modalStyle: ReactModal.Styles = {
   },
 };
 
-const SignatureModal = ({ isOpen, onRequestClose, onChange }: SignatureModalParam) => {
+const SignatureModal = ({ isOpen, onRequestClose, onChange ,isOwner}: SignatureModalParam) => {
   const [pressed, setPressed] = useState(false); // '확인' 버튼이 눌렸는지
   const [dataUrl, setDataUrl] = useState('');
   const processContext = useContext(ProcessContext);
@@ -122,9 +126,16 @@ const SignatureModal = ({ isOpen, onRequestClose, onChange }: SignatureModalPara
     // context 로드되지 않을 시 리턴할 JSX
     return <div>Loading...</div>;
   }
+  //
+  // const sign = async () =>{
+  //   return isOwner ? await postOwnerSign({}):await postRentalSign();
+  // }
+
+
 
   const handlePressed = () => {
     setPressed(true);
+    // {chatRoomId: number,   pinNumber: number   signatureData: File | undefined   s3FileUrl: string
   };
 
   const handleSignature = (signatureUrl: string) => {
