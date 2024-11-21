@@ -14,6 +14,8 @@ import ContractPaperModal from '@/components/modal/ContractPaperModal';
 import {axiosInstance} from "@/apis/axiosInstance";
 import {END_POINT} from "@/constants/api";
 import {postOwnerSign, postRentalSign, SignRequest} from "@/apis/contractApi";
+import {useApproveContractUrl, usePinNumber, useSetPinNumber} from "@/store/useContractPaperStore";
+import {useParams} from "next/navigation";
 
 type SignatureModalParam = {
   onRequestClose: () => void;
@@ -59,7 +61,13 @@ const SignatureModal = ({ isOpen, onRequestClose, onChange ,isOwner}: SignatureM
       setContextLoaded(true);
     }
   }, [processContext]);
-
+  const pinNumber = usePinNumber();
+  const {chat_id} = useParams();
+  const pdfUrl = useApproveContractUrl();
+  const sign = async () =>{
+    const data =  {chatRoomId: Number(chat_id),   pinNumber: Number(pinNumber),   signatureData: dataUrl  , s3FileUrl: pdfUrl}
+    return isOwner ? await postOwnerSign(data):await postRentalSign(data);
+  }
   useEffect(() => {
     // 버튼 눌리면 수행할 로직
     // 비동기 -> 서명 그래픽 정보 서버로 보내기
@@ -126,16 +134,10 @@ const SignatureModal = ({ isOpen, onRequestClose, onChange ,isOwner}: SignatureM
     // context 로드되지 않을 시 리턴할 JSX
     return <div>Loading...</div>;
   }
-  //
-  // const sign = async () =>{
-  //   return isOwner ? await postOwnerSign({}):await postRentalSign();
-  // }
-
-
 
   const handlePressed = () => {
     setPressed(true);
-    // {chatRoomId: number,   pinNumber: number   signatureData: File | undefined   s3FileUrl: string
+    sign();
   };
 
   const handleSignature = (signatureUrl: string) => {

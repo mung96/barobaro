@@ -3,6 +3,7 @@ import DisplayPassword from "@/components/user/DisplayPassword"
 import useKeypad from "@/hooks/keypad/useKeyPadModel";
 import { useEffect, useState } from "react";
 import {getPINApi} from "@/apis/passwordApi";
+import {usePinNumber, useSetPinNumber} from "@/store/useContractPaperStore";
 
 type Props = {
     value?: number
@@ -21,8 +22,9 @@ const PasswordConfirmKeypad = ({ value, onChange }: Props) => {
 
     useEffect(() => {
         onChange && onChange(Number(inputPassword));
+        setPinNumber(inputPassword)
     }, [inputPassword])
-
+    const setPinNumber = useSetPinNumber();
     const getPasswordFunction = async () => {
         const res = await getPINApi(inputPassword)
     }
