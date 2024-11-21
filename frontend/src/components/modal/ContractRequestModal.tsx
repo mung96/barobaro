@@ -21,6 +21,7 @@ import { formatDate } from '@/utils/dayUtil';
 import { IoCalendarClearOutline } from 'react-icons/io5';
 import Input from '@/components/shared/Input';
 import { useForm } from 'react-hook-form';
+import { useSetApproveContractUrl } from '@/store/useContractPaperStore';
 
 type ContractRequestParams = {
   isOpen: boolean;
@@ -68,7 +69,7 @@ const ContractRequestModal = ({ isOpen, onRequestClose, isFromStatusMessage, mod
   const { rentalDuration, returnType, requestContract, isSubmitting } = useContractRequestModel(Number(chatRoomId as string))
   const { handleSubmit } = useForm<ChatInfo>();
   const socketContext = useContext(SocketClientContext);
-
+  const setApproveContractUrl = useSetApproveContractUrl();
 
   if (!socketContext) {
     return <div> Loading ... </div>; // 두 context가 모두 필요한 경우
@@ -122,8 +123,9 @@ const ContractRequestModal = ({ isOpen, onRequestClose, isFromStatusMessage, mod
   const approveContract = async () => {
     try {
       const response = await postContractApprove(Number(chatRoomId))
-      console.log(response)
-
+      // 이것이 바로 소유자 입장의 pdf URL!
+      console.log('post contractapprove', response.data.body.fileUrl)
+      setApproveContractUrl(response.data.body.fileUrl);
       approveLogic(true);
     } catch (error) {
       console.log(error);
