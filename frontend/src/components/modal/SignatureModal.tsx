@@ -64,10 +64,7 @@ const SignatureModal = ({ isOpen, onRequestClose, onChange ,isOwner}: SignatureM
   const pinNumber = usePinNumber();
   const {chat_id} = useParams();
   const pdfUrl = useApproveContractUrl();
-  const sign = async () =>{
-    const data =  {chatRoomId: Number(chat_id),   pinNumber: Number(pinNumber),   signatureData: dataUrl  , s3FileUrl: pdfUrl}
-    return isOwner ? await postOwnerSign(data):await postRentalSign(data);
-  }
+
   useEffect(() => {
     // 버튼 눌리면 수행할 로직
     // 비동기 -> 서명 그래픽 정보 서버로 보내기
@@ -80,6 +77,10 @@ const SignatureModal = ({ isOpen, onRequestClose, onChange ,isOwner}: SignatureM
       // -> 기존 값에 +2 해 주면 됨
 
       console.log(dataUrl); // BE에 보내야 할 서명 파일
+
+      // useEffect(() => {
+      //   console.log(dataUrl)
+      // }, []);
 
       const signRequestMessage: MessageFormType = {
         // 상태 메시지 보내기
@@ -137,12 +138,18 @@ const SignatureModal = ({ isOpen, onRequestClose, onChange ,isOwner}: SignatureM
 
   const handlePressed = () => {
     setPressed(true);
-    sign();
   };
 
   const handleSignature = (signatureUrl: string) => {
     onChange && onChange(signatureUrl);
     setDataUrl(signatureUrl);
+
+    const sign = async () =>{
+      const data =  {chatRoomId: Number(chat_id),   pinNumber: Number(pinNumber),   signatureData: signatureUrl  , s3FileUrl: pdfUrl}
+      return isOwner ? await postOwnerSign(data):await postRentalSign(data);
+    }
+
+    sign()
   };
 
   return (
