@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { getContractPdf } from "@/apis/contractPdfApi";
+import {useParams, useRouter, useSearchParams} from "next/navigation";
+import {getContractPdf} from "@/apis/contractPdfApi";
 
 const PdfViewer = dynamic(
     () => import('@naverpay/react-pdf').then((mod) => mod.PdfViewer),
@@ -13,14 +14,11 @@ export default function ContractPaperModal() {
     const [isClient, setIsClient] = useState(false);
     const [isDownloading, setIsDownloading] = useState(false);
     const pdfUrl = "https://barobaro.s3.ap-northeast-2.amazonaws.com/contract/res.pdf"
-    // const pdfUrl = useContractUrl();
-    console.log(pdfUrl);
+    const {chat_id} = useParams();
 
     useEffect(() => {
-        getContractPdf('15');
+        getContractPdf(Number(chat_id));
     }, [])
-
-
     useEffect(() => {
         setIsClient(true);
     }, []);
