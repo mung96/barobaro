@@ -20,6 +20,7 @@ export const getContract = async (chatRoomId: number) => {
 };
 
 export const postContractApprove = async (chatRoomId: number) => {
+  // 여기서 승인과정을 거침
   return await axiosInstance.post(END_POINT.CONTRACT_APPROVE, {
     chatRoomId: chatRoomId,
   });

@@ -7,6 +7,7 @@ import axios from "axios";
 import {getContractPdf} from "@/apis/contractPdfApi";
 import {useContractUrl} from "@/store/useContractPaperStore";
 import {useParams, useRouter} from "next/navigation";
+import { useApproveContractUrl } from "@/store/useContractPaperStore";
 
 const PdfViewer = dynamic(
   () => import('@naverpay/react-pdf').then((mod) => mod.PdfViewer),
@@ -17,11 +18,19 @@ export default function ContractPDFPage() {
     const [isClient, setIsClient] = useState(false);
     const [isDownloading, setIsDownloading] = useState(false);
     const pdfUrl = useContractUrl();
+    const [contractPdfUrl, setContractPdfUrl] = useState<string>('');
     // TODO : PDF 가져오는 과정 테스트 필요.
     const {chat_id} = useParams();
 
     useEffect(() => {
-        getContractPdf(Number(chat_id));
+        async function getPdfUrl() {
+            try {
+                const response = await getContractPdf(Number(chat_id));
+                console.log('Response of approve', response)
+            } catch (err) {
+                console.log(err);
+            }
+        }
     }, [])
 
     const downloadPdf = async () => {
