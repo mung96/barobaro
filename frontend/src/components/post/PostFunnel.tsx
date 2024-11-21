@@ -44,9 +44,7 @@ function PostFunnel() {
   const { postFieldList, rentalFieldList, contractFieldList, errors, isFormValid, getValues, postProductWithoutContract, postProductWithContract, isFieldValid, isSubmitting } = usePostFormModel(context);
   const setPrevPath = useSetPrevPathStore();
   const currentPath = usePathname();
-  //TODO: 게시글 등록 눌렀을 때 본인인증 여부파악해서 모달 띄우기
   const profileState = useProfileObject();
-  const setProfile = useProfileSet();
   useEffect(() => {
     openModal(window.location.pathname);
   }, []);
@@ -60,10 +58,9 @@ function PostFunnel() {
 
   const router = useRouter();
   const pushPasswordNew = () => {
-    // router.push('/mypage/user/password/new');
     setIsIdentityVerificationModalOpen(false);
   }
-
+  
 
   return (
     <div className="flex flex-col gap-4">

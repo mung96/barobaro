@@ -6,7 +6,7 @@ import { SERVER_BASE_URL } from '@/constants/api';
 const API_URL = 'http://localhost:8080';
 //const SOCKET_URL = `${API_URL}/ws`; // 로컬 테스트 시 사용
 
-const SOCKET_URL = `https://j11a401.p.ssafy.io/ws`; // 서버 엔드포인트
+const SOCKET_URL = `http://k11a205.p.ssafy.io:8082/ws`; // 서버 엔드포인트
 
 export default class WebSocketClient {
   private client: Client;
@@ -19,8 +19,8 @@ export default class WebSocketClient {
       connectHeaders: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
-      debug: () => {
-        // console.log('STOMP: ' + str);
+      debug: (str) => {
+        console.log('STOMP: ' + str);
       },
       onConnect: () => {
         console.log('Connected to WebSocket');

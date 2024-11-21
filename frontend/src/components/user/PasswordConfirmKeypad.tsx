@@ -2,6 +2,7 @@ import KeyPadDelete from "@/components/(SVG_component)/(mypage)/KeyPadDelete";
 import DisplayPassword from "@/components/user/DisplayPassword"
 import useKeypad from "@/hooks/keypad/useKeyPadModel";
 import { useEffect, useState } from "react";
+import {getPINApi} from "@/apis/passwordApi";
 
 type Props = {
     value?: number
@@ -21,6 +22,16 @@ const PasswordConfirmKeypad = ({ value, onChange }: Props) => {
     useEffect(() => {
         onChange && onChange(Number(inputPassword));
     }, [inputPassword])
+
+    const getPasswordFunction = async () => {
+        const res = await getPINApi(inputPassword)
+    }
+
+    useEffect(()=>{
+        if(inputPassword.length ===6){
+            getPasswordFunction()
+        }
+    },[inputPassword])
 
     //완료되면 inputPassword API 보내기
     const handleButtonClick = (selectedKey: number) => {
