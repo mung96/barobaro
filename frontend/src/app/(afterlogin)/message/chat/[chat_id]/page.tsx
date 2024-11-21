@@ -32,10 +32,8 @@ export default function Chat() {
     boardTitle,
   } = useChatPageModel();
 
-  // webSocket Client
   const { socketClient, sendChat, eventedProcess } = useSocketClientModel(handleAddMessages, chatRoomId, ownerUuid);
 
-  // socketClient가 null일 때 렌더링
   if (!socketClient) {
     return <div>Loading...</div>;
   }
