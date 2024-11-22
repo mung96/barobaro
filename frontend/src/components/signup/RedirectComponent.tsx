@@ -29,7 +29,7 @@ const RedirectComponent = () => {
       try {
         const profileResponse = await getProfile();
         setProfile({
-          id: decoded.sub!,
+          id: profileResponse.data.body.uuid,
           profileImage: profileResponse.data.body.profileImage,
           nickname: profileResponse.data.body.nickname,
           phoneNumber: profileResponse.data.body.phoneNumber,
