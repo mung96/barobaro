@@ -24,6 +24,8 @@ const StatusMessage: FC<MessageFormType> = ({ body, timestamp, isMine }) => {
 
   const profile = useProfileObject();
   const amIOwner: boolean = ownerUuid === profile.id;
+  console.log("uuid : "+ownerUuid);
+  console.log("profileId : "+profile.id);
   const fileName: string = `대여계약서_${currentTime('file')}_${profile.nickname}_${otherNickname}`;
 
   const [data, setData] = useState();

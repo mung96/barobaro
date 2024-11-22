@@ -47,6 +47,7 @@ const modalStyle: ReactModal.Styles = {
 };
 
 const SignatureModal = ({ isOpen, onRequestClose, onChange ,isOwner}: SignatureModalParam) => {
+ console.log(isOwner);
   const [pressed, setPressed] = useState(false); // '확인' 버튼이 눌렸는지
   const [dataUrl, setDataUrl] = useState('');
   const processContext = useContext(ProcessContext);

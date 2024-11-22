@@ -8,6 +8,7 @@ export type MyProfile = {
   email: string;
   name: string;
   isAuthenticated: boolean;
+  uuid:string;
 };
 
 export type SocialMemberResponse = Response<SocialMember>;
