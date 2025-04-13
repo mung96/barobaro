@@ -34,6 +34,12 @@
 <img width="200px" src="https://i.postimg.cc/hjXbqCj9/Group-8969.png" alt="Group-8969"/>
 <img width="200px" src="https://i.postimg.cc/KYvD0chp/Group-8970.png" alt="Group-8970"/>
 <img width="200px" src="https://i.postimg.cc/7LsMdvxH/Group-8971.png" alt="Group-8971"/>
+
+
+https://github.com/user-attachments/assets/1217d881-21f0-425b-84e4-05157b5836d3
+
+
+
 </p>
 
 ### 💡 구현 방식
